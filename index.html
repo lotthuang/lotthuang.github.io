@@ -5,52 +5,6 @@
     <title>一个小脚本</title>
 </head>
 <body>
-    <p>
-        #encoding=utf-8
-def yanghui(max):
-    total_dict = {}
-    i = 1
-    while i <= max:
-        tmp = {i:[]}
-        total_dict.update(tmp)
-        i += 1
-
-    for tmp_dict in total_dict:
-        hanghao = tmp_dict
-        if hanghao == 1:
-            ret_list = [1]
-            total_dict[hanghao] = ret_list
-
-        elif hanghao == 2:
-            total_dict[hanghao] = [1,1]
-
-        elif hanghao > 2:
-            ret_list = range(hanghao)
-            liehao = 0
-
-            while liehao <  hanghao:
-                if liehao == 0:
-                    ret_list[liehao] = 1
-                elif liehao >0:
-                    if liehao == hanghao -1:
-                        ret_list[liehao] = 1
-                    else:
-
-                        ret_list[liehao] = total_dict[hanghao-1][liehao-1] + total_dict[hanghao-1][liehao]
-                liehao += 1
-            total_dict[hanghao] = ret_list
-    for tmp_dict in total_dict:
-        yield total_dict[tmp_dict]
-
-
-
-
-
-
-if __name__ == '__main__':
-    for x in yanghui(11):
-        print x
-    </p>
-
+<h1>Hello World</h1>
 </body>
 </html>
