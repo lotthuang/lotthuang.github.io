@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>利用Github Pages和mkdcos搭建博客 - Lott's Blog</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u5229\u7528Github Pages\u548cmkdcos\u642d\u5efa\u535a\u5ba2";
+    var mkdocs_page_input_path = "make_blog.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Lott's Blog</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">首页</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">博客搭建</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">利用Github Pages和mkdcos搭建博客</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#github-pages">一 申请github pages</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1-2github-pages-sites">1 有2种Github Pages sites:</a></li>
+        
+            <li><a class="toctree-l4" href="#2-github-pages-sites">2 搭建Github Pages sites的前提条件</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#mkdocs">二 本地使用mkdocs工具</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1mkdocs">（1）安装mkdocs</a></li>
+        
+            <li><a class="toctree-l4" href="#2">(2) 开始一个新的文档项目</a></li>
+        
+            <li><a class="toctree-l4" href="#3">(3) 编写相应的文档</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#markdownhtmlgithub">三 把本地的markdown文件转化为html,推送到github上</a></li>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Lott's Blog</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>博客搭建 &raquo;</li>
+        
+      
+    
+    <li>利用Github Pages和mkdcos搭建博客</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="github-pages">一 申请github pages</h2>
+<h3 id="1-2github-pages-sites">1 有2种Github Pages sites:</h3>
+<ol>
+<li>Project Pages sites </li>
+</ol>
+<blockquote>
+<p>个人感觉是开源项目用的比较多</p>
+</blockquote>
+<ol>
+<li>User and Organization Pages sites</li>
+</ol>
+<blockquote>
+<p>个人用户或者小型团队使用这种</p>
+</blockquote>
+<h3 id="2-github-pages-sites">2 搭建Github Pages sites的前提条件</h3>
+<pre><code>需要配置一个发布源(publishing source),发布源有3种方式:
+1 使用某个repo的master分支
+2 使用某个repo的gh-pages分支
+3 使用某个repo的master分支的/docs目录
+</code></pre>
+
+<p>如果你的repo是“用户名.github.io”（比如 zhangsan.github.io）,那么github.com默认就是使用该repo的master分支作为发布源，并不能使用以上2、3的方式。</p>
+<p>以我们的使用经验来说，就是希望专门有一个repo来发布用markdown写的个人文章，形成一个个人博客，完全可以采用建立名为zhangsan.github.io的repo，然后采用master分支作为发布源的这种模式。</p>
+<p>以下是我们新建的一个repo:</p>
+<p><img alt="image-20180920162746" src="../img/image-201809201627469.png" /></p>
+<p>打算使用该repo的master分支作为发布源(pushing source).</p>
+<h2 id="mkdocs">二 本地使用mkdocs工具</h2>
+<h3 id="1mkdocs">（1）安装mkdocs</h3>
+<pre><code>pip install mkdocs
+</code></pre>
+
+<h3 id="2">(2) 开始一个新的文档项目</h3>
+<pre><code>$ mkdocs new final_docs
+$ cd final_docs
+</code></pre>
+
+<h3 id="3">(3) 编写相应的文档</h3>
+<p>1 一开始final_docs的目录结构如下</p>
+<p><img alt="image-20180920163618" src="../img/image-201809201636188.png" /></p>
+<p>2 通过修改mkdocs.yml 来组织博客的框架，这里给出我的内容，作为参考</p>
+<pre><code>$cat mkdocs.yml
+site_name: Lott's Blog
+use_directory_urls: true
+theme: readthedocs
+pages:
+    - 首页: 'index.md'
+    - 博客搭建:
+      - 利用Github Pages和mkdcos搭建博客: 'make_blog.md'
+</code></pre>
+
+<p>3 最终目录结构如下</p>
+<p><img alt="image-20180920163618" src="../img/image-201809201636188.png" /></p>
+<p><img alt="image-20180920163829" src="../img/image-201809201638292.png" /></p>
+<p>4 此时使用mkdocs serve命令，先在本地看一下博客效果</p>
+<pre><code>$ mkdocs serve
+Running at: http://127.0.0.1:8000/
+</code></pre>
+
+<h2 id="markdownhtmlgithub">三 把本地的markdown文件转化为html,推送到github上</h2>
+<p>1 转化成html</p>
+<pre><code>
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href=".." class="btn btn-neutral" title="首页"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>
