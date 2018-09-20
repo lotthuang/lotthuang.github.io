@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>利用Github Pages和mkdcos搭建博客 - Lott's Blog</title>
+  <title>利用Github Pages和mkdocs搭建个人博客 - Lott's Blog</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u5229\u7528Github Pages\u548cmkdcos\u642d\u5efa\u535a\u5ba2";
+    var mkdocs_page_name = "\u5229\u7528Github Pages\u548cmkdocs\u642d\u5efa\u4e2a\u4eba\u535a\u5ba2";
     var mkdocs_page_input_path = "make_blog.md";
     var mkdocs_page_url = null;
   </script>
@@ -55,11 +55,11 @@
           
             <li class="toctree-l1">
 		
-    <span class="caption-text">博客搭建</span>
+    <span class="caption-text">第一章 博客搭建</span>
     <ul class="subnav">
                 <li class=" current">
                     
-    <a class="current" href="./">利用Github Pages和mkdcos搭建博客</a>
+    <a class="current" href="./">利用Github Pages和mkdocs搭建个人博客</a>
     <ul class="subnav">
             
     <li class="toctree-l3"><a href="#github-pages">一 申请github pages</a></li>
@@ -89,6 +89,12 @@
     <li class="toctree-l3"><a href="#markdownhtmlgithub">三 把本地的markdown文件转化为html,推送到github上</a></li>
     
 
+    <li class="toctree-l3"><a href="#_1">四 参考文档</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_2">五 额外补充</a></li>
+    
+
     </ul>
                 </li>
     </ul>
@@ -116,11 +122,11 @@
     
       
         
-          <li>博客搭建 &raquo;</li>
+          <li>第一章 博客搭建 &raquo;</li>
         
       
     
-    <li>利用Github Pages和mkdcos搭建博客</li>
+    <li>利用Github Pages和mkdocs搭建个人博客</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -189,8 +195,54 @@ Running at: http://127.0.0.1:8000/
 </code></pre>
 
 <h2 id="markdownhtmlgithub">三 把本地的markdown文件转化为html,推送到github上</h2>
-<p>1 转化成html</p>
-<pre><code>
+<p>1 转化成html,使用mkdocs 命令</p>
+<pre><code>$mkdocs build
+WARNING -  Config value: 'pages'. Warning: The 'pages' configuration option has been deprecated and will be removed in a future release of MkDocs. Use 'nav' instead.
+INFO    -  Cleaning site directory
+INFO    -  Building documentation to directory: /Path/to/final_docs/site
+</code></pre>
+
+<p>从这里，我们看到它把html文件全部放在了final_docs/site目录下,包括index.html</p>
+<p>因此，我们把site目录下的文件，全部推送到github上，就可以作为Github Pages sites了</p>
+<p>2 如果是第一次提交github,那么执行以下命令即可，如果不是第一次提交，请自行解决github的使用问题</p>
+<pre><code>git init
+git remote add origin https://github.com/&lt;你的用户名&gt;/&lt;你的用户名&gt;.github.io.git
+git pull origin master
+git add .
+git commit -m &quot;fisrt commit&quot;
+git push origin master
+</code></pre>
+
+<p>稍等1～2分钟，我们就打开https://&lt;你的用户名&gt;.github.io/  ,就能看到我们的博客页面了</p>
+<h2 id="_1">四 参考文档</h2>
+<p>1 Github Pages 说明: https://help.github.com/articles/creating-project-pages-using-the-command-line/</p>
+<p>2 mkdocs官网文档: https://markdown-docs-zh.readthedocs.io/zh_CN/latest/</p>
+<h2 id="_2">五 额外补充</h2>
+<p>如果你有一个nginx服务器（apache也一样），可以把site目录放到对应的主机上，然后使用nginx作为web服务器，也可以把相应的文档作为博客展示.</p>
+<p>nginx配置参考如下:</p>
+<pre><code>server {
+    listen                        5001;
+    server_name                   _;
+    root                          /usr/local/var/www;
+    access_log                    /usr/local/var/log/nginx/mkdoc.access.log     main;
+    error_log                     /usr/local/var/log/nginx/mkdoc.error.log      notice;
+
+   # favicon.ico
+    location ~ /favicon.ico$ {
+        root                      /usr/local/var/www;
+        expires                   30d;
+    }
+    # our site
+    location / {
+        root /Path/to/final_docs/site;
+        index index.html;
+    }
+
+    error_page                    500 502 503 504  /50x.html;
+    location = /50x.html {
+        root                        /usr/local/var/www;
+    }
+}
 </code></pre>
               
             </div>
