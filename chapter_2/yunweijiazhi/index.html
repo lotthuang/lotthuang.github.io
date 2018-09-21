@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>第一篇 运维的价值和目标 - Lott's Blog</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u7b2c\u4e00\u7bc7 \u8fd0\u7ef4\u7684\u4ef7\u503c\u548c\u76ee\u6807";
+    var mkdocs_page_input_path = "chapter_2/yunweijiazhi.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Lott's Blog</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">首页</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第一章 博客搭建</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../make_blog/">利用Github Pages和mkdocs搭建个人博客</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第二章 运维工作总结</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">第一篇 运维的价值和目标</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">一  用一句话来概括运维的价值</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_2">二 思维导图</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_3">三 参考文章</a></li>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Lott's Blog</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>第二章 运维工作总结 &raquo;</li>
+        
+      
+    
+    <li>第一篇 运维的价值和目标</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="_1">一  用一句话来概括运维的价值</h2>
+<blockquote>
+<p>花更少的钱，让产品更快迭代，更稳定运行</p>
+</blockquote>
+<p>有些运维同仁概况了运维九字真言“安全稳定高效低成本”，说的非常到位。
+大部分公司,运维部门应该会有以下4个团队:
+1. 业务运维 -- （负责和具体的业务部门对接,利用现有的工具和开源技术，解决业务部门的各类运维需求）
+2. 运维开发 -- (负责整个运维团队的工具建设，形成一套运维工具平台)
+3. 系统运维 --(负责整个基础设施的稳定、包括操作系统定制、虚拟化、机房网络管理等等)
+4. 监控运维 -- (7*24小时倒班,有问题直接call相应的运维和研发人员进行解决)</p>
+<p>当然,可能还会有单独的"安全运维"小组，以及和运维部并立的"DBA"团队.
+我认为无论在哪个团队，运维工程师们都应该把“安全稳定高效低成本”这个九字真言牢记心头,对自己做的工作从九字真言的角度去展开思考和进行效果衡量.</p>
+<h2 id="_2">二 思维导图</h2>
+<p>安全、稳定、高效、低成本，怎么才能把这四大目标做好？应该做哪些事情来达成目标？用一张脑图来梳理一下：</p>
+<p><img alt="yunweijiazhi" src="../../img/yunweijiazhi.png" /></p>
+<h2 id="_3">三 参考文章</h2>
+<p>这篇文章是在微信公众号看到,并收藏的.
+感谢原文作者---秦晓辉。</p>
+<p>关于秦晓辉大神，我所记得的2件事情:</p>
+<ol>
+<li>是小米开源监控系统open-falcon的主程</li>
+<li>每天6点到公司，一天可以比别人多做很多事情</li>
+</ol>
+<blockquote>
+<p>比你优秀,比你更努力！</p>
+</blockquote>
+<p><a href="https://www.jianshu.com/p/f1d831a9afaf">查看原文</a></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../../make_blog/" class="btn btn-neutral" title="利用Github Pages和mkdocs搭建个人博客"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../make_blog/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>
