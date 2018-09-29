@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>第二篇 Linux下如何观察完整连接队列的情况 - Lott's Blog</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u7b2c\u4e8c\u7bc7 Linux\u4e0b\u5982\u4f55\u89c2\u5bdf\u5b8c\u6574\u8fde\u63a5\u961f\u5217\u7684\u60c5\u51b5";
+    var mkdocs_page_input_path = "chapter_3/2_estab_queue_monitoring.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Lott's Blog</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">首页</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第一章 博客搭建</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../make_blog/">利用Github Pages和mkdocs搭建个人博客</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第二章 运维工作总结</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第三章 Linux Net子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">第二篇 Linux下如何观察完整连接队列的情况</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#socketestab-queue">一 观察某个socket的完整连接队列(ESTAB Queue)的最大值和当前值</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#listen">(一) LISTEN状态</a></li>
+        
+            <li><a class="toctree-l4" href="#listen_1">(二) 非LISTEN状态</a></li>
+        
+            <li><a class="toctree-l4" href="#_1">(三) 总结</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#linux">二 观察Linux服务器是否丢掉用户请求</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#tcplistenoverflows">(一) TcpListenOverflows</a></li>
+        
+            <li><a class="toctree-l4" href="#tcplistendrops">(二) TcpListenDrops</a></li>
+        
+            <li><a class="toctree-l4" href="#_2">(三) 总结</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Lott's Blog</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>第三章 Linux Net子系统 &raquo;</li>
+        
+      
+    
+    <li>第二篇 Linux下如何观察完整连接队列的情况</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="socketestab-queue">一 观察某个socket的完整连接队列(ESTAB Queue)的最大值和当前值</h2>
+<h3 id="listen">(一) LISTEN状态</h3>
+<p>通过ss命令，观察处于listen状态的socket，得知某个具体的socket的完整连接队列的最大长度和当前长度。</p>
+<pre><code>ss -ltnp
+</code></pre>
+
+<p>LISTEN 状态:
+<font color="#dd0000">Send-Q表示完整连接队列(ESTAB Queue)的最大值，就是之前提到过的min(backlog, somaxconn) 的值。</font><br /></p>
+<p>Recv-Q表示目前该队列中,等待应用层调用accept()连接的数量</p>
+<p><img alt="3_1_rece-q.jpeg" src="../../img/3_1_rece-q.jpeg" /></p>
+<h3 id="listen_1">(二) 非LISTEN状态</h3>
+<pre><code>ss -ntp  -4  state established
+</code></pre>
+
+<p>Recv-Q 表示网络接收队列: 表示收到的数据已经在本地接收缓冲，但是还有多少没有被进程取走，recv().</p>
+<p>Send-Q 表示网络发送队列: 对方没有收到的数据或者说没有Ack的,还是本地缓冲区.</p>
+<p><img alt="3_2_ss_eastab.jpeg" src="../../img/3_2_ss_eastab.jpeg" /></p>
+<h3 id="_1">(三) 总结</h3>
+<ol>
+<li>通过上述描述，如果一个socket（比如一个python应用监听的socket），它的Recv-Q一直等于Send-Q，那么说明该应用已经处理不过来客户端请求了。</li>
+</ol>
+<blockquote>
+<p>至今没有见到过非LISTEN状态下,Recv-Q和Send-Q非0的情况</p>
+</blockquote>
+<h2 id="linux">二 观察Linux服务器是否丢掉用户请求</h2>
+<h3 id="tcplistenoverflows">(一) TcpListenOverflows</h3>
+<p>当应用程序已经处理不过来，并且相应的ESTAB Queue也已经满时，Linux内存中会进行相应记录，
+可以通过/proc/net/netstat文件获取。</p>
+<p>当ESTAB Queue满时，客户端新的连接不能被建立，服务端通过net.ipv4.tcp_abort_on_overflow 参数的设置，决定
+是否给客户端发送响应:</p>
+<p>当net.ipv4.tcp_abort_on_overflow = 0时，直接丢弃该ACK包，客户端的socket会向应用层返回 read timeout。</p>
+<p>当net.ipv4.tcp_abort_on_overflow = 1时，服务端会发生RST包，客户端的socket会向应用层返回connection reset by peer。</p>
+<h3 id="tcplistendrops">(二) TcpListenDrops</h3>
+<p>包含上面ESTAB Queue满的情况，也就是说当出现ListenOverflows时，它也会增加1；</p>
+<p>除此之外，当内存不够无法为新的连接分配socket相关的数据结构时，也会增加1，当然还有别的异常情况下会增加1。</p>
+<h3 id="_2">(三) 总结</h3>
+<pre><code>cat /proc/net/netstat | awk '/TcpExt/ { print $21,$22 }'
+</code></pre>
+
+<p><img alt="tcplistenoverflows" src="../../img/tcplistenoverflows.jpeg" /></p>
+<p>通过以上命令,不断观察，如果数值一直增加，说明当前系统已经出现丢弃用户请求的情况了.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../1_linux_kernel_net/" class="btn btn-neutral" title="第一篇 Linux数据包接收路径梳理和常用调优技能"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../1_linux_kernel_net/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>
