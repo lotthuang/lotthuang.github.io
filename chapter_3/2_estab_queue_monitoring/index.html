@@ -196,6 +196,18 @@
 
 <p><img alt="tcplistenoverflows" src="../../img/tcplistenoverflows.jpeg" /></p>
 <p>通过以上命令,不断观察，如果数值一直增加，说明当前系统已经出现丢弃用户请求的情况了.</p>
+<h4 id="_3">实战技巧</h4>
+<p>通过如下命令观察系统是否有丢弃用户请求的情况</p>
+<pre><code class="shell">for h in `seq 1 100`; do cat /proc/net/netstat | awk '/TcpExt/ { print $21,$22 }'  ; sleep 2 ; done
+</code></pre>
+
+<p><img alt="WX20190820-160910_1.png" src="../../img/WX20190820-160910_1.png" /></p>
+<p>通过如下命令确认是哪些应用层的进程的accept队列有溢出</p>
+<pre><code class="shell">ss -lntp  |grep -v 'Recv-Q' |awk '$2 !=0’
+
+</code></pre>
+
+<p><img alt="WX20190820-160748_2.png" src="../../img/WX20190820-160748_2.png" /></p>
               
             </div>
           </div>
