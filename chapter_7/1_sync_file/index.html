@@ -212,32 +212,32 @@
 <p>本篇博客用于记录和总结运维工作中在不同主机之间传输文件的一些技能</p>
 <h1 id="linux">二 线上不同的Linux主机之间</h1>
 <h2 id="nc">(一) 通过nc命令传输</h2>
-<ol>
+<ul>
 <li>在目标主机上执行:</li>
-</ol>
+</ul>
 <pre><code>nc -l 1234 |tar -xvf -
 </code></pre>
 
-<ol>
+<ul>
 <li>在被迁移机上执行:</li>
-</ol>
+</ul>
 <pre><code>tar -cvf - 目录或者文件 |nc 目标机IP 1234
 </code></pre>
 
-<ol>
+<ul>
 <li>能实现块级别的压缩迁移,速度是最快的,遇到大量零碎小文件要同步的时候很有用。</li>
-<li>Redhat系列系统和Debian系列的系统的具体命令有所不同.</li>
-</ol>
+<li>Redhat系列系统和Debian系列的系统的具体命令略有不同.</li>
+</ul>
 <h2 id="http">(二) 通过http服务下载</h2>
-<ol>
+<ul>
 <li>在被迁移机器上执行:</li>
-</ol>
+</ul>
 <pre><code>python -m SimpleHTTPServer  9000
 </code></pre>
 
-<ol>
+<ul>
 <li>在目标主机上执行:</li>
-</ol>
+</ul>
 <pre><code>wget http://目标IP:9000/文件名 ,进行下载
 </code></pre>
 
