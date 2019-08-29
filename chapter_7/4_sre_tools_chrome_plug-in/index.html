@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>第一篇 不同主机之间的文件传输 - Lott's Blog</title>
+  <title>第四篇 运维生产力工具(chrome插件) - Lott's Blog</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u7b2c\u4e00\u7bc7 \u4e0d\u540c\u4e3b\u673a\u4e4b\u95f4\u7684\u6587\u4ef6\u4f20\u8f93";
-    var mkdocs_page_input_path = "chapter_7/1_sync_file.md";
+    var mkdocs_page_name = "\u7b2c\u56db\u7bc7 \u8fd0\u7ef4\u751f\u4ea7\u529b\u5de5\u5177(chrome\u63d2\u4ef6)";
+    var mkdocs_page_input_path = "chapter_7/4_sre_tools_chrome_plug-in.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -135,39 +135,9 @@
 		
     <span class="caption-text">第七章 Linux 运维小技巧汇总和积累</span>
     <ul class="subnav">
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">第一篇 不同主机之间的文件传输</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#_1">一 说明</a></li>
-    
-
-    <li class="toctree-l3"><a href="#linux">二 线上不同的Linux主机之间</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#nc">(一) 通过nc命令传输</a></li>
-        
-            <li><a class="toctree-l4" href="#http">(二) 通过http服务下载</a></li>
-        
-            <li><a class="toctree-l4" href="#_2">(三) 其他能想到的方式</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l3"><a href="#_3">三 线上主机和本机之间</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#rsync">(一) rsync命令</a></li>
-        
-            <li><a class="toctree-l4" href="#rzsz">(二) rz/sz</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../1_sync_file/">第一篇 不同主机之间的文件传输</a>
                 </li>
                 <li class="">
                     
@@ -177,9 +147,43 @@
                     
     <a class="" href="../3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../4_sre_tools_chrome_plug-in/">第四篇 运维生产力工具(chrome插件)</a>
+    <a class="current" href="./">第四篇 运维生产力工具(chrome插件)</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">一 说明</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_2">二 开发类插件</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#jsonview">(一) JSONView</a></li>
+        
+            <li><a class="toctree-l4" href="#postman">(二) Postman</a></li>
+        
+            <li><a class="toctree-l4" href="#cookies">(三) Cookies</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_3">三 通用类插件</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_4">(一) 广告过滤</a></li>
+        
+            <li><a class="toctree-l4" href="#_5">(二) 截图插件</a></li>
+        
+            <li><a class="toctree-l4" href="#_6">(三) 自动刷新网页</a></li>
+        
+            <li><a class="toctree-l4" href="#_7">（四） 画流程图</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -210,7 +214,7 @@
         
       
     
-    <li>第一篇 不同主机之间的文件传输</li>
+    <li>第四篇 运维生产力工具(chrome插件)</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -221,62 +225,37 @@
             <div class="section">
               
                 <h1 id="_1">一 说明</h1>
-<p>本篇博客用于记录和总结运维工作中在不同主机之间传输文件的一些技能</p>
-<h1 id="linux">二 线上不同的Linux主机之间</h1>
-<h2 id="nc">(一) 通过nc命令传输</h2>
-<ul>
-<li>在目标主机上执行:</li>
-</ul>
-<pre><code>nc -l 1234 |tar -xvf -
-</code></pre>
-
-<ul>
-<li>在被迁移机上执行:</li>
-</ul>
-<pre><code>tar -cvf - 目录或者文件 |nc 目标机IP 1234
-</code></pre>
-
-<ul>
-<li>能实现块级别的压缩迁移,速度是最快的,遇到大量零碎小文件要同步的时候很有用。</li>
-<li>Redhat系列系统和Debian系列的系统的具体命令略有不同.</li>
-</ul>
-<h2 id="http">(二) 通过http服务下载</h2>
-<ul>
-<li>在被迁移机器上执行:</li>
-</ul>
-<pre><code>python -m SimpleHTTPServer  9000
-</code></pre>
-
-<ul>
-<li>在目标主机上执行:</li>
-</ul>
-<pre><code>wget http://目标IP:9000/文件名 ,进行下载
-</code></pre>
-
-<h2 id="_2">(三) 其他能想到的方式</h2>
-<ul>
-<li>scp</li>
-<li>ftp下载</li>
-<li>rsync</li>
-</ul>
-<h1 id="_3">三 线上主机和本机之间</h1>
-<p>博主一直使用的Mac系统,所以这边本机是指Mac系统</p>
-<h2 id="rsync">(一) rsync命令</h2>
-<pre><code>rsync -avz -e 'ssh -p 58422' 目标IP:/path/to/file ./
-</code></pre>
-
-<p>把目标机器上的文件,copy到本地</p>
-<pre><code>rsync -avz -e 'ssh -p 58422' /path/to/file 目标IP:/path/to/dir
-
-</code></pre>
-
-<p>把本机文件copy到目标机器的某个目录下</p>
-<h2 id="rzsz">(二) rz/sz</h2>
-<p>Linux主机上需要安装lrzsz包.</p>
-<p>本地要求使用SecureCRT. 如果是Windows,还可以使用Xshell.</p>
-<p>Mac下常用的ssh客户端iTerm2默认并不支持. 其本质是是需要2边同时支持某些文件传输协议(Xmodem/Ymodem/Zmodem)</p>
-<p>sz 命令用于从Linux主机下载文件.</p>
-<p>rz 命令用于上传本地文件到Linux主机.</p>
+<p>这篇博文中,记录通过各种渠道收获的chrome插件,主要用于提升平时运维工作中的效率.
+大部分是转载而来.</p>
+<h1 id="_2">二 开发类插件</h1>
+<h2 id="jsonview">(一) JSONView</h2>
+<p>是一个方便查看 Json 结构的插件，展开，折叠，可以非常方便的查看接口返回数据.
+当我们调试后台API时非常有用,因为我们后台API返回的结果几乎都是json格式,chrome开启这个插件
+之后就能以更友好的方式展示后台返回的数据.</p>
+<p><img alt="WX20190829-172538.png" src="../../img/WX20190829-172538.png" /></p>
+<h2 id="postman">(二) Postman</h2>
+<p>相信开发者朋友一定知道这款插件，这是一款强大的 API &amp; HTTP 请求调试工具，它不仅可以调试简单的 HTML、CSS 以及脚本等简单的网页基本信息，这款 Chrome 插件甚至还能发送几乎所有的 HTTP 请求，可谓是 Web 开发者的一大利器。</p>
+<p><img alt="WX20190829-172600.png" src="../../img/WX20190829-172600.png" /></p>
+<h2 id="cookies">(三) Cookies</h2>
+<p>管理chrome的cookie</p>
+<p><img alt="WX20190829-173318.png" src="../../img/WX20190829-173318.png" /></p>
+<h1 id="_3">三 通用类插件</h1>
+<h2 id="_4">(一) 广告过滤</h2>
+<p>广告终结者.
+清除网页上的所有广告：浮动广告，购物广告，恶意弹窗，跟踪代码，视频广告。让你浏览网页更快更清爽。广告终结者，你唯一需要的广告插件</p>
+<p>WX20190829-172709</p>
+<p><img alt="WX20190829-172709.png" src="../../img/WX20190829-172709.png" /></p>
+<h2 id="_5">(二) 截图插件</h2>
+<p>网页截图:注释&amp;录屏.</p>
+<p>录屏，捕获整个页面或任何部分，矩形，圆形，箭头，线条和文字，模糊敏感信息，一键上传分享注释。支持PNG和链接</p>
+<p><img alt="WX20190829-172731.png" src="../../img/WX20190829-172731.png" /></p>
+<h2 id="_6">(三) 自动刷新网页</h2>
+<p>Auto Refresh</p>
+<p>Auto Refresh is the best extension to refresh on a timer</p>
+<p><img alt="WX20190829-173000.png" src="../../img/WX20190829-173000.png" /></p>
+<h2 id="_7">（四） 画流程图</h2>
+<p>draw.io 是一个著名的在线画图网站,这个插件就是该网站的一个chrome插件,方便本地直接画图.</p>
+<p><img alt="WX20190829-173055.png" src="../../img/WX20190829-173055.png" /></p>
               
             </div>
           </div>
@@ -284,10 +263,8 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../2_sre_tools_python/" class="btn btn-neutral float-right" title="第二篇 运维生产力工具(python篇)">Next <span class="icon icon-circle-arrow-right"></span></a>
       
-      
-        <a href="../../daibuchong/" class="btn btn-neutral" title="待补充"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../3_sre_tools_website/" class="btn btn-neutral" title="第三篇 运维生产力工具(网站工具)"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -313,10 +290,8 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../../daibuchong/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../3_sre_tools_website/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
-      
-        <span style="margin-left: 15px"><a href="../2_sre_tools_python/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

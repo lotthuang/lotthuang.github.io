@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>第一篇 不同主机之间的文件传输 - Lott's Blog</title>
+  <title>第二篇 运维生产力工具(python篇) - Lott's Blog</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u7b2c\u4e00\u7bc7 \u4e0d\u540c\u4e3b\u673a\u4e4b\u95f4\u7684\u6587\u4ef6\u4f20\u8f93";
-    var mkdocs_page_input_path = "chapter_7/1_sync_file.md";
+    var mkdocs_page_name = "\u7b2c\u4e8c\u7bc7 \u8fd0\u7ef4\u751f\u4ea7\u529b\u5de5\u5177(python\u7bc7)";
+    var mkdocs_page_input_path = "chapter_7/2_sre_tools_python.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -135,43 +135,22 @@
 		
     <span class="caption-text">第七章 Linux 运维小技巧汇总和积累</span>
     <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../1_sync_file/">第一篇 不同主机之间的文件传输</a>
+                </li>
                 <li class=" current">
                     
-    <a class="current" href="./">第一篇 不同主机之间的文件传输</a>
+    <a class="current" href="./">第二篇 运维生产力工具(python篇)</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#_1">一 说明</a></li>
+    <li class="toctree-l3"><a href="#json">一 以更友好的方式查看json文件</a></li>
     
 
-    <li class="toctree-l3"><a href="#linux">二 线上不同的Linux主机之间</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#nc">(一) 通过nc命令传输</a></li>
-        
-            <li><a class="toctree-l4" href="#http">(二) 通过http服务下载</a></li>
-        
-            <li><a class="toctree-l4" href="#_2">(三) 其他能想到的方式</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l3"><a href="#_3">三 线上主机和本机之间</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#rsync">(一) rsync命令</a></li>
-        
-            <li><a class="toctree-l4" href="#rzsz">(二) rz/sz</a></li>
-        
-        </ul>
+    <li class="toctree-l3"><a href="#pythonzip">二 使用python解压缩和压缩zip包</a></li>
     
 
     </ul>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
                 </li>
                 <li class="">
                     
@@ -210,7 +189,7 @@
         
       
     
-    <li>第一篇 不同主机之间的文件传输</li>
+    <li>第二篇 运维生产力工具(python篇)</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -220,63 +199,35 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="_1">一 说明</h1>
-<p>本篇博客用于记录和总结运维工作中在不同主机之间传输文件的一些技能</p>
-<h1 id="linux">二 线上不同的Linux主机之间</h1>
-<h2 id="nc">(一) 通过nc命令传输</h2>
+                <h1 id="json">一 以更友好的方式查看json文件</h1>
+<p>比如有个json文件内容是这样:</p>
+<p><img alt="WX20190826-201238.png" src="../../img/WX20190826-201238.png" /></p>
+<p>使用json.tool,使得显示更加友好:</p>
+<p><img alt="7_1.png" src="../../img/7_1.png" /></p>
+<blockquote>
+<p>文件内容复杂的时候,效果越好.</p>
+</blockquote>
+<h1 id="pythonzip">二 使用python解压缩和压缩zip包</h1>
+<p>使用zipfile模块提供了命令行接口。读者以后可以在Linux下，使用Python命令创建和解压zip格式的压缩包。zipfile模块提供的命令行接口包含以下几个选项：</p>
 <ul>
-<li>在目标主机上执行:</li>
+<li>
+<p>-l <zipfile> 显示zip格式压缩包中的文件列表</p>
+</li>
+<li>
+<p>-c 创建zip格式压缩包</p>
+</li>
+<li>
+<p>-e 提取zip格式压缩包</p>
+</li>
+<li>
+<p>-t 验证文件是一个有效的zip格式压缩包</p>
+</li>
 </ul>
-<pre><code>nc -l 1234 |tar -xvf -
+<p>下面的命令使用Python的zipfile模块提供的命令行接口，创建、查看和提取zip格式压缩包：</p>
+<pre><code>python -m zipfile -c monty.zip spam.txt eggs.txt
+python -m zipfile -e monty.zip target-dir/
+python -m zipfile -l monty.zip
 </code></pre>
-
-<ul>
-<li>在被迁移机上执行:</li>
-</ul>
-<pre><code>tar -cvf - 目录或者文件 |nc 目标机IP 1234
-</code></pre>
-
-<ul>
-<li>能实现块级别的压缩迁移,速度是最快的,遇到大量零碎小文件要同步的时候很有用。</li>
-<li>Redhat系列系统和Debian系列的系统的具体命令略有不同.</li>
-</ul>
-<h2 id="http">(二) 通过http服务下载</h2>
-<ul>
-<li>在被迁移机器上执行:</li>
-</ul>
-<pre><code>python -m SimpleHTTPServer  9000
-</code></pre>
-
-<ul>
-<li>在目标主机上执行:</li>
-</ul>
-<pre><code>wget http://目标IP:9000/文件名 ,进行下载
-</code></pre>
-
-<h2 id="_2">(三) 其他能想到的方式</h2>
-<ul>
-<li>scp</li>
-<li>ftp下载</li>
-<li>rsync</li>
-</ul>
-<h1 id="_3">三 线上主机和本机之间</h1>
-<p>博主一直使用的Mac系统,所以这边本机是指Mac系统</p>
-<h2 id="rsync">(一) rsync命令</h2>
-<pre><code>rsync -avz -e 'ssh -p 58422' 目标IP:/path/to/file ./
-</code></pre>
-
-<p>把目标机器上的文件,copy到本地</p>
-<pre><code>rsync -avz -e 'ssh -p 58422' /path/to/file 目标IP:/path/to/dir
-
-</code></pre>
-
-<p>把本机文件copy到目标机器的某个目录下</p>
-<h2 id="rzsz">(二) rz/sz</h2>
-<p>Linux主机上需要安装lrzsz包.</p>
-<p>本地要求使用SecureCRT. 如果是Windows,还可以使用Xshell.</p>
-<p>Mac下常用的ssh客户端iTerm2默认并不支持. 其本质是是需要2边同时支持某些文件传输协议(Xmodem/Ymodem/Zmodem)</p>
-<p>sz 命令用于从Linux主机下载文件.</p>
-<p>rz 命令用于上传本地文件到Linux主机.</p>
               
             </div>
           </div>
@@ -284,10 +235,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../2_sre_tools_python/" class="btn btn-neutral float-right" title="第二篇 运维生产力工具(python篇)">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../3_sre_tools_website/" class="btn btn-neutral float-right" title="第三篇 运维生产力工具(网站工具)">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../../daibuchong/" class="btn btn-neutral" title="待补充"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../1_sync_file/" class="btn btn-neutral" title="第一篇 不同主机之间的文件传输"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -313,10 +264,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../../daibuchong/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../1_sync_file/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../2_sre_tools_python/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../3_sre_tools_website/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
