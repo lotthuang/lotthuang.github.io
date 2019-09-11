@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>第四篇 运维生产力工具(chrome插件) - Lott's Blog</title>
+  <title>第四篇 运维生产力工具(shell篇) - Lott's Blog</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u7b2c\u56db\u7bc7 \u8fd0\u7ef4\u751f\u4ea7\u529b\u5de5\u5177(chrome\u63d2\u4ef6)";
-    var mkdocs_page_input_path = "chapter_7/4_sre_tools_chrome_plug-in.md";
+    var mkdocs_page_name = "\u7b2c\u56db\u7bc7 \u8fd0\u7ef4\u751f\u4ea7\u529b\u5de5\u5177(shell\u7bc7)";
+    var mkdocs_page_input_path = "chapter_7/4_sre_tools_shell.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -100,39 +100,6 @@
           
             <li class="toctree-l1">
 		
-    <span class="caption-text">第四章 Linux Mem子系统</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../../daibuchong/">待补充</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">第五章 Linux IO子系统</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../../daibuchong/">待补充</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">第六章 Linux CPU子系统</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../../daibuchong/">待补充</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
     <span class="caption-text">第七章 运维工作之小技巧和工具汇总和积累</span>
     <ul class="subnav">
                 <li class="">
@@ -149,38 +116,13 @@
                 </li>
                 <li class=" current">
                     
-    <a class="current" href="./">第四篇 运维生产力工具(chrome插件)</a>
+    <a class="current" href="./">第四篇 运维生产力工具(shell篇)</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#_1">一 说明</a></li>
+    <li class="toctree-l3"><a href="#shell">一 shell脚本通用模版</a></li>
     
 
-    <li class="toctree-l3"><a href="#_2">二 开发类插件</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#jsonview">(一) JSONView</a></li>
-        
-            <li><a class="toctree-l4" href="#postman">(二) Postman</a></li>
-        
-            <li><a class="toctree-l4" href="#cookies">(三) Cookies</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l3"><a href="#_3">三 通用类插件</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#_4">(一) 广告过滤</a></li>
-        
-            <li><a class="toctree-l4" href="#_5">(二) 截图插件</a></li>
-        
-            <li><a class="toctree-l4" href="#_6">(三) 自动刷新网页</a></li>
-        
-            <li><a class="toctree-l4" href="#_7">（四） 画流程图</a></li>
-        
-        </ul>
+    <li class="toctree-l3"><a href="#ip">二  从一个文本文件中获取所有的IP地址</a></li>
     
 
     </ul>
@@ -214,7 +156,7 @@
         
       
     
-    <li>第四篇 运维生产力工具(chrome插件)</li>
+    <li>第四篇 运维生产力工具(shell篇)</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -224,38 +166,44 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="_1">一 说明</h1>
-<p>这篇博文中,记录通过各种渠道收获的chrome插件,主要用于提升平时运维工作中的效率.
-大部分是转载而来.</p>
-<h1 id="_2">二 开发类插件</h1>
-<h2 id="jsonview">(一) JSONView</h2>
-<p>是一个方便查看 Json 结构的插件，展开，折叠，可以非常方便的查看接口返回数据.
-当我们调试后台API时非常有用,因为我们后台API返回的结果几乎都是json格式,chrome开启这个插件
-之后就能以更友好的方式展示后台返回的数据.</p>
-<p><img alt="WX20190829-172538.png" src="../../img/WX20190829-172538.png" /></p>
-<h2 id="postman">(二) Postman</h2>
-<p>相信开发者朋友一定知道这款插件，这是一款强大的 API &amp; HTTP 请求调试工具，它不仅可以调试简单的 HTML、CSS 以及脚本等简单的网页基本信息，这款 Chrome 插件甚至还能发送几乎所有的 HTTP 请求，可谓是 Web 开发者的一大利器。</p>
-<p><img alt="WX20190829-172600.png" src="../../img/WX20190829-172600.png" /></p>
-<h2 id="cookies">(三) Cookies</h2>
-<p>管理chrome的cookie</p>
-<p><img alt="WX20190829-173318.png" src="../../img/WX20190829-173318.png" /></p>
-<h1 id="_3">三 通用类插件</h1>
-<h2 id="_4">(一) 广告过滤</h2>
-<p>广告终结者.
-清除网页上的所有广告：浮动广告，购物广告，恶意弹窗，跟踪代码，视频广告。让你浏览网页更快更清爽。广告终结者，你唯一需要的广告插件</p>
-<p>WX20190829-172709</p>
-<p><img alt="WX20190829-172709.png" src="../../img/WX20190829-172709.png" /></p>
-<h2 id="_5">(二) 截图插件</h2>
-<p>网页截图:注释&amp;录屏.</p>
-<p>录屏，捕获整个页面或任何部分，矩形，圆形，箭头，线条和文字，模糊敏感信息，一键上传分享注释。支持PNG和链接</p>
-<p><img alt="WX20190829-172731.png" src="../../img/WX20190829-172731.png" /></p>
-<h2 id="_6">(三) 自动刷新网页</h2>
-<p>Auto Refresh</p>
-<p>Auto Refresh is the best extension to refresh on a timer</p>
-<p><img alt="WX20190829-173000.png" src="../../img/WX20190829-173000.png" /></p>
-<h2 id="_7">（四） 画流程图</h2>
-<p>draw.io 是一个著名的在线画图网站,这个插件就是该网站的一个chrome插件,方便本地直接画图.</p>
-<p><img alt="WX20190829-173055.png" src="../../img/WX20190829-173055.png" /></p>
+                <h1 id="shell">一 shell脚本通用模版</h1>
+<blockquote>
+<p>该通用模版分为2个阶段,初始化阶段和main阶段,初始化阶段的主要目的是: 提供带颜色的打印函数,usage函数,输入参数校验,以上3点应该是每个脚本共通的;而每个脚本不同点在于main阶段,是你的主逻辑</p>
+</blockquote>
+<p><img alt="shell_template.png" src="../../img/shell_template.png" /></p>
+<pre><code>#!/bin/bash
+function echo_red() {
+    echo -e &quot;\033[0;31m$1\033[0m&quot;
+}
+function echo_green() {
+    echo -e &quot;\033[0;32m$1\033[0m&quot;
+}
+function echo_yellow() {
+    echo -e &quot;\033[0;33m$1\033[0m&quot;
+}
+function echo_parting() {
+    line=`printf &quot;%70s&quot; | tr ' ' =`
+    echo_yellow &quot;$line&quot;
+}
+function printuse() {
+    echo_red &quot;用法:&quot;
+    echo -e &quot;\t$0&quot; &quot;一些参数提示&quot;
+    echo_green &quot;效果:&quot;
+    echo -e  &quot;\t脚本的效果&quot;
+}
+
+#main
+if [ -z &quot;$1&quot; ];then
+    echo_parting
+    printuse
+    echo_parting
+fi
+
+</code></pre>
+
+<h1 id="ip">二  从一个文本文件中获取所有的IP地址</h1>
+<pre><code>grep -E -o &quot;(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)&quot; yourfile.txt
+</code></pre>
               
             </div>
           </div>

@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>第二篇 运维生产力工具(python篇) - Lott's Blog</title>
+  <title>一 说明 - Lott's Blog</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u7b2c\u4e8c\u7bc7 \u8fd0\u7ef4\u751f\u4ea7\u529b\u5de5\u5177(python\u7bc7)";
-    var mkdocs_page_input_path = "chapter_7/2_sre_tools_python.md";
+    var mkdocs_page_name = "\u4e00 \u8bf4\u660e";
+    var mkdocs_page_input_path = "chapter_7/5_sre_tools_chrome_plug-in.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -106,18 +106,9 @@
                     
     <a class="" href="../1_sync_file/">第一篇 不同主机之间的文件传输</a>
                 </li>
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">第二篇 运维生产力工具(python篇)</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#json">一 以更友好的方式查看json文件</a></li>
-    
-
-    <li class="toctree-l3"><a href="#pythonzip">二 使用python解压缩和压缩zip包</a></li>
-    
-
-    </ul>
+    <a class="" href="../2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
                 </li>
                 <li class="">
                     
@@ -151,12 +142,8 @@
     <li><a href="../..">Docs</a> &raquo;</li>
     
       
-        
-          <li>第七章 运维工作之小技巧和工具汇总和积累 &raquo;</li>
-        
-      
     
-    <li>第二篇 运维生产力工具(python篇)</li>
+    <li>一 说明</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -166,48 +153,42 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="json">一 以更友好的方式查看json文件</h1>
-<p>比如有个json文件内容是这样:</p>
-<p><img alt="WX20190826-201238.png" src="../../img/WX20190826-201238.png" /></p>
-<p>使用json.tool,使得显示更加友好:</p>
-<p><img alt="7_1.png" src="../../img/7_1.png" /></p>
-<blockquote>
-<p>文件内容复杂的时候,效果越好.</p>
-</blockquote>
-<h1 id="pythonzip">二 使用python解压缩和压缩zip包</h1>
-<p>使用zipfile模块提供了命令行接口。读者以后可以在Linux下，使用Python命令创建和解压zip格式的压缩包。zipfile模块提供的命令行接口包含以下几个选项：</p>
-<ul>
-<li>
-<p>-l <zipfile> 显示zip格式压缩包中的文件列表</p>
-</li>
-<li>
-<p>-c 创建zip格式压缩包</p>
-</li>
-<li>
-<p>-e 提取zip格式压缩包</p>
-</li>
-<li>
-<p>-t 验证文件是一个有效的zip格式压缩包</p>
-</li>
-</ul>
-<p>下面的命令使用Python的zipfile模块提供的命令行接口，创建、查看和提取zip格式压缩包：</p>
-<pre><code>python -m zipfile -c monty.zip spam.txt eggs.txt
-python -m zipfile -e monty.zip target-dir/
-python -m zipfile -l monty.zip
-</code></pre>
+                <h1 id="_1">一 说明</h1>
+<p>这篇博文中,记录通过各种渠道收获的chrome插件,主要用于提升平时运维工作中的效率.
+大部分是转载而来.</p>
+<h1 id="_2">二 开发类插件</h1>
+<h2 id="jsonview">(一) JSONView</h2>
+<p>是一个方便查看 Json 结构的插件，展开，折叠，可以非常方便的查看接口返回数据.
+当我们调试后台API时非常有用,因为我们后台API返回的结果几乎都是json格式,chrome开启这个插件
+之后就能以更友好的方式展示后台返回的数据.</p>
+<p><img alt="WX20190829-172538.png" src="../../img/WX20190829-172538.png" /></p>
+<h2 id="postman">(二) Postman</h2>
+<p>相信开发者朋友一定知道这款插件，这是一款强大的 API &amp; HTTP 请求调试工具，它不仅可以调试简单的 HTML、CSS 以及脚本等简单的网页基本信息，这款 Chrome 插件甚至还能发送几乎所有的 HTTP 请求，可谓是 Web 开发者的一大利器。</p>
+<p><img alt="WX20190829-172600.png" src="../../img/WX20190829-172600.png" /></p>
+<h2 id="cookies">(三) Cookies</h2>
+<p>管理chrome的cookie</p>
+<p><img alt="WX20190829-173318.png" src="../../img/WX20190829-173318.png" /></p>
+<h1 id="_3">三 通用类插件</h1>
+<h2 id="_4">(一) 广告过滤</h2>
+<p>广告终结者.
+清除网页上的所有广告：浮动广告，购物广告，恶意弹窗，跟踪代码，视频广告。让你浏览网页更快更清爽。广告终结者，你唯一需要的广告插件</p>
+<p>WX20190829-172709</p>
+<p><img alt="WX20190829-172709.png" src="../../img/WX20190829-172709.png" /></p>
+<h2 id="_5">(二) 截图插件</h2>
+<p>网页截图:注释&amp;录屏.</p>
+<p>录屏，捕获整个页面或任何部分，矩形，圆形，箭头，线条和文字，模糊敏感信息，一键上传分享注释。支持PNG和链接</p>
+<p><img alt="WX20190829-172731.png" src="../../img/WX20190829-172731.png" /></p>
+<h2 id="_6">(三) 自动刷新网页</h2>
+<p>Auto Refresh</p>
+<p>Auto Refresh is the best extension to refresh on a timer</p>
+<p><img alt="WX20190829-173000.png" src="../../img/WX20190829-173000.png" /></p>
+<h2 id="_7">（四） 画流程图</h2>
+<p>draw.io 是一个著名的在线画图网站,这个插件就是该网站的一个chrome插件,方便本地直接画图.</p>
+<p><img alt="WX20190829-173055.png" src="../../img/WX20190829-173055.png" /></p>
               
             </div>
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../3_sre_tools_website/" class="btn btn-neutral float-right" title="第三篇 运维生产力工具(网站工具)">Next <span class="icon icon-circle-arrow-right"></span></a>
-      
-      
-        <a href="../1_sync_file/" class="btn btn-neutral" title="第一篇 不同主机之间的文件传输"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
@@ -231,10 +212,6 @@ python -m zipfile -l monty.zip
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../1_sync_file/" style="color: #fcfcfc;">&laquo; Previous</a></span>
-      
-      
-        <span style="margin-left: 15px"><a href="../3_sre_tools_website/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
