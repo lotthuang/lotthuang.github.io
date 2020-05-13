@@ -256,45 +256,76 @@
 </li>
 </ul>
 <h1 id="_9">四   平时应该主动提高的技术工程能力，包括但不限于以下这些</h1>
-<ul>
-<li>
-<p>服务器：熟悉Linux内核，了解Linux内部文件系统、内存与CPU调度细节，擅长Linux故障排查与性能分析。擅长各类服务的配置与排查.</p>
-</li>
-<li>
-<p>网络: 熟悉TCP/IP，对http/https协议有一定理解，擅长使用抓包工具(例如wireshark\tcpdump)分析常见的业务问题.</p>
-</li>
-<li>
-<p>数据库: 熟练使用SQL语句,常见的MySQL、MongoDB、Redis等使用层面无问题.</p>
-</li>
-<li>
-<p>程序: 擅长Shell与Python脚本的编写.能够利用Flask、Django等开发运维工具.</p>
-</li>
-<li>
-<p>运维工具：熟悉诸如open-falcon,zabbix,puppet,Ansible等运维利器的使用.</p>
-</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th align="left">技术领域</th>
+<th align="left">要求</th>
+<th align="left">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Linux kernel</td>
+<td align="left">深入理解kernel,包括掌握CPU调度、Mem子系统、Net子系统、IO子系统的细节,擅长故障排查,利用Perf工具进行性能分析和优化</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">程序: python/shell</td>
+<td align="left">精通</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">程序: c/js/html/css</td>
+<td align="left">使用层面无问题</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">利用Web框架进行运维工具开发: flask生态、 react生态</td>
+<td align="left">熟练开发</td>
+<td align="left">不仅限于flask和react,也可以Django、Tornado、Vue</td>
+</tr>
+<tr>
+<td align="left">数据库: MySQL、MongoDB、Redis</td>
+<td align="left">使用层面无问题</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">容器化: Docker、Kubernetes</td>
+<td align="left">使用层面无问题</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">网络服务: nginx、etcd、bind、kafka、haproxy、 等等</td>
+<td align="left">可随心所欲搭建,即使以前没接触过,能够照着教程、官网进行维护</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">开源运维工具使用：supervisor、 puppet、ansible、zabbix等</td>
+<td align="left">熟练使用</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">网络协议: TCP/IP协议族、http/https、路由交换、子网划分</td>
+<td align="left">深入理解其原理,拥有扎实的基础知识</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
 <h1 id="_10">五  运维工作指导性原则的汇总</h1>
-<p>1 一切运维工具要给用户这样的体验: 简单、靠谱
- 2 做运维系统时注重标准化和可视化
- 3 团队合并时可以参考这样一个原则: 数据和技能共享，运营独立
- 4 做系统功能的时候，对后端(你依赖的系统)宕机的情况，做少量缓存，提供重试机制.<br />
- 5 运维碰到的任务，就是不断的进行抽象，把一层一层的工作剥离，厘清，然后分别去实现每一层。每一层都有自己的owner和相应的用户
- 6 运维同学需要时刻熟悉当前业务架构下，各类层面可用的开源软件以及技能，例如以下是一个梳理:</p>
-<ul>
-<li>
-<p>安全方面： iptables、ipset 、各种开源软件的限制技（比如rsync里面的hosts allow ,nginx里面的allow,deny）</p>
-</li>
-<li>
-<p>稳定方面： supervisor\各种重试机制 + 各种监控技能</p>
-</li>
-<li>
-<p>高效： flask开发、python开发、批量操作工具（cssh，pssh） 配置管理工具（puppet、ansbile）</p>
-</li>
-<li>
-<p>低成本:  合理利用各种资源，包括ip资源、端口资源等等</p>
-</li>
-</ul>
-<p>7   总结是进步的阶梯，分享是快乐的源泉。运维工作中，应该常常总结，多多分享</p>
+<ol>
+<li>一切运维工具要给用户这样的体验: 简单、靠谱</li>
+<li>做运维系统时注重标准化和可视化</li>
+<li>团队合并时可以参考这样一个原则: 数据和技能共享，运营独立</li>
+<li>做系统功能的时候，对后端(你依赖的系统)宕机的情况，做少量缓存，提供重试机制.  </li>
+<li>运维碰到的任务，就是不断的进行抽象，把一层一层的工作剥离，厘清，然后分别去实现每一层。每一层都有自己的owner和相应的用户</li>
+<li>运维同学需要时刻熟悉当前业务架构下，各类层面可用的开源软件以及技能，例如以下是一个梳理:</li>
+<li>安全类： iptables、ipset 、各种开源软件的限制技（比如rsync里面的hosts allow ,nginx里面的allow,deny）</li>
+<li>稳定类： supervisor\各种重试机制 + 各种监控技能</li>
+<li>高效： flask开发、python开发、批量操作工具（cssh，pssh） 配置管理工具（puppet、ansbile）</li>
+<li>低成本:  合理利用各种资源，包括ip资源、端口资源等等</li>
+<li>总结是进步的阶梯，分享是快乐的源泉。运维工作中，应该常常总结，多多分享</li>
+</ol>
 <h1 id="_11">六  业务运维找事情做的各个方面汇总</h1>
 <ul>
 <li>
