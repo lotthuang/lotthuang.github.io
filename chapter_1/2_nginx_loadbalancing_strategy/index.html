@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>第二篇 Linux下如何观察完整连接队列的情况 - Lott's Blog</title>
+  <title>第二篇 Nginx的均衡策略 - Lott's Blog</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u7b2c\u4e8c\u7bc7 Linux\u4e0b\u5982\u4f55\u89c2\u5bdf\u5b8c\u6574\u8fde\u63a5\u961f\u5217\u7684\u60c5\u51b5";
-    var mkdocs_page_input_path = "chapter_3/2_estab_queue_monitoring.md";
+    var mkdocs_page_name = "\u7b2c\u4e8c\u7bc7 Nginx\u7684\u5747\u8861\u7b56\u7565";
+    var mkdocs_page_input_path = "chapter_1/2_nginx_loadbalancing_strategy.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -59,11 +59,30 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+    <a class="" href="../1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+    <a class="current" href="./">第二篇 Nginx的均衡策略</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">一 说明</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_2">二 负载负载均衡策略</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_3">(一) 最佳实践类</a></li>
+        
+            <li><a class="toctree-l4" href="#_4">(二) 性能优先</a></li>
+        
+            <li><a class="toctree-l4" href="#_6">(三) 会话保持类</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -89,44 +108,15 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
-                </li>
-                <li class=" current">
-                    
-    <a class="current" href="./">第二篇 Linux下如何观察完整连接队列的情况</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#socketestab-queue">一 观察某个socket的完整连接队列(ESTAB Queue)的最大值和当前值</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#listen">(一) LISTEN状态</a></li>
-        
-            <li><a class="toctree-l4" href="#listen_1">(二) 非LISTEN状态</a></li>
-        
-            <li><a class="toctree-l4" href="#_1">(三) 总结</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l3"><a href="#linux">二 观察Linux服务器是否丢掉用户请求</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#tcplistenoverflows">(一) TcpListenOverflows</a></li>
-        
-            <li><a class="toctree-l4" href="#tcplistendrops">(二) TcpListenDrops</a></li>
-        
-            <li><a class="toctree-l4" href="#_2">(三) 总结</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../../chapter_3/1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+    <a class="" href="../../chapter_3/2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
                 </li>
     </ul>
 	    </li>
@@ -191,11 +181,11 @@
     
       
         
-          <li>第三章 Linux Net子系统 &raquo;</li>
+          <li>第一章 常用软件 &raquo;</li>
         
       
     
-    <li>第二篇 Linux下如何观察完整连接队列的情况</li>
+    <li>第二篇 Nginx的均衡策略</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -205,59 +195,122 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="socketestab-queue">一 观察某个socket的完整连接队列(ESTAB Queue)的最大值和当前值</h2>
-<h3 id="listen">(一) LISTEN状态</h3>
-<p>通过ss命令，观察处于listen状态的socket，得知某个具体的socket的完整连接队列的最大长度和当前长度。</p>
-<pre><code>ss -ltnp
-</code></pre>
-
-<p>LISTEN 状态:
-<font color="#dd0000">Send-Q表示完整连接队列(ESTAB Queue)的最大值，就是之前提到过的min(backlog, somaxconn) 的值。</font><br /></p>
-<p>Recv-Q表示目前该队列中,等待应用层调用accept()连接的数量</p>
-<p><img alt="3_1_rece-q.jpeg" src="../../img/3_1_rece-q.jpeg" /></p>
-<h3 id="listen_1">(二) 非LISTEN状态</h3>
-<pre><code>ss -ntp  -4  state established
-</code></pre>
-
-<p>Recv-Q 表示网络接收队列: 表示收到的数据已经在本地接收缓冲，但是还有多少没有被进程取走，recv().</p>
-<p>Send-Q 表示网络发送队列: 对方没有收到的数据或者说没有Ack的,还是本地缓冲区.</p>
-<p><img alt="3_2_ss_eastab.jpeg" src="../../img/3_2_ss_eastab.jpeg" /></p>
-<h3 id="_1">(三) 总结</h3>
-<ol>
-<li>通过上述描述，如果一个socket（比如一个python应用监听的socket），它的Recv-Q一直等于Send-Q，那么说明该应用已经处理不过来客户端请求了。</li>
-</ol>
+                <h1 id="_1">一 说明</h1>
 <blockquote>
-<p>至今没有见到过非LISTEN状态下,Recv-Q和Send-Q非0的情况</p>
+<p>本篇博客用于梳理nginx支持的均衡策略</p>
 </blockquote>
-<h2 id="linux">二 观察Linux服务器是否丢掉用户请求</h2>
-<h3 id="tcplistenoverflows">(一) TcpListenOverflows</h3>
-<p>当应用程序已经处理不过来，并且相应的ESTAB Queue也已经满时，Linux内存中会进行相应记录，
-可以通过/proc/net/netstat文件获取。</p>
-<p>当ESTAB Queue满时，客户端新的连接不能被建立，服务端通过net.ipv4.tcp_abort_on_overflow 参数的设置，决定
-是否给客户端发送响应:</p>
-<p>当net.ipv4.tcp_abort_on_overflow = 0时，直接丢弃该ACK包，客户端的socket会向应用层返回 read timeout。</p>
-<p>当net.ipv4.tcp_abort_on_overflow = 1时，服务端会发生RST包，客户端的socket会向应用层返回connection reset by peer。</p>
-<h3 id="tcplistendrops">(二) TcpListenDrops</h3>
-<p>包含上面ESTAB Queue满的情况，也就是说当出现ListenOverflows时，它也会增加1；</p>
-<p>除此之外，当内存不够无法为新的连接分配socket相关的数据结构时，也会增加1，当然还有别的异常情况下会增加1。</p>
-<h3 id="_2">(三) 总结</h3>
-<pre><code>cat /proc/net/netstat | awk '/TcpExt/ { print $21,$22 }'
+<h1 id="_2">二 负载负载均衡策略</h1>
+<ul>
+<li>round robin(轮询)</li>
+<li>random(随机)</li>
+<li>weight(权重)</li>
+<li>fair(按响应时长,第三方模块)</li>
+<li>least_conn(最少连接数)</li>
+<li>url_hash(url的hash值)</li>
+<li>ip_hash(ip的hash值)</li>
+<li>sticky(基于cookie的负载均衡,第三方)</li>
+</ul>
+<blockquote>
+<p>这么多的策略，非常不利于记忆和选择，我们不妨将这些常见的策略归类，分而化之，方便挑选。</p>
+</blockquote>
+<h2 id="_3">(一) 最佳实践类</h2>
+<ul>
+<li>round robin(轮询)</li>
+<li>random(随机)</li>
+</ul>
+<h3 id="round-robin">round robin(轮询)配置参考</h3>
+<pre><code>#默认配置就是轮询策略
+upstream server_group {
+   server backend1.example.com;
+   server backend2.example.com;
+}
 </code></pre>
 
-<p><img alt="tcplistenoverflows" src="../../img/tcplistenoverflows.jpeg" /></p>
-<p>通过以上命令,不断观察，如果数值一直增加，说明当前系统已经出现丢弃用户请求的情况了.</p>
-<h4 id="_3">实战技巧</h4>
-<p>通过如下命令观察系统是否有丢弃用户请求的情况</p>
-<pre><code class="shell">for h in `seq 1 100`; do cat /proc/net/netstat | awk '/TcpExt/ { print $21,$22 }'  ; sleep 2 ; done
+<h3 id="random">random(随机) 配置参考</h3>
+<pre><code>upstream server_group { 
+   random; 
+   server backend1.example.com; 
+   server backend2.example.com; 
+   server backend3.example.com; 
+   server backend4.example.com;
+}
 </code></pre>
 
-<p><img alt="WX20190820-160910_1.png" src="../../img/WX20190820-160910_1.png" /></p>
-<p>通过如下命令确认是哪些应用层的进程的accept队列有溢出</p>
-<pre><code class="shell">ss -lntp  |grep -v 'Recv-Q' |awk '$2 !=0’
-
+<h2 id="_4">(二) 性能优先</h2>
+<ul>
+<li>weight(权重)</li>
+<li>fair(按响应时长,第三方模块)</li>
+<li>least_conn(最少连接数)</li>
+</ul>
+<p>让业务节点中性能更强的机器得到更多请求，这也是一个比较好的分配策略。
+什么是性能更好的机器？这个问题也有很多的维度去考量。</p>
+<ul>
+<li>从经验或硬件上分为高权重、低权重的机器。</li>
+<li>按照节点请求的响应时长来决定是多分配请求，还是少分配请求。</li>
+<li>按照保持的连接数。一般来说保持的连接数越多说明处理的任务越多，也是最繁忙的，可以将请求分配给其他机器处理。</li>
+</ul>
+<h3 id="_5">按权重第配置参考</h3>
+<pre><code>upstream server_group {
+    server backend1.example.com weight=5;
+    #默认为不配置权重为1
+    server backend2.example.com;
+}
 </code></pre>
 
-<p><img alt="WX20190820-160748_2.png" src="../../img/WX20190820-160748_2.png" /></p>
+<h3 id="fairnginxnginx-upstream-fair">响应的时长(fair)配置参考：需要在Nginx编译时加入nginx-upstream-fair模块。</h3>
+<pre><code>upstream server_group{
+   fair;
+   server backend1.example.com; 
+   server backend2.example.com; 
+   server backend3.example.com; 
+   server backend4.example.com;
+}
+</code></pre>
+
+<h3 id="least_conn">最少连接数(least_conn)配置参考</h3>
+<pre><code>upstream server_group {
+    least_conn;
+    server backend1.example.com;
+    server backend2.example.com;
+}
+</code></pre>
+
+<h2 id="_6">(三) 会话保持类</h2>
+<p>很多请求都是有状态的，上一次请求到哪个业务节点，这次还要请求到哪台机器. nginx提供了几个会话保持的技能.</p>
+<h3 id="ip_hash">ip_hash配置参考</h3>
+<pre><code>upstream server_group {
+    ip_hash;
+    server backend1.example.com;
+    server backend2.example.com;
+}
+</code></pre>
+
+<h3 id="url_hash">url_hash配置参考</h3>
+<pre><code>upstream server_group{
+   hash $request_uri consistent;
+   server backend1.example.com; 
+   server backend2.example.com; 
+   server backend3.example.com; 
+   server backend4.example.com;
+}
+</code></pre>
+
+<p>url_hash适合nginx后端挂缓存(例如varnish)这样的业务场景</p>
+<h3 id="stickycookie-nginxnginx-sticky-module">sticky(基于cookie的负载均衡)配置参考: 需要在Nginx编译时加入nginx-sticky-module模块。</h3>
+<pre><code>upstream server_group{
+   sticky;
+   server backend1.example.com; 
+   server backend2.example.com; 
+   server backend3.example.com; 
+   server backend4.example.com;
+}
+</code></pre>
+
+<p>The "sticky" command can take several arguments to control its behaviour:</p>
+<pre><code>  sticky [name=route] [domain=.foo.bar] [path=/] [expires=1h] [hash=index|md5|sha1] [no_fallback];
+</code></pre>
+
+<p>参考: https://code.google.com/p/nginx-sticky-module/wiki/Documentation</p>
               
             </div>
           </div>
@@ -265,10 +318,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../3_net_ipv4_tcp_syn_retries/" class="btn btn-neutral float-right" title="第三篇 理解net.ipv4.tcp_syn_retries设置">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../chapter_2/yunweijiazhi/" class="btn btn-neutral float-right" title="第一篇 运维的价值和目标">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../1_linux_kernel_net/" class="btn btn-neutral" title="第一篇 Linux数据包接收路径梳理和常用调优技能"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../1_make_blog/" class="btn btn-neutral" title="第一篇 利用Github Pages和mkdocs搭建个人博客"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -294,10 +347,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../1_linux_kernel_net/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../1_make_blog/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../3_net_ipv4_tcp_syn_retries/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../chapter_2/yunweijiazhi/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
