@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结 - Lott's Blog</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u7b2c\u4e00\u7bc7 VFS\u56db\u5927\u5bf9\u8c61inode\u3001dentry\u3001super_block\u3001file\u6570\u636e\u7ed3\u6784\u603b\u7ed3";
+    var mkdocs_page_input_path = "chapter_5/1_four_object_of_VFS.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Lott's Blog</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">首页</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第一章 常用软件</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第二章 运维工作总结</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第三章 Linux Net子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/5_conntrack/">第五篇 conntrack的常见应用</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第四章 Linux CPU子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第五章 Linux IO子系统</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#inode">一 inode数据结构</a></li>
+    
+
+    <li class="toctree-l3"><a href="#dentry">二 dentry</a></li>
+    
+
+    <li class="toctree-l3"><a href="#file">三 file结构体</a></li>
+    
+
+    <li class="toctree-l3"><a href="#super_block">super_block</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#super_block_1">super_block源码</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_1">五 总结一下各个结构体之间的联系</a></li>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第七章 运维工作之小技巧和工具汇总和积累</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/1_sync_file/">第一篇 不同主机之间的文件传输</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第八章 职场通用经验</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/1_xuexixinde/">第一篇 个人学习心得总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/2_bangzhuqitatongxue/">第二篇 如何帮助其他同学提升技术能力</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/3_yewuliuchengshuyu/">第三篇 业务流程术语梳理</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Lott's Blog</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>第五章 Linux IO子系统 &raquo;</li>
+        
+      
+    
+    <li>第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>超级块（super_block）、索引节点（inode）、目录结构（dentry） 和 文件结构（file）这几个结构体组成了VFS的核心概念. </p>
+<h1 id="inode">一 inode数据结构</h1>
+<ul>
+<li>磁盘上真正的一个文件，在内核中是使用一个inode数据结构表示.</li>
+<li>struct inode 在源码中的位置: include/linux/fs.h:788</li>
+<li>struct inode 整体面貌如下:</li>
+</ul>
+<pre><code>struct inode {
+    struct hlist_node    i_hash;
+    struct list_head    i_list;        /* backing dev IO list */
+    struct list_head    i_sb_list;
+    struct list_head    i_dentry;
+    unsigned long        i_ino;
+    atomic_t        i_count; 
+    unsigned int        i_nlink;
+    uid_t            i_uid;
+    gid_t            i_gid;
+    dev_t            i_rdev;
+    u64            i_version;
+    loff_t            i_size;
+#ifdef __NEED_I_SIZE_ORDERED
+    seqcount_t        i_size_seqcount;
+#endif
+    struct timespec        i_atime;
+    struct timespec        i_mtime;
+    struct timespec        i_ctime;
+    blkcnt_t        i_blocks;
+    unsigned int        i_blkbits;
+    unsigned short          i_bytes;
+    umode_t            i_mode;
+    spinlock_t        i_lock;    /* i_blocks, i_bytes, maybe i_size */
+    struct mutex        i_mutex;
+    struct rw_semaphore    i_alloc_sem;
+    const struct inode_operations    *i_op;
+    const struct file_operations    *i_fop;    /* former -&gt;i_op-&gt;default_file_ops */
+    struct super_block    *i_sb;
+    struct file_lock    *i_flock;
+    struct address_space    *i_mapping;
+    struct address_space    i_data;
+#ifdef CONFIG_QUOTA
+    struct dquot        *i_dquot[MAXQUOTAS];
+#endif
+    struct list_head    i_devices;
+    union {
+        struct pipe_inode_info    *i_pipe;
+        struct block_device    *i_bdev;
+        struct cdev        *i_cdev;
+    };
+
+    __u32            i_generation;
+
+#ifdef CONFIG_FSNOTIFY
+    __u32            i_fsnotify_mask; /* all events this inode cares about */
+    struct hlist_head    i_fsnotify_mark_entries; /* fsnotify mark entries */
+#endif
+
+#ifdef CONFIG_INOTIFY
+    struct list_head    inotify_watches; /* watches on this inode */
+    struct mutex        inotify_mutex;    /* protects the watches list */
+#endif
+
+    unsigned long        i_state;
+    unsigned long        dirtied_when;    /* jiffies of first dirtying */
+
+    unsigned int        i_flags;
+
+    atomic_t        i_writecount;
+#ifdef CONFIG_SECURITY
+    void            *i_security;
+#endif
+#ifdef CONFIG_FS_POSIX_ACL
+    struct posix_acl    *i_acl;
+    struct posix_acl    *i_default_acl;
+#endif
+    void            *i_private; /* fs or device private pointer */
+};
+</code></pre>
+
+<ul>
+<li>一些重要的成员含义</li>
+</ul>
+<pre><code> unsigned long        i_ino; /*inode号码*/
+ uid_t            i_uid; /*用户*/
+ gid_t            i_gid; /*用户组*/
+ struct timespec        i_atime; /*文件的access time*/
+ struct timespec        i_mtime; /*文件的motify time*/
+ struct timespec        i_ctime; /*文件的属性改变的time */
+ const struct inode_operations    *i_op; /*指向和super_block相关的操作，例如删除一个inode,肯定是要更新文件系统的super_block的*/
+ const struct file_operations    *i_fop; /*指向该文件支持的操作，例如往该文件里写数据,是真正的操作磁盘写数据*/
+</code></pre>
+
+<h1 id="dentry">二 dentry</h1>
+<p>1 目录项的主要作用是方便查找文件。一个路径的各个组成部分，不管是目录还是普通的文件，都是一个目录项对象。如，在路径 /home/h42/example.c 中，目录 /, home/, h42/ 和文件 example.c 都对应一个目录项对象。
+2 目录项里有一个 d_inode成员，指向真正的inode</p>
+<p>dentry的源码 ,在  include/linux/dcache.h  89行</p>
+<pre><code>struct dentry {
+    atomic_t d_count;
+    unsigned int d_flags;       /* protected by d_lock */
+    spinlock_t d_lock;      /* per dentry lock */
+    int d_mounted;
+    struct inode *d_inode;      /* Where the name belongs to - NULL is
+                     * negative */
+    /*
+     * The next three fields are touched by __d_lookup.  Place them here
+     * so they all fit in a cache line.
+     */
+    struct hlist_node d_hash;   /* lookup hash list */
+    struct dentry *d_parent;    /* parent directory */
+    struct qstr d_name;
+
+    struct list_head d_lru;     /* LRU list */
+    /*
+     * d_child and d_rcu can share memory
+     */
+    union {
+        struct list_head d_child;   /* child of parent list */
+        struct rcu_head d_rcu;
+    } d_u;
+    struct list_head d_subdirs; /* our children */
+    struct list_head d_alias;   /* inode alias list */
+    unsigned long d_time;       /* used by d_revalidate */
+    const struct dentry_operations *d_op;
+    struct super_block *d_sb;   /* The root of the dentry tree */
+    void *d_fsdata;         /* fs-specific data */
+
+    unsigned char d_iname[DNAME_INLINE_LEN_MIN];    /* small names */
+};
+</code></pre>
+
+<h1 id="file">三 file结构体</h1>
+<ul>
+<li>每当进程打开一个文件,内核返回的是一个file结构体，用于管理被打开的文件</li>
+<li>文件结构用于描述一个已打开的文件，其包含文件当前的读写偏移量，文件打开模式和文件操作函数列表等</li>
+<li>进程task_struct 结构体中，有files成员指向files_struct (文件描述符表),files_struct里有fd_array指向一个个file结构体.file结构体里有文件支持的操作函数，例如读、写、文件偏移等. 这些操作函数可以真正的改变文件的内容.</li>
+<li>file结构体里还含有dentry的指针，因此通过file结构体也可以找到具体的inode.</li>
+</ul>
+<pre><code>struct file {
+    /*
+     * fu_list becomes invalid after file_free is called and queued via
+     * fu_rcuhead for RCU freeing
+     */
+    union {
+        struct list_head    fu_list;
+        struct rcu_head     fu_rcuhead;
+    } f_u;
+    struct path     f_path;
+#define f_dentry    f_path.dentry
+#define f_vfsmnt    f_path.mnt
+    const struct file_operations    *f_op;
+    spinlock_t      f_lock;  /* f_ep_links, f_flags, no IRQ */
+    atomic_long_t       f_count;
+    unsigned int        f_flags;
+    fmode_t         f_mode;
+    loff_t          f_pos;
+    struct fown_struct  f_owner;
+    const struct cred   *f_cred;
+    struct file_ra_state    f_ra;
+
+    u64         f_version;
+#ifdef CONFIG_SECURITY
+    void            *f_security;
+#endif
+    /* needed for tty driver, and maybe others */
+    void            *private_data;
+
+#ifdef CONFIG_EPOLL
+    /* Used by fs/eventpoll.c to link all the hooks to this file */
+    struct list_head    f_ep_links;
+#endif /* #ifdef CONFIG_EPOLL */
+    struct address_space    *f_mapping;
+#ifdef CONFIG_DEBUG_WRITECOUNT
+    unsigned long f_mnt_write_state;
+#endif
+#ifndef __GENKSYMS__
+    struct mutex        f_pos_lock;
+#endif
+};
+
+
+
+struct file {}结构体内，有一个struct path成员，该成员的源码如下:
+struct path {
+    struct vfsmount *mnt;
+    struct dentry *dentry;
+};
+</code></pre>
+
+<p>file结构体和 inode的对应关系:</p>
+<ul>
+<li>
+<p>多个file结构体可以指向同一个inode，例如进程A和进程B都打开了同一个文件/home/h42/example.c ,内核会产生2个file结构体</p>
+</li>
+<li>
+<p>进程的FD和file结构体的对应关系:</p>
+<ul>
+<li>
+<ul>
+<li>一开始是一对一，也可以有多对一的情况</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>例如进程A，通过fork()系统调用产生了子进程，那么子进程的FD table默认是复制了父进程的,这个时候进程的FD就对应同一个file结构体了.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="super_block">super_block</h1>
+<p>Linux支持多文件系统，所以在内核中必须通过一个数据结构来描述具体文件系统的信息和相关的操作等，VFS 定义了一个名为 超级块（super_block） 的数据结构来描述具体的文件系统，也就是说内核是通过超级块来认知具体的文件系统的，一个具体的文件系统会对应一个超级块结构</p>
+<p>下面我们介绍一下一些比较重要的成员：
+- s_dev：用于保存设备的设备号
+- s_blocksize：用于保存文件系统的数据块大小（文件系统是以数据块为单位的）
+- s_type：文件系统的类型（提供了读取设备中文件系统超级块的方法）
+- s_op：超级块相关的操作列表
+- s_root：挂载的根目录</p>
+<p>inode数据结构中，有个const struct inode_operations    <em>i_op ，用来指向inode本身属性的一些修改，
+struct super_block    </em>i_sb; 则指向该inode对应的super_block.
+因此例如删除一个真正的文件(inode)，必须更新其对应super_block信息.</p>
+<h2 id="super_block_1">super_block源码</h2>
+<p>super block 源代码位置</p>
+<p>include/linux/fs.h:1424</p>
+<pre><code>struct super_block {
+    struct list_head    s_list;        /* Keep this first */
+    dev_t            s_dev;        /* search index; _not_ kdev_t */
+    unsigned long        s_blocksize;
+    unsigned char        s_blocksize_bits;
+    unsigned char        s_dirt;
+    loff_t            s_maxbytes;    /* Max file size */
+    struct file_system_type    *s_type;
+    const struct super_operations    *s_op;
+    const struct dquot_operations    *dq_op;
+    const struct quotactl_ops    *s_qcop;
+    const struct export_operations *s_export_op;
+    unsigned long        s_flags;
+    unsigned long        s_magic;
+    struct dentry        *s_root;
+    struct rw_semaphore    s_umount;
+    struct mutex        s_lock;
+    int            s_count;
+    int            s_need_sync;
+    atomic_t        s_active;
+#ifdef CONFIG_SECURITY
+    void                    *s_security;
+#endif
+    struct xattr_handler    **s_xattr;
+
+    struct list_head    s_inodes;    /* all inodes */
+    struct hlist_head    s_anon;        /* anonymous dentries for (nfs) exporting */
+    struct list_head    s_files;
+    /* s_dentry_lru and s_nr_dentry_unused are protected by dcache_lock */
+    struct list_head    s_dentry_lru;    /* unused dentry lru */
+    int            s_nr_dentry_unused;    /* # of dentry on lru */
+
+    struct block_device    *s_bdev;
+    struct backing_dev_info *s_bdi;
+    struct mtd_info        *s_mtd;
+    struct list_head    s_instances;
+    struct quota_info    s_dquot;    /* Diskquota specific options */
+
+    int            s_frozen;
+    wait_queue_head_t    s_wait_unfrozen;
+
+    char s_id[32];                /* Informational name */
+
+    void             *s_fs_info;    /* Filesystem private info */
+    fmode_t            s_mode;
+
+    /*
+     * The next field is for VFS *only*. No filesystems have any business
+     * even looking at it. You had been warned.
+     */
+    struct mutex s_vfs_rename_mutex;    /* Kludge */
+
+    /* Granularity of c/m/atime in ns.
+       Cannot be worse than a second */
+    u32           s_time_gran;
+
+    /*
+     * Filesystem subtype.  If non-empty the filesystem type field
+     * in /proc/mounts will be &quot;type.subtype&quot;
+     */
+    char *s_subtype;
+
+    /*
+     * Saved mount options for lazy filesystems using
+     * generic_show_options()
+     */
+    char *s_options;
+#ifndef __GENKSYMS__
+    struct sb_writers    s_writers;
+    atomic_t        s_fsnotify_marks;
+    wait_queue_head_t    s_fsnotify_marks_wq;
+#endif
+};
+</code></pre>
+
+<h1 id="_1">五 总结一下各个结构体之间的联系</h1>
+<p><img alt="请在这里输入图片描述" src="../../img/20200416120056.jpg" /></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../chapter_7/1_sync_file/" class="btn btn-neutral float-right" title="第一篇 不同主机之间的文件传输">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../chapter_4/2_pid_max/" class="btn btn-neutral" title="第二篇 kernel源码中pid的最大值"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../chapter_4/2_pid_max/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../chapter_7/1_sync_file/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>

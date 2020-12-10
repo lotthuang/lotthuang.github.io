@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>第五篇 conntrack的常见应用 - Lott's Blog</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u7b2c\u4e94\u7bc7 conntrack\u7684\u5e38\u89c1\u5e94\u7528";
+    var mkdocs_page_input_path = "chapter_3/5_conntrack.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Lott's Blog</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">首页</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第一章 常用软件</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第二章 运维工作总结</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第三章 Linux Net子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">第五篇 conntrack的常见应用</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">一 基础知识</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_2">(一) 模块介绍</a></li>
+        
+            <li><a class="toctree-l4" href="#_3">(二) 内核相关参数</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_4">二 常用操作</a></li>
+    
+
+    <li class="toctree-l3"><a href="#nf_conntrack_max-hashsize">三 不同内存情况下 ，nf_conntrack_max 和 hashsize的设置建议</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_5">四 超大连接数场景,直接把一些特定端口的连接，直接不追踪</a></li>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第四章 Linux CPU子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第五章 Linux IO子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_5/1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第七章 运维工作之小技巧和工具汇总和积累</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/1_sync_file/">第一篇 不同主机之间的文件传输</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第八章 职场通用经验</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/1_xuexixinde/">第一篇 个人学习心得总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/2_bangzhuqitatongxue/">第二篇 如何帮助其他同学提升技术能力</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/3_yewuliuchengshuyu/">第三篇 业务流程术语梳理</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Lott's Blog</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>第三章 Linux Net子系统 &raquo;</li>
+        
+      
+    
+    <li>第五篇 conntrack的常见应用</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="_1">一 基础知识</h1>
+<h2 id="_2">(一) 模块介绍</h2>
+<p>nf_conntrack模块在kernel 2.6.15（2006-01-03发布） 被引入，支持ipv4和ipv6，取代只支持ipv4的ip_connktrack，用于跟踪连接的状态，供其他模块使用。</p>
+<p>最常见的使用场景是 iptables 的 nat 和 state 模块：</p>
+<p>nat 根据转发规则修改IP包的源/目标地址，靠nf_conntrack的记录才能让返回的包能路由到发请求的机器。
+state 直接用 nf_conntrack 记录的连接状态（NEW/ESTABLISHED/RELATED/INVALID）来匹配防火墙过滤规则。</p>
+<p>iptables 的 nat 通过规则来修改目的/源地址,但光修改地址不行,我们还需要能让回来的包能路由到最初的来源主机。这就需要借助 nf_conntrack 来找到原来那个连接的记录才行。而 state 模块则是直接使用 nf_conntrack 里记录的连接的状态来匹配用户定义的相关规则。例如下面这条 INPUT 规则用于放行 80 端口上的状态为 NEW 的连接上的包。</p>
+<p>iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT。</p>
+<p>iptables中的状态检测功能是由state选项来实现iptable的。对这个选项，在iptables的手册页中有以下描述：</p>
+<p>state</p>
+<p>这个模块能够跟踪分组的连接状态(即状态检测)。</p>
+<p>格式：--state XXXXX</p>
+<p>这里，state是一个用逗号分割的列表，表示要匹配的连接状态。</p>
+<p>在iptables中有四种状态：NEW，ESTABLISHED，RELATED，INVALID。</p>
+<p>NEW，表示这个分组需要发起一个连接，或者说，分组对应的连接在两个方向上都没有进行过分组传输。NEW说明 这个包是我们看到的第一个包。意思就是，这是conntrack模块看到的某个连接第一个包，它即将被匹配了。比如，我们看到一个SYN包，是我们所留意 的连接的第一个包，就要匹配它。第一个包也可能不是SYN包，但它仍会被认为是NEW状态。比如一个特意发出的探测包，可能只有RST位，但仍然是 NEW。</p>
+<p>ESTABLISHED，表示分组对应的连接已经进行了双向的分组传输，也就是说连接已经建立，而且会继续匹配 这个连接的包。处于ESTABLISHED状态的连接是非常容易理解的。只要发送并接到应答，连接就是ESTABLISHED的了。一个连接要从NEW变 为ESTABLISHED，只需要接到应答包即可，不管这个包是发往防火墙的，还是要由防火墙转发的。ICMP的错误和重定向等信息包也被看作是 ESTABLISHED，只要它们是我们所发出的信息的应答。</p>
+<p>RELATED，表示分组要发起一个新的连接，但是这个连接和一个现有的连接有关，例如：FTP的数据传输连接 和控制连接之间就是RELATED关系。RELATED是个比较麻烦的状态。当一个连接和某个已处于ESTABLISHED状态的连接有关系时，就被认为 是RELATED的了。换句话说，一个连接要想是RELATED的，首先要有一个ESTABLISHED的连接。这个ESTABLISHED连接再产生一 个主连接之外的连接，这个新的连接就是RELATED的了，当然前提是conntrack模块要能理解RELATED。ftp是个很好的例子，FTP- data连接就是和FTP-control有RELATED的。还有其他的例子，</p>
+<p>INVAILD，表示分组对应的连接是未知的，说明数据包不能被识别属于哪个连接或没有任何状态。有几个原因可以产生这种情况，比如，内存溢出，收到不知属于哪个连接的ICMP错误信息。一般地，我们DROP这个状态的任何东西。</p>
+<p>并不是所有Linux发行版会启用nf_conntrack模块</p>
+<h2 id="_3">(二) 内核相关参数</h2>
+<pre><code>net.netfilter.nf_conntrack_max=6000000【600w，原值：100w】
+net.netfilter.nf_conntrack_buckets=1307648【不变】
+
+# timeout值不变
+net.netfilter.nf_conntrack_tcp_timeout_close = 10
+net.netfilter.nf_conntrack_tcp_timeout_close_wait = 60
+net.netfilter.nf_conntrack_tcp_timeout_established = 432000
+net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 120
+net.netfilter.nf_conntrack_tcp_timeout_last_ack = 30
+net.netfilter.nf_conntrack_tcp_timeout_max_retrans = 300
+net.netfilter.nf_conntrack_tcp_timeout_syn_recv = 60
+net.netfilter.nf_conntrack_tcp_timeout_syn_sent = 120
+net.netfilter.nf_conntrack_tcp_timeout_time_wait = 120
+net.netfilter.nf_conntrack_tcp_timeout_unacknowledged = 300
+</code></pre>
+
+<p>官方说明: https://www.kernel.org/doc/Documentation/networking/nf_conntrack-sysctl.txt</p>
+<h1 id="_4">二 常用操作</h1>
+<pre><code>查看nf_conntrack表当前连接数    
+cat /proc/sys/net/netfilter/nf_conntrack_count       
+
+查看nf_conntrack表最大连接数    
+cat /proc/sys/net/netfilter/nf_conntrack_max    
+
+通过dmesg可以查看nf_conntrack的状况：
+dmesg |grep nf_conntrack
+
+# dmesg |grep nf_conntrack
+[   44.139084] nf_conntrack version 0.5.0 (65536 buckets, 262144 max)
+表示内核启动时，bucket数量为65536，conntrack的最大连接数为262144
+
+
+查看存储conntrack条目的哈希表大小,此为只读文件
+cat /proc/sys/net/netfilter/nf_conntrack_buckets
+
+查看nf_conntrack的TCP连接记录时间
+cat /proc/sys/net/netfilter/nf_conntrack_tcp_timeout_established
+
+通过内核参数查看命令，查看所有参数配置
+sysctl -a | grep nf_conntrack
+
+通过conntrack命令行工具查看conntrack的内容
+yum install -y conntrack  / apt-get install -y conntrack
+conntrack -L  
+</code></pre>
+
+<h1 id="nf_conntrack_max-hashsize">三 不同内存情况下 ，nf_conntrack_max 和 hashsize的设置建议</h1>
+<pre><code>可以增大 conntrack 的条目(sessions, connection tracking entries) CONNTRACK_MAX 或者增加存储 conntrack 条目哈希表的大小 HASHSIZE
+默认情况下，CONNTRACK_MAX 和 HASHSIZE 会根据系统内存大小计算出一个比较合理的值：
+对于 CONNTRACK_MAX，其计算公式：
+CONNTRACK_MAX = RAMSIZE (in bytes) / 16384 / (ARCH / 32)
+比如一个 64 位 48G 的机器可以同时处理 48*1024^3/16384/2 = 1572864 条 netfilter 连接。对于大于 1G 内存的系统，默认的 CONNTRACK_MAX 是 65535。
+
+对于 HASHSIZE，默认的有这样的转换关系：
+CONNTRACK_MAX = HASHSIZE * 8
+这表示每个链接列表里面平均有 8 个 conntrack 条目。其真正的计算公式如下：
+HASHSIZE = CONNTRACK_MAX / 8 = RAMSIZE (in bytes) / 131072 / (ARCH / 32)
+比如一个 64 位 48G 的机器可以存储 48*1024^3/131072/2 = 196608 的buckets(连接列表)。对于大于 1G 内存的系统，默认的 HASHSIZE 是 8192。
+
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>机器内存</th>
+<th>nf_conntrack_max上限</th>
+<th>nf_conntrack_max和HASHSIZE比例</th>
+<th>线上设置</th>
+<th>max_open_files</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>128G</td>
+<td>4194304</td>
+<td>4:1</td>
+<td>2621440</td>
+<td>100万</td>
+</tr>
+</tbody>
+</table>
+<h1 id="_5">四 超大连接数场景,直接把一些特定端口的连接，直接不追踪</h1>
+<p>如果某一端口或者某些端口，有超大量的连接，那么可以修改raw表 ，不进行连接追踪</p>
+<pre><code>*filter
+iptables -t filter -A INPUT -m state --state RELATED,ESTABLISHED, UNTRACKED -j ACCEPT
+*raw
+iptables -t raw -A PREROUTING -p tcp -m set --match-set ${project_port} dst -j NOTRACK
+iptables -t raw -A OUTPUT -p tcp -m set --match-set ${project_port} src -j NOTRACK
+</code></pre>
+
+<p>或者 </p>
+<pre><code>iptables -A INPUT -m state --state RELATED,ESTABLISHED,UNTRACKED -j ACCEPT
+iptables -t raw -A PREROUTING -p tcp -m multiport --dports 80,443 -j NOTRACK
+iptables -t raw -A OUTPUT -p tcp -m multiport --sports 80,443 -j NOTRACK
+</code></pre>
+
+<p>参考: </p>
+<ul>
+<li>https://clodfisher.github.io/2018/09/nf_conntrack/</li>
+<li>https://testerhome.com/topics/7509</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../chapter_4/1_process_ulimit/" class="btn btn-neutral float-right" title="第一篇 进程Max open files的设置">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../4_linux_kernel_net_v2/" class="btn btn-neutral" title="第四篇 Linux网络数据包的揭秘以及常见的调优方式总结"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../4_linux_kernel_net_v2/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../chapter_4/1_process_ulimit/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>
