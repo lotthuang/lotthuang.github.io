@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>第一篇 进程Max open files的设置 - Lott's Blog</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u7b2c\u4e00\u7bc7 \u8fdb\u7a0bMax open files\u7684\u8bbe\u7f6e";
+    var mkdocs_page_input_path = "chapter_4/1_process_ulimit.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Lott's Blog</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">首页</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第一章 常用软件</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第二章 运维工作总结</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第三章 Linux Net子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第四章 Linux CPU子系统</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">第一篇 进程Max open files的设置</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#max-open-files">一个进程Max open files的来源</a></li>
+    
+
+    <li class="toctree-l3"><a href="#initinitrlimits">重点来了，所有进程都是init进程的后代，那么init进程的RLIMITS是在哪里定义的呢？</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#relimits">一 内核源码中RELIMITS的默认设置</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_1">验证</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#26centos6">一 使用2.6系列内核的centos6</a></li>
+        
+            <li><a class="toctree-l4" href="#316debian8">二 使用3.16内核的debian8</a></li>
+        
+            <li><a class="toctree-l4" href="#systemd10244096">三 使用systemd的系统上，却不是1024和4096</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#systemdrlimitsetcsystemdsystemconf">当然，systemd生成的子进程，它默认的RLIMITS也不是继承自己的设置，而是读取配置文件/etc/systemd/system.conf里相关设置</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_2">总结</a></li>
+    
+
+    <li class="toctree-l3"><a href="#rlimit">补充，如何在线修改线上服务的rlimit（不重启应用）</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#prlimit">一 使用prlimit工具</a></li>
+        
+            <li><a class="toctree-l4" href="#python-resource">二 python + resource模块</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第七章 运维工作之小技巧和工具汇总和积累</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/1_sync_file/">第一篇 不同主机之间的文件传输</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第八章 职场通用经验</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/1_xuexixinde/">第一篇 个人学习心得总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/2_bangzhuqitatongxue/">第二篇 如何帮助其他同学提升技术能力</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/3_yewuliuchengshuyu/">第三篇 业务流程术语梳理</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Lott's Blog</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>第四章 Linux CPU子系统 &raquo;</li>
+        
+      
+    
+    <li>第一篇 进程Max open files的设置</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="max-open-files">一个进程Max open files的来源</h1>
+<ul>
+<li>默认情况下他的ulimit相关设置继承自他的父进程，所以他的Max open files也继承自父进程</li>
+</ul>
+<p><img alt="请在这里输入图片描述" src="../../img/20191104120622.png" /></p>
+<ul>
+<li>触发过PAM机制(使用了pam_limits.so)而产生的进程，以及他们的子进程，（比如su,sudo,login等等程序产生的子进程）还会受到/etc/security/limits.* 下相关的设置，这个大家都懂</li>
+</ul>
+<h1 id="initinitrlimits">重点来了，所有进程都是init进程的后代，那么init进程的RLIMITS是在哪里定义的呢？</h1>
+<p>继续以Max open files为例子，进行探索</p>
+<h2 id="relimits">一 内核源码中RELIMITS的默认设置</h2>
+<pre><code>./linux-3.16.51/include/asm-generic/resource.h
+</code></pre>
+
+<p><img alt="请在这里输入图片描述" src="../../img/20191104120551.png" /></p>
+<p>左边的是soft limit，右边的是hard limit，
+其中</p>
+<pre><code>[RLIMIT_NOFILE]     = {   INR_OPEN_CUR,   INR_OPEN_MAX },
+</code></pre>
+
+<p>INT_OPEN_CUR,INT_OPEN_MAX定义在哪里呢？</p>
+<pre><code>./linux-3.16.51/include/uapi/linux/fs.h
+</code></pre>
+
+<p><img alt="请在这里输入图片描述" src="../../img/20191104095941.png" /></p>
+<p>所以init进程一开始的默认值，就是1024和4096。</p>
+<h1 id="_1">验证</h1>
+<h2 id="26centos6">一 使用2.6系列内核的centos6</h2>
+<p><img alt="请在这里输入图片描述" src="../../img/20191104100638.png" /></p>
+<h2 id="316debian8">二 使用3.16内核的debian8</h2>
+<p><img alt="请在这里输入图片描述" src="../../img/20191104100835.png" /></p>
+<h2 id="systemd10244096">三 使用systemd的系统上，却不是1024和4096</h2>
+<p><img alt="请在这里输入图片描述" src="../../img/20191104114056.png" /></p>
+<p>另外，<span style="color:#FF0000">每个进程可以通过系统调用setrlimit设置自己的RLIMTS，也可以通过getrlimit系统调用查看自己的RLIMITS.其中root用户可以调大自己的RLIMITS，非root用户只能调小。systemd进程的用户是root，可以通过setrlimit调用，提高自己的RLIMITS。</span></p>
+<p>猜想： 应该是systemd进程自己进行了setrlimit调用。于是查看systemd的源代码：</p>
+<p>1 在src/core/main.c 1162行，设置自己的最大fd
+<img alt="请在这里输入图片描述" src="../../img/20191104113054.png" /></p>
+<p>2 再看下read_nr_open函数的定义：
+在 src/basic/fd-util.c 956行</p>
+<p><img alt="请在这里输入图片描述" src="../../img/20191104113223.png" /></p>
+<p>读取kernel允许的单进程最大的fd，如果读取失败，默认返回1024*1024</p>
+<pre><code>r = read_one_line_file(&quot;/proc/sys/fs/nr_open&quot;, &amp;nr_open);
+</code></pre>
+
+<p>我们都知道，linux上单进程能打开的最大文件数取决于/proc/sys/fs/nr_open的设置。</p>
+<h1 id="systemdrlimitsetcsystemdsystemconf">当然，systemd生成的子进程，它默认的RLIMITS也不是继承自己的设置，而是读取配置文件/etc/systemd/system.conf里相关设置</h1>
+<p><img alt="请在这里输入图片描述" src="../../img/20191104114336.png" /></p>
+<h1 id="_2">总结</h1>
+<ul>
+<li>一个进程的Max open files默认继承自他的父进程</li>
+<li>使用了pam_limits.so而产生的子进程，会受到/etc/security/limits.*配置的影响. 
+ <span style="color:#FF0000">而我们线上的sshd服务，默认是忽略PAM设置的，可以查看配置文件</span>
+ <img alt="请在这里输入图片描述" src="../../img/20191111191810.png" />
+导致由sshd产生的子进程，默认都继承了sshd进程的ulimit设置</li>
+<li>进程可以通过setrlimit系统调用进行调整、通过getrlimit进行查看自己的RLIMITS。shell的ulimit命令，其实底层也是调用setrlimit和getrlimit</li>
+<li>老版本的init进程（SysVinit和Upstart），是采取kernel默认给的RLIMITS设置</li>
+<li>新版本的init进程，也就是systemd，是自己读取了/proc/sys/fs/nr_open的设置</li>
+</ul>
+<h1 id="rlimit">补充，如何在线修改线上服务的rlimit（不重启应用）</h1>
+<p>本质能力： root用户+prlimit()系统调用
+其中，prlimit是一个用户空间工具，可以使用prilimit()系统调用</p>
+<h2 id="prlimit">一 使用prlimit工具</h2>
+<pre><code>#使用prlimit命令修改core文件大小限制
+root@VM-131-5-ubuntu:/etc/security# prlimit -p 6034 --core=unlimited: 
+
+#再次查看该nginx进程的core文件大小限制
+root@VM-131-5-ubuntu:/etc/security# cat /proc/6034/limits  |grep core
+Max core file size        unlimited            unlimited            bytes
+
+
+prlimit -p 26281  --nofile=1000000
+</code></pre>
+
+<h2 id="python-resource">二 python + resource模块</h2>
+<pre><code>#利用python3 resource模块修改core文件大小限制
+root@VM-131-5-ubuntu:/etc/security# python3
+Python 3.4.3 (default, Nov 12 2018, 22:25:49) 
+[GCC 4.8.4] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import resource
+&gt;&gt;&gt; resource.prlimit(16436,resource.RLIMIT_CORE,(-1,-1))   
+(0, -1)
+&gt;&gt;&gt; exit()
+
+#再次查看该nginx进程的core文件大小限制
+root@VM-131-5-ubuntu:/etc/security# cat /proc/16436/limits  |grep core
+Max core file size        unlimited            unlimited            bytes 
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../chapter_7/1_sync_file/" class="btn btn-neutral float-right" title="第一篇 不同主机之间的文件传输">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../chapter_3/3_net_ipv4_tcp_syn_retries/" class="btn btn-neutral" title="第三篇 理解net.ipv4.tcp_syn_retries设置"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../chapter_3/3_net_ipv4_tcp_syn_retries/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../chapter_7/1_sync_file/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>
