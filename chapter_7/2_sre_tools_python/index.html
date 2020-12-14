@@ -155,6 +155,12 @@
     <li class="toctree-l3"><a href="#pythonzip">二 使用python解压缩和压缩zip包</a></li>
     
 
+    <li class="toctree-l3"><a href="#python">三 使用python脚本占用指定大小的内存</a></li>
+    
+
+    <li class="toctree-l3"><a href="#pythoncpu">四 使用python脚本造成高CPU利用率</a></li>
+    
+
     </ul>
                 </li>
                 <li class="">
@@ -229,7 +235,7 @@
 <p>使用json.tool,使得显示更加友好:</p>
 <p><img alt="7_1.png" src="../../img/7_1.png" /></p>
 <blockquote>
-<p>文件内容复杂的时候,效果越好.</p>
+<p>文件内容复杂的时候,效果更好.</p>
 </blockquote>
 <h1 id="pythonzip">二 使用python解压缩和压缩zip包</h1>
 <p>使用zipfile模块提供了命令行接口。读者以后可以在Linux下，使用Python命令创建和解压zip格式的压缩包。zipfile模块提供的命令行接口包含以下几个选项：</p>
@@ -252,6 +258,159 @@
 python -m zipfile -e monty.zip target-dir/
 python -m zipfile -l monty.zip
 </code></pre>
+
+<h1 id="python">三 使用python脚本占用指定大小的内存</h1>
+<pre><code>#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import sys
+import re
+import time
+
+def print_help():
+  print 'Usage: '
+  print ' python mem.py 100MB'
+  print ' python mem.py 1GB'
+
+if __name__ == &quot;__main__&quot;:
+  if len(sys.argv) == 2:
+    pattern = re.compile('^(\d*)([M|G]B)$')
+    match = pattern.match(sys.argv[1].upper())
+    if match:
+      num = int(match.group(1))
+      unit = match.group(2)
+      if unit == 'MB':
+        s = ' ' * (num * 1024 * 1024)
+      else:
+        s = ' ' * (num * 1024 * 1024 * 1024)
+
+      time.sleep(40000)
+    else:
+      print_help()
+  else:
+    print_help()
+</code></pre>
+
+<blockquote>
+<p>把上面的脚本保存为mem.py, python mem.py 100MB 即可申请100MB内存</p>
+</blockquote>
+<h1 id="pythoncpu">四 使用python脚本造成高CPU利用率</h1>
+<pre><code># coding:utf-8
+&quot;&quot;&quot;
+runing.py -c 2 -t 0.01 -m 10
+-c cpu核数，不加-c参数为最大核数
+-t cpu运算频率时间，间隔，越小占用越高
+-m 内存占用，10MB
+&quot;&quot;&quot;
+import sys
+import time
+from time import clock
+import argparse
+from multiprocessing import Process
+from multiprocessing import cpu_count
+import math
+# import tempfile
+
+# # 屏蔽 Traceback信息
+# sys.stderr=tempfile.TemporaryFile()
+
+
+def exec_func(bt):
+
+    while True:
+        for i in range(0, 9600000):
+            pass
+        time.sleep(bt)
+
+
+
+if __name__ == &quot;__main__&quot;:
+
+    parse = argparse.ArgumentParser(description='runing')
+
+    parse.add_argument(
+        &quot;-c&quot;,
+        &quot;--count&quot;,
+        default= cpu_count(),
+        help='cpu count'
+        )
+
+    parse.add_argument(
+        &quot;-t&quot;,
+        &quot;--time&quot;,
+        default= 0.01,
+        help='cpu time'
+        )
+    parse.add_argument(
+        &quot;-m&quot;,
+        &quot;--memory&quot;,
+        default= 10,
+        help='memory'
+        )
+
+
+    args = parse.parse_args()
+
+    cpu_logical_count = int(args.count)
+
+    cpu_sleep_time = args.time
+
+    memory_used_mb = int(args.memory)
+
+    try:
+        cpu_sleep_time = int(args.time)
+    except ValueError:
+        try:
+            cpu_sleep_time = float(args.time)
+        except ValueError as ex:
+            raise ValueError(ex)
+
+    _doc = &quot;&quot;&quot;
+            runing.py -c 2 -t 0.01 -m 1000
+            -c 指定cpu核数，不加-c参数默认为当前cpu最大核数
+            -t cpu运算频率时间，间隔，越小占用越高
+            -m 内存占用，1000MB
+
+            CPU使用率需要手动增加减少-t参数来达到，预期使用率。
+           &quot;&quot;&quot;
+    print(&quot;\n====================使用说明=========================&quot;)
+    print(&quot;{}&quot;.format(_doc))
+    print(&quot;\n====================================================&quot;)
+    print('\n当前占用CPU核数:{}'.format(cpu_logical_count))
+    print('\n内存预计占用:{}MB'.format(memory_used_mb))
+    print('\n资源浪费中......')
+
+    try:
+        # 内存占用
+        s = ' ' * (memory_used_mb * 1024 * 1024)
+    except MemoryError:
+        print(&quot;剩余内存不足，内存有溢出......&quot;)
+
+    try:
+
+        p = Process(target=exec_func, args=(&quot;bt&quot;,))
+
+        ps_list = []
+
+        for i in range(0, cpu_logical_count):
+            ps_list.append(Process(target=exec_func, args=(cpu_sleep_time,)))
+
+        for p in ps_list:
+            p.start()
+
+        for p in ps_list:
+            p.join()
+
+    except KeyboardInterrupt:
+        print(&quot;资源浪费结束!”)
+</code></pre>
+
+<blockquote>
+<p>把上面的脚本保存为cpu.py</p>
+</blockquote>
+<pre><code>python cpu.py
+</code></pre>
+
+<p>即可造成90%以上的CPU利用率</p>
               
             </div>
           </div>
