@@ -138,6 +138,17 @@
     <li class="toctree-l3"><a href="#2">五  内核中2个常量</a></li>
     
 
+    <li class="toctree-l3"><a href="#linux">六 Linux系统中可以存在的最大线程数</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#kernelthreads-max">kernel.threads-max官方说明</a></li>
+        
+            <li><a class="toctree-l4" href="#_4">小结:</a></li>
+        
+        </ul>
+    
+
     </ul>
                 </li>
     </ul>
@@ -253,6 +264,40 @@
 <h1 id="2">五  内核中2个常量</h1>
 <p>PID_MAX_LIMIT 代表系统最大可以分配的PID上限，用户空间通过/proc/sys/kernel/pid_max怎么修改都可以，但不能超过PID_MAX_LIMIT, 因此它就是4百万
 PID_MAX_DEFAULT ，是32678</p>
+<h1 id="linux">六 Linux系统中可以存在的最大线程数</h1>
+<h2 id="kernelthreads-max">kernel.threads-max官方说明</h2>
+<pre><code>/proc/sys/kernel/threads-max (since Linux 2.3.11)
+              This file specifies the system-wide limit on the number of
+              threads (tasks) that can be created on the system.
+
+              Since Linux 4.1, the value that can be written to
+              threads-max is bounded.  The minimum value that can be
+              written is 20.  The maximum value that can be written is
+              given by the constant FUTEX_TID_MASK (0x3fffffff).  If a
+              value outside of this range is written to threads-max, the
+              error EINVAL occurs.
+
+              The value written is checked against the available RAM
+              pages.  If the thread structures would occupy too much
+              (more than 1/8th) of the available RAM pages, threads-max
+              is reduced accordingly.
+</code></pre>
+
+<p>Linux doesn't have a separate threads per process limit, just a limit on the total number of processes on the system (threads are essentially just processes with a shared address space on Linux) which you can view like this:</p>
+<pre><code>cat /proc/sys/kernel/threads-max
+</code></pre>
+
+<p>The default is the number of memory pages/4. You can increase this like:</p>
+<pre><code>echo 100000 &gt; /proc/sys/kernel/threads-max
+</code></pre>
+
+<p>There is also a limit on the number of processes (and hence threads) that a single user may create, see <code>ulimit/getrlimit</code> for details regarding these limits.</p>
+<h2 id="_4">小结:</h2>
+<ul>
+<li>Linux有系统层面的最大线程数限制,系统中存在的task_struct数量,无法超过kernel.threads-max</li>
+<li>Linux有系统层面最大的PID值限制,没有任何一个task_struct的pid可以大于kernel.pid_max</li>
+<li>同时每个用户可以创建的最大进程数也是有限制的,通过ulimit设置</li>
+</ul>
               
             </div>
           </div>
