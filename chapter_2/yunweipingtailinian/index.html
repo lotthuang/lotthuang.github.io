@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>第二篇 kernel源码中pid的最大值 - Lott's Blog</title>
+  <title>第三篇 运维平台建设的理念 - Lott's Blog</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u7b2c\u4e8c\u7bc7 kernel\u6e90\u7801\u4e2dpid\u7684\u6700\u5927\u503c";
-    var mkdocs_page_input_path = "chapter_4/2_pid_max.md";
+    var mkdocs_page_name = "\u7b2c\u4e09\u7bc7 \u8fd0\u7ef4\u5e73\u53f0\u5efa\u8bbe\u7684\u7406\u5ff5";
+    var mkdocs_page_input_path = "chapter_2/yunweipingtailinian.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -74,15 +74,39 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
+    <a class="" href="../yunweijiazhi/">第一篇 运维的价值和目标</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+    <a class="" href="../yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
+    <a class="current" href="./">第三篇 运维平台建设的理念</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">一个合格的运维平台</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_2">一 至少要解决以下几个问题</a></li>
+        
+            <li><a class="toctree-l4" href="#_3">二 至少具备如下几个特性</a></li>
+        
+            <li><a class="toctree-l4" href="#_4">三 最少要具备如下几项功能：</a></li>
+        
+            <li><a class="toctree-l4" href="#_5">四 运维平台三大核心能力：</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_8">一句话总结</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_9">参考文档</a></li>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -120,40 +144,11 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../1_process_ulimit/">第一篇 进程Max open files的设置</a>
+    <a class="" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
                 </li>
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">第二篇 kernel源码中pid的最大值</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#_1">一 默认情况下</a></li>
-    
-
-    <li class="toctree-l3"><a href="#_2">二 常见优化手段</a></li>
-    
-
-    <li class="toctree-l3"><a href="#_3">三 那么它的上限是多少呢？</a></li>
-    
-
-    <li class="toctree-l3"><a href="#procsyskernelpid_max">四 如果没有调整过/proc/sys/kernel/pid_max,那么它的默认值是多少呢</a></li>
-    
-
-    <li class="toctree-l3"><a href="#2">五  内核中2个常量</a></li>
-    
-
-    <li class="toctree-l3"><a href="#linux">六 Linux系统中可以存在的最大线程数</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#kernelthreads-max">kernel.threads-max官方说明</a></li>
-        
-            <li><a class="toctree-l4" href="#_4">小结:</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
                 </li>
     </ul>
 	    </li>
@@ -233,11 +228,11 @@
     
       
         
-          <li>第四章 Linux CPU子系统 &raquo;</li>
+          <li>第二章 运维工作总结 &raquo;</li>
         
       
     
-    <li>第二篇 kernel源码中pid的最大值</li>
+    <li>第三篇 运维平台建设的理念</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -247,60 +242,62 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="_1">一 默认情况下</h1>
-<p><img alt="" src="../../img/WX20201210-160655.png" /></p>
-<p>默认是32768 ，代表默认情况下，系统内最多有32768个进程。</p>
-<h1 id="_2">二 常见优化手段</h1>
-<p>sysctl -w kernel.pid_max=65535</p>
-<h1 id="_3">三 那么它的上限是多少呢？</h1>
-<p>定义在 </p>
-<pre><code>./include/linux/threads.h
-</code></pre>
-
-<p><img alt="请在这里输入图片描述" src="../../img/20191028124822.png" /></p>
-<p>最大值是4 * 1024 * 1024 ，也就是4194304
-当我们手工设置超过这个值时，会报错。</p>
-<p><img alt="请在这里输入图片描述" src="../../img/WX20201210-160905.png" /></p>
-<p><img alt="请在这里输入图片描述" src="../../img/WX20201210-160932.png" /></p>
-<h1 id="procsyskernelpid_max">四 如果没有调整过/proc/sys/kernel/pid_max,那么它的默认值是多少呢</h1>
-<p><img alt="请在这里输入图片描述" src="../../img/20200709130437.png" /></p>
-<p>0x8000，就是10进制的32678</p>
-<h1 id="2">五  内核中2个常量</h1>
-<p>PID_MAX_LIMIT 代表系统最大可以分配的PID上限，用户空间通过/proc/sys/kernel/pid_max怎么修改都可以，但不能超过PID_MAX_LIMIT, 因此它就是4百万
-PID_MAX_DEFAULT ，是32678</p>
-<h1 id="linux">六 Linux系统中可以存在的最大线程数</h1>
-<h2 id="kernelthreads-max">kernel.threads-max官方说明</h2>
-<pre><code>/proc/sys/kernel/threads-max (since Linux 2.3.11)
-              This file specifies the system-wide limit on the number of
-              threads (tasks) that can be created on the system.
-
-              Since Linux 4.1, the value that can be written to
-              threads-max is bounded.  The minimum value that can be
-              written is 20.  The maximum value that can be written is
-              given by the constant FUTEX_TID_MASK (0x3fffffff).  If a
-              value outside of this range is written to threads-max, the
-              error EINVAL occurs.
-
-              The value written is checked against the available RAM
-              pages.  If the thread structures would occupy too much
-              (more than 1/8th) of the available RAM pages, threads-max
-              is reduced accordingly.
-</code></pre>
-
-<p>Linux doesn't have a separate threads per process limit, just a limit on the total number of processes on the system (threads are essentially just processes with a shared address space on Linux) which you can view like this:</p>
-<pre><code>cat /proc/sys/kernel/threads-max
-</code></pre>
-
-<p>The default is the number of memory pages/4. You can increase this like:</p>
-<pre><code>echo 100000 &gt; /proc/sys/kernel/threads-max
-</code></pre>
-
-<p>There is also a limit on the number of processes (and hence threads) that a single user may create, see <code>ulimit/getrlimit</code> for details regarding these limits.</p>
-<h2 id="_4">小结:</h2>
+                <h1 id="_1">一个合格的运维平台</h1>
+<h2 id="_2">一 至少要解决以下几个问题</h2>
+<ol>
+<li>运维日常繁琐的重复工作</li>
+<li>软硬件基础架构资源信息混沌</li>
+<li>研运职能边界混乱，职责对立，效能低弱</li>
+</ol>
+<blockquote>
+<p>第一要务是解决当下痛点，往往是运维双手急需释放，刚性需求衍生运维平台。缓和运维开发之间供求关系，建立清晰职责边界，服务好研发第一生产力，既而再改变运开关系供求链，从对抗到赋能。在成本、安全、质量、效率之间寻找平衡</p>
+</blockquote>
+<h2 id="_3">二 至少具备如下几个特性</h2>
+<ol>
+<li>持续集成</li>
+<li>持续交付</li>
+<li>持续部署</li>
+</ol>
+<blockquote>
+<p>运维平台，要需求判研准确、成果交付迅速、产品持续迭代、交付质量可靠。其次是产品定位要准确，每个产品设计人都要有躬身入局的能手，一线经历丰富且深刻。</p>
+</blockquote>
+<h2 id="_4">三 最少要具备如下几项功能：</h2>
+<ol>
+<li>CMDB</li>
+<li>服务树</li>
+<li>流程管控(比如workflow)</li>
+<li>CICD</li>
+<li>排班</li>
+</ol>
+<blockquote>
+<p>CMDB,服务树为传统运维平台必备功能，随着公有云强势下沉，Kubernetes，servermesh逐步普及迭代，新型服务治理方式不再需要传统点到点这种中心化的管理功能。流程管控、CICD、排班是传统公司质量管理、SLA达标的重要方式。</p>
+</blockquote>
+<h2 id="_5">四 运维平台三大核心能力：</h2>
+<ol>
+<li>配置管理能力</li>
+<li>变更管理能力</li>
+<li>状态管理能力</li>
+</ol>
+<h3 id="_6">运维平台的建设理念</h3>
+<ol>
+<li>标准化先行</li>
+<li>快速尝试</li>
+<li>接受不完美</li>
+<li>业务导向</li>
+</ol>
+<h3 id="_7">运维平台的延伸</h3>
+<ol>
+<li>数据化运营能力</li>
+<li>产品化UI能力</li>
+<li>全流程监管闭环能力</li>
+</ol>
+<h1 id="_8">一句话总结</h1>
 <ul>
-<li>Linux有系统层面的最大线程数限制,系统中存在的task_struct数量,无法超过kernel.threads-max</li>
-<li>Linux有系统层面最大的PID值限制,没有任何一个task_struct的pid可以大于kernel.pid_max</li>
-<li>同时每个用户可以创建的最大进程数也是有限制的,通过ulimit设置</li>
+<li>用老板思维打造产研运共同体，旨在为产研赋能提效。</li>
+</ul>
+<h1 id="_9">参考文档</h1>
+<ul>
+<li>https://mp.weixin.qq.com/s/63n2CPfaHLiu-zFtrvlEUg</li>
 </ul>
               
             </div>
@@ -309,10 +306,10 @@ PID_MAX_DEFAULT ，是32678</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../chapter_5/1_four_object_of_VFS/" class="btn btn-neutral float-right" title="第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../chapter_3/1_linux_kernel_net/" class="btn btn-neutral float-right" title="第一篇 Linux数据包接收路径梳理和常用调优技能">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../1_process_ulimit/" class="btn btn-neutral" title="第一篇 进程Max open files的设置"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../yunweizhiyeguifan/" class="btn btn-neutral" title="第二篇 业务SRE的职业规范"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -338,10 +335,10 @@ PID_MAX_DEFAULT ，是32678</p>
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../1_process_ulimit/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../yunweizhiyeguifan/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../../chapter_5/1_four_object_of_VFS/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../chapter_3/1_linux_kernel_net/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
