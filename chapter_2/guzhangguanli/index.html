@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>第三篇 业务流程术语梳理 - Lott's Blog</title>
+  <title>第四篇 故障管理概述 - Lott's Blog</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u7b2c\u4e09\u7bc7 \u4e1a\u52a1\u6d41\u7a0b\u672f\u8bed\u68b3\u7406";
-    var mkdocs_page_input_path = "chapter_8/3_yewuliuchengshuyu.md";
+    var mkdocs_page_name = "\u7b2c\u56db\u7bc7 \u6545\u969c\u7ba1\u7406\u6982\u8ff0";
+    var mkdocs_page_input_path = "chapter_2/guzhangguanli.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -74,19 +74,41 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
+    <a class="" href="../yunweijiazhi/">第一篇 运维的价值和目标</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+    <a class="" href="../yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
+    <a class="" href="../yunweipingtailinian/">第三篇 运维平台建设的理念</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../../chapter_2/guzhangguanli/">第四篇 故障管理概述</a>
+    <a class="current" href="./">第四篇 故障管理概述</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">概述</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_2">上线之前</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_3">上线之后</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_4">平时</a></li>
+        
+            <li><a class="toctree-l4" href="#_5">故障发生时</a></li>
+        
+            <li><a class="toctree-l4" href="#_6">故障发生后</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -173,24 +195,15 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../1_xuexixinde/">第一篇 个人学习心得总结</a>
+    <a class="" href="../../chapter_8/1_xuexixinde/">第一篇 个人学习心得总结</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../2_bangzhuqitatongxue/">第二篇 如何帮助其他同学提升技术能力</a>
+    <a class="" href="../../chapter_8/2_bangzhuqitatongxue/">第二篇 如何帮助其他同学提升技术能力</a>
                 </li>
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">第三篇 业务流程术语梳理</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#_1">一 说明</a></li>
-    
-
-    <li class="toctree-l3"><a href="#_2">二 具体内容</a></li>
-    
-
-    </ul>
+    <a class="" href="../../chapter_8/3_yewuliuchengshuyu/">第三篇 业务流程术语梳理</a>
                 </li>
     </ul>
 	    </li>
@@ -217,11 +230,11 @@
     
       
         
-          <li>第八章 职场通用经验 &raquo;</li>
+          <li>第二章 运维工作总结 &raquo;</li>
         
       
     
-    <li>第三篇 业务流程术语梳理</li>
+    <li>第四篇 故障管理概述</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -231,22 +244,35 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="_1">一 说明</h1>
+                <h1 id="_1">概述</h1>
 <ul>
-<li>本篇博客梳理了常用的业务层的流程术语,方便SRE和业务侧同学交流沟通</li>
-<li>以下内容是覆盖了一些关键点,具体使用时灵活运用即可</li>
+<li>本文旨在总结多年运维工作中，积累和沉淀下来的一些故障管理经验.</li>
 </ul>
-<h1 id="_2">二 具体内容</h1>
-<ol>
-<li>压测流程: 研发提供压测方法、压测机器人，QA负责跟进压测和记录压测数据</li>
-<li>做某个事情之前先回答要付出的成本和预计的收益</li>
-<li>推出新服务替代老服务,通常是先收口,再把存量实例迁移到新服务上</li>
-<li>这个方案的风险、收益、各个步骤的交付时间点</li>
-<li>在交付时间点之前要及时同步可能出现的风险,交付完后有验收流程.</li>
-<li>提出新方案者，要回答该方案是否满足产品需求</li>
-<li>自己手上的任务,完成了要及时交付结果,没完成要及时说明没完成的原因和计划安排</li>
-<li>内部运维工具不好用，如果有人提出来，那是工具开发者的锅，如果没人提出来而导致实际使用过程中发现故障，那是使用者的锅</li>
-</ol>
+<h1 id="_2">上线之前</h1>
+<ul>
+<li>新的项目上线之前，按照现有<code>上线检查</code>工具，检查所有别的项目踩过的坑，避免掉入同类坑.</li>
+<li>按照故障演练系统出具的故障演练清单, 结合业务自身情况，对高频率故障进行演练. 例如<code>数据库主从切换</code>、<code>单机挂掉</code>、<code>单进程挂掉</code>、<code>被DDOS攻击</code>, 形成项目的故障处理预案.</li>
+</ul>
+<h1 id="_3">上线之后</h1>
+<h2 id="_4">平时</h2>
+<ul>
+<li>配合全链路监控系统，做好端到端监控，在故障发生时能够做到1、5、10（1分钟发现问题，5分钟定位问题，10分钟解决问题）</li>
+<li>定期进行故障演练.</li>
+</ul>
+<h2 id="_5">故障发生时</h2>
+<ul>
+<li>发生故障时, 第一时间通过故障预案,执行<code>故障快恢</code>,使得业务快速恢复正常, 而不是去排查故障根因.</li>
+<li><a href="https://mp.weixin.qq.com/s/5nceE8IKm6dj5e84ltfmQg">更多细节</a></li>
+</ul>
+<h2 id="_6">故障发生后</h2>
+<ul>
+<li>事后进行复盘，找出根因，由专门的故障横向小组跟进Action落地，除了<code>本产品/本业务线</code>改进, 还要包括:<ul>
+<li>同类问题<code>全业务线</code>彻查，避免同类问题再次发生.</li>
+<li>持续迭代<code>上线检查</code>工具.</li>
+</ul>
+</li>
+<li>红黑榜，定期统计故障次数最多Top3的业务线、责任人, 全公司通报批评，和绩效挂钩. 定期统计故障次数最少Top3的业务线、SRE小组,全公司表扬奖励.</li>
+</ul>
               
             </div>
           </div>
@@ -254,8 +280,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="../../chapter_3/1_linux_kernel_net/" class="btn btn-neutral float-right" title="第一篇 Linux数据包接收路径梳理和常用调优技能">Next <span class="icon icon-circle-arrow-right"></span></a>
       
-        <a href="../2_bangzhuqitatongxue/" class="btn btn-neutral" title="第二篇 如何帮助其他同学提升技术能力"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+        <a href="../yunweipingtailinian/" class="btn btn-neutral" title="第三篇 运维平台建设的理念"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -281,8 +309,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../2_bangzhuqitatongxue/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../yunweipingtailinian/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
+      
+        <span style="margin-left: 15px"><a href="../../chapter_3/1_linux_kernel_net/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
