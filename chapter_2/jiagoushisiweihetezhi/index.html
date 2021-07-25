@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>第七篇 架构师思维和特质 - Lott's Blog</title>
+  <title>第七篇 架构师思维和特质以及中间件技术梳理 - Lott's Blog</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u7b2c\u4e03\u7bc7 \u67b6\u6784\u5e08\u601d\u7ef4\u548c\u7279\u8d28";
+    var mkdocs_page_name = "\u7b2c\u4e03\u7bc7 \u67b6\u6784\u5e08\u601d\u7ef4\u548c\u7279\u8d28\u4ee5\u53ca\u4e2d\u95f4\u4ef6\u6280\u672f\u68b3\u7406";
     var mkdocs_page_input_path = "chapter_2/jiagoushisiweihetezhi.md";
     var mkdocs_page_url = null;
   </script>
@@ -98,7 +98,7 @@
                 </li>
                 <li class=" current">
                     
-    <a class="current" href="./">第七篇 架构师思维和特质</a>
+    <a class="current" href="./">第七篇 架构师思维和特质以及中间件技术梳理</a>
     <ul class="subnav">
             
     <li class="toctree-l3"><a href="#_1">概述</a></li>
@@ -139,6 +139,10 @@
             <li><a class="toctree-l4" href="#service-discovery">服务发现（Service Discovery）中间件</a></li>
         
             <li><a class="toctree-l4" href="#service-mesh">微服务架构和服务网格（Service Mesh）</a></li>
+        
+            <li><a class="toctree-l4" href="#_29">客户端网络质量改善技术</a></li>
+        
+            <li><a class="toctree-l4" href="#_31">客户端埋点最佳实践</a></li>
         
         </ul>
     
@@ -273,7 +277,7 @@
         
       
     
-    <li>第七篇 架构师思维和特质</li>
+    <li>第七篇 架构师思维和特质以及中间件技术梳理</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -292,7 +296,7 @@
 </ul>
 <h1 id="_2">架构师必备的特质</h1>
 <ul>
-<li>一名优秀的架构师，在设计系统时需要有以下这四项关键能力：「平衡取舍、预判未来、抽象思维、容错机制」</li>
+<li>一名优秀的架构师，在设计系统时需要有以下这<a href="https://www.geek-share.com/detail/2794041054.html">四项关键能力</a>：「平衡取舍、预判未来、抽象思维、容错机制」</li>
 <li>作为一名优秀的SRE, 在设计技术方案时，也需要提升这四项关键能力.</li>
 </ul>
 <h2 id="_3">平衡取舍</h2>
@@ -347,6 +351,8 @@
 <li>数据库技术</li>
 <li>服务注册和发现技术</li>
 <li>微服务和服务网格技术</li>
+<li>客户端网络质量改善技术</li>
+<li>客户端埋点最佳实践</li>
 </ul>
 <h2 id="lb">LB技术</h2>
 <ul>
@@ -551,6 +557,63 @@
 <li>控制平面(control plane)；
 <img alt="png" src="../../img/WechatIMG170.png" /></li>
 </ol>
+<h4 id="istio_1">Istio的优势讲解</h4>
+<h5 id="1-kubernetesserviceclusterip">1. 一开始,  Kubernetes集群内部，通过Service的ClusterIP进行互相调用的情况</h5>
+<p><img alt="png" src="../../img/WechatIMG177.jpeg" />
+上图的 <code>Kubernetes</code> 集群中一共有两个节点和 4 个 <code>Pod</code>，每个 <code>Pod</code> 都有一个容器。服务 <code>service-nginx</code> 指向 <code>nginx pods</code>，服务 <code>service-python</code> 指向 <code>python pods</code>。红线显示了从 <code>pod1-nginx</code> 中的 <code>nginx</code> 容器向 <code>service-python</code> 服务发出的请求，该服务将请求重定向到 <code>pod2-python</code>。</p>
+<p>通过服务的<code>ClusterIP</code> 向后端<code>Pod</code>进行简单的随机或轮询转发请求，<code>Kubernetes</code> 中的 <code>Services</code> 并不存在于特定的节点上，而是存在于整个集群中。我们可以在下图 中看到更多细节:</p>
+<p><img alt="png" src="../../img/WechatIMG173.jpeg" /></p>
+<p>上图要更详细点，Kubernetes 中的服务是由运行在每个节点上的 kube-proxy 组件实现的，该组件创建 iptables 规则，并将请求重定向到 Pod。因此，服务就是 iptables 规则。(还有其他不使用 iptables 的代理模式，但过程是相同的。)</p>
+<h4 id="2-istio-control-plane-data-plane">2. 有了Istio之后, Control Plane 和  Data Plane之间通讯的示意图</h4>
+<p><img alt="png" src="../../img/64020210725.png" />
+<code>Istio</code> 最常见的代理是 <code>Envoy</code>，当然也可以使用其他代理（如 <code>Nginx</code>），所以我们将代理称为<code>istio-proxy</code>。</p>
+<p>我们可以看到不再显示 <code>kube-proxy</code> 组件，这样做是为了保持图像的整洁，这些组件仍然存在，但是拥有 <code>istio-proxy</code> 的 <code>Pods</code> 将不再使用 <code>kube-proxy</code> 组件了。
+每当配置或服务发生变化时，<code>Istio 控制平面</code>就会对所有 <code>istio-proxy sidecars</code> 进行处理，类似于图 2 中 Kubernetes API 处理所有 kube-proxy 组件的方式。<code>Istio 控制平面</code>使用现有的 Kubernetes 服务来接收每个服务点所指向的所有 pods ，通过使用 pod IP 地址，Istio 实现了自己的路由。</p>
+<h4 id="3-istio-istio-proxy-sidecars">3 在 Istio 控制平面对所有 istio-proxy sidecars 处理之后，它看起来是这样的</h4>
+<p><img alt="png" src="../../img/WechatIMG174.jpeg" /></p>
+<p>在图 4 中，我们看到 Istio 控制平面如何将当前配置应用到集群中的所有 istio-proxy 容器，Istio 将把 Kubernetes 服务声明转换成它自己的路由声明。</p>
+<h4 id="4-istio">4 让我们看看如何使用 Istio 发出请求:</h4>
+<p><img alt="png" src="../../img/WechatIMG175.jpeg" />
+在上图中，所有的 <code>istio-proxy</code> 容器已经被 <code>Istio 控制平面</code>所管控，并包含所有必要的路由信息，如图 3/4 所示，来自 <code>pod1-nginx</code> 的 <code>nginx 容器</code>向 <code>service-python</code> 发出请求。</p>
+<p>请求被 <code>pod1-nginx</code> 的 <code>istio-proxy</code> 容器拦截，并被重定向到一个 <code>python pod</code> 的 <code>istio-proxy</code> 容器，该容器随后将请求重定向到 <code>python</code> 容器。</p>
+<h5 id="istio_2">Istio的优势总结</h5>
+<p>现在所有流量都通过每个 Pod 中的 <code>istio-proxy</code> 容器进行路由，每当 <code>istio-proxy</code> 接收并重定向一个请求时，它还会将有关该请求的信息提交给 <code>Istio 控制平面</code>。因此 <code>Istio 控制平面</code>可以准确地知道该请求来自哪个Pod、存在哪些 HTTP 头、从一个<code>istio-proxy</code> 到另一个 <code>istio-proxy</code> 的请求需要多长时间等等。在具有彼此通信的服务的集群中，这可以提高可观察性并更好地控制所有流量</p>
+<ul>
+<li>
+<p><code>先进的路由</code>，<code>Kubernetes</code> 内部 <code>Services</code> 只能对 <code>Pods</code> 执行轮询或随机分发请求，使用 <code>Istio</code> 可以实现更复杂的方式。比如，如果发生错误，根据请求头进行重定向，或者重定向到最少使用的服务。</p>
+</li>
+<li>
+<p><code>部署</code>，它允许将一定比例的流量路由到特定的服务版本，因此允许绿色/蓝色和金丝雀部署。</p>
+</li>
+<li>
+<p><code>加密</code>，可以对 <code>Pods</code> 之间从 <code>istio-proxy</code> 到 <code>istio-proxy</code> 的集群内部通信进行加密。</p>
+</li>
+<li>
+<p><code>监控/图形</code>，<code>Istio</code> 可以连接到 <code>Prometheus</code> 等监控工具，也可以与 <code>Kiali</code> 一起展示所有的服务和他们的流量。
+<img alt="png" src="../../img/WechatIMG176.jpeg" /></p>
+</li>
+<li>
+<p><code>追踪</code>，因为 <code>Istio 控制平面</code>拥有大量关于请求的数据，所以可以使用 Jaeger 等工具跟踪和检查这些数据。</p>
+</li>
+</ul>
+<h2 id="_29">客户端网络质量改善技术</h2>
+<h3 id="_30">本质上都是利用边缘节点(代理节点)以及优化的骨干网络来降低用户访问服务端的延迟，提升用户体验.</h3>
+<ul>
+<li>代理节点<ul>
+<li>CDN的边缘节点</li>
+<li>公司自研的代理节点</li>
+</ul>
+</li>
+<li>优化的骨干网络<ul>
+<li><a href="https://mp.weixin.qq.com/s/qur3Csb3WEWKavFdx9BjBg">利用公有云的骨干网络</a></li>
+<li>拉专线</li>
+</ul>
+</li>
+</ul>
+<h2 id="_31">客户端埋点最佳实践</h2>
+<ul>
+<li>待补充</li>
+</ul>
               
             </div>
           </div>
