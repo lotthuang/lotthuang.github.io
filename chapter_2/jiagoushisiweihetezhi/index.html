@@ -558,6 +558,7 @@
 <img alt="png" src="../../img/WechatIMG170.png" /></li>
 </ol>
 <h4 id="istio_1">Istio的优势讲解</h4>
+<p><a href="https://mp.weixin.qq.com/s/CALHF1UBpiKtNNS-NFHVnA?locale=zh-CN">参考</a></p>
 <h5 id="1-kubernetesserviceclusterip">1. 一开始,  Kubernetes集群内部，通过Service的ClusterIP进行互相调用的情况</h5>
 <p><img alt="png" src="../../img/WechatIMG177.jpeg" />
 上图的 <code>Kubernetes</code> 集群中一共有两个节点和 4 个 <code>Pod</code>，每个 <code>Pod</code> 都有一个容器。服务 <code>service-nginx</code> 指向 <code>nginx pods</code>，服务 <code>service-python</code> 指向 <code>python pods</code>。红线显示了从 <code>pod1-nginx</code> 中的 <code>nginx</code> 容器向 <code>service-python</code> 服务发出的请求，该服务将请求重定向到 <code>pod2-python</code>。</p>
