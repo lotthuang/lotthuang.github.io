@@ -509,14 +509,20 @@
 <p><img alt="png" src="../../img/suoyoujiqunjiagou.jpg" /></p>
 <h3 id="_27">微服务架构要解决什么问题?</h3>
 <ul>
-<li>用户流量进入服务端之后, 服务端(指上图中的<code>Web服务</code>和<code>Worker集群</code>)多种<code>应用</code>可以和<code>操作系统的进程</code>形成<code>多对多的模式</code>, 每种<code>应用</code>有如下特性<ul>
+<li>
+<p>用户流量进入服务端之后, 服务端(指上图中的<code>Web服务</code>和<code>Worker集群</code>)多种<code>应用</code>可以和<code>操作系统的进程</code>形成<code>多对多的模式</code>, 每种<code>应用</code>有如下特性</p>
+<ul>
 <li>顺畅、低成本的互相调用别的<code>应用</code></li>
 <li>高可用</li>
-<li>无限性能扩展</li>
+<li>无限性能扩展(自动化扩缩容)</li>
 <li>负载均衡</li>
 </ul>
 </li>
+<li>
+<p>微服务部署的最佳实践是什么? Kubernetes集群</p>
+</li>
 </ul>
+<p><img alt="png" src="../../img/WechatIMG178.jpeg" /></p>
 <h3 id="service-mesh_1">Service Mesh的由来</h3>
 <h4 id="_28">负载均衡、数据收集、服务发现、调用链跟踪。这些非业务的功能，一般是谁实现的呢？</h4>
 <ol>
