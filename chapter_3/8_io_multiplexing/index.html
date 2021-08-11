@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>第八篇 IO多路复用总结 - Lott's Blog</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u7b2c\u516b\u7bc7 IO\u591a\u8def\u590d\u7528\u603b\u7ed3";
+    var mkdocs_page_input_path = "chapter_3/8_io_multiplexing.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Lott's Blog</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">首页</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第一章 常用软件</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第二章 运维工作总结</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/guzhangguanli/">第四篇 故障管理概述</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/biangengguanli/">第五篇 变更管理概述</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/rongliangguanli/">第六篇 容量管理概述</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第三章 Linux Net子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../5_conntrack/">第五篇 conntrack的常见应用</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../6_tcp/">第六篇 TCP协议总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">第八篇 IO多路复用总结</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">概述</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_2">服务端网络编程模型的演变过程</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#forkworker">第一阶段 用户空间调用fork,生成多worker进程</a></li>
+        
+            <li><a class="toctree-l4" href="#ioselect">第二阶段 IO多路复用之Select</a></li>
+        
+            <li><a class="toctree-l4" href="#epoll">第三阶段 Epoll</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第四章 Linux CPU子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第五章 Linux IO子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_5/1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第七章 运维工作之小技巧和工具汇总和积累</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/1_sync_file/">第一篇 不同主机之间的文件传输</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第八章 职场通用经验</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/1_xuexixinde/">第一篇 个人学习心得总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/2_bangzhuqitatongxue/">第二篇 如何帮助其他同学提升技术能力</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/3_yewuliuchengshuyu/">第三篇 业务流程术语梳理</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/4_jishunenglimoxing/">第四篇 技术能力模型总结</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Lott's Blog</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>第三章 Linux Net子系统 &raquo;</li>
+        
+      
+    
+    <li>第八篇 IO多路复用总结</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="_1">概述</h1>
+<ul>
+<li>IO多路复用技术，本质上是要解决单进程如何高效的监听多个socket这个问题.</li>
+<li>IO multiplexing就是我们说的select，poll，epoll，有些地方也称这种IO方式为event driven IO。select/epoll的好处就在于单个process就可以同时处理多个网络连接的IO。它的基本原理就是select，poll，epoll这个function会不断的轮询所负责的所有socket，当某个socket有数据到达了，就通知用户进程。( process blocks in call to select, waiting for one of possibly many sockets to become readable)</li>
+</ul>
+<h1 id="_2">服务端网络编程模型的演变过程</h1>
+<p><img alt="png" src="../../img/FC00DB58-C885-4B38-916D-04F22F3E968C.png" /></p>
+<h2 id="forkworker">第一阶段 用户空间调用fork,生成多worker进程</h2>
+<p>每次都创建一个新的进程或线程，去调用 read 函数，并做业务处理。</p>
+<p><code>while(1) {
+  connfd = accept(listenfd);  // 阻塞建立连接
+  pthread_create（doWork);  // 创建一个新的线程
+}
+void doWork() {
+  int n = read(connfd, buf);  // 阻塞读数据
+  doSomeThing(buf);  // 利用读到的数据做些什么
+  close(connfd);     // 关闭连接，循环等待下一个连接
+}</code></p>
+<p>问题点: 为每个客户端创建一个线程，服务器端的线程资源很容易被耗光。</p>
+<h2 id="ioselect">第二阶段 IO多路复用之Select</h2>
+<ul>
+<li>
+<p>select 是操作系统提供的系统调用函数，通过它，我们可以把一个文件描述符的数组发给操作系统， 让操作系统去遍历，确定哪个文件描述符可以读写， 然后告诉我们去处理.</p>
+</li>
+<li>
+<p>select系统调用的函数定义如下。</p>
+</li>
+</ul>
+<p><code>int select(
+    int nfds,
+    fd_set *readfds,
+    fd_set *writefds,
+    fd_set *exceptfds,
+    struct timeval *timeout);
+// nfds:监控的文件描述符集里最大文件描述符加1
+// readfds：监控有读数据到达文件描述符集合，传入传出参数
+// writefds：监控写数据到达文件描述符集合，传入传出参数
+// exceptfds：监控异常发生达文件描述符集合, 传入传出参数
+// timeout：定时阻塞监控时间，3种情况
+//  1.NULL，永远等下去
+//  2.设置timeval，等待固定时间
+//  3.设置timeval里时间均为0，检查描述字后立即返回，轮询</code></p>
+<h3 id="_3">一些细节</h3>
+<ol>
+<li>select 调用需要传入 fd 数组，需要拷贝一份到内核，高并发场景下这样的拷贝消耗的资源是惊人的。（<code>可优化为不复制</code>）</li>
+<li>select 在内核层仍然是通过遍历的方式检查文件描述符的就绪状态，是个同步过程，只不过无系统调用切换上下文的开销。（<code>内核层可优化为异步事件通知</code>）</li>
+<li>select 仅仅返回可读文件描述符的个数，具体哪个可读还是要用户自己遍历。（<code>可优化为只返回给用户就绪的文件描述符，无需用户做无效的遍历</code>）</li>
+</ol>
+<h3 id="select">整个 select的流程</h3>
+<p>流程图如下</p>
+<p><img alt="png" src="../../img/WechatIMG209.jpeg" /></p>
+<ul>
+<li>可以看到，这种方式，既做到了一个线程处理多个客户端连接（文件描述符），又减少了系统调用的开销（<code>多个文件描述符只有一次 select 的系统调用 + n 次就绪状态的文件描述符的 read 系统调用</code>）</li>
+</ul>
+<h3 id="poll">Poll</h3>
+<p><img alt="png" src="../../img/1619E74C-B4AC-4C50-8EBF-E931CDFB3057.png" /></p>
+<h2 id="epoll">第三阶段 Epoll</h2>
+<p>epoll 是最终的大 boss，它解决了 select 和 poll 的一些问题。</p>
+<p>还记得上面说的 select 的三个细节么？</p>
+<ol>
+<li>select 调用需要传入 fd 数组，需要拷贝一份到内核，高并发场景下这样的拷贝消耗的资源是惊人的。（可优化为不复制）</li>
+<li>select 在内核层仍然是通过遍历的方式检查文件描述符的就绪状态，是个同步过程，只不过无系统调用切换上下文的开销。（内核层可优化为异步事件通知）</li>
+<li>select 仅仅返回可读文件描述符的个数，具体哪个可读还是要用户自己遍历。（可优化为只返回给用户就绪的文件描述符，无需用户做无效的遍历）</li>
+</ol>
+<p>所以 epoll 主要就是针对这三点进行了改进。</p>
+<ol>
+<li>内核中保存一份文件描述符集合，无需用户每次都重新传入，只需告诉内核修改的部分即可。</li>
+<li>内核不再通过轮询的方式找到就绪的文件描述符，而是通过异步 IO 事件唤醒。</li>
+<li>内核仅会将有 IO 事件的文件描述符返回给用户，用户也无需遍历整个文件描述符集合。</li>
+</ol>
+<p>具体，操作系统提供了这三个函数。</p>
+<h3 id="epoll-epoll">第一步，创建一个 epoll 句柄(创建Epoll对象)</h3>
+<p><code>int epoll_create(int size);</code></p>
+<p>如下图所示，当某个进程调用 epoll_create 方法时，内核会创建一个 <code>eventpoll 对象</code>（也就是程序中 Epfd 所代表的对象）。</p>
+<p><img alt="png" src="../../img/C2A937F0-880A-475C-AF1F-3B82A8CFB9B6.jpg" /></p>
+<p><code>eventpoll 对象</code>也是文件系统中的一员，和 <code>Socket</code> 一样，它也会有等待队列。</p>
+<p>创建一个代表该 Epoll 的 eventpoll 对象是必须的，因为内核要维护<code>就绪列表</code>等数据，<code>就绪列表</code>可以作为 eventpoll 的成员。</p>
+<h3 id="_4">第二步，向内核添加、修改或删除要监控的文件描述符。</h3>
+<p><code>int epoll_ctl(
+  int epfd, int op, int fd, struct epoll_event *event);</code></p>
+<p>创建 <code>Epoll 对象</code>后，可以用 epoll_ctl 添加或删除所要监听的 Socket。以添加 Socket 为例。</p>
+<p>添加所要监听的 Socket</p>
+<p><img alt="png" src="../../img/4C3E1613-F7C5-4C7D-83BE-36E779DD98FB.jpg" /></p>
+<p>如上图，如果通过 epoll_ctl 添加 Sock1、Sock2 和 Sock3 的监视，内核会将 <code>eventpoll对象</code>（也就是程序中 Epfd 所代表的对象）, 添加到这三个 Socket 的等待队列中。</p>
+<p><code>当 Socket 收到数据后，中断程序会操作 eventpoll 对象，而不是直接操作进程</code>。</p>
+<h3 id="select_1">第三步，类似发起了 select() 调用</h3>
+<p><code>int epoll_wait(
+  int epfd, struct epoll_event *events, int max events, int timeout);</code></p>
+<p>当 Socket 收到数据后，中断程序会给 <code>eventpoll对象</code>（也就是程序中 Epfd 所代表的对象） 的<code>就绪列表</code>添加 Socket 引用。</p>
+<p><img alt="png" src="../../img/9FFF8D69-61B1-4EB0-8194-EE2C92127026.jpg" /></p>
+<p>如上图展示的是 Sock2 和 Sock3 收到数据后，<code>中断程序</code>让 <code>Rdlist</code> 引用这两个 Socket。</p>
+<p><code>eventpoll 对象</code>相当于 <code>Socket</code> 和<code>进程</code>之间的中介，<code>Socket</code> 的数据接收并不直接影响进程，而是通过改变 <code>eventpoll对象</code> 的<code>就绪列表</code>来改变进程状态。</p>
+<p>当程序执行到 <code>epoll_wait</code> 时，如果 <code>Rdlist</code> 已经引用了 <code>Socket</code>，那么 <code>epoll_wait</code> 直接返回(并告知就绪的Socket对象是哪些,也就是对应的FD,比如FD 3号和4号是Ready了,进程可以直接Read数据了)，如果 <code>Rdlist</code> 为空，阻塞进程。</p>
+<h3 id="_5">阻塞和唤醒进程</h3>
+<p>假设计算机中正在运行进程 A 和进程 B，在某时刻进程 A 运行到了 <code>epoll_wait</code> 语句, <code>epoll_wait</code>会阻塞进程.</p>
+<p><img alt="png" src="../../img/7110CC3C-57B4-4273-AAF6-0A5E3D0A55C5.jpg" /></p>
+<p>如上图所示，内核会将进程 A 放入 <code>eventpoll对象的等待队列</code>中，阻塞进程。</p>
+<p>当 Socket 接收到数据，中断程序一方面修改 <code>Rdlist</code>，另一方面唤醒 <code>eventpoll 等待队列</code>中的进程，进程 A 再次进入运行状态（如下图）。</p>
+<p><img alt="png" src="../../img/2D8BE578-BD82-4EF9-94FC-4219241F4601.jpg" /></p>
+<p>也因为 Rdlist 的存在，进程 A 可以知道哪些 Socket 发生了变化。</p>
+<h4 id="_6">整体流程图</h4>
+<p><img alt="png" src="../../img/0922DB16-2968-4D7C-B3CD-E058A61B9B40.jpg" /></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../chapter_4/1_process_ulimit/" class="btn btn-neutral float-right" title="第一篇 进程Max open files的设置">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../7_udp/" class="btn btn-neutral" title="第七篇 UDP协议总结以及TCP和UDP的区别"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../7_udp/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../chapter_4/1_process_ulimit/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>
