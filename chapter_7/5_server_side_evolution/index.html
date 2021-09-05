@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>第五篇 服务端进化过程梳理 - Lott's Blog</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u7b2c\u4e94\u7bc7 \u670d\u52a1\u7aef\u8fdb\u5316\u8fc7\u7a0b\u68b3\u7406";
+    var mkdocs_page_input_path = "chapter_7/5_server_side_evolution.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Lott's Blog</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">首页</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第一章 常用软件</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第二章 运维工作总结</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/guzhangguanli/">第四篇 故障管理概述</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/biangengguanli/">第五篇 变更管理概述</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/rongliangguanli/">第六篇 容量管理概述</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第三章 Linux Net子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/5_conntrack/">第五篇 conntrack的常见应用</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/6_tcp/">第六篇 TCP协议总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第九篇 Linux内核协议栈总结</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第四章 Linux CPU子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/3_interrupt_one/">第三篇 硬中断</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第四篇 软中断</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第五章 Linux IO子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_5/1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第二篇 Linux IO栈总结</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第六章 Linux Mem子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_6/1_linux_buddy/">第一篇 伙伴系统介绍</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第二篇 Slab层介绍</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第三篇 进程虚拟地址空间介绍</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第七章 运维小技巧和工具汇总和积累</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../1_sync_file/">第一篇 不同主机之间的文件传输</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">第五篇 服务端进化过程梳理</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">概述</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_2">局域网时代</a></li>
+        
+            <li><a class="toctree-l4" href="#_3">每家公司自建数据中心时代</a></li>
+        
+            <li><a class="toctree-l4" href="#_4">虚拟化时代</a></li>
+        
+            <li><a class="toctree-l4" href="#serverless">理想模式: Serverless</a></li>
+        
+            <li><a class="toctree-l4" href="#_5">谈一下虚拟机和容器云的区别</a></li>
+        
+            <li><a class="toctree-l4" href="#_6">参考文档</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第八章 职场通用经验</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/1_xuexixinde/">第一篇 个人学习心得总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/2_bangzhuqitatongxue/">第二篇 如何帮助其他同学提升技术能力</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/3_yewuliuchengshuyu/">第三篇 业务流程术语梳理</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/4_jishunenglimoxing/">第四篇 技术能力模型总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/5_chanpingsiwei_1/">第五篇 产品思维总结和梳理</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/6_jixiaobaogao/">第六篇 如何写绩效报告</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/7_xiangshangguanli/">第七篇 如何向上管理</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第九章 Linux性能观察工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第一篇 sar命令使用总结</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Lott's Blog</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>第七章 运维小技巧和工具汇总和积累 &raquo;</li>
+        
+      
+    
+    <li>第五篇 服务端进化过程梳理</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="_1">概述</h1>
+<ul>
+<li>梳理一下服务端的演化过程、了解下serverless</li>
+<li><code>局域网 ==&gt; BS/自建IDC ==&gt; BS/云计算 ==&gt; BS/Serverless</code></li>
+</ul>
+<p><img alt="png" src="../../img/服务端进化过程.jpg" /></p>
+<h2 id="_2">局域网时代</h2>
+<p>上世纪90年代，你是一家IT部门的负责人，公司需要建立一个信息管理系统，</p>
+<p>这时候的系统都是局域网的， 是C/S模式的， 业务逻辑主要在客户端软件中， 需要被安装到各个电脑上去，然后访问同一个数据库。</p>
+<p><img alt="png" src="../../img/WechatIMG243.png" /></p>
+<p>在部署这个系统之前，你需要做很多的工作：</p>
+<p>搭建局域网， 购买交换机，路由器。</p>
+<p>买服务器，安装操作系统，比如Window NT</p>
+<p>安装数据库软件，例如Oracle。 </p>
+<p>然后再把那些Delphi/VB/PowerBuilder写的客户端安装到电脑上, 整个系统跑起来了。</p>
+<h2 id="_3">每家公司自建数据中心时代</h2>
+<p>C/S模式的很大弊端就是客户端更新特别麻烦，不能在用户无感知的情况下完成升级，还有臭名卓著的DLL地狱问题，让程序员抓狂。另外服务器能支撑的用户也不大。 </p>
+<p>Web兴起后，你们公司的应用也与时俱进，从C/S模式变成了B/S模式，用户主要使用浏览器来访问应用，业务逻辑在服务器端运行。</p>
+<p>这时候，你还需要买服务器，然后放到数据中心去托管，毕竟那里的条件更好，更稳定。</p>
+<p>网络不需要自己来搭建了， 掏钱买数据中心的网络带宽就好。 还需要自己安装软件， 比如Linux操作系统、Tomcat、Ngnix、MySQL等等。</p>
+<p>随着功能的增加，你还需要新的服务器来处理缓存，搜索等功能。 为了应对高并发、还需要分布式、负载均衡、数据复制。</p>
+<p><img alt="png" src="../../img/WechatIMG244.jpeg" /></p>
+<p>你需要仔细地规划， 看看这些缓存、搜索、数据库、 负载均衡等都需要什么样的服务器，有些要求CPU很强，有些要求内存很大，有些要求硬盘很快。</p>
+<p>总之，自己运维这样一套系统，非常麻烦</p>
+<h2 id="_4">虚拟化时代</h2>
+<p>但是，如果你的网站没人访问了，这一套复杂的系统，这些昂贵的服务器就会变成摆设，你想卖都很难卖掉，这是巨大的浪费。 </p>
+<p>一个想法就会浮现出来：</p>
+<ul>
+<li>
+<p>为什么要用物理服务器？  </p>
+</li>
+<li>
+<p>谁要是能提供虚拟机给我就好了！ </p>
+</li>
+<li>
+<p>用完了就可以“扔掉”！</p>
+</li>
+</ul>
+<p>于是那些有实力的大厂就这么做了，有亚马逊开始，把平时空闲的物理服务器的计算能力，存储能力统一管理，统一调配，对外提供的就是虚拟机。</p>
+<p>他们把这种方式叫做<strong>云计算</strong>，你使用了云计算以后，有很多好处：</p>
+<ul>
+<li>
+<p>物理服务器不用买了，申请虚拟机就可以了。什么样的CPU， 多少内存，多大的硬盘，对应的价格也不同。 </p>
+</li>
+<li>
+<p>操作系统会按照你的要求自动给你安装好。网络自然不用操心， 要多大带宽直接买就行。</p>
+</li>
+<li>
+<p>这些虚拟机可以包月、包年计费。但是，如果没有人访问你的应用，没有流量，你也得掏钱。</p>
+<ul>
+<li>这里的意思是只要你的虚拟机开起来，不管有没有人访问，你就得付费.</li>
+<li>另外即使你进行关机节约成本，(关机可以节约CPU和内存的成本) 那么磁盘那部分费用也是省不了的.</li>
+</ul>
+</li>
+</ul>
+<h2 id="serverless">理想模式: Serverless</h2>
+<p>想必你的脑海中已经浮现出了解决方案：</p>
+<ol>
+<li>
+<p>不要再考虑什么物理服务器/虚拟机了， 把代码上传到云端，直接运行。</p>
+</li>
+<li>
+<p>按使用情况（如CPU时间、内存大小）来收费</p>
+</li>
+</ol>
+<p>如果没有人访问你的应用，就不要部署它，这样只会占用一点点存储空间，不用使用CPU和内存；如果有人访问，把应用迅速部署到某个服务器上，执行这次请求，返回给用户，然后卸载这个应用。</p>
+<p>和之前的方式相比，最大的特色是<code>即用即走，不会在服务器/虚拟机中常驻</code>。</p>
+<p>但是这么做可能吗？ 不行，应用的粒度太大，一个应用几十、上百模块，每个请求来了就部署整个应用，只执行那么一点儿代码， 然后就卸载掉。 </p>
+<p>如果每个请求这么来回地部署和卸载，你是疯了吗，兄弟？</p>
+<p>那微服务呢？粒度还是太大 ！ 如果是微服务中的一个API，或者说就是一个“函数”呢？  这个粒度应该差不多了。  </p>
+<p>这里说的函数到底是什么？ 需要看具体的业务来划分，比如搜索产品，图像转换， 它需要足够小，足够单一，能快速启动，运行，卸载。</p>
+<p><img alt="png" src="../../img/WechatIMG245.png" /></p>
+<p>一个“函数”真的只做一件事情，并且不保持状态。 这样一来它可以<code>轻松地被扩展到任意多的服务器/虚拟机/docker容器中去。请求多了就扩容，请求少了，就收缩，请求没了，就卸载，实在是太爽了</code>。</p>
+<p>这种方式现在称为<code>Serverless</code>，并不是说没有服务器，而是说<strong>服务器对用户来说是透明的</strong>。 应用的装载、启动、卸载，路由是需要平台来搞定。</p>
+<h3 id="serverless_1">Serverless 的特点</h3>
+<p>Serverless的开发模式和运行模式类似这样：</p>
+<ol>
+<li>
+<p>程序员编写完成业务的函数代码。</p>
+</li>
+<li>
+<p>上传到支持Serverless的平台，设定触发的规则。</p>
+</li>
+<li>
+<p>请求到来，Serverless平台根据触发规则加载函数，创建函数实例，运行</p>
+</li>
+<li>
+<p>如果请求比较多，会进行实例的扩展，如果请求较少，就进行实例的收缩。</p>
+</li>
+<li>
+<p>如果无人访问，卸载函数实例。</p>
+</li>
+</ol>
+<p>如果有多个函数，怎么确定调用哪一个？ 肯定需要一个东西来转发一下。</p>
+<p><img alt="png" src="../../img/WechatIMG246.png" /></p>
+<p>如果业务比较复杂，一个函数搞不定怎么办？ 可以把多个函数给编排起来！</p>
+<p><img alt="png" src="../../img/WechatIMG247.png" /></p>
+<p>按需装载，自动伸缩，不用你苦逼地去规划硬件，安装软件，还可以按照使用情况付费，这么好的东西，我们是不是马上投入Serverless的怀抱？</p>
+<p>慢着！</p>
+<p>为了达到上面的目标，你必须得牺牲一个很重要的东西：<strong>状态</strong>。</p>
+<p>函数没有状态的，每次启动都可能会被部署到一个全新的“服务器”中，这就有两个问题：</p>
+<ul>
+<li>
+<p>用户的会话状态肯定是无法保持的，像session sticky 这样的功能就别想了。 </p>
+</li>
+<li>
+<p>函数无法做本地的持久化，没法访问本地硬盘的任何东西（服务器看不见了，怎么能看见硬盘呢？）。</p>
+</li>
+</ul>
+<p>所有想持久化的东西必须得保存到外部的系统或者存储中，例如Redis，MySQL等。 很明显，这些东西也应该以“服务”的方式来呈现，即<code>Backend as a Service</code> <code>(BaaS)</code>。</p>
+<p>如果你的应用无法拆分成无状态的函数，是无法享受Serverless带来的种种好处的。</p>
+<p><strong>Serverless更适合那些无状态的应用</strong>，例如图像和视频的加工，转换， 物联网设备状态的信息处理等等。</p>
+<h2 id="_5">谈一下虚拟机和容器云的区别</h2>
+<ul>
+<li>
+<p>容器化解决的最大问题是: 跨越开发环境、测试环境、生成环境的环境一致性问题. </p>
+</li>
+<li>
+<p>容器编排工具(Kubenetes)最大的作用是: </p>
+<ul>
+<li>对内: 可以方便的把进程抽象为任意多个微服务，并且方便的把每个微服务做到自动化扩缩容.</li>
+<li>对外: 可以将内部众多机器抽象, 对外呈现出一台超大机器. </li>
+</ul>
+</li>
+<li>
+<p>虚拟机时代, 上述2个功能都需要每个公司自行制定规范、研发以及维护.</p>
+</li>
+</ul>
+<h2 id="_6">参考文档</h2>
+<p><a href="https://mp.weixin.qq.com/s/Kv0L83E_wj3be5DTt2LfZA?locale=zh-CN">参考文档1</a></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../chapter_8/1_xuexixinde/" class="btn btn-neutral float-right" title="第一篇 个人学习心得总结">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../4_sre_tools_shell/" class="btn btn-neutral" title="第四篇 运维生产力工具(shell篇)"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../4_sre_tools_shell/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../chapter_8/1_xuexixinde/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>

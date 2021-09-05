@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>第六篇 如何写绩效报告 - Lott's Blog</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u7b2c\u516d\u7bc7 \u5982\u4f55\u5199\u7ee9\u6548\u62a5\u544a";
+    var mkdocs_page_input_path = "chapter_8/6_jixiaobaogao.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Lott's Blog</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">首页</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第一章 常用软件</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第二章 运维工作总结</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/guzhangguanli/">第四篇 故障管理概述</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/biangengguanli/">第五篇 变更管理概述</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/rongliangguanli/">第六篇 容量管理概述</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第三章 Linux Net子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/5_conntrack/">第五篇 conntrack的常见应用</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/6_tcp/">第六篇 TCP协议总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第九篇 Linux内核协议栈总结</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第四章 Linux CPU子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/3_interrupt_one/">第三篇 硬中断</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第四篇 软中断</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第五章 Linux IO子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_5/1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第二篇 Linux IO栈总结</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第六章 Linux Mem子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_6/1_linux_buddy/">第一篇 伙伴系统介绍</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第二篇 Slab层介绍</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第三篇 进程虚拟地址空间介绍</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第七章 运维小技巧和工具汇总和积累</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/1_sync_file/">第一篇 不同主机之间的文件传输</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/5_server_side_evolution/">第五篇 服务端进化过程梳理</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第八章 职场通用经验</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../1_xuexixinde/">第一篇 个人学习心得总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_bangzhuqitatongxue/">第二篇 如何帮助其他同学提升技术能力</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_yewuliuchengshuyu/">第三篇 业务流程术语梳理</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../4_jishunenglimoxing/">第四篇 技术能力模型总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../5_chanpingsiwei_1/">第五篇 产品思维总结和梳理</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">第六篇 如何写绩效报告</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">概述</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_2">绩效内容的来源</a></li>
+        
+            <li><a class="toctree-l4" href="#_3">注意事项</a></li>
+        
+            <li><a class="toctree-l4" href="#_4">如何进行绩效考核</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../7_xiangshangguanli/">第七篇 如何向上管理</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第九章 Linux性能观察工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第一篇 sar命令使用总结</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Lott's Blog</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>第八章 职场通用经验 &raquo;</li>
+        
+      
+    
+    <li>第六篇 如何写绩效报告</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="_1">概述</h1>
+<ul>
+<li>工作了很多年，平均每半年写一次绩效报告, 已经写了几十次报告了. 总结一下写绩效报告的几个注意点.</li>
+</ul>
+<h2 id="_2">绩效内容的来源</h2>
+<p>SRE工程师的价值就是为业务提升效率、降低成本、提升稳定性, 必须要从以下几个方面进行总结.</p>
+<ul>
+<li>从0到1, 做了XXXX, 产生了多少多少价值.</li>
+<li>从1到N, 做了XXXX, 产生了多少多少价值.</li>
+<li>解决XXXX重大隐患, 提升了稳定性.</li>
+</ul>
+<h2 id="_3">注意事项</h2>
+<ul>
+<li>1) 每半年是一个考核周期, 但平时就要有意识总结自己的半年绩效，而不是半年到了(PM通知了)再梳理.</li>
+<li>2) 回顾重点工作案例时, 分为<code>背景</code>、<code>成果</code>、<code>个人主要工作</code>3个部分论述. 成果部分一定要形成量化指标, 注意<code>图胜表、表胜文</code>、<code>一图胜千言</code>.</li>
+<li>3) 多用以下关键语句：</li>
+<li>
+<ul>
+<li>xxxx方案设计和实现(比如XXX产品防DDOS方案的设计和实现)</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>从0 ～ 1 ，从1～ N，优化和改进现有流程。提升了效率，降低了成本，提升了稳定性。解决了重大隐患.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>量化指标形容词: 高低、快慢、长短、通用、顺畅、强弱 ......</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>指标: 成熟度、成功率、通过率、覆盖率 ......</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>指导新人完成xxxx</li>
+</ul>
+</li>
+</ul>
+<h2 id="_4">如何进行绩效考核</h2>
+<h3 id="_5">总体来说就是参考长跑运动, 以半年为期限, 看是否跑到<code>目标线</code>.</h3>
+<ul>
+<li>如果刚好跑到了, 那么绩效结果整体上就是<code>符合预期</code></li>
+<li>如果超出了, 那么绩效结果整体上就是<code>超越预期</code></li>
+<li>如果没有跑到, 那么绩效结果整体上就是<code>不符合预期</code></li>
+</ul>
+<h3 id="_6">绩效的内容</h3>
+<ul>
+<li>
+<p>SRE工程师的绩效内容分为3大块: <code>业务</code>、<code>工程化</code>、<code>基础</code></p>
+</li>
+<li>
+<ul>
+<li><strong>业务部分</strong>, 总体来说就是给手上运维的业务，做出一些优化、确保服务好业务. 比如<code>实现自动化扩缩容</code>、<code>完成大规模活动上线支持</code>等.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>工程化</strong>, 主要是指<code>多个项目通用的运维工具</code>的开发、维护、迭代等目标.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>基础</strong>, 是SRE岗位的一些基础指标和一些软素质方面的目标. 其中基础指标最最重要的是<code>每半年都是0故障运维</code>, 软素质方面包含了一些沙龙分享、新人指导等目标.</li>
+</ul>
+</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../7_xiangshangguanli/" class="btn btn-neutral float-right" title="第七篇 如何向上管理">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../5_chanpingsiwei_1/" class="btn btn-neutral" title="第五篇 产品思维总结和梳理"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../5_chanpingsiwei_1/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../7_xiangshangguanli/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>

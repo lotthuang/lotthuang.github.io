@@ -139,6 +139,10 @@
                     
     <a class="" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
                 </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第九篇 Linux内核协议栈总结</a>
+                </li>
     </ul>
 	    </li>
           
@@ -154,6 +158,18 @@
                     
     <a class="" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
                 </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/3_interrupt_one/">第三篇 硬中断</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第四篇 软中断</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
+                </li>
     </ul>
 	    </li>
           
@@ -165,12 +181,35 @@
                     
     <a class="" href="../../chapter_5/1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
                 </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第二篇 Linux IO栈总结</a>
+                </li>
     </ul>
 	    </li>
           
             <li class="toctree-l1">
 		
-    <span class="caption-text">第七章 运维工作之小技巧和工具汇总和积累</span>
+    <span class="caption-text">第六章 Linux Mem子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_6/1_linux_buddy/">第一篇 伙伴系统介绍</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第二篇 Slab层介绍</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第三篇 进程虚拟地址空间介绍</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第七章 运维小技巧和工具汇总和积累</span>
     <ul class="subnav">
                 <li class="">
                     
@@ -187,6 +226,10 @@
                 <li class="">
                     
     <a class="" href="../../chapter_7/4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/5_server_side_evolution/">第五篇 服务端进化过程梳理</a>
                 </li>
     </ul>
 	    </li>
@@ -211,7 +254,7 @@
         
             <li><a class="toctree-l4" href="#_4">(二) 举一反三法.</a></li>
         
-            <li><a class="toctree-l4" href="#_5">三 学习渠道，从哪些地方学习</a></li>
+            <li><a class="toctree-l4" href="#_5">三 学习方向</a></li>
         
         </ul>
     
@@ -229,6 +272,29 @@
                 <li class="">
                     
     <a class="" href="../4_jishunenglimoxing/">第四篇 技术能力模型总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../5_chanpingsiwei_1/">第五篇 产品思维总结和梳理</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../6_jixiaobaogao/">第六篇 如何写绩效报告</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../7_xiangshangguanli/">第七篇 如何向上管理</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第九章 Linux性能观察工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第一篇 sar命令使用总结</a>
                 </li>
     </ul>
 	    </li>
@@ -282,6 +348,9 @@
 <li>
 <p>比如SQLAlchemy,它总共就提供2个system，如果细分的话，它又有很多子系统(子组件),我们要对他们进行逐一理解,分类，然后画出他们之间的关系。</p>
 </li>
+<li>
+<p>另外，这里也可以把自己想象成Linux的某个子系统, 例如你是Linux的内存子系统、或者内核协议栈, 你会如何设计、完成高效、高质量的管理工作, 这样更加有助于你理解底层技术知识.</p>
+</li>
 </ul>
 <h2 id="_4">(二) 举一反三法.</h2>
 <p>当时解决了问题，但是后面要用到别的小知识，通常这种情况要能方便的查询后面的小知识。</p>
@@ -289,7 +358,8 @@
 <li>举例: 比如html代码里，字体、背景的颜色，要能在自己的笔记里方便的查询。</li>
 <li>比如smarty这种平时要用到但又不主流的语言，其所有的内置函数要能快速查询到。</li>
 </ul>
-<h2 id="_5">三 学习渠道，从哪些地方学习</h2>
+<h2 id="_5">三 学习方向</h2>
+<p><strong>技术知识那么多, 如汪洋大海一般, 哪些才是学习的重点和方向呢?</strong></p>
 <h3 id="1">1 从平时用的不方便的地方，着手研究，使自己和大家用起来方便</h3>
 <h3 id="2-sre">2 从别人踩过的坑学习，例如其他SRE发出来的故障报告，避免自己踩坑</h3>
 <h3 id="3">3 当你从来没有实现过(拥有过)某项技能时，从优秀的人、优秀的产品那里学习,多和优秀的、专业的人交流.</h3>
@@ -303,7 +373,7 @@
         <a href="../2_bangzhuqitatongxue/" class="btn btn-neutral float-right" title="第二篇 如何帮助其他同学提升技术能力">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../../chapter_7/4_sre_tools_shell/" class="btn btn-neutral" title="第四篇 运维生产力工具(shell篇)"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_7/5_server_side_evolution/" class="btn btn-neutral" title="第五篇 服务端进化过程梳理"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -329,7 +399,7 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../../chapter_7/4_sre_tools_shell/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../../chapter_7/5_server_side_evolution/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="../2_bangzhuqitatongxue/" style="color: #fcfcfc">Next &raquo;</a></span>
