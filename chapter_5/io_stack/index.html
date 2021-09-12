@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>第五篇 进程、线程、协程 - Lott's Blog</title>
+  <title>第二篇 Linux IO栈总结 - Lott's Blog</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u7b2c\u4e94\u7bc7 \u8fdb\u7a0b\u3001\u7ebf\u7a0b\u3001\u534f\u7a0b";
-    var mkdocs_page_input_path = "chapter_4/4_process_thread_coroutine.md";
+    var mkdocs_page_name = "\u7b2c\u4e8c\u7bc7 Linux IO\u6808\u603b\u7ed3";
+    var mkdocs_page_input_path = "chapter_5/io_stack.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -152,37 +152,23 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../1_process_ulimit/">第一篇 进程Max open files的设置</a>
+    <a class="" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../2_pid_max/">第二篇 kernel源码中pid的最大值</a>
+    <a class="" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../3_interrupt_one/">第三篇 硬中断</a>
+    <a class="" href="../../chapter_4/3_interrupt_one/">第三篇 硬中断</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../5_soft_irq/">第四篇 软中断</a>
+    <a class="" href="../../chapter_4/5_soft_irq/">第四篇 软中断</a>
                 </li>
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">第五篇 进程、线程、协程</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#_1">概述</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#_2">基础知识</a></li>
-        
-            <li><a class="toctree-l4" href="#_3">区别</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../../chapter_4/4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
                 </li>
     </ul>
 	    </li>
@@ -193,11 +179,25 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../chapter_5/1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
+    <a class="" href="../1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../../chapter_5/io_stack/">第二篇 Linux IO栈总结</a>
+    <a class="current" href="./">第二篇 Linux IO栈总结</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">概述</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#io">IO栈总体认知</a></li>
+        
+            <li><a class="toctree-l4" href="#_2">写操作的三种模式</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -316,11 +316,11 @@
     
       
         
-          <li>第四章 Linux CPU子系统 &raquo;</li>
+          <li>第五章 Linux IO子系统 &raquo;</li>
         
       
     
-    <li>第五篇 进程、线程、协程</li>
+    <li>第二篇 Linux IO栈总结</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -332,50 +332,15 @@
               
                 <h1 id="_1">概述</h1>
 <ul>
-<li>本篇文档总结进程、线程、协程的联系和区别</li>
+<li>本篇文档梳理Linux IO栈</li>
 </ul>
-<h2 id="_2">基础知识</h2>
+<h2 id="io">IO栈总体认知</h2>
+<p><img alt="png" src="../../img/DD92F3B2-B981-47A5-B756-F7050066B775.png" /></p>
+<h2 id="_2">写操作的三种模式</h2>
 <ul>
-<li>Linux内核中, 进程和线程都用同一个结构体表示, 即<code>task_struct</code></li>
-<li>同一个进程内, 不同线程的<code>task_struct</code>不同, 但是其<code>mm_struct</code>相同</li>
-</ul>
-<h2 id="_3">区别</h2>
-<ul>
-<li>1 进程是系统资源(CPU资源)分配的基本单位，线程是独立运行和独立调度的基本单位（CPU上真正运行的是线程), 是一个独立的调度实体。</li>
-<li>2 进程拥有自己的资源空间，一个进程包含若干个线程，线程与CPU资源分配无关，多个线程共享同一进程内的资源。</li>
-<li>3 线程的调度与切换比进程快很多。<ul>
-<li>为什么？因为不同进程切换需要切换其<code>页表</code>, 而同一个进程内不同线程切换无需切换<code>页表</code>. <code>页表</code>在Linux里面就用<code>mm_struct</code>表示</li>
-</ul>
-</li>
-</ul>
-<h3 id="_4">协程</h3>
-<ul>
-<li>协程(coroutine), 是一种<code>用户态的轻量级线程</code>,怎么调度由用户空间自主控制.<ul>
-<li>内核感知不到协程的存在, 对内核空间来说就是单用户线程在运行.</li>
-<li>协程是一种异步IO技术.</li>
-</ul>
-</li>
-</ul>
-<h4 id="_5">协程比多线程好在哪呢？</h4>
-<ul>
-<li>
-<p>线程的控制权在操作系统手中，而 <code>协程的控制权完全掌握在用户自己手中</code>，因此利用协程可以减少程序运行时的上下文切换，有效提高程序运行效率。</p>
-</li>
-<li>
-<p>建立线程时，系统默认分配给线程的 栈 大小是 1 M，而协程更轻量，接近 1 K 。因此可以在相同的内存中开启更多的协程。</p>
-</li>
-<li>
-<p>由于协程的本质不是多线程而是单线程，所以不需要多线程的锁机制。因为只有一个线程，也不存在同时写变量而引起的冲突。在协程中控制共享资源不需要加锁，只需要判断状态即可。所以协程的执行效率比多线程高很多，同时也有效避免了多线程中的竞争关系。</p>
-</li>
-</ul>
-<h4 id="_6">协程的适用 &amp; 不适用场景</h4>
-<ul>
-<li>
-<p>适用场景：协程适用于被阻塞的，且需要大量并发的场景。</p>
-</li>
-<li>
-<p>不适用场景：协程不适用于存在大量CPU密集型的场景（因为协程的本质是单线程来回切换, 无法利用多核CPU进行大量计算), 如果遇到这种情况，还是应该使用其他手段去解决。</p>
-</li>
+<li>Buffered IO</li>
+<li>Direct IO</li>
+<li>MMAP</li>
 </ul>
               
             </div>
@@ -384,10 +349,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../chapter_5/1_four_object_of_VFS/" class="btn btn-neutral float-right" title="第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../chapter_6/1_linux_buddy/" class="btn btn-neutral float-right" title="第一篇 伙伴系统介绍">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../5_soft_irq/" class="btn btn-neutral" title="第四篇 软中断"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../1_four_object_of_VFS/" class="btn btn-neutral" title="第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -413,10 +378,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../5_soft_irq/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../1_four_object_of_VFS/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../../chapter_5/1_four_object_of_VFS/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../chapter_6/1_linux_buddy/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
