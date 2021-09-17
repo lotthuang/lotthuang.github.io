@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>第二篇 Linux IO栈总结 - Lott's Blog</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u7b2c\u4e8c\u7bc7 Linux IO\u6808\u603b\u7ed3";
+    var mkdocs_page_input_path = "chapter_5/2_io_stack.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Lott's Blog</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">首页</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第一章 常用软件</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第二章 运维工作总结</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/guzhangguanli/">第四篇 故障管理概述</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/biangengguanli/">第五篇 变更管理概述</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/rongliangguanli/">第六篇 容量管理概述</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第三章 Linux Net子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/5_conntrack/">第五篇 conntrack的常见应用</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/6_tcp/">第六篇 TCP协议总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第九篇 Linux内核协议栈总结</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第四章 Linux CPU子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/3_interrupt_one/">第三篇 硬中断</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/5_soft_irq/">第四篇 软中断</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第五章 Linux IO子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">第二篇 Linux IO栈总结</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">概述</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#io">IO栈总体认知</a></li>
+        
+            <li><a class="toctree-l4" href="#io_1">IO操作的三种模式</a></li>
+        
+            <li><a class="toctree-l4" href="#bio">BIO层的优化</a></li>
+        
+            <li><a class="toctree-l4" href="#request">Request层的优化</a></li>
+        
+            <li><a class="toctree-l4" href="#_5">块设备的优化</a></li>
+        
+            <li><a class="toctree-l4" href="#_6">参考文章</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第六章 Linux Mem子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_6/1_linux_buddy/">第一篇 伙伴系统介绍</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第二篇 Slab层介绍</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第三篇 进程虚拟地址空间介绍</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理原理</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第七章 运维小技巧和工具汇总和积累</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/1_sync_file/">第一篇 不同主机之间的文件传输</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/5_server_side_evolution/">第五篇 服务端进化过程梳理</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第八章 职场通用经验</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/1_xuexixinde/">第一篇 个人学习心得总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/2_bangzhuqitatongxue/">第二篇 如何帮助其他同学提升技术能力</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/3_yewuliuchengshuyu/">第三篇 业务流程术语梳理</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/4_jishunenglimoxing/">第四篇 技术能力模型总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/5_chanpingsiwei_1/">第五篇 产品思维总结和梳理</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/6_jixiaobaogao/">第六篇 如何写绩效报告</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/7_xiangshangguanli/">第七篇 如何向上管理</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第九章 Linux性能观察工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第一篇 sar命令使用总结</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Lott's Blog</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>第五章 Linux IO子系统 &raquo;</li>
+        
+      
+    
+    <li>第二篇 Linux IO栈总结</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="_1">概述</h1>
+<ul>
+<li>本篇文档梳理Linux IO栈</li>
+</ul>
+<h2 id="io">IO栈总体认知</h2>
+<p><img alt="png" src="../../img/DD92F3B2-B981-47A5-B756-F7050066B775.png" /></p>
+<h3 id="_2">用户空间</h3>
+<ul>
+<li>库函数缓存, 把多次open或者write调用合并为一次, 例如c语言的stdio库，以减少真正的System Call次数为目的</li>
+</ul>
+<h3 id="vfs">VFS层</h3>
+<ul>
+<li>VFS层的作用: VFS是一个抽象层,其向上提供了统一的文件访问接口,而向下则兼容了各种不同的文件系统。不仅仅是诸如Ext2、Ext4、XFS和Btrfs等常规意义上的文件系统,还包括伪文件系统和设备等等内容.</li>
+</ul>
+<h3 id="_3">文件系统层</h3>
+<ul>
+<li>
+<p>文件系统层的优化包括2块:</p>
+<ul>
+<li>1 格式化时根据业务场景选择block大小和inode数量</li>
+<li>2 使用不同的mount option(挂载参数)和合理的日志记录, 来贴合业务场景.<ul>
+<li>如果业务要求高性能, 那么尽可能多利用缓存.</li>
+<li>如果业务要求数据高安全, 那么尽可能把数据落地到块设备.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="ext4">ext4文件系统完整的挂载参数</h4>
+<ul>
+<li>
+<p><a href="https://manpages.debian.org/unstable/e2fsprogs/ext4.5.en.html">参考</a></p>
+</li>
+<li>
+<p>常用的挂载参数:</p>
+</li>
+<li>
+<ul>
+<li><code>data</code>、<code>noatime</code>、<code>nobarrier</code>、<code>delalloc</code>、<code>inode_readahead_blks</code>、<code>commit</code></li>
+</ul>
+</li>
+<li>
+<ul>
+<li>其中<code>data</code>就是下面一节会讲解的日志模式</li>
+</ul>
+</li>
+</ul>
+<h4 id="ext4_1">ext4文件系统的日志模式</h4>
+<ul>
+<li>
+<p>ext4有3种日志模式，分别是ordered，writeback，journal。他们的差别网上有很多资料，我简单介绍下：</p>
+</li>
+<li>
+<ul>
+<li>jorunal：把元数据与数据一并写入到日志块。性能差不多折半，因为数据写了两次，但最安全</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>writeback: 把元数据写入日志块，数据不写入日志块，但不保证数据先落盘。性能最高，但由于不保证元数据与数据的顺序，也是掉电最不安全的</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>ordered：与writeback相似，但会保证数据先落盘，再是元数据。折中性能以保证足够的安全，这是大多数PC上推荐的默认的模式</li>
+</ul>
+</li>
+</ul>
+<h3 id="page-cache">Page Cache</h3>
+<ul>
+<li>
+<p>页缓存在FS与通用块层之间, 为了提高IO性能，减少真实的从磁盘读写的次数，Linux内核设计了一层内存缓存，把磁盘数据缓存到内存中。由于内存以4K大小的 <code>页</code> 为单位管理，磁盘数据也以页为单位缓存，因此也称为<code>页缓存</code>。在每个缓存<code>页</code>中，都包含了部分磁盘信息的副本。</p>
+</li>
+<li>
+<p>对于读操作, 如果因为之前读过或者被预读加载进来，而本次要读取数据刚好在缓存中命中，就可以直接从缓存中读取，不需要深入到磁盘。</p>
+</li>
+<li>对于写操作, 不管是<code>同步写</code>还是<code>异步写</code>，都会把数据copy到缓存，差别在于异步写只是copy且把页标识脏后直接返回，而同步写还会调用类似fsync()的操作等待回写. <code>异步写</code>产生的<code>脏数据</code>会在<strong>合适</strong>的时候被内核工作队列<code>writeback</code>进程回刷。</li>
+</ul>
+<h3 id="writeback4">内核writeback线程的4个主要内核参数</h3>
+<table>
+<thead>
+<tr>
+<th>内核参数</th>
+<th>默认值</th>
+<th>单位</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/proc/sys/vm/dirty_writeback_centisecs</td>
+<td>500</td>
+<td>1/100秒</td>
+<td>定期唤醒writeback内核线程，回写脏页</td>
+</tr>
+<tr>
+<td>/proc/sys/vm/dirty_expire_centisecs</td>
+<td>300</td>
+<td>1/100秒</td>
+<td>writeback线程被唤醒后，并不是写回所有脏页，而是只写变脏超过dirty_expire_centisecs时间的页.</td>
+</tr>
+<tr>
+<td>/proc/sys/vm/dirty_background_ratio</td>
+<td>10</td>
+<td>比例，默认为10%，当脏页比例超过系统所有page数量的10%时</td>
+<td>当脏页占系统内存的比例超过/proc/sys/vm/dirty_background_ratio 的时候，write系统调用会唤醒pdflush回写dirty page,直到脏页比例低于/proc/sys/vm/dirty_background_ratio，但write系统调用不会被阻塞，立即返回。</td>
+</tr>
+<tr>
+<td>/proc/sys/vm/dirty_ratio</td>
+<td>20</td>
+<td>比例，默认为20%，当脏页数量占系统所有页数量比例超过20%时</td>
+<td>write系统调用会被阻塞，writeback线程会工作，直到脏页占比低于/proc/sys/vm/dirty_ratio</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><a href="https://www.cnblogs.com/gmpy/p/12657801.html">更多参考</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/sysctl/vm.txt">内核官方文档</a></li>
+</ul>
+<h2 id="io_1">IO操作的三种模式</h2>
+<p>从系统调用的接口再往下，Linux下的IO栈致大致有三个层次：</p>
+<ol>
+<li>文件系统层，以 write 为例，内核拷贝了write参数指定的用户态数据到文件系统Cache中，并适时向下层同步</li>
+<li>块层，管理块设备的IO队列，对IO请求进行合并、排序（还记得操作系统课程学习过的IO调度算法吗？）</li>
+<li>设备层，通过DMA与内存直接交互，完成数据和具体设备之间的交互
+结合这个图，想想Linux系统编程里用到的Buffered IO、mmap、Direct IO，这些机制怎么和Linux IO栈联系起来呢？上面的图有点复杂，我画一幅简图，把这些机制所在的位置添加进去：</li>
+</ol>
+<p><img alt="png" src="../../img/WX20210912-223055.png" /></p>
+<p>介绍一下三种IO模式:</p>
+<ul>
+<li>
+<p>Buffered IO: 传统的Buffered IO使用read读取文件的过程： 从磁盘到Page Cache算第一次的话，从Page Cache到用户态buffer就是第二次了. 写操作的话, 是写到Page Cahce就返回, 然后等待writeback内核线程刷回去.</p>
+</li>
+<li>
+<p>MMAP: 直接把Page Cache映射到了用户态的地址空间里了，所以mmap的方式读文件是没有第二次拷贝过程的.</p>
+<ul>
+<li>如何开启MMAP: 使用mmap系统调用.</li>
+</ul>
+</li>
+<li>
+<p>Direct IO: 这个机制更狠，直接让用户态和块IO层对接，直接放弃Page Cache，从磁盘直接和用户态拷贝数据. </p>
+<ul>
+<li>好处:  写操作可以直接写到块IO层. </li>
+<li>坏处: 读操作默认情况下，不如Buffered IO，除非你在用户态自己模拟Buffered IO，做缓存.</li>
+<li>如何开启Direct IO: An application invokes direct I/O by opening a file with the O_DIRECT flag.</li>
+</ul>
+</li>
+</ul>
+<h3 id="_4">再来看一张详细的图</h3>
+<p><img alt="png" src="../../img/WX20210912-223549.png" /></p>
+<ul>
+<li>用户层最多到达<code>通用块层</code>, <code>通用块层</code>以下必须由内核自行控制了.</li>
+<li>用户层在wirte系统调用时, 使用<code>O_DIRECT</code>标记, 会开启Direct IO, 但光有Direct IO, 仍然只是写到<code>通用块层</code>, 如果需要数据绝不丢失, 那么还要加上<code>O_SYNC</code>标记</li>
+</ul>
+<h2 id="bio">BIO层的优化</h2>
+<ul>
+<li>为不同进程指定不同的IO优先级.  Linux  supports I/O scheduling priorities and classes since 2.6.13 with the CFQ I/O scheduler.</li>
+<li>常用的IO classess包括: <code>Idle</code>、<code>Best-effort</code>、<code>Realtime</code>.</li>
+</ul>
+<h2 id="request">Request层的优化</h2>
+<ul>
+<li>电梯调度算法</li>
+<li>Request队列个数、预读数据大小</li>
+</ul>
+<h3 id="io_2">关于IO调度算法的单队列和多队列</h3>
+<p>网上检索<code>IO调度算法</code>，大量的资料都在描述<code>Deadline</code>，<code>CFQ</code>，<code>NOOP</code>这3种调度算法，却没有备注这只是<code>单队列</code>上适用的调度算法。在最新的代码上（我分析的代码版本为 5.7.0），已经完全切换到<code>multi-queue</code>的新架构上了，支持的IO调度算法就成了<code>mq-deadline</code>，<code>BFQ</code>，<code>Kyber</code>，<code>none</code>。</p>
+<p>在《Linux-storage-stack-diagram_v4.10》 对 Block Layer 的描述可以形象阐述单队列与多队列的差异。</p>
+<p><img alt="png" src="../../img/WechatIMG284.jpeg" /></p>
+<p>单队列的架构，一个块设备只有一个全局队列，所有请求都要往这个队列里面塞，这在多核高并发的情况下，尤其像服务器动则32个核的情况下，为了保证互斥而加的锁就导致了非常大的开销。此外，如果磁盘支持多队列并行处理，单队列的模型不能充分发挥其优越的性能。</p>
+<p>多队列的架构下，创建了<code>Software queues</code>和<code>Hardware dispatch queues</code>两级队列。Software queues是每个CPU core一个队列，且在其中实现IO调度。由于<strong>每个CPU一个单独队列，因此不存在锁竞争问题</strong>。Hardware Dispatch Queues的数量跟硬件情况有关，每个磁盘一个队列，如果磁盘支持并行N个队列，则也会创建N个队列。在IO请求从Software queues提交到Hardware Dispatch Queues的过程中是需要加锁的。理论上，多队列的架构的效率最差也只是跟单队列架构持平。</p>
+<h3 id="devsda-io">查看当前设备,比如/dev/sda 的IO调度算法查看</h3>
+<p><code>cat /sys/block/sda/queue/scheduler</code></p>
+<p>debian 10 虚拟机</p>
+<p><img alt="png" src="../../img/2C9E1A8D-7CCD-40DC-8FBE-9CB14B465F58.png" /></p>
+<p>Debian 10 物理机</p>
+<p><img alt="png" src="../../img/DC22ACEF-9991-4D7F-AD60-ABC34314CF92.png" /></p>
+<h3 id="request-queue">适当加大request queue的长度</h3>
+<ul>
+<li>
+<p>/sys/block/sda/queue/nr_requests (块层最大可以申请的request数量)</p>
+</li>
+<li>
+<p>/sys/block/sda/queue/read_ahead_kb (预读最大的数据量)</p>
+</li>
+</ul>
+<h2 id="_5">块设备的优化</h2>
+<ul>
+<li>如果服务器几乎没有掉电风险，那么建议开启Raid卡的缓存、硬盘本身的缓存. 涉及到命令工具不少, 例如服务器厂商提供的Raid卡操作工具.</li>
+</ul>
+<h2 id="_6">参考文章</h2>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/cX1ciAsYZ0WZm6baFDl-NA">文章1</a></li>
+<li><a href="https://mp.weixin.qq.com/s/ThTTjG20YSpKESwZHi8N5Q">文章2</a></li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../3_zero_copy/" class="btn btn-neutral float-right" title="第三篇 Linux 零拷贝技术总结">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../1_four_object_of_VFS/" class="btn btn-neutral" title="第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../1_four_object_of_VFS/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../3_zero_copy/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>

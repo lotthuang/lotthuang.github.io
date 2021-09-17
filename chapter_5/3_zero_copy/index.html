@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>第一篇 个人学习心得总结 - Lott's Blog</title>
+  <title>第三篇 Linux 零拷贝技术总结 - Lott's Blog</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u7b2c\u4e00\u7bc7 \u4e2a\u4eba\u5b66\u4e60\u5fc3\u5f97\u603b\u7ed3";
-    var mkdocs_page_input_path = "chapter_8/1_xuexixinde.md";
+    var mkdocs_page_name = "\u7b2c\u4e09\u7bc7 Linux \u96f6\u62f7\u8d1d\u6280\u672f\u603b\u7ed3";
+    var mkdocs_page_input_path = "chapter_5/3_zero_copy.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -179,15 +179,29 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../chapter_5/1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
+    <a class="" href="../1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../chapter_5/2_io_stack/">第二篇 Linux IO栈总结</a>
+    <a class="" href="../2_io_stack/">第二篇 Linux IO栈总结</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
+    <a class="current" href="./">第三篇 Linux 零拷贝技术总结</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">概述</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#dma">认识DMA</a></li>
+        
+            <li><a class="toctree-l4" href="#_2">零拷贝技术</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -246,52 +260,33 @@
 		
     <span class="caption-text">第八章 职场通用经验</span>
     <ul class="subnav">
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">第一篇 个人学习心得总结</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#_1">一 说明</a></li>
-    
-
-    <li class="toctree-l3"><a href="#_2">二 学习方法,如何保证自己学的比别人高效</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#_3">（一）核心概念和核心流程梳理法</a></li>
-        
-            <li><a class="toctree-l4" href="#_4">(二) 举一反三法.</a></li>
-        
-            <li><a class="toctree-l4" href="#_5">三 学习方向</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../../chapter_8/1_xuexixinde/">第一篇 个人学习心得总结</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../2_bangzhuqitatongxue/">第二篇 如何帮助其他同学提升技术能力</a>
+    <a class="" href="../../chapter_8/2_bangzhuqitatongxue/">第二篇 如何帮助其他同学提升技术能力</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../3_yewuliuchengshuyu/">第三篇 业务流程术语梳理</a>
+    <a class="" href="../../chapter_8/3_yewuliuchengshuyu/">第三篇 业务流程术语梳理</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../4_jishunenglimoxing/">第四篇 技术能力模型总结</a>
+    <a class="" href="../../chapter_8/4_jishunenglimoxing/">第四篇 技术能力模型总结</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../5_chanpingsiwei_1/">第五篇 产品思维总结和梳理</a>
+    <a class="" href="../../chapter_8/5_chanpingsiwei_1/">第五篇 产品思维总结和梳理</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../6_jixiaobaogao/">第六篇 如何写绩效报告</a>
+    <a class="" href="../../chapter_8/6_jixiaobaogao/">第六篇 如何写绩效报告</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../7_xiangshangguanli/">第七篇 如何向上管理</a>
+    <a class="" href="../../chapter_8/7_xiangshangguanli/">第七篇 如何向上管理</a>
                 </li>
     </ul>
 	    </li>
@@ -329,11 +324,11 @@
     
       
         
-          <li>第八章 职场通用经验 &raquo;</li>
+          <li>第五章 Linux IO子系统 &raquo;</li>
         
       
     
-    <li>第一篇 个人学习心得总结</li>
+    <li>第三篇 Linux 零拷贝技术总结</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -343,34 +338,16 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="_1">一 说明</h1>
-<p>本篇博客用于记录在技术学习方面的一些心得体会,望读者多多反馈.</p>
-<h1 id="_2">二 学习方法,如何保证自己学的比别人高效</h1>
-<h2 id="_3">（一）核心概念和核心流程梳理法</h2>
+                <h1 id="_1">概述</h1>
 <ul>
-<li>
-<p>比如看一本很厚的书例如《深入Linux内核架构》,由于内容很多非常难以一下子全部搞懂,需要先把内容读薄
-也就是看完一个章节内容后，进行梳理。例如看完中断处理，要总结核心模型，核心函数，画出他们之间的联系图
-下次要用到本章内容时，先用自己梳理的联系图,遇到解释不通的地方再去查细节.</p>
-</li>
-<li>
-<p>比如SQLAlchemy,它总共就提供2个system，如果细分的话，它又有很多子系统(子组件),我们要对他们进行逐一理解,分类，然后画出他们之间的关系。</p>
-</li>
-<li>
-<p>另外，这里也可以把自己想象成Linux的某个子系统, 例如你是Linux的内存子系统、或者内核协议栈, 你会如何设计、完成高效、高质量的管理工作, 这样更加有助于你理解底层技术知识.</p>
-</li>
+<li>本文总结Linux零拷贝技术</li>
 </ul>
-<h2 id="_4">(二) 举一反三法.</h2>
-<p>当时解决了问题，但是后面要用到别的小知识，通常这种情况要能方便的查询后面的小知识。</p>
+<h2 id="dma">认识DMA</h2>
 <ul>
-<li>举例: 比如html代码里，字体、背景的颜色，要能在自己的笔记里方便的查询。</li>
-<li>比如smarty这种平时要用到但又不主流的语言，其所有的内置函数要能快速查询到。</li>
+<li>DMA 技术就是我们在主板上放一块独立的芯片。在进行内存和 I/O 设备的数据传输的时候，我们不再通过 CPU 来控制数据传输，而直接通过 DMA 控制器（DMA Controller，简称 DMAC）。</li>
+<li>这块芯片，我们可以认为它其实就是一个协处理器（Co-Processor）。</li>
 </ul>
-<h2 id="_5">三 学习方向</h2>
-<p><strong>技术知识那么多, 如汪洋大海一般, 哪些才是学习的重点和方向呢?</strong></p>
-<h3 id="1">1 从平时用的不方便的地方，着手研究，使自己和大家用起来方便</h3>
-<h3 id="2-sre">2 从别人踩过的坑学习，例如其他SRE发出来的故障报告，避免自己踩坑</h3>
-<h3 id="3">3 当你从来没有实现过(拥有过)某项技能时，从优秀的人、优秀的产品那里学习,多和优秀的、专业的人交流.</h3>
+<h2 id="_2">零拷贝技术</h2>
               
             </div>
           </div>
@@ -378,10 +355,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../2_bangzhuqitatongxue/" class="btn btn-neutral float-right" title="第二篇 如何帮助其他同学提升技术能力">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../chapter_6/1_linux_buddy/" class="btn btn-neutral float-right" title="第一篇 伙伴系统介绍">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../../chapter_7/5_server_side_evolution/" class="btn btn-neutral" title="第五篇 服务端进化过程梳理"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../2_io_stack/" class="btn btn-neutral" title="第二篇 Linux IO栈总结"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -407,10 +384,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../../chapter_7/5_server_side_evolution/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../2_io_stack/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../2_bangzhuqitatongxue/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../chapter_6/1_linux_buddy/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

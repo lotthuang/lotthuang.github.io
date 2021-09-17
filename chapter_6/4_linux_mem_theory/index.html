@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>第二篇 Linux IO栈总结 - Lott's Blog</title>
+  <title>第四篇 Linux内存管理原理 - Lott's Blog</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u7b2c\u4e8c\u7bc7 Linux IO\u6808\u603b\u7ed3";
-    var mkdocs_page_input_path = "chapter_5/io_stack.md";
+    var mkdocs_page_name = "\u7b2c\u56db\u7bc7 Linux\u5185\u5b58\u7ba1\u7406\u539f\u7406";
+    var mkdocs_page_input_path = "chapter_6/4_linux_mem_theory.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -179,25 +179,15 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
+    <a class="" href="../../chapter_5/1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
                 </li>
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">第二篇 Linux IO栈总结</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#_1">概述</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#io">IO栈总体认知</a></li>
-        
-            <li><a class="toctree-l4" href="#_2">写操作的三种模式</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../../chapter_5/2_io_stack/">第二篇 Linux IO栈总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
                 </li>
     </ul>
 	    </li>
@@ -208,7 +198,7 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../chapter_6/1_linux_buddy/">第一篇 伙伴系统介绍</a>
+    <a class="" href="../1_linux_buddy/">第一篇 伙伴系统介绍</a>
                 </li>
                 <li class="">
                     
@@ -217,6 +207,24 @@
                 <li class="">
                     
     <a class="" href="../../daibuchong/">第三篇 进程虚拟地址空间介绍</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">第四篇 Linux内存管理原理</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">概述</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_2">虚拟内存的由来</a></li>
+        
+            <li><a class="toctree-l4" href="#_3">内存分段</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -316,11 +324,11 @@
     
       
         
-          <li>第五章 Linux IO子系统 &raquo;</li>
+          <li>第六章 Linux Mem子系统 &raquo;</li>
         
       
     
-    <li>第二篇 Linux IO栈总结</li>
+    <li>第四篇 Linux内存管理原理</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -332,16 +340,17 @@
               
                 <h1 id="_1">概述</h1>
 <ul>
-<li>本篇文档梳理Linux IO栈</li>
+<li>总结Linux内存管理原理</li>
 </ul>
-<h2 id="io">IO栈总体认知</h2>
-<p><img alt="png" src="../../img/DD92F3B2-B981-47A5-B756-F7050066B775.png" /></p>
-<h2 id="_2">写操作的三种模式</h2>
-<ul>
-<li>Buffered IO</li>
-<li>Direct IO</li>
-<li>MMAP</li>
-</ul>
+<h2 id="_2">虚拟内存的由来</h2>
+<p>如果你是电子相关专业的，肯定在大学里捣鼓过单片机。</p>
+<p>单片机是没有操作系统的，所以每次写完代码，都需要借助工具把程序烧录进去，这样程序才能跑起来。</p>
+<p>另外，<strong>单片机的 CPU 是直接操作内存的「物理地址」</strong>。</p>
+<p><img alt="png" src="../../img/WechatIMG286.png" /></p>
+<h2 id="_3">内存分段</h2>
+<p>程序是由若干个逻辑分段组成的，如可由<code>代码分段</code>、<code>数据分段</code>、<code>栈段</code>、<code>堆段</code>组成。不同的段是有不同的属性的，所以就用<code>分段（Segmentation）</code>的形式把这些段分离出来。</p>
+<p>分段机制下的虚拟地址由两部分组成，<code>段选择子</code>和<code>段内偏移量</code>。</p>
+<p><img alt="png" src="../../img/WechatIMG287.jpeg" /></p>
               
             </div>
           </div>
@@ -349,10 +358,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../chapter_6/1_linux_buddy/" class="btn btn-neutral float-right" title="第一篇 伙伴系统介绍">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../chapter_7/1_sync_file/" class="btn btn-neutral float-right" title="第一篇 不同主机之间的文件传输">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../1_four_object_of_VFS/" class="btn btn-neutral" title="第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../daibuchong/" class="btn btn-neutral" title="第三篇 进程虚拟地址空间介绍"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -378,10 +387,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../1_four_object_of_VFS/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../../daibuchong/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../../chapter_6/1_linux_buddy/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../chapter_7/1_sync_file/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
