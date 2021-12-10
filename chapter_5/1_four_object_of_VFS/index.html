@@ -100,6 +100,10 @@
                     
     <a class="" href="../../chapter_2/jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
                 </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/cicd.md">第八篇 CICD流程概述</a>
+                </li>
     </ul>
 	    </li>
           
@@ -425,7 +429,7 @@
 </code></pre>
 
 <h1 id="dentry">二 dentry</h1>
-<p>1 目录项的主要作用是方便查找文件。一个路径的各个组成部分，不管是目录还是普通的文件，都是一个目录项对象。如，在路径 /home/h42/example.c 中，目录 /, home/, h42/ 和文件 example.c 都对应一个目录项对象。
+<p>1 目录项的主要作用是方便查找文件。一个路径的各个组成部分，不管是目录还是普通的文件，都是一个目录项对象。如，在路径 /home/hero/example.c 中，目录 /, home/, hero/ 和文件 example.c 都对应一个目录项对象。
 2 目录项里有一个 d_inode成员，指向真正的inode</p>
 <p>dentry的源码 ,在  include/linux/dcache.h  89行</p>
 <pre><code>struct dentry {
@@ -523,7 +527,7 @@ struct path {
 <p>file结构体和 inode的对应关系:</p>
 <ul>
 <li>
-<p>多个file结构体可以指向同一个inode，例如进程A和进程B都打开了同一个文件/home/h42/example.c ,内核会产生2个file结构体</p>
+<p>多个file结构体可以指向同一个inode，例如进程A和进程B都打开了同一个文件/home/hero/example.c ,内核会产生2个file结构体</p>
 </li>
 <li>
 <p>进程的FD和file结构体的对应关系:</p>
