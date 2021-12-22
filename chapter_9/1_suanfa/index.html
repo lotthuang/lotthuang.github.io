@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>第三篇 运维平台建设的理念 - Lott's Blog</title>
+  <title>第一篇 算法总结 - Lott's Blog</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u7b2c\u4e09\u7bc7 \u8fd0\u7ef4\u5e73\u53f0\u5efa\u8bbe\u7684\u7406\u5ff5";
-    var mkdocs_page_input_path = "chapter_2/yunweipingtailinian.md";
+    var mkdocs_page_name = "\u7b2c\u4e00\u7bc7 \u7b97\u6cd5\u603b\u7ed3";
+    var mkdocs_page_input_path = "chapter_9/1_suanfa.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -74,59 +74,35 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../yunweijiazhi/">第一篇 运维的价值和目标</a>
+    <a class="" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
-                </li>
-                <li class=" current">
-                    
-    <a class="current" href="./">第三篇 运维平台建设的理念</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#_1">一个合格的运维平台</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#_2">一 至少要解决以下几个问题</a></li>
-        
-            <li><a class="toctree-l4" href="#_3">二 至少具备如下几个特性</a></li>
-        
-            <li><a class="toctree-l4" href="#_4">三 最少要具备如下几项功能：</a></li>
-        
-            <li><a class="toctree-l4" href="#_5">四 运维平台三大核心能力：</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l3"><a href="#_8">一句话总结</a></li>
-    
-
-    <li class="toctree-l3"><a href="#_9">参考文档</a></li>
-    
-
-    </ul>
+    <a class="" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../guzhangguanli/">第四篇 故障管理概述</a>
+    <a class="" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../biangengguanli/">第五篇 变更管理概述</a>
+    <a class="" href="../../chapter_2/guzhangguanli/">第四篇 故障管理概述</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../rongliangguanli/">第六篇 容量管理概述</a>
+    <a class="" href="../../chapter_2/biangengguanli/">第五篇 变更管理概述</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+    <a class="" href="../../chapter_2/rongliangguanli/">第六篇 容量管理概述</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../cicd.md">第八篇 CICD流程概述</a>
+    <a class="" href="../../chapter_2/jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/cicd.md">第八篇 CICD流程概述</a>
                 </li>
     </ul>
 	    </li>
@@ -309,9 +285,15 @@
 		
     <span class="caption-text">第九章 编程经验</span>
     <ul class="subnav">
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../../chapter_9/1_suanfa/">第一篇 算法总结</a>
+    <a class="current" href="./">第一篇 算法总结</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">算法简介</a></li>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -353,11 +335,11 @@
     
       
         
-          <li>第二章 运维工作总结 &raquo;</li>
+          <li>第九章 编程经验 &raquo;</li>
         
       
     
-    <li>第三篇 运维平台建设的理念</li>
+    <li>第一篇 算法总结</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -367,63 +349,9 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="_1">一个合格的运维平台</h1>
-<h2 id="_2">一 至少要解决以下几个问题</h2>
-<ol>
-<li>运维日常繁琐的重复工作</li>
-<li>软硬件基础架构资源信息混沌</li>
-<li>研运职能边界混乱，职责对立，效能低弱</li>
-</ol>
-<blockquote>
-<p>第一要务是解决当下痛点，往往是运维双手急需释放，刚性需求衍生运维平台。缓和运维开发之间供求关系，建立清晰职责边界，服务好研发第一生产力，既而再改变运开关系供求链，从对抗到赋能。在成本、安全、质量、效率之间寻找平衡</p>
-</blockquote>
-<h2 id="_3">二 至少具备如下几个特性</h2>
-<ol>
-<li>持续集成</li>
-<li>持续交付</li>
-<li>持续部署</li>
-</ol>
-<blockquote>
-<p>运维平台，要需求判研准确、成果交付迅速、产品持续迭代、交付质量可靠。其次是产品定位要准确，每个产品设计人都要有躬身入局的能手，一线经历丰富且深刻。</p>
-</blockquote>
-<h2 id="_4">三 最少要具备如下几项功能：</h2>
-<ol>
-<li>CMDB</li>
-<li>服务树</li>
-<li>流程管控(比如workflow)</li>
-<li>CICD</li>
-<li>排班</li>
-</ol>
-<blockquote>
-<p>CMDB,服务树为传统运维平台必备功能，随着公有云强势下沉，Kubernetes，servermesh逐步普及迭代，新型服务治理方式不再需要传统点到点这种中心化的管理功能。流程管控、CICD、排班是传统公司质量管理、SLA达标的重要方式。</p>
-</blockquote>
-<h2 id="_5">四 运维平台三大核心能力：</h2>
-<ol>
-<li>配置管理能力</li>
-<li>变更管理能力</li>
-<li>状态管理能力</li>
-</ol>
-<h3 id="_6">运维平台的建设理念</h3>
-<ol>
-<li>标准化先行</li>
-<li>快速尝试</li>
-<li>接受不完美</li>
-<li>业务导向</li>
-</ol>
-<h3 id="_7">运维平台的延伸</h3>
-<ol>
-<li>数据化运营能力</li>
-<li>产品化UI能力</li>
-<li>全流程监管闭环能力</li>
-</ol>
-<h1 id="_8">一句话总结</h1>
-<ul>
-<li>用老板思维打造产研运共同体，旨在为产研赋能提效。</li>
-</ul>
-<h1 id="_9">参考文档</h1>
-<ul>
-<li>https://mp.weixin.qq.com/s/63n2CPfaHLiu-zFtrvlEUg</li>
-</ul>
+                <h1 id="_1">算法简介</h1>
+<p>算法是指解题方案的准确而完整的描述，是一系列解决问题的清晰指令，算法代表着用系统的方法描述解决问题的策略机制。对于同一个问题的解决，可能会存在着不同的算法，为了衡量一个算法的优劣，提出了<code>空间复杂度</code>与<code>时间复杂度</code>这两个概念。</p>
+<h1 id="_2"></h1>
               
             </div>
           </div>
@@ -431,10 +359,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../guzhangguanli/" class="btn btn-neutral float-right" title="第四篇 故障管理概述">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../chapter_10/1_dockerfile_best_practice/" class="btn btn-neutral float-right" title="第一篇 dockerfile最佳实践">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../yunweizhiyeguifan/" class="btn btn-neutral" title="第二篇 业务SRE的职业规范"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_8/7_xiangshangguanli/" class="btn btn-neutral" title="第七篇 如何向上管理"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -460,10 +388,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../yunweizhiyeguifan/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../../chapter_8/7_xiangshangguanli/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../guzhangguanli/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../chapter_10/1_dockerfile_best_practice/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

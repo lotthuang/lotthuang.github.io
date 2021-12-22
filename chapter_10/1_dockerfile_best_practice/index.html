@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>第三篇 运维平台建设的理念 - Lott's Blog</title>
+  <title>第一篇 dockerfile最佳实践 - Lott's Blog</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u7b2c\u4e09\u7bc7 \u8fd0\u7ef4\u5e73\u53f0\u5efa\u8bbe\u7684\u7406\u5ff5";
-    var mkdocs_page_input_path = "chapter_2/yunweipingtailinian.md";
+    var mkdocs_page_name = "\u7b2c\u4e00\u7bc7 dockerfile\u6700\u4f73\u5b9e\u8df5";
+    var mkdocs_page_input_path = "chapter_10/1_dockerfile_best_practice.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -74,59 +74,35 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../yunweijiazhi/">第一篇 运维的价值和目标</a>
+    <a class="" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
-                </li>
-                <li class=" current">
-                    
-    <a class="current" href="./">第三篇 运维平台建设的理念</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#_1">一个合格的运维平台</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#_2">一 至少要解决以下几个问题</a></li>
-        
-            <li><a class="toctree-l4" href="#_3">二 至少具备如下几个特性</a></li>
-        
-            <li><a class="toctree-l4" href="#_4">三 最少要具备如下几项功能：</a></li>
-        
-            <li><a class="toctree-l4" href="#_5">四 运维平台三大核心能力：</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l3"><a href="#_8">一句话总结</a></li>
-    
-
-    <li class="toctree-l3"><a href="#_9">参考文档</a></li>
-    
-
-    </ul>
+    <a class="" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../guzhangguanli/">第四篇 故障管理概述</a>
+    <a class="" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../biangengguanli/">第五篇 变更管理概述</a>
+    <a class="" href="../../chapter_2/guzhangguanli/">第四篇 故障管理概述</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../rongliangguanli/">第六篇 容量管理概述</a>
+    <a class="" href="../../chapter_2/biangengguanli/">第五篇 变更管理概述</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+    <a class="" href="../../chapter_2/rongliangguanli/">第六篇 容量管理概述</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../cicd.md">第八篇 CICD流程概述</a>
+    <a class="" href="../../chapter_2/jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/cicd.md">第八篇 CICD流程概述</a>
                 </li>
     </ul>
 	    </li>
@@ -320,9 +296,30 @@
 		
     <span class="caption-text">第十章 容器化和Kubernetes</span>
     <ul class="subnav">
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../../chapter_10/1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
+    <a class="current" href="./">第一篇 dockerfile最佳实践</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#dockerfile">写Dockerfile的小建议</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1">关于容器内的1号进程</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_1">这里总结了一些小建议：</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#run">RUN命令</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
                 <li class="">
                     
@@ -353,11 +350,11 @@
     
       
         
-          <li>第二章 运维工作总结 &raquo;</li>
+          <li>第十章 容器化和Kubernetes &raquo;</li>
         
       
     
-    <li>第三篇 运维平台建设的理念</li>
+    <li>第一篇 dockerfile最佳实践</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -367,63 +364,147 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="_1">一个合格的运维平台</h1>
-<h2 id="_2">一 至少要解决以下几个问题</h2>
-<ol>
-<li>运维日常繁琐的重复工作</li>
-<li>软硬件基础架构资源信息混沌</li>
-<li>研运职能边界混乱，职责对立，效能低弱</li>
-</ol>
-<blockquote>
-<p>第一要务是解决当下痛点，往往是运维双手急需释放，刚性需求衍生运维平台。缓和运维开发之间供求关系，建立清晰职责边界，服务好研发第一生产力，既而再改变运开关系供求链，从对抗到赋能。在成本、安全、质量、效率之间寻找平衡</p>
-</blockquote>
-<h2 id="_3">二 至少具备如下几个特性</h2>
-<ol>
-<li>持续集成</li>
-<li>持续交付</li>
-<li>持续部署</li>
-</ol>
-<blockquote>
-<p>运维平台，要需求判研准确、成果交付迅速、产品持续迭代、交付质量可靠。其次是产品定位要准确，每个产品设计人都要有躬身入局的能手，一线经历丰富且深刻。</p>
-</blockquote>
-<h2 id="_4">三 最少要具备如下几项功能：</h2>
-<ol>
-<li>CMDB</li>
-<li>服务树</li>
-<li>流程管控(比如workflow)</li>
-<li>CICD</li>
-<li>排班</li>
-</ol>
-<blockquote>
-<p>CMDB,服务树为传统运维平台必备功能，随着公有云强势下沉，Kubernetes，servermesh逐步普及迭代，新型服务治理方式不再需要传统点到点这种中心化的管理功能。流程管控、CICD、排班是传统公司质量管理、SLA达标的重要方式。</p>
-</blockquote>
-<h2 id="_5">四 运维平台三大核心能力：</h2>
-<ol>
-<li>配置管理能力</li>
-<li>变更管理能力</li>
-<li>状态管理能力</li>
-</ol>
-<h3 id="_6">运维平台的建设理念</h3>
-<ol>
-<li>标准化先行</li>
-<li>快速尝试</li>
-<li>接受不完美</li>
-<li>业务导向</li>
-</ol>
-<h3 id="_7">运维平台的延伸</h3>
-<ol>
-<li>数据化运营能力</li>
-<li>产品化UI能力</li>
-<li>全流程监管闭环能力</li>
-</ol>
-<h1 id="_8">一句话总结</h1>
+                <h2 id="dockerfile">写Dockerfile的小建议</h2>
 <ul>
-<li>用老板思维打造产研运共同体，旨在为产研赋能提效。</li>
+<li>要使用 tag，但不要 latest。</li>
+<li>Debian 挺好的，不要总 Ubuntu。</li>
+<li>apt-get update 在前，rm -rf /var/lib/apt/lists/* 在后。</li>
+<li>yum install，不忘 yum clean。</li>
+<li>多 RUN 要合并，来减少层数。</li>
+<li>无用的软件，不要乱安装。</li>
+<li>COPY 放最后，缓存很开心。</li>
+<li>善用 dockerignore，不浪费传输。</li>
+<li>不忘 MAINTAINER，这都是我的。</li>
 </ul>
-<h1 id="_9">参考文档</h1>
+<h3 id="1">关于容器内的1号进程</h3>
 <ul>
-<li>https://mp.weixin.qq.com/s/63n2CPfaHLiu-zFtrvlEUg</li>
+<li>如果是单进程容器, 则直接使用业务进程作为1号进程, 例如uwsgi进程、tomcat进程</li>
+<li>如果是胖容器, 则建议使用<a href="https://cloud-atlas.readthedocs.io/zh_CN/latest/docker/init/docker_tini.html">tini</a>作为容器内1号进程. tini的优势:</li>
+<li>
+<ul>
+<li>tini可以避免应用程序生成僵尸进程</li>
 </ul>
+</li>
+<li>
+<ul>
+<li>tini可以处理Docker进程中运行的程序的信号，例如，通过Tini， SIGTERM 可以终止进程，不需要你明确安装一个信号处理器</li>
+</ul>
+</li>
+</ul>
+<h2 id="_1">这里总结了一些小建议：</h2>
+<p>1、  Use absolute WORKDIR.</p>
+<p>Problematic code:</p>
+<pre><code>FROM busybox
+WORKDIR usr/src/app
+</code></pre>
+<p>Correct code:</p>
+<pre><code>FROM busybox
+WORKDIR /usr/src/app
+</code></pre>
+<p>2、  Use WORKDIR to switch to a directory.</p>
+<p>Problematic code:</p>
+<pre><code>FROM busybox
+RUN cd /usr/src/app &amp;&amp; git clone git@github.com:lukasmartinelli/hadolint.git
+</code></pre>
+<p>Correct code:</p>
+<pre><code>FROM busybox
+RUN git clone git@github.com:lukasmartinelli/hadolint.git /usr/src/app
+</code></pre>
+<p>3、  Do not use sudo as it leads to unpredictable behavior. Use a tool like gosu to enforce root.</p>
+<p>Problematic code:</p>
+<pre><code>FROM busybox
+RUN sudo apt-get install
+</code></pre>
+<p>Correct code:</p>
+<pre><code>FROM busybox
+RUN apt-get install
+</code></pre>
+<p>4、  Do not use apt-get upgrade or dist-upgrade.
+Problematic code:</p>
+<pre><code>FROM debian
+RUN apt-get update &amp;&amp; apt-get upgrade
+</code></pre>
+<p>Correct code:</p>
+<pre><code>FROM debian
+RUN apt-get update
+</code></pre>
+<p>5、Using latest is prone to errors if the image will ever update. Pin the version explicitly to a release tag.</p>
+<p>Problematic code:</p>
+<pre><code>FROM debian:latest or FROM debian
+</code></pre>
+<p>Correct code:</p>
+<pre><code>FROM debian:jessie
+</code></pre>
+<p>6、  Pin versions in apt get install. 并且要带 -y参数， pip也一样。</p>
+<p>Problematic code:</p>
+<pre><code>FROM busybox
+RUN apt-get install python
+</code></pre>
+<p>Correct code:</p>
+<pre><code>FROM busybox
+RUN apt-get install -y python=2.7
+</code></pre>
+<p>7、Delete the apt-get lists after installing something.</p>
+<p>Problematic code:</p>
+<pre><code>RUN apt-get update &amp;&amp; apt-get install -y python
+</code></pre>
+<p>Correct code:</p>
+<pre><code>RUN apt-get update &amp;&amp; apt-get install -y python \
+ &amp;&amp; apt-get clean \
+ &amp;&amp; rm -rf /var/lib/apt/lists/*
+</code></pre>
+<p>8、Use ADD for extracting archives into an image.</p>
+<p>9、Valid UNIX ports range from 0 to 65535.</p>
+<p>10、Provide an email adress or URL as maintainer.</p>
+<p>11、Use COPY instead of ADD for files and folders.</p>
+<p>12、Specify a maintainer of the Dockerfile. 并 写明联系方式</p>
+<h3 id="run">RUN命令</h3>
+<p>RUN 指令是用来执行命令行命令的。由于命令行的强大能力，RUN 指令在定制镜像时是最常用的指令之一。其格式有两种：</p>
+<ul>
+<li>
+<p>shell 格式：RUN &lt;命令&gt;，就像直接在命令行中输入的命令一样。刚才写的 Dockerfile 中的 RUN 指令就是这种格式。
+<code>RUN echo '&lt;h1&gt;Hello, Docker!&lt;/h1&gt;' &gt; /usr/share/nginx/html/index.html</code></p>
+</li>
+<li>
+<p>exec 格式：RUN ["可执行文件", "参数1", "参数2"]，这更像是函数调用中的格式。</p>
+</li>
+</ul>
+<p>既然 RUN 就像 Shell 脚本一样可以执行命令，那么我们是否就可以像 Shell 脚本一样把每个命令对应一个 RUN 呢？比如这样：</p>
+<pre><code>FROM debian:stretch
+
+RUN apt-get update
+RUN apt-get install -y gcc libc6-dev make wget
+RUN wget -O redis.tar.gz &quot;http://download.redis.io/releases/redis-5.0.3.tar.gz&quot;
+RUN mkdir -p /usr/src/redis
+RUN tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1
+RUN make -C /usr/src/redis
+RUN make -C /usr/src/redis install
+</code></pre>
+
+<p>之前说过，Dockerfile 中每一个指令都会建立一层，RUN 也不例外。每一个 RUN 的行为，就和刚才我们手工建立镜像的过程一样：新建立一层，在其上执行这些命令，执行结束后，commit 这一层的修改，构成新的镜像。</p>
+<p>而上面的这种写法，创建了 7 层镜像。这是完全没有意义的，而且很多运行时不需要的东西，都被装进了镜像里，比如编译环境、更新的软件包等等。结果就是产生非常臃肿、非常多层的镜像，不仅仅增加了构建部署的时间，也很容易出错。 这是很多初学 Docker 的人常犯的一个错误。</p>
+<p>Union FS 是有最大层数限制的，比如 AUFS，曾经是最大不得超过 42 层，现在是不得超过 127 层。</p>
+<p>上面的 Dockerfile 正确的写法应该是这样：</p>
+<pre><code>FROM debian:stretch
+
+RUN buildDeps='gcc libc6-dev make wget' \
+    &amp;&amp; apt-get update \
+    &amp;&amp; apt-get install -y $buildDeps \
+    &amp;&amp; wget -O redis.tar.gz &quot;http://download.redis.io/releases/redis-5.0.3.tar.gz&quot; \
+    &amp;&amp; mkdir -p /usr/src/redis \
+    &amp;&amp; tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1 \
+    &amp;&amp; make -C /usr/src/redis \
+    &amp;&amp; make -C /usr/src/redis install \
+    &amp;&amp; rm -rf /var/lib/apt/lists/* \
+    &amp;&amp; rm redis.tar.gz \
+    &amp;&amp; rm -r /usr/src/redis \
+    &amp;&amp; apt-get purge -y --auto-remove $buildDeps
+</code></pre>
+
+<p>首先，之前所有的命令只有一个目的，就是编译、安装 redis 可执行文件。因此没有必要建立很多层，这只是一层的事情。因此，这里没有使用很多个 RUN 对一一对应不同的命令，而是仅仅使用一个 RUN 指令，并使用 &amp;&amp; 将各个所需命令串联起来。将之前的 7 层，简化为了 1 层。在撰写 Dockerfile 的时候，<code>要经常提醒自己，这并不是在写 Shell 脚本，而是在定义每一层该如何构建</code>。</p>
+<p>并且，这里为了格式化还进行了换行。Dockerfile 支持 Shell 类的行尾添加 \ 的命令换行方式，以及行首 # 进行注释的格式。良好的格式，比如换行、缩进、注释等，会让维护、排障更为容易，这是一个比较好的习惯。</p>
+<p>此外，还可以看到这一组命令的最后添加了清理工作的命令，删除了为了编译构建所需要的软件，清理了所有下载、展开的文件，并且还清理了 apt 缓存文件。这是很重要的一步，我们之前说过，镜像是多层存储，每一层的东西并不会在下一层被删除，会一直跟随着镜像。因此镜像构建时，一定要确保每一层只添加真正需要添加的东西，任何无关的东西都应该清理掉。</p>
+<p>很多人制作出了很臃肿的镜像的原因之一，就是忘记了每一层构建的最后一定要清理掉无关文件。</p>
               
             </div>
           </div>
@@ -431,10 +512,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../guzhangguanli/" class="btn btn-neutral float-right" title="第四篇 故障管理概述">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../daibuchong/" class="btn btn-neutral float-right" title="第二篇 Kubernetes基础概念">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../yunweizhiyeguifan/" class="btn btn-neutral" title="第二篇 业务SRE的职业规范"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_9/1_suanfa/" class="btn btn-neutral" title="第一篇 算法总结"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -460,10 +541,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../yunweizhiyeguifan/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../../chapter_9/1_suanfa/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../guzhangguanli/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../daibuchong/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

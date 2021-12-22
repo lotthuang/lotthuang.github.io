@@ -304,6 +304,32 @@
     </ul>
 	    </li>
           
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第九章 编程经验</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_9/1_suanfa/">第一篇 算法总结</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第十章 容器化和Kubernetes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_10/1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第二篇 Kubernetes基础概念</a>
+                </li>
+    </ul>
+	    </li>
+          
         </ul>
       </div>
       &nbsp;
@@ -359,9 +385,18 @@ state 直接用 nf_conntrack 记录的连接状态（NEW/ESTABLISHED/RELATED/INV
 <p>RELATED，表示分组要发起一个新的连接，但是这个连接和一个现有的连接有关，例如：FTP的数据传输连接 和控制连接之间就是RELATED关系。RELATED是个比较麻烦的状态。当一个连接和某个已处于ESTABLISHED状态的连接有关系时，就被认为 是RELATED的了。换句话说，一个连接要想是RELATED的，首先要有一个ESTABLISHED的连接。这个ESTABLISHED连接再产生一 个主连接之外的连接，这个新的连接就是RELATED的了，当然前提是conntrack模块要能理解RELATED。ftp是个很好的例子，FTP- data连接就是和FTP-control有RELATED的。还有其他的例子，</p>
 <p>INVAILD，表示分组对应的连接是未知的，说明数据包不能被识别属于哪个连接或没有任何状态。有几个原因可以产生这种情况，比如，内存溢出，收到不知属于哪个连接的ICMP错误信息。一般地，我们DROP这个状态的任何东西。</p>
 <p>并不是所有Linux发行版会启用nf_conntrack模块</p>
+<h3 id="nf_conntrack-hashtable">nf_conntrack 结构和 hashtable</h3>
+<p><img alt="png" src="../../img/C78C4484-C9A7-4937-B12D-DFA20A5F1654.png" /></p>
+<p>在内核中，连接跟踪表是一个二维数组结构的哈希表(hash table)，哈希表的大小记作HASHSIZE，哈希表的每一项(hash table entry)称作bucket，因此哈希表中有HASHSIZE个bucket存在，每个bucket包含一个链表(linked list)，每个链表能够存放若干个conntrack条目(bucket size)。对于一个新收到的数据包，内核使用如下步骤判断其是否属于一个已有连接：</p>
+<p>1 内核提取此数据包信息(源目IP，port，协议号)进行hash计算得到一个hash值，在哈希表中以此hash值做索引，索引结果为数据包所属的bucket(链表)。这一步hash计算时间固定并且很短</p>
+<p>2 遍历hash得到的bucket，查找是否有匹配的conntrack条目。这一步是比较耗时的操作，bucket size越大（bucket长度越长），遍历时间越长</p>
+<ul>
+<li>CONNTRACK_MAX代表系统所有追踪的链接数</li>
+<li>HASHSIZE代表哈希表大小. 因此CONNTRACK_MAX:HASHSIZE最好不要太大, 通常推荐8:1或者4:1</li>
+</ul>
 <h2 id="_3">(二) 内核相关参数</h2>
-<pre><code>net.netfilter.nf_conntrack_max=6000000【600w，原值：100w】
-net.netfilter.nf_conntrack_buckets=1307648【不变】
+<pre><code>net.netfilter.nf_conntrack_max=6000000
+net.netfilter.nf_conntrack_buckets=1307648
 
 # timeout值不变
 net.netfilter.nf_conntrack_tcp_timeout_close = 10
