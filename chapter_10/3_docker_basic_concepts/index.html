@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>第三篇 运维平台建设的理念 - Lott's Blog</title>
+  <title>第三篇 一些基础概念 - Lott's Blog</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u7b2c\u4e09\u7bc7 \u8fd0\u7ef4\u5e73\u53f0\u5efa\u8bbe\u7684\u7406\u5ff5";
-    var mkdocs_page_input_path = "chapter_2/yunweipingtailinian.md";
+    var mkdocs_page_name = "\u7b2c\u4e09\u7bc7 \u4e00\u4e9b\u57fa\u7840\u6982\u5ff5";
+    var mkdocs_page_input_path = "chapter_10/3_docker_basic_concepts.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -74,59 +74,35 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../yunweijiazhi/">第一篇 运维的价值和目标</a>
+    <a class="" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
-                </li>
-                <li class=" current">
-                    
-    <a class="current" href="./">第三篇 运维平台建设的理念</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#_1">一个合格的运维平台</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#_2">一 至少要解决以下几个问题</a></li>
-        
-            <li><a class="toctree-l4" href="#_3">二 至少具备如下几个特性</a></li>
-        
-            <li><a class="toctree-l4" href="#_4">三 最少要具备如下几项功能：</a></li>
-        
-            <li><a class="toctree-l4" href="#_5">四 运维平台三大核心能力：</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l3"><a href="#_8">一句话总结</a></li>
-    
-
-    <li class="toctree-l3"><a href="#_9">参考文档</a></li>
-    
-
-    </ul>
+    <a class="" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../guzhangguanli/">第四篇 故障管理概述</a>
+    <a class="" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../biangengguanli/">第五篇 变更管理概述</a>
+    <a class="" href="../../chapter_2/guzhangguanli/">第四篇 故障管理概述</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../rongliangguanli/">第六篇 容量管理概述</a>
+    <a class="" href="../../chapter_2/biangengguanli/">第五篇 变更管理概述</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+    <a class="" href="../../chapter_2/rongliangguanli/">第六篇 容量管理概述</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../cicd.md">第八篇 CICD流程概述</a>
+    <a class="" href="../../chapter_2/jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/cicd.md">第八篇 CICD流程概述</a>
                 </li>
     </ul>
 	    </li>
@@ -322,19 +298,43 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../chapter_10/1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
+    <a class="" href="../1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../chapter_10/2_benefits_of_containerization/">第二篇 容器化的好处</a>
+    <a class="" href="../2_benefits_of_containerization/">第二篇 容器化的好处</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">第三篇 一些基础概念</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">容器技术依赖的底层技术</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#linuxnamespace">Linux支持的Namespace</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#docker">Docker中的基本概念</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_2">镜像和容器的关系</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#dockerk8s">有了Docker了，为啥还要有K8S</a></li>
+    
+
+    </ul>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../chapter_10/3_docker_basic_concepts/">第三篇 一些基础概念</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
+    <a class="" href="../4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
                 </li>
     </ul>
 	    </li>
@@ -361,11 +361,11 @@
     
       
         
-          <li>第二章 运维工作总结 &raquo;</li>
+          <li>第十章 容器化和Kubernetes &raquo;</li>
         
       
     
-    <li>第三篇 运维平台建设的理念</li>
+    <li>第三篇 一些基础概念</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -375,63 +375,87 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="_1">一个合格的运维平台</h1>
-<h2 id="_2">一 至少要解决以下几个问题</h2>
-<ol>
-<li>运维日常繁琐的重复工作</li>
-<li>软硬件基础架构资源信息混沌</li>
-<li>研运职能边界混乱，职责对立，效能低弱</li>
-</ol>
-<blockquote>
-<p>第一要务是解决当下痛点，往往是运维双手急需释放，刚性需求衍生运维平台。缓和运维开发之间供求关系，建立清晰职责边界，服务好研发第一生产力，既而再改变运开关系供求链，从对抗到赋能。在成本、安全、质量、效率之间寻找平衡</p>
-</blockquote>
-<h2 id="_3">二 至少具备如下几个特性</h2>
-<ol>
-<li>持续集成</li>
-<li>持续交付</li>
-<li>持续部署</li>
-</ol>
-<blockquote>
-<p>运维平台，要需求判研准确、成果交付迅速、产品持续迭代、交付质量可靠。其次是产品定位要准确，每个产品设计人都要有躬身入局的能手，一线经历丰富且深刻。</p>
-</blockquote>
-<h2 id="_4">三 最少要具备如下几项功能：</h2>
-<ol>
-<li>CMDB</li>
-<li>服务树</li>
-<li>流程管控(比如workflow)</li>
-<li>CICD</li>
-<li>排班</li>
-</ol>
-<blockquote>
-<p>CMDB,服务树为传统运维平台必备功能，随着公有云强势下沉，Kubernetes，servermesh逐步普及迭代，新型服务治理方式不再需要传统点到点这种中心化的管理功能。流程管控、CICD、排班是传统公司质量管理、SLA达标的重要方式。</p>
-</blockquote>
-<h2 id="_5">四 运维平台三大核心能力：</h2>
-<ol>
-<li>配置管理能力</li>
-<li>变更管理能力</li>
-<li>状态管理能力</li>
-</ol>
-<h3 id="_6">运维平台的建设理念</h3>
-<ol>
-<li>标准化先行</li>
-<li>快速尝试</li>
-<li>接受不完美</li>
-<li>业务导向</li>
-</ol>
-<h3 id="_7">运维平台的延伸</h3>
-<ol>
-<li>数据化运营能力</li>
-<li>产品化UI能力</li>
-<li>全流程监管闭环能力</li>
-</ol>
-<h1 id="_8">一句话总结</h1>
+                <h2 id="_1">容器技术依赖的底层技术</h2>
 <ul>
-<li>用老板思维打造产研运共同体，旨在为产研赋能提效。</li>
-</ul>
-<h1 id="_9">参考文档</h1>
+<li>命名空间 (Namespaces)</li>
+<li>
 <ul>
-<li>https://mp.weixin.qq.com/s/63n2CPfaHLiu-zFtrvlEUg</li>
+<li>实现了容器间资源的隔离</li>
 </ul>
+</li>
+<li>控制组 (Control Groups)</li>
+<li>
+<ul>
+<li>对共享资源进行隔离、限制、审计</li>
+</ul>
+</li>
+<li>联合文件系统 (Union File System)</li>
+<li>Linux 虚拟网络支持：本地和容器内创建虚拟接口</li>
+</ul>
+<h3 id="linuxnamespace">Linux支持的Namespace</h3>
+<p>Linux支持6种资源的 namespace，分别为：</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Parameter</th>
+<th>Linux Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mount namespaces</td>
+<td>CLONE_NEWNS</td>
+<td>Linux 2.4.19</td>
+</tr>
+<tr>
+<td>UTS namespaces</td>
+<td>CLONE_NEWUTS</td>
+<td>Linux 2.6.19</td>
+</tr>
+<tr>
+<td>IPC namespaces</td>
+<td>CLONE_NEWIPC</td>
+<td>Linux 2.6.19</td>
+</tr>
+<tr>
+<td>PID namespaces</td>
+<td>CLONE_NEWPID</td>
+<td>Linux 2.6.24</td>
+</tr>
+<tr>
+<td>Network namespaces</td>
+<td>CLONE_NEWNET</td>
+<td>Linux 2.6.24</td>
+</tr>
+<tr>
+<td>USER namespaces</td>
+<td>CLONE_NEWUSER</td>
+<td>Linux 2.6.23</td>
+</tr>
+</tbody>
+</table>
+<h2 id="docker">Docker中的基本概念</h2>
+<p>Docker 包括三个基本概念</p>
+<ul>
+<li>镜像（Image）</li>
+<li>容器（Container）</li>
+<li>仓库（Repository）</li>
+</ul>
+<h3 id="_2">镜像和容器的关系</h3>
+<ul>
+<li>镜像和容器的关系，相当于python中类和实例的关系。 </li>
+<li>镜像是静态的概念，容器是镜像的运行实例，是动态的概念。</li>
+</ul>
+<h2 id="dockerk8s">有了Docker了，为啥还要有K8S</h2>
+<p>尽管Docker为容器化的应用程序提供了开放标准，但随着容器越来越多出现了一系列新问题：</p>
+<ul>
+<li>如何协调和调度这些容器？</li>
+<li>如何在升级应用程序时不会中断服务？</li>
+<li>如何监视应用程序的运行状况？</li>
+<li>如何批量重新启动容器里的程序？</li>
+</ul>
+<p>解决这些问题需要容器编排技术，可以将众多机器抽象，对外呈现出一台超大机器。现在业界比较流行的有：k8s、Mesos、Docker Swarm。</p>
               
             </div>
           </div>
@@ -439,10 +463,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../guzhangguanli/" class="btn btn-neutral float-right" title="第四篇 故障管理概述">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../4_kubernetes_basic_concepts/" class="btn btn-neutral float-right" title="第四篇 Kubernetes基础概念">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../yunweizhiyeguifan/" class="btn btn-neutral" title="第二篇 业务SRE的职业规范"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../2_benefits_of_containerization/" class="btn btn-neutral" title="第二篇 容器化的好处"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -468,10 +492,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../yunweizhiyeguifan/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../2_benefits_of_containerization/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../guzhangguanli/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../4_kubernetes_basic_concepts/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

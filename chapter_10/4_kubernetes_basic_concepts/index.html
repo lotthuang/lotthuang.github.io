@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>第四篇 Kubernetes基础概念 - Lott's Blog</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u7b2c\u56db\u7bc7 Kubernetes\u57fa\u7840\u6982\u5ff5";
+    var mkdocs_page_input_path = "chapter_10/4_kubernetes_basic_concepts.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Lott's Blog</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">首页</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第一章 常用软件</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第二章 运维工作总结</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/guzhangguanli/">第四篇 故障管理概述</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/biangengguanli/">第五篇 变更管理概述</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/rongliangguanli/">第六篇 容量管理概述</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_2/cicd.md">第八篇 CICD流程概述</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第三章 Linux Net子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/5_conntrack/">第五篇 conntrack的常见应用</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/6_tcp/">第六篇 TCP协议总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第四章 Linux CPU子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/3_interrupt_one/">第三篇 硬中断</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/5_soft_irq/">第四篇 软中断</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_4/4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第五章 Linux IO子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_5/1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_5/2_io_stack/">第二篇 Linux IO栈总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第六章 Linux Mem子系统</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_6/1_linux_buddy/">第一篇 伙伴系统介绍</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第二篇 Slab层介绍</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../daibuchong/">第三篇 进程虚拟地址空间介绍</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理原理</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第七章 运维小技巧和工具汇总和积累</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/1_sync_file/">第一篇 不同主机之间的文件传输</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/5_server_side_evolution/">第五篇 服务端进化过程梳理</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_7/6_elk/">第六篇 elk技术栈</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第八章 职场通用经验</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/1_xuexixinde/">第一篇 个人学习心得总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/2_bangzhuqitatongxue/">第二篇 如何帮助其他同学提升技术能力</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/3_yewuliuchengshuyu/">第三篇 业务流程术语梳理</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/4_jishunenglimoxing/">第四篇 技术能力模型总结</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/5_chanpingsiwei_1/">第五篇 产品思维总结和梳理</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/6_jixiaobaogao/">第六篇 如何写绩效报告</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../chapter_8/7_xiangshangguanli/">第七篇 如何向上管理</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第九章 编程经验</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../chapter_9/1_suanfa/">第一篇 算法总结</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">第十章 容器化和Kubernetes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_benefits_of_containerization/">第二篇 容器化的好处</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_docker_basic_concepts/">第三篇 一些基础概念</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">第四篇 Kubernetes基础概念</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#kubernetes">Kubernetes的主要功能</a></li>
+    
+
+    <li class="toctree-l3"><a href="#masternode">Master和Node节点</a></li>
+    
+
+    <li class="toctree-l3"><a href="#pod">Pod</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#pod_1">Pod 具有如下特征：</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#node">Node</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#podnode2">Pod选择Node时常用的2大类技能</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#namespace">Namespace（命名空间）</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#namespace_1">常用 Namespace 操作：</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#service">Service</a></li>
+    
+
+    <li class="toctree-l3"><a href="#volume">volume存储卷</a></li>
+    
+
+    <li class="toctree-l3"><a href="#persistentvolume-pv">PersistentVolume (PV) 持久化存储卷</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#pv-accessmodes">PV 的访问模式 (accessModes) 有三种:</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#configmap">ConfigMap配置中心</a></li>
+    
+
+    <li class="toctree-l3"><a href="#deployment">Deployment 无状态应用</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_2">常用的操作命令</a></li>
+        
+            <li><a class="toctree-l4" href="#specstrategy">更新策略.spec.strategy</a></li>
+        
+            <li><a class="toctree-l4" href="#deployment-replicaset">Deployment 和 ReplicaSet 两者之间的关系</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#statefulset">StatefulSet 有状态应用</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_3">支持两种更新策略</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#daemonset">DaemonSet 守护进程集</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#node_1">指定 Node 节点</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#ingress">Ingress 负载均衡</a></li>
+    
+
+    <li class="toctree-l3"><a href="#job-cronjob">Job &amp; CronJob 任务和定时任务</a></li>
+    
+
+    <li class="toctree-l3"><a href="#hpahorizontal-pod-autoscaling">HPA（Horizontal Pod Autoscaling） 水平自动伸缩</a></li>
+    
+
+    <li class="toctree-l3"><a href="#service-account">Service Account</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_4">授权</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#secret">Secret 密钥</a></li>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Lott's Blog</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>第十章 容器化和Kubernetes &raquo;</li>
+        
+      
+    
+    <li>第四篇 Kubernetes基础概念</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="kubernetes">Kubernetes的主要功能</h2>
+<p>主要功能包括:</p>
+<ol>
+<li>基于容器的应用部署、维护和滚动升级</li>
+<li>负载均衡和服务发现</li>
+<li>跨机器和跨地区的集群调度</li>
+<li>自动伸缩</li>
+<li>无状态服务和有状态服务</li>
+<li>广泛的 Volume 支持</li>
+<li>插件机制保证扩展性</li>
+</ol>
+<h2 id="masternode">Master和Node节点</h2>
+<ul>
+<li>
+<p>Master 负责管理整个集群。 Master 协调集群中的所有活动，例如调度应用、维护应用的所需状态、应用扩容以及推出新的更新。</p>
+</li>
+<li>
+<p>Node 是一个虚拟机或者物理机，它在 Kubernetes 集群中充当工作机器的角色 每个Node都有 Kubelet , 它管理 Node 而且是 Node 与 Master 通信的代理。 Node 还应该具有用于处理容器操作的工具，例如 Docker 或 rkt 。处理生产级流量的 Kubernetes 集群至少应具有三个 Node 。</p>
+</li>
+</ul>
+<h2 id="pod">Pod</h2>
+<ul>
+<li>
+<p>A Pod is the basic execution unit of a Kubernetes application. Each Pod represents a part of a workload that is running on your cluster.</p>
+</li>
+<li>
+<p>pod ,是集群内的一个最小的运行实例、最小的调度单位。 一个pod是典型的可多常一概念，一个pod里可以运行多个docker容器, 但实际应用中，常常是一个pod运行一个docker容器 </p>
+</li>
+<li>
+<p>Pod 是一组紧密关联的容器集合，支持多个容器在一个 Pod 中共享网络和文件系统，可以通过进程间通信和文件共享这种简单高效的方式完成服务。Pod 是 Kubernetes 调度的基本单位，Pod 的设计理念是<code>每个 Pod 都有一个唯一的 IP</code>。</p>
+</li>
+</ul>
+<h3 id="pod_1">Pod 具有如下特征：</h3>
+<ul>
+<li>包含多个共享 IPC、Network 和 UTC Namespace 的容器，可直接通过 Localhost 通信</li>
+<li>所有 Pod 内容器都可以访问共享的 Volume，可以访问共享数据</li>
+<li>优雅终止：Pod 删除的时候先给其内的进程发送 SIGTERM，等待一段时间 (Grace Period) 后才强制停止依然还在运行的进程</li>
+<li>特权容器 (通过 SecurityContext 配置) 具有改变系统配置的权限 ( 在网络插件中大量应用 )</li>
+<li>支持三种重启策略（restartPolicy），分别是：Always、OnFailure、Never</li>
+<li>支持三种镜像拉取策略（imagePullPolicy ），分别是：Always、Never、IfNotPresent</li>
+<li>资源限制，Kubernetes 通过 CGroup 限制容器的 CPU 以及内存等资源，可以设置 Request 以及 Limit 值</li>
+<li>健康检查，提供两种健康检查探针，分别是 LivenessProbe 和 RedinessProbe。前者用于探测容器是否存活，如果探测失败，则根据重启策略进行重启操作。后者用于检查容器状态是否正常，如果检查容器状态不正常，则请求不会到达该 Pod</li>
+<li>Init Container 在所有容器运行之前执行，常用来初始化配置</li>
+<li>容器生命周期钩子函数，用于监听容器生命周期的特定事件，并在事件发生时执行已注册的回调函数，支持两种钩子函数：postStart 和 preStop，前者是在容器启动后执行，后者是在容器停止前执行</li>
+</ul>
+<h2 id="node">Node</h2>
+<ul>
+<li>Node是Pod运行的载体、可以是物理机 、也可以是虚拟机 . Node 本质上不是 Kubernetes 来创建的， Kubernetes 只是管理 Node 上的资源。为了管理 Pod，每个 Node 节点上至少需要运行 <code>Container Runtime（Docker）</code>、<code>Kubelet</code> 和 <code>Kube-proxy</code> 服务。</li>
+</ul>
+<h3 id="podnode2">Pod选择Node时常用的2大类技能</h3>
+<ul>
+<li>Node Selector(根据宿主机标签,选择合适的宿主机)</li>
+<li>
+<ul>
+<li>Node节点常用的操作是，可以设置调度和不可调度.</li>
+</ul>
+</li>
+<li>Taint(污点)</li>
+<li>
+<ul>
+<li>使用 kubectl taint 命令可以给某个 Node 节点设置污点，Node 被设置上污点之后就和 Pod 之间存在了一种相斥的关系，可以让 Node 拒绝 Pod 的调度执行，甚至将 Node 已经存在的 Pod 驱逐出去。每个污点的组成：key=value:effect</li>
+</ul>
+</li>
+</ul>
+<h2 id="namespace">Namespace（命名空间）</h2>
+<p>Kubernetes中对一组资源和对象的抽象集合，比如可以用来将系统内部的对象划分为不同的项目组或者用户组。常见的 <code>Pod</code>、<code>Service</code>、<code>ReplicaSet</code> 和 <code>Deployment</code> 等都是属于某一个 <code>Namespace</code> 的 (默认是 default)，而 <code>Node</code>, <code>PersistentVolumes</code> 等则不属于任何<code>Namespace</code>。</p>
+<h3 id="namespace_1">常用 Namespace 操作：</h3>
+<ul>
+<li>
+<p>查询所有 Namespaces $ kubectl get namespace</p>
+</li>
+<li>
+<p>创建 Namespace$ kubectl create namespace ns-name</p>
+</li>
+<li>
+<p>删除 Namespace$ kubectl delete namespace ns-name</p>
+</li>
+</ul>
+<h4 id="_1">删除命名空间时，需注意以下几点：</h4>
+<ul>
+<li>删除一个 Namespace 会自动删除所有属于该 Namespace 的资源。</li>
+<li>default 和 kube-system 命名空间不可删除。</li>
+<li>PersistentVolumes 是不属于任何 Namespace 的，但 PersistentVolumeClaim 是属于某个特定 Namespace 的。</li>
+<li>Events 是否属于 Namespace 取决于产生 events 的对象。</li>
+</ul>
+<h2 id="service">Service</h2>
+<p>是对一组提供相同功能的 Pods 的抽象，并为他们提供一个统一的入口。借助 Service 应用可以方便的实现服务发现与负载均衡，并实现应用的零宕机升级。Service 通过标签 (Label) 来选取后端 Pod，一般配合 ReplicaSet 或者 Deployment 来保证后端容器的正常运行。</p>
+<p>Service 有如下四种类型，默认是 ClusterIP：</p>
+<ul>
+<li>
+<p>ClusterIP: 默认类型，自动分配一个仅集群内部可以访问的虚拟IP</p>
+</li>
+<li>
+<p>NodePort: 在 ClusterIP 基础上为 Service 在每台机器上绑定一个端口，这样就可以通过 NodeIP:NodePort 来访问该服务</p>
+</li>
+<li>
+<p>LoadBalancer: 在 NodePort 的基础上，借助 Cloud Provider 创建一个外部的负载均衡器，并将请求转发到 NodeIP:NodePort</p>
+</li>
+<li>
+<p>ExternalName: 将服务通过 DNS CNAME 记录方式转发到指定的域名</p>
+</li>
+</ul>
+<h2 id="volume">volume存储卷</h2>
+<p>默认情况下容器的数据是非持久化的，容器消亡以后数据也会跟着丢失。所以 Docker 提供了 Volume 机制以便将数据持久化存储。Kubernetes 提供了更强大的 Volume 机制和插件，解决了容器数据持久化以及容器间共享数据的问题。</p>
+<p>目前 Kubernetes 主要支持以下 Volume 类型：</p>
+<ul>
+<li>
+<p>emptyDir：Pod 存在，emptyDir 就会存在。容器挂掉不会引起 emptyDir 目录下的数据丢失，但是 Pod 被删除或者迁移，emptyDir 也会被删除</p>
+</li>
+<li>
+<p>hostPath：hostPath 允许挂载 Node 上的文件系统到 Pod 里面去</p>
+</li>
+<li>
+<p>NFS（Network File System）：网络文件系统，Kubernetes 中通过简单地配置就可以挂载 NFS 到 Pod 中，而 NFS 中的数据是可以永久保存的，同时 NFS 支持同时写操作。</p>
+</li>
+<li>
+<p>Glusterfs：同 NFS 一样是一种网络文件系统，Kubernetes 可以将 Glusterfs 挂载到 Pod 中，并进行永久保存</p>
+</li>
+<li>
+<p>Cephfs：一种分布式网络文件系统，可以挂载到 Pod 中，并进行永久保存</p>
+</li>
+<li>
+<p>Subpath：Pod 的多个容器使用同一个 Volume 时，会经常用到</p>
+</li>
+<li>
+<p>Secret：密钥管理，可以将敏感信息进行加密之后保存并挂载到 Pod 中</p>
+</li>
+<li>
+<p>PersistentVolumeClaim：用于将持久化存储（PersistentVolume）挂载到 Pod 中</p>
+</li>
+</ul>
+<h2 id="persistentvolume-pv">PersistentVolume (PV) 持久化存储卷</h2>
+<p>PersistentVolume (PV) 是集群之中的一块网络存储。跟 Node 一样，也是集群的资源。
+PersistentVolume 和 PersistentVolumeClaim (PVC) 提供了方便的持久化卷: PV 提供网络存储资源，而 PVC 请求存储资源并将其挂载到 Pod 中。</p>
+<h3 id="pv-accessmodes">PV 的访问模式 (accessModes) 有三种:</h3>
+<ul>
+<li>ReadWriteOnce (RWO): 是最基本的方式，可读可写，但只支持被单个 Pod 挂载。</li>
+<li>ReadOnlyMany (ROX): 可以以只读的方式被多个 Pod 挂载。</li>
+<li>ReadWriteMany (RWX): 这种存储可以以读写的方式被多个 Pod 共享。</li>
+</ul>
+<p>不是每一种存储都支持这三种方式，像共享方式，目前支持的还比较少，比较常用的是 NFS。在 PVC 绑定 PV 时通常根据两个条件来绑定，<code>一个是存储的大小</code>，<code>另一个就是访问模式</code>。</p>
+<h2 id="configmap">ConfigMap配置中心</h2>
+<p>ConfigMap 用于保存配置数据的键值对，可以用来保存单个属性，也可以用来保存配置文件。ConfigMap 跟 Secret 很类似，但它可以更方便地处理不包含敏感信息的字符串。</p>
+<p>ConfigMap 可以通过三种方式在 Pod 中使用，三种分别方式为:</p>
+<ul>
+<li>设置环境变量</li>
+<li>设置容器命令行参数</li>
+<li>在Volume 中直接挂载文件或目录。</li>
+</ul>
+<p>你可以使用 kubectl create configmap 从文件、目录或者 key-value 字符串创建等创建 ConfigMap。也可以通过 kubectl create -f value.yaml 来创建。</p>
+<h2 id="deployment">Deployment 无状态应用</h2>
+<p>一般情况下我们不需要手动创建 Pod 实例，而是采用更高一层的抽象或定义来管理 Pod。针对无状态类型的应用，Kubernetes 使用 Deloyment 的 Controller 对象与之对应。其典型的应用场景包括：</p>
+<ul>
+<li>定义 Deployment 来创建 Pod 和 ReplicaSet</li>
+<li>滚动升级和回滚应用</li>
+<li>扩容和缩容</li>
+<li>暂停和继续 Deployment</li>
+</ul>
+<h3 id="_2">常用的操作命令</h3>
+<ul>
+<li>
+<p>生成一个 Deployment 对象$ kubectl run www --image=10.0.0.183:5000/hanker/www:0.0.1 --port=8080</p>
+</li>
+<li>
+<p>查找 Deployment$ kubectl get deployment --all-namespaces</p>
+</li>
+<li>
+<p>查看某个 Deployment$ kubectl describe deployment www</p>
+</li>
+<li>
+<p>编辑 Deployment 定义$ kubectl edit deployment www</p>
+</li>
+<li>
+<p>删除某 Deployment$ kubectl delete deployment www</p>
+</li>
+<li>
+<p>扩缩容操作，即修改 Deployment 下的 Pod 实例个数$ kubectl scale deployment/www --replicas=2</p>
+</li>
+<li>
+<p>更新镜像$ kubectl set image deployment/nginx-deployment nginx=nginx:1.9.1</p>
+</li>
+<li>
+<p>回滚操作$ kubectl rollout undo deployment/nginx-deployment</p>
+</li>
+<li>
+<p>查看回滚进度$ kubectl rollout status deployment/nginx-deployment</p>
+</li>
+<li>
+<p>启用水平伸缩（HPA - horizontal pod autoscaling），设置最小、最大实例数量以及目标 Cpu 使用率$ kubectl autoscale deployment nginx-deployment --min=10 --max=15 --cpu-percent=80</p>
+</li>
+<li>
+<p>暂停更新 Deployment$ kubectl rollout pause deployment/nginx-deployment</p>
+</li>
+<li>
+<p>恢复更新 Deployment$ kubectl rollout resume deploy nginx</p>
+</li>
+</ul>
+<h3 id="specstrategy">更新策略.spec.strategy</h3>
+<p>.spec.strategy 指新的 Pod 替换旧的 Pod 的策略，有以下两种类型：</p>
+<ul>
+<li>RollingUpdate 滚动升级，可以保证应用在升级期间，对外正常提供服务。</li>
+<li>Recreate 重建策略，在创建出新的 Pod 之前会先杀掉所有已存在的 Pod。</li>
+</ul>
+<h3 id="deployment-replicaset">Deployment 和 ReplicaSet 两者之间的关系</h3>
+<ul>
+<li>使用 Deployment 来创建 ReplicaSet。ReplicaSet 在后台创建 Pod，检查启动状态，看它是成功还是失败。</li>
+<li>当执行更新操作时，会创建一个新的 ReplicaSet，Deployment 会按照控制的速率将 Pod 从旧的 ReplicaSet 移动到新的 ReplicaSet 中</li>
+</ul>
+<h2 id="statefulset">StatefulSet 有状态应用</h2>
+<p>Deployments 和 ReplicaSets 是为无状态服务设计的，那么 StatefulSet 则是为了有状态服务而设计，其应用场景包括：</p>
+<ul>
+<li>稳定的持久化存储，即 Pod 重新调度后还是能访问到相同的持久化数据，基于 PVC 来实现</li>
+<li>稳定的网络标志，即 Pod 重新调度后其 PodName 和 HostName 不变，基于 Headless Service (即没有 Cluster IP 的 Service )来实现</li>
+<li>有序部署，有序扩展，即 Pod 是有顺序的。在部署或者扩展的时候要依据定义的顺序依次进行操作 (即从 0 到 N-1，在下一个 Pod 运行之前所有之前的 Pod 必须都是 Running 和 Ready 状态)，基于 Init Containers 来实现</li>
+<li>有序收缩，有序删除 (即从 N-1 到0)</li>
+</ul>
+<h3 id="_3">支持两种更新策略</h3>
+<ul>
+<li>
+<p>OnDelete: 当 .spec.template 更新时，并不立即删除旧的 Pod，而是等待用户手动删除这些旧 Pod 后自动创建新 Pod。这是默认的更新策略，兼容 v1.6 版本的行为</p>
+</li>
+<li>
+<p>RollingUpdate: 当 .spec.template更新时，自动删除旧的 Pod 并创建新 Pod 替换。在更新时这些 Pod 是按逆序的方式进行，依次删除、创建并等待 Pod 变成 Ready 状态才进行下一个 Pod 的更新。</p>
+</li>
+</ul>
+<h2 id="daemonset">DaemonSet 守护进程集</h2>
+<p>DaemonSet 保证在特定或所有 Node 节点上都运行一个 Pod 实例，常用来部署一些集群的日志采集、监控或者其他系统管理应用。典型的应用包括:</p>
+<ul>
+<li>日志收集，比如 Fluentd，Logstash 等</li>
+<li>系统监控，比如 Prometheus Node Exporter，Collectd 等</li>
+<li>系统程序，比如 Kube-Proxy、Kube-Dns、Glusterd、Ceph、Ingress-Controller 等</li>
+</ul>
+<h3 id="node_1">指定 Node 节点</h3>
+<p>DaemonSet 会忽略 Node 的 unschedulable 状态，有两种方式来指定 Pod 只运行在指定的 Node 节点上:
+* nodeSelector: 只调度到匹配指定 Label 的 Node 上
+* nodeAffinity: 功能更丰富的 Node 选择器，比如支持集合操作
+* podAffinity: 调度到满足条件的 Pod 所在的 Node 上</p>
+<p>目前支持两种策略
+* OnDelete: 默认策略，更新模板后，只有手动删除了旧的 Pod 后才会创建新的 Pod
+* RollingUpdate: 更新 DaemonSet 模版后，自动删除旧的 Pod 并创建新的 Pod</p>
+<h2 id="ingress">Ingress 负载均衡</h2>
+<p>Kubernetes 中的负载均衡我们主要用到了以下两种机制：
+* Service：使用 Service 提供集群内部的负载均衡，Kube-proxy 负责将 Service 请求负载均衡到后端的 Pod 中
+* Ingress Controller：使用 Ingress 提供集群外部的负载均衡</p>
+<p>Service 和 Pod 的 IP 仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到 Service 所在节点暴露的端口上，然后再由 Kube-Proxy 通过边缘路由器将其转发到相关的 Pod。
+Ingress 可以给 Service 提供集群外部访问的 URL、负载均衡、HTTP 路由等，为了配置这些Ingress 规则，集群管理员需要部署一个 Ingress Controller，它监听 Ingress 和 Service 的变化，并根据规则配置负载均衡并提供访问入口。</p>
+<p>常用的 Ingress Controller 有：
+* Nginx
+* Traefik
+* Kong
+* Openresty</p>
+<h2 id="job-cronjob">Job &amp; CronJob 任务和定时任务</h2>
+<p>Job 负责批量处理短暂的一次性任务 (short lived one-off tasks)，即仅执行一次的任务，它保证批处理任务的一个或多个 Pod 成功结束。
+CronJob 即定时任务，就类似于 Linux 系统的 Crontab，在指定的时间周期运行指定的任务。</p>
+<h2 id="hpahorizontal-pod-autoscaling">HPA（Horizontal Pod Autoscaling） 水平自动伸缩</h2>
+<p>Horizontal Pod Autoscaling 可以根据 CPU、内存使用率或应用自定义 Metrics 自动扩展 Pod 数量 (支持 Replication Controller、Deployment 和 Replicaset)。
+* 控制管理器默认每隔 30s 查询 Metrics 的资源使用情况 (可以通过 --horizontal-pod-autoscaler-sync-period 修改)
+* 支持三种 Metrics 类型
+    * 预定义 Metrics (比如 Pod 的 CPU)以利用率的方式计算
+    * 自定义的 Pod Metrics，以原始值 (Raw Value) 的方式计算
+    * 自定义的 Object Metrics
+* 支持两种 Metrics 查询方式 :Heapster 和自定义的 REST API
+* 支持多 Metrics</p>
+<p>你可以通过如下命令来创建 HPA：
+$ kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10</p>
+<h2 id="service-account">Service Account</h2>
+<p>Service account 是为了方便 Pod 里面的进程调用 Kubernetes API 或其他外部服务而设计的。</p>
+<h3 id="_4">授权</h3>
+<p>Service Account 为服务提供了一种方便的认证机制，但它不关心授权的问题。可以配合 RBAC (Role Based Access Control) 来为 Service Account 鉴权，通过定义 Role、RoleBinding、ClusterRole、ClusterRoleBinding 来对 sa 进行授权。</p>
+<h2 id="secret">Secret 密钥</h2>
+<p>Sercert 密钥解决了密码、Token、密钥等敏感数据的配置问题，而不需要把这些敏感数据暴露到镜像或者 Pod Spec 中。Secret 可以以 Volume 或者环境变量的方式使用。
+有如下三种类型：</p>
+<ul>
+<li>Service Account: 用来访问 Kubernetes API，由 Kubernetes 自动创建，并且会自动挂载到 Pod 的 /run/secrets/kubernetes.io/serviceaccount 目录中;</li>
+<li>Opaque: Base64 编码格式的 Secret，用来存储密码、密钥等;</li>
+<li>kubernetes.io/dockerconfigjson: 用来存储私有 Docker Registry 的认证信息。</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../3_docker_basic_concepts/" class="btn btn-neutral" title="第三篇 一些基础概念"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../3_docker_basic_concepts/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>
