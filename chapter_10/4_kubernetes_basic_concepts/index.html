@@ -102,7 +102,7 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../../chapter_2/cicd.md">第八篇 CICD流程概述</a>
+    <a class="" href="../../chapter_2/cicd/">第八篇 CICD流程概述</a>
                 </li>
     </ul>
 	    </li>
@@ -348,6 +348,12 @@
 
     <li class="toctree-l3"><a href="#service">Service</a></li>
     
+        <ul>
+        
+            <li><a class="toctree-l4" href="#servicelb">Service相当于集群内部的LB</a></li>
+        
+        </ul>
+    
 
     <li class="toctree-l3"><a href="#volume">volume存储卷</a></li>
     
@@ -362,6 +368,12 @@
     
 
     <li class="toctree-l3"><a href="#configmap">ConfigMap配置中心</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#configmap_1">ConfigMap最佳实践</a></li>
+        
+        </ul>
     
 
     <li class="toctree-l3"><a href="#deployment">Deployment 无状态应用</a></li>
@@ -559,6 +571,13 @@
 <p>ExternalName: 将服务通过 DNS CNAME 记录方式转发到指定的域名</p>
 </li>
 </ul>
+<h3 id="servicelb">Service相当于集群内部的LB</h3>
+<p><img alt="png" src="../../img/B80FCFE0-C473-4DF3-A0AC-DD8323D440F5.png" /></p>
+<p>有了service之后，集群内部不同的pod，可以形成微服务架构了</p>
+<p><img alt="png" src="../../img/681380C2-DE0D-4BC7-A044-1802718E6ADD.png" /></p>
+<p>Service B为前端微服务，CD EA等为后端微服务，他们之间通过Service（也就是LB）互相
+调用，Service默认的cluster IP是Kubernetes集群里的虚拟IP</p>
+<p><img alt="png" src="../../img/WX20211222-212150.png" /></p>
 <h2 id="volume">volume存储卷</h2>
 <p>默认情况下容器的数据是非持久化的，容器消亡以后数据也会跟着丢失。所以 Docker 提供了 Volume 机制以便将数据持久化存储。Kubernetes 提供了更强大的 Volume 机制和插件，解决了容器数据持久化以及容器间共享数据的问题。</p>
 <p>目前 Kubernetes 主要支持以下 Volume 类型：</p>
@@ -607,6 +626,11 @@ PersistentVolume 和 PersistentVolumeClaim (PVC) 提供了方便的持久化卷:
 <li>在Volume 中直接挂载文件或目录。</li>
 </ul>
 <p>你可以使用 kubectl create configmap 从文件、目录或者 key-value 字符串创建等创建 ConfigMap。也可以通过 kubectl create -f value.yaml 来创建。</p>
+<h3 id="configmap_1">ConfigMap最佳实践</h3>
+<ul>
+<li>实际应用中通常是一个namespace对应一个ConfigMap, NS的名称和CM的名称相同</li>
+<li>ConfigMap下的不同key，可以理解是Linux的一个文件名，比如nginx.conf, server.conf，而文件总是放在某个<code>路径</code>下（例如/root/conf目录）， <code>路径</code>是由volumeMounts.”mountPath”决定的</li>
+</ul>
 <h2 id="deployment">Deployment 无状态应用</h2>
 <p>一般情况下我们不需要手动创建 Pod 实例，而是采用更高一层的抽象或定义来管理 Pod。针对无状态类型的应用，Kubernetes 使用 Deloyment 的 Controller 对象与之对应。其典型的应用场景包括：</p>
 <ul>
@@ -663,8 +687,21 @@ PersistentVolume 和 PersistentVolumeClaim (PVC) 提供了方便的持久化卷:
 <h3 id="deployment-replicaset">Deployment 和 ReplicaSet 两者之间的关系</h3>
 <ul>
 <li>使用 Deployment 来创建 ReplicaSet。ReplicaSet 在后台创建 Pod，检查启动状态，看它是成功还是失败。</li>
-<li>当执行更新操作时，会创建一个新的 ReplicaSet，Deployment 会按照控制的速率将 Pod 从旧的 ReplicaSet 移动到新的 ReplicaSet 中</li>
+<li>
+<p>当执行更新操作时，会创建一个新的 ReplicaSet，Deployment 会按照控制的速率将 Pod 从旧的 ReplicaSet 移动到新的 ReplicaSet 中</p>
+</li>
+<li>
+<p>从 K8S 使用者角度来看，用户会直接操作 Deployment 部署服务，而当 Deployment 被部署的时候，K8S 会自动生成要求的 ReplicaSet 和 Pod。</p>
+</li>
+<li>
+<p>在K8S 官方文档中也指出用户只需要关心 Deployment 而不操心 ReplicaSet：</p>
+</li>
 </ul>
+<pre><code>This actually means that you may never need to manipulate ReplicaSet objects: use a Deployment instead, and define your application in the spec section.
+这实际上意味着您可能永远不需要操作 ReplicaSet 对象：直接使用 Deployments 并在规范部分定义应用程序。
+</code></pre>
+
+<p><img alt="png" src="../../img/6144BA5F-1A54-4ECC-98E4-1F10BF57BB99.png" /></p>
 <h2 id="statefulset">StatefulSet 有状态应用</h2>
 <p>Deployments 和 ReplicaSets 是为无状态服务设计的，那么 StatefulSet 则是为了有状态服务而设计，其应用场景包括：</p>
 <ul>
