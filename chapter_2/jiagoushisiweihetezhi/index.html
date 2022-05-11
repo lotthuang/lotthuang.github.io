@@ -1,410 +1,202 @@
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  
-  <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>第七篇 架构师思维和特质以及中间件技术梳理 - Lott's Blog</title>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
-
-  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-  
-  <script>
-    // Current page data
-    var mkdocs_page_name = "\u7b2c\u4e03\u7bc7 \u67b6\u6784\u5e08\u601d\u7ef4\u548c\u7279\u8d28\u4ee5\u53ca\u4e2d\u95f4\u4ef6\u6280\u672f\u68b3\u7406";
-    var mkdocs_page_input_path = "chapter_2/jiagoushisiweihetezhi.md";
-    var mkdocs_page_url = null;
-  </script>
-  
-  <script src="../../js/jquery-2.1.1.min.js" defer></script>
-  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script> 
-  
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>第七篇 架构师思维和特质以及中间件技术梳理 - Lott's Blog</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u7b2c\u4e03\u7bc7 \u67b6\u6784\u5e08\u601d\u7ef4\u548c\u7279\u8d28\u4ee5\u53ca\u4e2d\u95f4\u4ef6\u6280\u672f\u68b3\u7406";
+        var mkdocs_page_input_path = "chapter_2/jiagoushisiweihetezhi.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <script src="../../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
-        <a href="../.." class="icon icon-home"> Lott's Blog</a>
-        <div role="search">
+          <a href="../.." class="icon icon-home"> Lott's Blog
+        </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
 
-      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-	<ul class="current">
-	  
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../..">首页</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">第一章 常用软件</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首页</a>
                 </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
-                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第一章 常用软件</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../yunweijiazhi/">第一篇 运维的价值和目标</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../yunweipingtailinian/">第三篇 运维平台建设的理念</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../guzhangguanli/">第四篇 故障管理概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../biangengguanli/">第五篇 变更管理概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../rongliangguanli/">第六篇 容量管理概述</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第七篇 架构师思维和特质以及中间件技术梳理</a>
+    <ul class="current">
     </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">第二章 运维工作总结</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../yunweijiazhi/">第一篇 运维的价值和目标</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../yunweipingtailinian/">第三篇 运维平台建设的理念</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../guzhangguanli/">第四篇 故障管理概述</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../biangengguanli/">第五篇 变更管理概述</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../rongliangguanli/">第六篇 容量管理概述</a>
-                </li>
-                <li class=" current">
-                    
-    <a class="current" href="./">第七篇 架构师思维和特质以及中间件技术梳理</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#_1">概述</a></li>
-    
-
-    <li class="toctree-l3"><a href="#_2">架构师必备的特质</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#_3">平衡取舍</a></li>
-        
-            <li><a class="toctree-l4" href="#_4">预判未来</a></li>
-        
-            <li><a class="toctree-l4" href="#_5">抽象思维</a></li>
-        
-            <li><a class="toctree-l4" href="#_6">容错机制</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l3"><a href="#_7">一些优秀的架构思想</a></li>
-    
-
-    <li class="toctree-l3"><a href="#_8">常用的中间件技术总结</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#lb">LB技术</a></li>
-        
-            <li><a class="toctree-l4" href="#_9">缓存技术</a></li>
-        
-            <li><a class="toctree-l4" href="#_16">线程池技术</a></li>
-        
-            <li><a class="toctree-l4" href="#mq">MQ技术</a></li>
-        
-            <li><a class="toctree-l4" href="#_20">数据库技术</a></li>
-        
-            <li><a class="toctree-l4" href="#service-discovery">服务发现（Service Discovery）中间件</a></li>
-        
-            <li><a class="toctree-l4" href="#service-mesh">微服务架构和服务网格（Service Mesh）</a></li>
-        
-            <li><a class="toctree-l4" href="#_29">客户端网络质量改善技术</a></li>
-        
-            <li><a class="toctree-l4" href="#_31">客户端稳定性提升</a></li>
-        
-            <li><a class="toctree-l4" href="#_32">客户端埋点最佳实践</a></li>
-        
-        </ul>
-    
-
-    </ul>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../cicd/">第八篇 CICD流程概述</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">第三章 Linux Net子系统</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../../chapter_3/1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_3/2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_3/3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_3/4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_3/5_conntrack/">第五篇 conntrack的常见应用</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_3/6_tcp/">第六篇 TCP协议总结</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">第四章 Linux CPU子系统</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_4/3_interrupt_one/">第三篇 硬中断</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_4/5_soft_irq/">第四篇 软中断</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_4/4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_4/6_cpu_famous_register/">第六篇 CPU中的著名寄存器梳理</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">第五章 Linux IO子系统</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../../chapter_5/1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_5/2_io_stack/">第二篇 Linux IO栈总结</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">第六章 Linux Mem子系统</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../../chapter_6/1_linux_buddy/">第一篇 伙伴系统介绍</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../daibuchong/">第二篇 Slab层介绍</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../daibuchong/">第三篇 进程虚拟地址空间介绍</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理原理</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">第七章 运维小技巧和工具汇总和积累</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../../chapter_7/1_sync_file/">第一篇 不同主机之间的文件传输</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_7/2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_7/3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_7/4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_7/5_server_side_evolution/">第五篇 服务端进化过程梳理</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_7/6_elk/">第六篇 elk技术栈</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">第八章 职场通用经验</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../../chapter_8/1_xuexixinde/">第一篇 个人学习心得总结</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_8/2_bangzhuqitatongxue/">第二篇 如何帮助其他同学提升技术能力</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_8/3_yewuliuchengshuyu/">第三篇 业务流程术语梳理</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_8/4_jishunenglimoxing/">第四篇 技术能力模型总结</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_8/5_chanpingsiwei_1/">第五篇 产品思维总结和梳理</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_8/6_jixiaobaogao/">第六篇 如何写绩效报告</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_8/7_xiangshangguanli/">第七篇 如何向上管理</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">第九章 编程经验</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../../chapter_9/1_suanfa/">第一篇 算法总结</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">第十章 容器化和Kubernetes</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../../chapter_10/1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_10/2_benefits_of_containerization/">第二篇 容器化的好处</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_10/3_docker_basic_concepts/">第三篇 一些基础概念</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
-                </li>
-    </ul>
-	    </li>
-          
-        </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cicd/">第八篇 CICD流程概述</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/5_conntrack/">第五篇 conntrack的常见应用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/6_tcp/">第六篇 TCP协议总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/3_interrupt_one/">第三篇 硬中断</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/5_soft_irq/">第四篇 软中断</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/6_cpu_famous_register/">第六篇 CPU中的著名寄存器梳理</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/2_io_stack/">第二篇 Linux IO栈总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/1_linux_buddy/">第一篇 伙伴系统介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../daibuchong/">第二篇 Slab层介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../daibuchong/">第三篇 进程虚拟地址空间介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理原理</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/1_sync_file/">第一篇 不同主机之间的文件传输</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/5_server_side_evolution/">第五篇 服务端进化过程梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/6_elk/">第六篇 elk技术栈</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第八章 职场通用经验</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/1_xuexixinde/">第一篇 个人学习心得总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/2_bangzhuqitatongxue/">第二篇 如何帮助其他同学提升技术能力</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/3_yewuliuchengshuyu/">第三篇 业务流程术语梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/4_jishunenglimoxing/">第四篇 技术能力模型总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/5_chanpingsiwei_1/">第五篇 产品思维总结和梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/6_jixiaobaogao/">第六篇 如何写绩效报告</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/7_xiangshangguanli/">第七篇 如何向上管理</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第九章 编程经验</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/1_suanfa/">第一篇 算法总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/2_benefits_of_containerization/">第二篇 容器化的好处</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/3_docker_basic_concepts/">第三篇 一些基础概念</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
+                  </li>
+              </ul>
       </div>
-      &nbsp;
+    </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../..">Lott's Blog</a>
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Lott's Blog</a>
+        
       </nav>
-
-      
       <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="breadcrumbs navigation">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../..">Docs</a> &raquo;</li>
-    
-      
-        
-          <li>第二章 运维工作总结 &raquo;</li>
-        
-      
-    
-    <li>第七篇 架构师思维和特质以及中间件技术梳理</li>
+    <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>第二章 运维工作总结 &raquo;</li><li>第七篇 架构师思维和特质以及中间件技术梳理</li>
     <li class="wy-breadcrumbs-aside">
-      
     </li>
   </ul>
   <hr/>
 </div>
-          <div role="main">
-            <div class="section">
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
               
                 <h1 id="_1">概述</h1>
 <p><strong>这篇文章的目标</strong></p>
@@ -616,18 +408,40 @@
 <li>在从库有可能读到旧数据时，选择性读主</li>
 </ol>
 <h2 id="service-discovery">服务发现（Service Discovery）中间件</h2>
-<p>服务发现要解决的是分布式系统中最常见的问题之一，即在同一个分布式集群中的进程或服务，要如何才能找到对方并建立连接。本质上来说，服务发现就是想要了解集群中是否有进程在监听 udp 或 tcp 端口，并且通过名字就可以查找和连接。要解决服务发现的问题，需要有下面三大支柱，缺一不可:</p>
+<p>服务发现要解决的是分布式系统中最常见的问题之一，即在同一个分布式集群中的进程或服务，要如何才能找到对方并建立连接。本质上来说，服务发现就是想要了解集群中是否有进程在监听 udp 或 tcp 端口，并且通过名字就可以查找和连接。</p>
+<h3 id="3_3">解决服务发现的3大支柱</h3>
+<p>要解决服务发现的问题，需要有下面三大支柱，缺一不可:</p>
 <ol>
 <li><strong>一个强一致性、高可用的服务存储目录.</strong> 
-基于 Raft 算法的 etcd 天生就是这样一个强一致性高可用的服务存储目录。</li>
+基于 Raft 算法的 etcd 天生就是这样一个强一致性高可用的服务存储目录。 一致性k/v存储.</li>
 <li><strong>一种注册服务和监控服务健康状态的机制。</strong> 用户可以在 etcd 中注册服务，并且对注册的服务设置 key TTL，然后定时保持服务的心跳以达到监控健康状态的效果。</li>
 <li><strong>一种查找和连接服务的机制。</strong> 通过在 etcd 指定的主题下注册的服务也能在对应的主题下查找到。为了确保连接，我们可以在每个服务机器上都部署一个 Proxy 模式的 etcd，这样就可以确保能访问 etcd 集群的服务都能互相连接。
 <img alt="png" src="../../img/20180905111736.jpeg" /></li>
 </ol>
+<h3 id="_26">关于自动服务发现</h3>
+<ul>
+<li>是不需要修改配置，就发现了服务，调用了服务</li>
+<li>有一个地方动态的读取配置，从而能自动去调用服务。</li>
+</ul>
+<h4 id="_27">服务中心</h4>
+<p>在服务中心中，分为两种：</p>
+<ul>
+<li>一种是名称总线系统，也就是A系统需要调用某个服务的时候，只要请求服务中心即可，服务中心会自己去调用远程的服务然后得到响应，最后由服务中心响应给A系统。（ESB企业服务总线）</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG416.png" /></p>
+<ul>
+<li>一种是名称服务系统，也就是A系统需要调用某个服务的时候，去服务中心获取到远程的服务ip+port，然后A系统自己发送请求获得响应（和DNS类似，只是为了解析出IP和端口)</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG417.png" /></p>
+<h4 id="consul">Consul架构图</h4>
+<p>Consul的作用主要是管理这些集群服务的配置，整体流程是这样子的：服务（进程）启动的时候把服务名和自己的IP、端口通过HTTP告诉我，我将这些信息记到自己的内存表格中，客户端调用时带上要查询的服务名通过HTTP发送给我，我再自己的内存表中找到叫这服务名的所有配置发送给客户端。
+平时我还要做一些服务健康检查的事儿，在上面服务启动的时候，服务还要给我配置一个检查接口和检查频率等一些参数，我会按这些参数每隔一段时间，比如10秒钟去请求一下这个接口，如果不通，我就隔5秒再重试下，如果重试3次还不通，我就认定这个服务挂掉了，就从内存表格中删掉这个服务配置，不然客户端要请求到这个不通服务，我就罪过了。</p>
+<p><img alt="png" src="../../img/WechatIMG418.jpeg" /></p>
+<p>Consul 更像是一个 full stack 的解决方案，它不仅提供了一致性 k/v 存储，还封装了服务发现，健康检查，内置了 DNS server 等等.</p>
 <h2 id="service-mesh">微服务架构和服务网格（Service Mesh）</h2>
-<h3 id="_26">常见的服务端架构</h3>
+<h3 id="_28">常见的服务端架构</h3>
 <p><img alt="png" src="../../img/suoyoujiqunjiagou.jpg" /></p>
-<h3 id="_27">微服务架构要解决什么问题?</h3>
+<h3 id="_29">微服务架构要解决什么问题?</h3>
 <ul>
 <li>
 <p>用户流量进入服务端之后, 服务端(指上图中的<code>Web服务</code>和<code>Worker集群</code>)多种<code>应用</code>可以和<code>操作系统的进程</code>形成<code>多对多的模式</code>, 每种<code>应用</code>有如下特性</p>
@@ -644,7 +458,7 @@
 </ul>
 <p><img alt="png" src="../../img/WechatIMG178.jpeg" /></p>
 <h3 id="service-mesh_1">Service Mesh的由来</h3>
-<h4 id="_28">负载均衡、数据收集、服务发现、调用链跟踪。这些非业务的功能，一般是谁实现的呢？</h4>
+<h4 id="_30">负载均衡、数据收集、服务发现、调用链跟踪。这些非业务的功能，一般是谁实现的呢？</h4>
 <ol>
 <li>互联网公司一般会有一个“架构部”，研发框架、组件、工具与技术平台；</li>
 <li>业务研发部门直接使用相关框架、组件、工具与技术平台，享受各种“黑科技”带来的便利；</li>
@@ -723,8 +537,8 @@
 <p><code>追踪</code>，因为 <code>Istio 控制平面</code>拥有大量关于请求的数据，所以可以使用 Jaeger 等工具跟踪和检查这些数据。</p>
 </li>
 </ul>
-<h2 id="_29">客户端网络质量改善技术</h2>
-<h3 id="_30">本质上都是利用边缘节点(代理节点)以及优化的骨干网络来降低用户访问服务端的延迟，提升用户体验.</h3>
+<h2 id="_31">客户端网络质量改善技术</h2>
+<h3 id="_32">本质上都是利用边缘节点(代理节点)以及优化的骨干网络来降低用户访问服务端的延迟，提升用户体验.</h3>
 <ul>
 <li>代理节点<ul>
 <li>CDN的边缘节点</li>
@@ -737,7 +551,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="_31">客户端稳定性提升</h2>
+<h2 id="_33">客户端稳定性提升</h2>
 <blockquote>
 <p>以下是不同业务客户端都会需要的一些通用功能</p>
 </blockquote>
@@ -749,35 +563,27 @@
 <li>LBS SDK, 客户端获取地理位置、附近的人等</li>
 <li>通用问题探测(Detect)和上报相关SDK, 不同客户端可以直接集成该SDK, 在用户使用客户端的任意阶段有问题都可以上报</li>
 </ul>
-<h2 id="_32">客户端埋点最佳实践</h2>
+<h2 id="_34">客户端埋点最佳实践</h2>
 <ul>
 <li>待补充</li>
 </ul>
               
             </div>
-          </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../rongliangguanli/" class="btn btn-neutral float-left" title="第六篇 容量管理概述"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../cicd/" class="btn btn-neutral float-right" title="第八篇 CICD流程概述">Next <span class="icon icon-circle-arrow-right"></span></a>
-      
-      
-        <a href="../rongliangguanli/" class="btn btn-neutral" title="第六篇 容量管理概述"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-      
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-    
   </div>
 
-  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
-      
+          
         </div>
       </div>
 
@@ -785,20 +591,26 @@
 
   </div>
 
-  <div class="rst-versions" role="note" style="cursor: pointer">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-      
-      
-        <span><a href="../rongliangguanli/" style="color: #fcfcfc;">&laquo; Previous</a></span>
-      
-      
-        <span style="margin-left: 15px"><a href="../cicd/" style="color: #fcfcfc">Next &raquo;</a></span>
-      
-    </span>
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../rongliangguanli/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../cicd/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
 </div>
     <script>var base_url = '../..';</script>
+    <script src="../../js/theme_extra.js" defer></script>
     <script src="../../js/theme.js" defer></script>
       <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
 
 </body>
 </html>
