@@ -135,11 +135,13 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#buddy_2">Buddy算法的释放原理：</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#nodezonepage">Node、Zone、Page之间的关系</a>
+    <li class="toctree-l3"><a class="reference internal" href="#nodezonefree_areapage">Node、Zone、free_area、Page之间的关系</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_5">内存页分类</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_5">参考文档</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_6">参考文档</a>
     </li>
     </ul>
                   </li>
@@ -292,7 +294,7 @@ typedef struct zone_struct {
 <p><img alt="png" src="../../img/WechatIMG266.png" /></p>
 <p>整个过程中，位图扮演了重要的角色，如图2所示，位图的某一位对应两个互为伙伴的块，为1表示其中一块已经分配出去了，为0表示两块都空闲。伙伴中无论是分配还是释放都只是相对的位图进行异或操作。分配内存时对位图的
 是为释放过程服务，释放过程根据位图判断伙伴是否存在，如果对相应位的异或操作得1，则没有伙伴可以合并，如果异或操作得0，就进行合并，并且继续按这种方式合并伙伴，直到不能合并为止。</p>
-<h3 id="nodezonepage">Node、Zone、Page之间的关系</h3>
+<h3 id="nodezonefree_areapage">Node、Zone、free_area、Page之间的关系</h3>
 <p><img alt="png" src="../../img/WechatIMG267.png" /></p>
 <ul>
 <li>上图中, 每一个Memory部分, 在内核中使用<code>struct pg_data_t</code>表示, 即是一个NUMA Node</li>
@@ -302,9 +304,49 @@ typedef struct zone_struct {
 <li>每个Node下面, 有多个Zone, 每个Zone在内核中使用<code>struct zone_t</code>表示.</li>
 <li>每个<code>struct zone_t</code>下有一个<code>free_area</code>数组, 该数组中有11个元素. 每个元素是一个<code>struct free_area_t</code>, 每个<code>free_area_t</code>用链表关联了多个<code>struct page</code>, 并且符合free_area[i] 管理 2i 个内存页面大小的内存块列表.</li>
 <li>每个<code>struct page</code>是代表4KB大小的内存页(页框), 几个<code>page</code>可以成为一个<code>内存块</code>, 内核分配物理内存时, 必须是<code>内存块</code>, 而且必须以2的几次方个page分配<code>内存块</code>, 因此最小是分配2的0次方个page的<code>内存块</code>, 大小为4KB.</li>
+<li>总结: (4层架构: Node、Zone、free_area、Page)</li>
+<li>
+<ul>
+<li>系统内有一个<code>struct page_data_t</code>链表, 包含了系统下所有的NUMA Node.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>一个Node包含多个Zone(比如ZONE_DMA、ZONE_NORMAL、ZONE_HIGHMEM)</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>一个Zone包含MAX_ORDER个free_area, (MAX_ORDER是内核代码里定义的常量11, free_area[i] 管理 2i 个内存页面大小的内存块链表)</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>每个frea_area有一个链表,每个链表是多个块，每个块是2个次方个Page，这里的每个块所有包含的page其物理位置都是连续的.</li>
+</ul>
+</li>
 <li>扩展: 当然如果内核代码仅仅需要小于4KB的内存时, 由著名的slab分配层解决. </li>
 </ul>
-<h2 id="_5">参考文档</h2>
+<h3 id="_5">内存页分类</h3>
+<p>用户进程的内存页分为两种：</p>
+<ul>
+<li>anonymous pages（匿名页）</li>
+<li>
+<ul>
+<li>比如进程的代码段、映射的文件都是file-backed，而进程的堆、栈都是不与文件相对应的、就属于匿名页。</li>
+</ul>
+</li>
+<li>
+<p>file-backed pages（文件背景页）</p>
+</li>
+<li>
+<ul>
+<li>对于有文件背景的页面，程序去读文件时，可以通过read也可以通过mmap去读。当你通过任何一种方式从磁盘读文件时，内核都会给你申请一个page cache，来缓存硬盘上的内容。这样的话，读过一遍的数据，本进程或其他进程下次再读的时候就直接从page cache里去拿，就很快了，提升系统的整体性能。因此用户的read/write实际上是跟page cache的相互拷贝。</li>
+</ul>
+</li>
+</ul>
+<p>file-backed pages在内存不足的时候可以直接写回对应的硬盘文件里，称为page-out，不需要用到交换区(swap)；而anonymous pages在内存不足时就只能写到硬盘上的交换区(swap)里，称为swap-out。</p>
+<h2 id="_6">参考文档</h2>
 <ul>
 <li><a href="https://mp.weixin.qq.com/s/Rm5ahGwb5MLG2ysZ7okskA">参考文档1</a></li>
 <li><a href="https://mp.weixin.qq.com/s/FU5UERfanYa-z4OKL33cCA">参考文档2</a></li>
