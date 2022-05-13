@@ -119,7 +119,7 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/1_linux_buddy/">第一篇 伙伴系统介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../daibuchong/">第二篇 Slab层介绍</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/2_slab/">第二篇 Slab层介绍</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../daibuchong/">第三篇 进程虚拟地址空间介绍</a>
                   </li>
@@ -343,7 +343,7 @@ void doWork() {
 </code></pre>
 <p>你看到了 <code>read</code>，<code>write</code>，<code>open</code>，<code>fsync</code>，<code>poll</code> 等等，这些都是对文件的定制处理操作，对于文件的操作其实都是在这个框架内实现逻辑而已，比如 <code>ext2</code> 如果有对 <code>read/write</code> 做定制化，那么就会是 <code>ext2_read</code>，<code>ext2_write</code>，<code>ext4</code> 就会是 <code>ext4_read</code>，<code>ext4_write</code>。在 <code>open</code> 具体<code>文件</code>的时候会赋值对应文件系统的 <code>file_operations</code> 给到 <code>file 结构体</code>。</p>
 <p>那我们很容易知道 <code>read</code> 是文件系统定制 fd 读的行为调用，<code>write</code> 是文件系统定制 fd 写的行为调用，<code>file_operations-&gt;poll</code> 呢？</p>
-<p>这个是定制监听事件的机制实现。通过 poll 机制让上层能直接告诉底层，我这个 fd 一旦读写就绪了，请底层硬件（比如网卡）回调的时候自动把这个 fd 相关的结构体放到指定队列中，并且唤醒操作系统。</p>
+<p>这个是定制监听事件的机制实现。通过 poll 机制让上层能直接告诉底层，我这个 fd 一旦读写就绪了，请底层硬件（比如网卡）回调的时候自动把这个 fd 相关的结构体放到指定队列中，并且唤醒操作系统. <code>file_operations</code>的<code>poll</code>是驱动提供给应用程序探测设备文件是否有数据可读接口.</p>
 <p>举个例子：网卡收发包其实走的异步流程，操作系统把数据丢到一个指定地点，网卡不断的从这个指定地点掏数据处理。请求响应通过中断回调来处理，中断一般拆分成两部分：硬中断和软中断。poll 函数就是把这个软中断回来的路上再加点料，只要读写事件触发的时候，就会立马通知到上层，采用这种事件通知的形式就能把浪费的时间窗就完全消失了。</p>
 <p><strong>划重点：这个 poll 事件回调机制则是 epoll 池高效最核心原理。</strong></p>
 <p><strong> 划重点：<code>epoll 池</code>管理的<code>句柄</code>只能是支持了 file_operations-&gt;poll 的文件 fd。换句话说，如果一个“文件”所在的文件系统没有实现 poll 接口，那么就用不了 epoll 机制。</strong></p>
