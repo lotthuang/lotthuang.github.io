@@ -153,6 +153,12 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#logcenter">LogCenter日志服务平台是针对日志类数据的一站式服务. 包含如下功能:</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#lucene">前置知识  Lucene</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_2">其中主要有如下几个核心术语需要理解：</a>
+    </li>
+        </ul>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#elasticsearch">ElasticSearch的基础概念</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#es-vs">ES vs 关系型数据库</a>
@@ -171,9 +177,57 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#7-shard-replica">7 分片 Shard 和 副本 Replica</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#8-es">8 ES字段类型</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#82-field-type">8.2 常见的field type说明</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#9-timestamp">9 @timestamp（时间戳）</a>
+    </li>
         </ul>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_2">参考文档</a>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#es">日志接入ES时详细过程</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_3">划词提取</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_4">正则解析</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">彻底搞懂分词</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">什么是分词?</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_7">整个过程</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-es-character-filter">1 ES有哪些 Character Filter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-es-tokenizer">2 ES有哪些 Tokenizer</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-estoken-filter">3 ES有哪些Token Filter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-apicharacter-filter-tokenizer-token-filter">4 原始的API里如何分别指定Character Filter Tokenizer Token Filter</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_8">其他问题</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1">1 如何指定使用什么分词器</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-es">2 ES默认的分词器是啥</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-docfiled">3 如果doc里某个filed不需要分词怎么做</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#kibana">使用Kibana</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#logstash">Logstash相关</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_9">参考文档</a>
     </li>
         </ul>
     </li>
@@ -259,6 +313,48 @@
 <li>警告：能够提供错误报告，监控机制</li>
 </ul>
 <p>企业级LogCenter的建设，通常都是<code>ELK技术栈</code> + <code>自研运维平台</code>的结合, 因此我们先来认识下ES.</p>
+<h2 id="lucene">前置知识  Lucene</h2>
+<p>通过对生活中数据的类型作了一个简短了解之后，我们知道关系型数据库的 SQL 检索是处理不了这种非结构化数据的。</p>
+<p>这种非结构化数据的处理需要依赖全文搜索，而目前市场上开放源代码的最好全文检索引擎工具包就属于 Apache 的 Lucene了。</p>
+<p>但是 Lucene 只是一个工具包，它不是一个完整的全文检索引擎。Lucene 的目的是为软件开发人员提供一个简单易用的工具包，以方便的在目标系统中实现全文检索的功能，或者是以此为基础建立起完整的全文检索引擎。</p>
+<p>目前以 Lucene 为基础建立的开源可用全文搜索引擎主要是 Solr 和 Elasticsearch。</p>
+<p>Solr 和 Elasticsearch 都是比较成熟的全文搜索引擎，能完成的功能和性能也基本一样。</p>
+<p>但是 ES 本身就具有分布式的特性和易安装使用的特点，而 Solr 的分布式需要借助第三方来实现，例如通过使用 ZooKeeper 来达到分布式协调管理。</p>
+<p>不管是 Solr 还是 Elasticsearch 底层都是依赖于 Lucene，而 Lucene 能实现全文搜索主要是因为它实现了倒排索引的查询结构。</p>
+<p>如何理解倒排索引呢？ 假如现有三份数据文档，文档的内容如下分别是：</p>
+<ul>
+<li>Java is the best programming language.</li>
+<li>PHP is the best programming language.</li>
+<li>Javascript is the best programming language.</li>
+</ul>
+<p>为了创建倒排索引，我们通过分词器将每个文档的内容域拆分成单独的词（我们称它为词条或 Term），创建一个包含所有不重复词条的排序列表，然后列出每个词条出现在哪个文档。</p>
+<p>结果如下所示：</p>
+<p><img alt="png" src="../../img/WechatIMG503.png" /></p>
+<p>这种结构由文档中所有不重复词的列表构成，对于其中每个词都有一个文档列表与之关联。</p>
+<p>这种由属性值来确定记录的位置的结构就是倒排索引。带有倒排索引的文件我们称为倒排文件。</p>
+<p>我们将上面的内容转换为图的形式来说明倒排索引的结构信息，如下图所示：</p>
+<p><img alt="png" src="../../img/WechatIMG504.jpeg" /></p>
+<h3 id="_2">其中主要有如下几个核心术语需要理解：</h3>
+<ul>
+<li>
+<p>词条（Term）： 索引里面最小的存储和查询单元，对于英文来说是一个单词，对于中文来说一般指分词后的一个词。</p>
+</li>
+<li>
+<p>词典（Term Dictionary）： 或字典，是词条 Term 的集合。搜索引擎的通常索引单位是单词，单词词典是由文档集合中出现过的所有单词构成的字符串集合，单词词典内每条索引项记载单词本身的一些信息以及指向“倒排列表”的指针。</p>
+</li>
+<li>
+<p>倒排表（Post list）： 一个文档通常由多个词组成，倒排表记录的是某个词在哪些文档里出现过以及出现的位置。每条记录称为一个倒排项（Posting）。倒排表记录的不单是文档编号，还存储了词频等信息。</p>
+</li>
+<li>
+<p>倒排文件（Inverted File）： 所有单词的倒排列表往往顺序地存储在磁盘的某个文件里，这个文件被称之为倒排文件，倒排文件是存储倒排索引的物理文件。</p>
+</li>
+</ul>
+<p>从上图我们可以了解到倒排索引主要由两个部分组成：</p>
+<ul>
+<li>词典</li>
+<li>倒排文件</li>
+</ul>
+<p>词典和倒排表是 Lucene 中很重要的两种数据结构，是实现快速检索的重要基石。<code>词典和倒排文件是分两部分存储的，词典在内存中而倒排文件存储在磁盘上</code>。</p>
 <h2 id="elasticsearch">ElasticSearch的基础概念</h2>
 <p><img alt="png" src="../../img/WechatIMG380.png" /></p>
 <blockquote>
@@ -324,27 +420,32 @@
 <p>可以在官网中查看，有这么一些元字段🐖</p>
 <p><img alt="png" src="../../img/WechatIMG384.jpeg" /></p>
 <h4 id="5-mapping">5 映射 Mapping</h4>
-<blockquote>
-<p>用于表示这个字段的数据类型，如 字符串，整数，浮点数，日期等，不指定时会自动创建 </p>
-</blockquote>
-<p>Mapping就是对索引库中索引的字段名称及其数据类型进行定义，类似于mysql中的表结构信息。不过es的mapping比数据库灵活很多，它可以动态识别字段。一般不需要指定mapping, 因为es会自动根据数据格式识别它的类型，如果你需要对某些字段添加特殊属性（如：定义使用其它分词器、是否分词、是否存储等），就必须手动添加mapping。</p>
+<p>3个解释:</p>
+<ul>
+<li>用于表示这个字段的数据类型，如 字符串，整数，浮点数，日期等，不指定时会自动创建 </li>
+<li>用来定义一个文档以及其所包含的字段如何被存储和索引，例如在mapping中定义字段的名称和类型，以及所使用的分词器。</li>
+<li>Mapping就是对索引库中索引的字段名称及其数据类型进行定义，类似于mysql中的表结构信息。不过es的mapping比数据库灵活很多，它可以动态识别字段。一般不需要指定mapping, 因为es会自动根据数据格式识别它的类型，如果你需要对某些字段添加特殊属性（如：定义使用其它分词器、是否分词、是否存储等），就必须手动添加mapping。</li>
+</ul>
 <h4 id="6-node">6 节点 node</h4>
-<p>ElasticSearch 是以集群的方式运行的，每个 ElasticSearch 实例就是一个节点。</p>
+<p>ElasticSearch 是以集群的方式运行的，每个 ElasticSearch 实例就是一个节点。（每个ES进程就是一个节点)</p>
 <p>而节点有很多种角色 👇，好复杂🙃</p>
 <p>当你没有配置这个 node.roles ，这个节点默认有下面这些角色</p>
 <p><img alt="png" src="../../img/WechatIMG385.jpeg" /></p>
-<h5 id="masternode">主节点 MasterNode</h5>
+<h5 id="61-masternode">6.1 主节点 MasterNode</h5>
 <p>负责集群节点状态的维护，索引的创建，删除，数据的 rebalance，分片的分配等工作，不负责具体数据的索引和检索</p>
-<h5 id="datanode">数据节点 DataNode</h5>
+<h5 id="62-datanode">6.2 数据节点 DataNode</h5>
 <p>负责集群中数据的写入和检索，属于 IO，内存 和 CPU 密集型操作，需要的计算资源大</p>
-<h5 id="ingestnode">提取节点 IngestNode</h5>
+<h5 id="63-ingestnode">6.3 提取节点 IngestNode</h5>
 <p>数据预处理通道，在数据被索引前预先处理文档。</p>
-<h5 id="coordinatingnode">协调节点 CoordinatingNode</h5>
+<h5 id="64-coordinatingnode">6.4 协调节点 CoordinatingNode</h5>
 <p>接受客户端请求，然后转发到数据节点，最后将各个节点返回来的数据进行整合。对应着两个阶段</p>
 <ul>
 <li>分散阶段，协调节点将请求转发到保存数据的数据节点</li>
 <li>收集阶段，协调节点将每个数据节点的结果缩减为单个全局结果集</li>
 </ul>
+<blockquote>
+<p>集群内任何一个节点都可以作为协调节点</p>
+</blockquote>
 <h4 id="7-shard-replica">7 分片 Shard 和 副本 Replica</h4>
 <p>Elasticsearch 的 索引是以分片的方式来组织的.</p>
 <blockquote>
@@ -356,7 +457,289 @@
 </code></pre>
 <p>routing 是一个可变值，默认是文档的 _id ，也可以设置成一个自定义的值。routing 通过 hash 函数生成一个数字，然后这个数字再除以 number_of_primary_shards （主分片的数量）后得到 余数 。这个分布在 0 到 number_of_primary_shards-1 之间的余数，就是我们所寻求的文档所在分片的位置。</p>
 <p>这就解释了为什么我们要在创建索引的时候就确定好主分片的数量 并且永远不会改变这个数量：因为如果数量变化了，那么所有之前路由的值都会无效，文档也再也找不到了。</p>
-<h3 id="_2">参考文档</h3>
+<h4 id="8-es">8 ES字段类型</h4>
+<p><img alt="png" src="../../img/WechatIMG502.png" /></p>
+<p>text 用于索引全文值的字段，例如电子邮件正文或产品说明。这些字段是被分词的，它们通过分词器传递 ，以在被索引之前将字符串转换为单个术语的列表。</p>
+<p>分析过程允许 Elasticsearch 搜索单个单词中每个完整的文本字段。文本字段不用于排序，很少用于聚合。</p>
+<p>Keyword 用于索引结构化内容的字段，例如电子邮件地址，主机名，状态代码，邮政编码或标签。它们通常用于过滤，排序，和聚合。Keyword 字段只能按其确切值进行搜索。</p>
+<p>通过对字段类型的了解我们知道有些字段需要明确定义的，例如某个字段是 Text 类型还是 Keyword 类型差别是很大的，时间字段也许我们需要指定它的时间格式，还有一些字段我们需要指定特定的分词器等等。</p>
+<p>如果采用动态映射是不能精确做到这些的，自动识别常常会与我们期望的有些差异。</p>
+<p>所以创建索引的时候一个完整的格式应该是指定分片和副本数以及 Mapping 的定义，如下：</p>
+<pre><code>
+PUT my_index   
+{  
+   &quot;settings&quot; : {  
+      &quot;number_of_shards&quot; : 5,  
+      &quot;number_of_replicas&quot; : 1  
+   }  
+  &quot;mappings&quot;: {  
+    &quot;_doc&quot;: {   
+      &quot;properties&quot;: {   
+        &quot;title&quot;:    { &quot;type&quot;: &quot;text&quot;  },   
+        &quot;name&quot;:     { &quot;type&quot;: &quot;text&quot;  },   
+        &quot;age&quot;:      { &quot;type&quot;: &quot;integer&quot; },    
+        &quot;created&quot;:  {  
+          &quot;type&quot;:   &quot;date&quot;,   
+          &quot;format&quot;: &quot;strict_date_optional_time||epoch_millis&quot;  
+        }  
+      }  
+    }  
+  }  
+}  
+
+</code></pre>
+<h5 id="81">8.1 官方说明</h5>
+<p>Each field has a <code>field data type</code>, or <code>field type</code>. This type indicates the kind of data the field contains, such as strings or boolean values, and its intended use. For example, you can index strings to both <code>text</code> and <code>keyword</code> fields. However, <code>text</code> field values are analyzed for full-text search while <code>keyword</code> strings are left as-is for filtering and sorting.</p>
+<p>Field types are grouped by <code>family</code>. Types in the same family have exactly the same search behavior but may have different space usage or performance characteristics.</p>
+<ul>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html">官方文档</a></li>
+</ul>
+<h4 id="82-field-type">8.2 常见的field type说明</h4>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Numbers</td>
+<td>例如 int、long、float，若需要范围查询或需要做数字聚合如平均值、百分位等，则需要设置为数字类型</td>
+</tr>
+<tr>
+<td>keyword</td>
+<td>字符串(不分词) ，字段搜索功能弱很多，无法使用词素进行搜索，但是可以完成聚合操作，同时不分词字段受到最大长度 32K 的限制</td>
+</tr>
+<tr>
+<td>text</td>
+<td>字符串(分词)，可以直接搜索该字段被分词后的词素(Term)，也可以使用通配符搜索等功能，但是无法利用该字段完成聚合等操作</td>
+</tr>
+<tr>
+<td>ip</td>
+<td>会对该 ip 地址进行 geoip 解析，获取地理位置以及运营商信息</td>
+</tr>
+<tr>
+<td>json</td>
+<td>会对该字段的文本内容进行 json 解析，以 kv 形式呈现解析结果，安全起见，原始字段内容也将保留</td>
+</tr>
+<tr>
+<td>date</td>
+<td>如果需要使用日志的时间作为时间戳 ，您需要指定一个字段为 date 类型，作为日志的时间字段，然后你需要时间解析规则。时间格式参考：plugins-filters-date，时间戳格式比较重要，后台自动匹配到的不一定是正确的，需要再次确认。（若没有时间字段，则可以使用系统时间）</td>
+</tr>
+</tbody>
+</table>
+<h4 id="9-timestamp">9 @timestamp（时间戳）</h4>
+<p>当日志被某个事件触发，时间戳作为日志事件的一部分表明事件是何时发生的。在 ELK 中时间戳的作用非常重要，我们使用时间戳来过滤搜索结果，同时也使用时间戳确定您项目下的哪些日志超出保存期限需要清除。 获取时间戳取决于您发送的日志数据类型，时间戳将按以下顺序优先处理：</p>
+<ul>
+<li>分析日志数据：如果您的日志内时间戳能够被解析，ELK 将直接使用日志中的时间戳，它是由您的应用程序记录下来的。</li>
+<li>syslog：如果您的日志由syslog转发，那么会有时间戳被嵌入日志头部，ELK 会提取使用。</li>
+<li>doc里若没有时间字段，则可以使用ES系统时间.</li>
+</ul>
+<h2 id="es">日志接入ES时详细过程</h2>
+<p>日志接入ES时, 须设置日志解析规则</p>
+<p>目前提供了两种切割日志的方式</p>
+<ul>
+<li>
+<ol>
+<li>划词提取（速度快，但要求日志格式统一）</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>正则解析</li>
+</ol>
+</li>
+</ul>
+<h4 id="_3">划词提取</h4>
+<p>划词提取是指通过特定分隔符号或者特定字符串（每条日志中都会出现的相同内容）来提取日志中关键信息的解析方法。</p>
+<h4 id="_4">正则解析</h4>
+<p>正则解析则是通过GROK正则解析, 来提取日志中的关键字.</p>
+<h2 id="_5">彻底搞懂分词</h2>
+<h3 id="_6">什么是分词?</h3>
+<ul>
+<li>分词是指将文本转换成一系列单词（term or token）的过程，也可以叫做文本分析，在es里面称为Analysis. (这里的term等于token, 产生token即产生term）</li>
+<li>搜索引擎的核心是倒排索引，而倒排索引的基础就是分词。所谓分词可以简单理解为将一个完整的句子切割为一个个单词的过程。在 es 中单词对应英文为 term。</li>
+</ul>
+<p>我们简单看个例子</p>
+<p><img alt="png" src="../../img/WechatIMG505.png" /></p>
+<p>ES 的倒排索引即是根据分词后的单词创建，即 <strong>我</strong>、<strong>爱</strong>、<strong>北京</strong>、<strong>天安门</strong>这4个单词。这也意味着你在搜索的时候也只能搜索这4个单词才能命中该文档. </p>
+<h3 id="_7">整个过程</h3>
+<p>如下图所示</p>
+<p><img alt="png" src="../../img/%E6%97%A5%E5%BF%97%E6%8E%A5%E5%85%A5ES%E8%BF%87%E7%A8%8B.jpg" /></p>
+<ul>
+<li>在日志切割阶段, 如果你指定了某个字符串为<code>keyword</code>类型, 那这个字段就是Term, 将来可用于搜索.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>阶段英文名</th>
+<th>作用</th>
+<th>举例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>前</td>
+<td>Character Filter</td>
+<td>对原始文本进行处理</td>
+<td>例：去除html标签、特殊字符等</td>
+</tr>
+<tr>
+<td>中</td>
+<td>Tokenizer</td>
+<td>将原始文本进行分词</td>
+<td>例：上课学习–&gt;上课,学习</td>
+</tr>
+<tr>
+<td>后</td>
+<td>Token Filters</td>
+<td>分词后的关键字进行加工</td>
+<td>例：转小写、删除语气词、近义词和同义词等</td>
+</tr>
+</tbody>
+</table>
+<h4 id="1-es-character-filter">1 ES有哪些 Character Filter</h4>
+<ul>
+<li>在进行Tokenizer之前对原始文本进行处理，如增加、删除或替换字符等</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTML Strip</td>
+<td>去除html标签和转换html实体</td>
+</tr>
+<tr>
+<td>Mapping</td>
+<td>字符串替换操作</td>
+</tr>
+<tr>
+<td>Pattern Replace</td>
+<td>正则匹配替换</td>
+</tr>
+</tbody>
+</table>
+<h4 id="2-es-tokenizer">2 ES有哪些 Tokenizer</h4>
+<ul>
+<li>通常是对哪些类型为<code>text</code>的<code>filed</code>进行分词</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>分词器（Analyzer）</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Standard（es默认）</td>
+<td>支持多语言，按词切分并做小写处理</td>
+</tr>
+<tr>
+<td>Simple</td>
+<td>按照非字母切分，小写处理</td>
+</tr>
+<tr>
+<td>Whitespace</td>
+<td>按照空格来切分</td>
+</tr>
+<tr>
+<td>Stop</td>
+<td>去除语气助词，如the、an、的、这等</td>
+</tr>
+<tr>
+<td>Keyword</td>
+<td>不分词</td>
+</tr>
+<tr>
+<td>Pattern</td>
+<td>正则分词，默认\w+,即非字词符号做分割符</td>
+</tr>
+<tr>
+<td>Language</td>
+<td>常见语言的分词器（30+）</td>
+</tr>
+</tbody>
+</table>
+<h4 id="3-estoken-filter">3 ES有哪些Token Filter</h4>
+<ul>
+<li>对输出的单词（term）进行增加、删除、修改等操作</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lowercase</td>
+<td>将所有term转换为小写</td>
+</tr>
+<tr>
+<td>stop</td>
+<td>删除stop words</td>
+</tr>
+<tr>
+<td>NGram</td>
+<td>和Edge NGram连词分割</td>
+</tr>
+<tr>
+<td>Synonym</td>
+<td>添加近义词的term</td>
+</tr>
+</tbody>
+</table>
+<h4 id="4-apicharacter-filter-tokenizer-token-filter">4 原始的API里如何分别指定<code>Character Filter</code> <code>Tokenizer</code> <code>Token Filter</code></h4>
+<pre><code>
+POST _analyze
+{
+  &quot;char_filter&quot;: [&quot;html_strip&quot;], ---&gt; 指定Character Filter
+  &quot;tokenizer&quot;: &quot;standard&quot;, ---&gt; 指定Tokenizer
+  &quot;filter&quot;: [&quot;lowercase&quot;], ---&gt; 指定Token Filter
+  &quot;text&quot;:&quot;Hello WORLD&quot;
+}
+
+
+</code></pre>
+<h3 id="_8">其他问题</h3>
+<h4 id="1">1 如何指定使用什么分词器</h4>
+<p>写时分词器需要在 mapping 中指定，而且一经指定就不能再修改，若要修改必须新建索引。如下所示我们新建一个名为ms_english 的字段，指定其分词器为 english：</p>
+<pre><code>
+PUT test/_mapping/doc
+{
+  &quot;properties&quot;: {
+    &quot;msg_english&quot;:{
+      &quot;type&quot;:&quot;text&quot;,
+      &quot;analyzer&quot;: &quot;english&quot;
+    }
+  }
+}
+
+</code></pre>
+<ul>
+<li>其中test为索引名称</li>
+<li>使用"analyzer"指定分词器名称</li>
+</ul>
+<h4 id="2-es">2 ES默认的分词器是啥</h4>
+<ul>
+<li>默认是standard</li>
+</ul>
+<h4 id="3-docfiled">3 如果doc里某个filed不需要分词怎么做</h4>
+<ul>
+<li>把该field的type设置为keyword</li>
+</ul>
+<h2 id="kibana">使用Kibana</h2>
+<h2 id="logstash">Logstash相关</h2>
+<h3 id="_9">参考文档</h3>
 <ul>
 <li>
 <p><a href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/index.html">ElasticSearch权威指南</a></p>
@@ -367,7 +750,15 @@
 <li>
 <p><a href="https://mp.weixin.qq.com/s/hY2zBZqzMjVSIgnDK19EUQ">2万字详解，吃透 ES</a></p>
 </li>
-<li><a href="https://mp.weixin.qq.com/s/b9U8XuuiAC9XeCMWoX4F1w">万字长文带你入门 Elasticsearch</a></li>
+<li>
+<p><a href="https://mp.weixin.qq.com/s/b9U8XuuiAC9XeCMWoX4F1w">万字长文带你入门 Elasticsearch</a></p>
+</li>
+<li>
+<p><a href="https://blog.51cto.com/bigdata/2844391">es自带常见分词以及自定义分词</a></p>
+</li>
+<li>
+<p><a href="https://developer.aliyun.com/article/768351">初次使用 Elasticsearch 遇多种分词难题？</a></p>
+</li>
 </ul>
               
             </div>
