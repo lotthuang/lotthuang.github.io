@@ -188,6 +188,8 @@
     <ul class="current">
     </ul>
                     </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../5_kubernetes_monitor/">第五篇 Kubernetes监控</a>
+                    </li>
                 </ul>
       </div>
     </div>
@@ -290,7 +292,36 @@
 </li>
 </ul>
 <h2 id="namespace">Namespace（命名空间）</h2>
-<p>Kubernetes中对一组资源和对象的抽象集合，比如可以用来将系统内部的对象划分为不同的项目组或者用户组。常见的 <code>Pod</code>、<code>Service</code>、<code>ReplicaSet</code> 和 <code>Deployment</code> 等都是属于某一个 <code>Namespace</code> 的 (默认是 default)，而 <code>Node</code>, <code>PersistentVolumes</code> 等则不属于任何<code>Namespace</code>。</p>
+<p>Kubernetes中对一组资源和对象的抽象集合，比如可以用来将系统内部的对象划分为不同的项目组或者用户组。常见的 <code>Pod</code>、<code>Service</code>、<code>ReplicaSet</code> 和 <code>Deployment</code>、<code>ConfigMap</code>、<code>Secret</code>等都是属于某一个 <code>Namespace</code> 的 (默认是 default)，而 <code>Node</code>, <code>PersistentVolumes</code> 等则不属于任何<code>Namespace</code>。</p>
+<h3 id="_1">什么是命名空间，为什么它很重要？</h3>
+<p>命名空间（namespace）是Kubernetes提供的组织机制，用于给集群中的任何对象组进行分类、筛选和管理。每一个添加到Kubernetes集群的工作负载必须放在一个命名空间中。</p>
+<p>命名空间为集群中的对象名称赋予作用域。虽然在命名空间中名称必须是唯一的，但是相同的名称可以在不同的命名空间中使用。这对于某些场景来说可能帮助很大。例如，如果使用命名空间来划分应用程序生命周期环境（如开发、staging、生产），则可以在每个环境中维护利用同样的名称维护相同对象的副本。</p>
+<p>命名空间还可以让用户轻松地将策略应用到集群的具体部分。你可以通过定义ResourceQuota对象来控制资源的使用，该对象在每个命名空间的基础上设置了使用资源的限制。类似地，当在集群上使用支持网络策略的CNI（容器网络接口）时，比如Calico或Canal（calico用于策略，flannel用于网络）。你可以将NetworkPolicy应用到命名空间，其中的规则定义了pod之间如何彼此通信。不同的命名空间可以有不同的策略。</p>
+<p>使用命名空间最大的好处之一是能够利用Kubernetes RBAC（基于角色的访问控制）。RBAC允许您在单个名称下开发角色，这样将权限或功能列表分组。ClusterRole对象用于定义集群规模的使用模式，而角色对象类型（Role object type）应用于具体的命名空间，从而提供更好的控制和粒度。在角色创建后，RoleBinding可以将定义的功能授予单个命名空间上下文中的具体具体用户或用户组。通过这种方式，命名空间可以使得集群操作者能够将相同的策略映射到组织好的资源集合。</p>
+<h4 id="_2">简而言之</h4>
+<p>不同的命名空间，可以有</p>
+<ul>
+<li>不同的网络策略</li>
+<li>不同的资源限制(ResourceQuota)</li>
+<li>不同的用户权限(RBAC)</li>
+</ul>
+<h3 id="3">常见的命名空间使用模式（3种）</h3>
+<p>命名空间是一种非常灵活的特性，它不强制使用特定的结构或组织模式。不过尽管如此，还是有许多在团队内常使用的模式。</p>
+<h4 id="1">1 将命名空间映射到团队或项目上</h4>
+<p>在设置命名空间时有一个惯例是，为每个单独的项目或者团队创建一个命名空间。这和我们前面提到的许多命名空间的特性很好的结合在了一起。</p>
+<p>通过给团队提供专门的命名空间，你可以用RBAC策略委托某些功能来实现自我管理和自动化。比如从命名空间的RoleBinding对象中添加或删除成员就是对团队资源访问的一种简单方法。除此之外，给团队和项目设置资源配额也非常有用。有了这种方式，你可以根据组织的业务需求和优先级合理地访问资源。</p>
+<h4 id="2">2 使用命名空间对生命周期环境进行分区</h4>
+<p>命名空间非常适合在集群中划分<code>开发</code>、<code>staging</code>以及<code>生产环境</code>。通常情况下我们会被建议将生产工作负载部署到一个完全独立的集群中，来确保最大程度的隔离。不过对于较小的团队和项目来说，命名空间会是一个可行的解决方案。</p>
+<p>和前面的用例一样，网络策略、RBAC策略以及配额是实现用例的重要因素。在管理环境时，通过将网络隔离来控制和组件之间的通信能力是很有必要的。同样，命名空间范围的RBAC策略允许运维人员为生产环节设置严格的权限。配额能够确保对最敏感环境的重要资源的访问。</p>
+<p>重新使用对象名称的能力在这里很有帮助。在测试和发布对象时，可以把它们放到新环境中，同时保留其命名空间。这样可以避免因为环境中出现相似的对象而产生的混淆，并且减少认知开销。</p>
+<h4 id="3_1">3 使用命名空间隔离不同的使用者</h4>
+<p>另一个命名空间可以解决的用例是根据使用者对工作负载进行分段。比如，如果你的集群为多个客户提供基础设施，那么按命名空间进行分段就能够实现管理每个客户，同时跟踪账单的去向。</p>
+<p>另外，命名空间的特性可以让你控制网络和访问策略，为你的使用者定义不同的配额。在通用的情况下，命名空间允许你为每个用户开发和部署相同模板化环境的不同实例。这种一致性可以大大简化管理和故障诊断的过程。</p>
+<h3 id="kubernetes_1">理解预配置的Kubernetes命名空间</h3>
+<p>在我们进行创建命名空间之前，先讨论一下Kubernetes是如何自动设置它的。在默认情况下，新的集群上有三个命名空间：
+default：向集群中添加对象而不提供命名空间，这样它会被放入默认的命名空间中。在创建替代的命名空间之前，该命名空间会充当用户新添加资源的主要目的地，无法删除。
+kube-public：kube-public命名空间的目的是让所有具有或不具有身份验证的用户都能全局可读。这对于公开bootstrap组件所需的集群信息非常有用。它主要是由Kubernetes自己管理。
+kube-system：kube-system命名空间用于Kubernetes管理的Kubernetes组件，一般规则是，避免向该命名空间添加普通的工作负载。它一般由系统直接管理，因此具有相对宽松的策略。</p>
 <h3 id="namespace_1">常用 Namespace 操作：</h3>
 <ul>
 <li>
@@ -303,7 +334,7 @@
 <p>删除 Namespace$ kubectl delete namespace ns-name</p>
 </li>
 </ul>
-<h4 id="_1">删除命名空间时，需注意以下几点：</h4>
+<h4 id="_3">删除命名空间时，需注意以下几点：</h4>
 <ul>
 <li>删除一个 Namespace 会自动删除所有属于该 Namespace 的资源。</li>
 <li>default 和 kube-system 命名空间不可删除。</li>
@@ -373,6 +404,7 @@ PersistentVolume 和 PersistentVolumeClaim (PVC) 提供了方便的持久化卷:
 <li>ReadWriteMany (RWX): 这种存储可以以读写的方式被多个 Pod 共享。</li>
 </ul>
 <p>不是每一种存储都支持这三种方式，像共享方式，目前支持的还比较少，比较常用的是 NFS。在 PVC 绑定 PV 时通常根据两个条件来绑定，<code>一个是存储的大小</code>，<code>另一个就是访问模式</code>。</p>
+<h2 id="storageclass">StorageClass</h2>
 <h2 id="configmap">ConfigMap配置中心</h2>
 <p>ConfigMap 用于保存配置数据的键值对，可以用来保存单个属性，也可以用来保存配置文件。ConfigMap 跟 Secret 很类似，但它可以更方便地处理不包含敏感信息的字符串。</p>
 <p>ConfigMap 可以通过三种方式在 Pod 中使用，三种分别方式为:</p>
@@ -395,7 +427,7 @@ PersistentVolume 和 PersistentVolumeClaim (PVC) 提供了方便的持久化卷:
 <li>扩容和缩容</li>
 <li>暂停和继续 Deployment</li>
 </ul>
-<h3 id="_2">常用的操作命令</h3>
+<h3 id="_4">常用的操作命令</h3>
 <ul>
 <li>
 <p>生成一个 Deployment 对象$ kubectl run www --image=10.0.0.183:5000/hanker/www:0.0.1 --port=8080</p>
@@ -465,7 +497,7 @@ PersistentVolume 和 PersistentVolumeClaim (PVC) 提供了方便的持久化卷:
 <li>有序部署，有序扩展，即 Pod 是有顺序的。在部署或者扩展的时候要依据定义的顺序依次进行操作 (即从 0 到 N-1，在下一个 Pod 运行之前所有之前的 Pod 必须都是 Running 和 Ready 状态)，基于 Init Containers 来实现</li>
 <li>有序收缩，有序删除 (即从 N-1 到0)</li>
 </ul>
-<h3 id="_3">支持两种更新策略</h3>
+<h3 id="_5">支持两种更新策略</h3>
 <ul>
 <li>
 <p>OnDelete: 当 .spec.template 更新时，并不立即删除旧的 Pod，而是等待用户手动删除这些旧 Pod 后自动创建新 Pod。这是默认的更新策略，兼容 v1.6 版本的行为</p>
@@ -516,7 +548,7 @@ CronJob 即定时任务，就类似于 Linux 系统的 Crontab，在指定的时
 $ kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10</p>
 <h2 id="service-account">Service Account</h2>
 <p>Service account 是为了方便 Pod 里面的进程调用 Kubernetes API 或其他外部服务而设计的。</p>
-<h3 id="_4">授权</h3>
+<h3 id="_6">授权</h3>
 <p>Service Account 为服务提供了一种方便的认证机制，但它不关心授权的问题。可以配合 RBAC (Role Based Access Control) 来为 Service Account 鉴权，通过定义 Role、RoleBinding、ClusterRole、ClusterRoleBinding 来对 sa 进行授权。</p>
 <h2 id="secret">Secret 密钥</h2>
 <p>Sercert 密钥解决了密码、Token、密钥等敏感数据的配置问题，而不需要把这些敏感数据暴露到镜像或者 Pod Spec 中。Secret 可以以 Volume 或者环境变量的方式使用。
@@ -526,12 +558,20 @@ $ kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10</p>
 <li>Opaque: Base64 编码格式的 Secret，用来存储密码、密钥等;</li>
 <li>kubernetes.io/dockerconfigjson: 用来存储私有 Docker Registry 的认证信息。</li>
 </ul>
+<h2 id="kubernetes_2">Kubernetes接口机制</h2>
+<ul>
+<li>CRI(容器运行时接口, Container Runtime Interface)</li>
+<li>CNI(容器网络接口, Container Network Interface)</li>
+<li>CSI(容器存储接口, Container Storage Interface)</li>
+</ul>
               
             </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../5_kubernetes_monitor/" class="btn btn-neutral float-right" title="第五篇 Kubernetes监控">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../3_docker_basic_concepts/" class="btn btn-neutral" title="第三篇 一些基础概念"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -562,6 +602,8 @@ $ kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10</p>
       
         <span><a href="../3_docker_basic_concepts/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
+      
+        <span style="margin-left: 15px"><a href="../5_kubernetes_monitor/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
