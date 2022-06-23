@@ -153,6 +153,10 @@
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/6_elk/">第六篇 elk技术栈</a>
                     </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/7_charset/">第七篇 字符集和编码</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/8_locale/">第八篇 locale设置</a>
+                    </li>
                 </ul>
                 <p class="caption"><span class="caption-text">第八章 职场通用经验</span></p>
                 <ul>
@@ -405,6 +409,10 @@ PersistentVolume 和 PersistentVolumeClaim (PVC) 提供了方便的持久化卷:
 </ul>
 <p>不是每一种存储都支持这三种方式，像共享方式，目前支持的还比较少，比较常用的是 NFS。在 PVC 绑定 PV 时通常根据两个条件来绑定，<code>一个是存储的大小</code>，<code>另一个就是访问模式</code>。</p>
 <h2 id="storageclass">StorageClass</h2>
+<ul>
+<li>简化提前创建PV的过程,管理员无需提前创建静态PV</li>
+<li>系统为PVC选择对应PV时，很可能存在PV空间大于PVC申请的空间，存在资源浪费的情况。而使用StorageClass的动态存储供应模式就避免了这种情况.</li>
+</ul>
 <h2 id="configmap">ConfigMap配置中心</h2>
 <p>ConfigMap 用于保存配置数据的键值对，可以用来保存单个属性，也可以用来保存配置文件。ConfigMap 跟 Secret 很类似，但它可以更方便地处理不包含敏感信息的字符串。</p>
 <p>ConfigMap 可以通过三种方式在 Pod 中使用，三种分别方式为:</p>
