@@ -164,6 +164,26 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#linux_1">Linux下段页式内存管理</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 什么是段页式内存管理</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-linux">2 Linux下的段页式内存管理</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#21-linux">2.1 Linux 内存主要采用的是页式内存管理，但同时也不可避免地涉及了段机制。</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#linux_2">Linux 下内存子系统的优化技能</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-ksm">1  KSM 和 透明大页的区别</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-linux_1">2  Linux内存子系统所有优化点罗列</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
@@ -429,6 +449,241 @@
 <h3 id="_8">单极页表的问题和多级页表的引入</h3>
 <p><a href="https://mp.weixin.qq.com/s/HJB_ATQFNqG82YBCRr97CA">参考1</a>
 <a href="https://mp.weixin.qq.com/s/80LjQ9o8JIZu0PxY7PgKAw?locale=zh-CN">参考2</a></p>
+<h2 id="linux_1">Linux下段页式内存管理</h2>
+<h3 id="1">1 什么是段页式内存管理</h3>
+<p>内存分段和内存分页并不是对立的，它们是可以组合起来在同一个系统中使用的，那么组合起来后，通常称为<strong>段页式内存管理</strong>。</p>
+<p><img alt="png" src="../../img/WechatIMG539.png" /></p>
+<p>段页式内存管理实现的方式：</p>
+<ul>
+<li>
+<p>先将程序划分为多个有逻辑意义的段，也就是前面提到的分段机制；</p>
+</li>
+<li>
+<p>接着再把每个段划分为多个页，也就是对分段划分出来的连续空间，再划分固定大小的页；</p>
+</li>
+</ul>
+<p>这样，地址结构就由<code>段号</code>、<code>段内页号</code>和<code>页内位移</code>三部分组成。</p>
+<p>用于段页式地址变换的数据结构是每一个程序一张段表，每个段又建立一张页表，段表中的地址是页表的起始地址，而页表中的地址则为某页的物理页号，如图所示：</p>
+<p><img alt="png" src="../../img/WechatIMG540.jpeg" /></p>
+<p>段页式地址变换中要得到物理地址须经过三次内存访问：</p>
+<ul>
+<li>
+<p>第一次访问段表，得到页表起始地址；</p>
+</li>
+<li>
+<p>第二次访问页表，得到物理页号；</p>
+</li>
+<li>
+<p>第三次将物理页号与页内位移组合，得到物理地址。</p>
+</li>
+</ul>
+<p>可用软、硬件相结合的方法实现段页式地址变换，这样虽然增加了硬件成本和系统开销，但提高了内存的利用率。</p>
+<h3 id="2-linux">2 Linux下的段页式内存管理</h3>
+<p>那么，Linux 操作系统采用了哪种方式来管理内存呢？</p>
+<blockquote>
+<p>在回答这个问题前，我们得先看看 Intel 处理器的发展历史.</p>
+</blockquote>
+<p>早期 Intel 的处理器从 80286 开始使用的是段式内存管理。但是很快发现，光有段式内存管理而没有页式内存管理是不够的，这会使它的 X86 系列会失去市场的竞争力。因此，在不久以后的 80386 中就实现了对页式内存管理。也就是说，80386 除了完成并完善从 80286 开始的段式内存管理的同时还实现了页式内存管理。</p>
+<p>但是这个 80386 的页式内存管理设计时，没有绕开段式内存管理，而是建立在段式内存管理的基础上，这就意味着，<strong>页式内存管理的作用是在由段式内存管理所映射而成的的地址上再加上一层地址映射。</strong></p>
+<p>由于此时段式内存管理映射而成的地址不再是“物理地址”了，Intel 就称之为“线性地址”（也称虚拟地址）。于是，段式内存管理先将逻辑地址映射成线性地址，然后再由页式内存管理将线性地址映射成物理地址。</p>
+<p><img alt="png" src="../../img/WechatIMG541.png" /></p>
+<p>这里说明下逻辑地址和线性地址：</p>
+<ul>
+<li>
+<p>程序所使用的地址，通常是没被段式内存管理映射的地址，称为<code>逻辑地址</code>；</p>
+</li>
+<li>
+<p>通过段式内存管理映射的地址，称为<code>线性地址</code>，也叫虚拟地址；</p>
+</li>
+</ul>
+<p><code>逻辑地址</code>是<code>「段式内存管理」</code>转换前的地址，<code>线性地址</code>则是<code>「页式内存管理」</code>转换前的地址。</p>
+<h4 id="21-linux">2.1 Linux 内存主要采用的是页式内存管理，但同时也不可避免地涉及了段机制。</h4>
+<p>这主要是上面 Intel 处理器发展历史导致的，因为 Intel X86 CPU 一律对程序中使用的地址先进行段式映射，然后才能进行页式映射。既然 CPU 的硬件结构是这样，Linux 内核也只好服从 Intel 的选择。</p>
+<p>但是事实上，Linux 内核所采取的办法是使段式映射的过程实际上不起什么作用。也就是说，“上有政策，下有对策”，若惹不起就躲着走。</p>
+<p>Linux 系统中的每个段都是从 0 地址开始的整个 4GB 虚拟空间（32 位环境下），也就是所有的段的起始地址都是一样的。这意味着，Linux 系统中的代码，包括操作系统本身的代码和应用程序代码，所面对的地址空间都是线性地址空间（虚拟地址），这种做法相当于屏蔽了处理器中的逻辑地址概念，段只被用于访问控制和内存保护。</p>
+<ul>
+<li>四个主要的Linux段的段描述符字段的值</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>段</th>
+<th>Base</th>
+<th>G</th>
+<th>Limit</th>
+<th>S</th>
+<th>Type</th>
+<th>DPL</th>
+<th>D/B</th>
+<th>P</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>用户代码段</td>
+<td>0x00000000</td>
+<td>1</td>
+<td>0xfffff</td>
+<td>1</td>
+<td>10</td>
+<td>3</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>用户数据段</td>
+<td>0x00000000</td>
+<td>1</td>
+<td>0xfffff</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>内核代码段</td>
+<td>0x00000000</td>
+<td>1</td>
+<td>0xfffff</td>
+<td>1</td>
+<td>10</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>内核数据段</td>
+<td>0x00000000</td>
+<td>1</td>
+<td>0xfffff</td>
+<td>1</td>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<ul>
+<li>相应的<code>段选择符</code>由宏<code>__USER_CS</code>,<code>__USER_DS</code>,<code>__KERNEL_CS</code>,<code>__KERNEL_DS</code>分别定义.例如, 为了对内核代码段寻址，内核只需要把<code>__KERNEL_CS</code>宏产生的值装进<code>cs段寄存器</code>即可.</li>
+</ul>
+</li>
+<li>
+<p>注意</p>
+</li>
+<li>
+<ul>
+<li>1 与段相关的线性地址都0开始，达到2的32次方-1的寻址限长. 这就意味着在用户态或内核态下的所有进程可以使用相同的逻辑地址.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>2 所有段都从<code>0x00000000</code>开始, 表明Linux下<code>逻辑地址</code>与<code>线性地址</code>是一致的,即<code>逻辑地址</code>的偏移量字段的值与相应<code>线性地址</code>的值总是一致.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>我们再来瞧一瞧，Linux 的虚拟地址空间是如何分布的？</p>
+</blockquote>
+<p>在 Linux 操作系统中，虚拟地址空间的内部又被分为<code>内核空间</code>和<code>用户空间</code>两部分，不同位数的系统，地址空间的范围也不同。比如最常见的 32 位和 64 位系统，如下所示：</p>
+<p><img alt="png" src="../../img/WechatIMG542.jpeg" /></p>
+<p>通过这里可以看出：</p>
+<ul>
+<li>
+<p>32 位系统的内核空间占用 1G，位于最高处，剩下的 3G 是用户空间；</p>
+</li>
+<li>
+<p>64 位系统的内核空间和用户空间都是 128T，分别占据整个内存空间的最高和最低处，剩下的中间部分是未定义的。</p>
+</li>
+</ul>
+<p>再来说说，内核空间与用户空间的区别：</p>
+<ul>
+<li>
+<p>进程在用户态时，只能访问用户空间内存；</p>
+</li>
+<li>
+<p>只有进入内核态后，才可以访问内核空间的内存；</p>
+</li>
+</ul>
+<p>虽然每个进程都各自有独立的虚拟内存，但是<strong>每个虚拟内存中的内核地址，其实关联的都是相同的物理内存</strong>。这样，进程切换到内核态后，就可以很方便地访问内核空间内存。</p>
+<p><img alt="png" src="../../img/WechatIMG543.jpeg" /></p>
+<p>接下来，进一步了解虚拟空间的划分情况，用户空间和内核空间划分的方式是不同的，内核空间的分布情况就不多说了。</p>
+<p>我们看看用户空间分布的情况，以 32 位系统为例，我画了一张图来表示它们的关系：</p>
+<p><img alt="png" src="../../img/WechatIMG544.png" /></p>
+<p>通过这张图你可以看到，用户空间内存，从<strong>低到高</strong>分别是 7 种不同的内存段：</p>
+<ul>
+<li>
+<p>1 程序文件段，包括二进制可执行代码；</p>
+</li>
+<li>
+<p>2 已初始化数据段，包括静态常量；</p>
+</li>
+<li>
+<p>3 未初始化数据段，包括未初始化的静态变量；</p>
+</li>
+<li>
+<p>4 堆段，包括动态分配的内存，从低地址开始向上增长；</p>
+</li>
+<li>
+<p>5 文件映射段，包括动态库、共享内存等，从低地址开始向上增长（跟硬件和内核版本有关）</p>
+</li>
+<li>
+<p>6 栈段，包括局部变量和函数调用的上下文等。栈的大小是固定的，一般是 8 MB。当然系统也提供了参数，以便我们自定义大小；</p>
+</li>
+<li>
+<p>7 内存的最高端存放的是命令行参数和环境变量.</p>
+</li>
+</ul>
+<h2 id="linux_2">Linux 下内存子系统的优化技能</h2>
+<h3 id="1-ksm">1  KSM 和 透明大页的区别</h3>
+<ul>
+<li>
+<p>如果开启KSM，kernel层面会有 ksmd进程把内容完全一样的物理页进行合并，并标记为 cow (copy on write)， 以减少物理页消耗</p>
+</li>
+<li>
+<p>透明大页的作用是: </p>
+</li>
+<li>
+<ul>
+<li>一个进程如果需要大量内存，那么底层申请的物理页可以大于4KB，比如16KB一个物理页，减少虚拟地址到物理地址的映射条目，从而减少页表大小，加快虚拟地址到物理地址的翻译速度</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-linux_1">2  Linux内存子系统所有优化点罗列</h3>
+<ul>
+<li>（一） 节约内存</li>
+<li>
+<ul>
+<li>1 KSM</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>2 父子进程的COW（写时Copy）</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>3 能够分配小于一个page的内存，slab分配器</li>
+</ul>
+</li>
+<li>
+<p>（二） 提高效率</p>
+</li>
+<li>
+<ul>
+<li>1 透明大页（通过减少页表映射条目）</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>2 NUMBA 。让CPU就近访问内存</li>
+</ul>
+</li>
+</ul>
               
             </div>
           </div>
