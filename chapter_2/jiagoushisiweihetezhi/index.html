@@ -446,6 +446,11 @@
 <ul>
 <li>是不需要修改配置，就发现了服务，调用了服务</li>
 <li>有一个地方动态的读取配置，从而能自动去调用服务。</li>
+<li>
+<ul>
+<li>举个例子, 比如Prometheus进程每5分钟周期性读取一下配置文件(<code>/etc/prometheus/prometheus-file-sd.yml</code>), 因此相应的监控Job修改之后无需重启Prometheus进程自动会被发现.</li>
+</ul>
+</li>
 </ul>
 <h4 id="_27">服务中心</h4>
 <p>在服务中心中，分为两种：</p>

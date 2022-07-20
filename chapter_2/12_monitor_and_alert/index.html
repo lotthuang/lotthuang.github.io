@@ -93,6 +93,14 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3-prometheus-pullpush">3 Prometheus pull模式和传统监控工具的push模式总结</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#31">3.1 优点</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#32">3.2 缺点</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
               </ul>
@@ -347,6 +355,17 @@
 <li>其实报警规则配置的时候一定要区分<code>预警</code>和<code>报警</code>, 预警是指服务还没有真正异常、没有影响到用户，比如cpu使用率60%预警，发一个消息给到相应值班人员关注. 等cpu用到90%的时候真正是报警，此时必须介入处理了(比如扩容、比如排查原因).</li>
 </ul>
 </li>
+</ul>
+<h2 id="3-prometheus-pullpush">3 Prometheus pull模式和传统监控工具的push模式总结</h2>
+<h3 id="31">3.1 优点</h3>
+<ul>
+<li>1 pull模式让server端变成无状态,可以方便的横向扩容、在多个地方(比如你本地)部署server端.</li>
+<li>2 pull模式更加适配云原生环境，因为被监控的主机、容器都是按需使用、动态扩缩容的, 如果没有</li>
+</ul>
+<h3 id="32">3.2 缺点</h3>
+<ul>
+<li>1 被监控的主机、容器都需要提供Exporter</li>
+<li>2 实时性不如push模式好</li>
 </ul>
               
             </div>
