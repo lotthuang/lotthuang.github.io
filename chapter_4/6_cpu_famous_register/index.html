@@ -279,6 +279,7 @@
 <li>idtr，存放中断向量表的寄存器. IDT(Interrupt  Descriptor Table).</li>
 <li>gdtr: 全局段描述符寄存器, GDT（Global Descriptor Table ）是存放在主存中。 GDT的地址存放在gdtr寄存器中</li>
 <li>cr3: 指向当前进程的页表(Page Table)</li>
+<li>eax: 用户进程发起系统调用时必须传递系统调用号(System Call Number). eax寄存器就是专门存放该系统调用号. </li>
 </ul>
 <h2 id="_3">著名的汇编语言指令</h2>
 <ul>
