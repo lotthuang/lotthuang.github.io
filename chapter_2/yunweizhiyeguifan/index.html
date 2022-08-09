@@ -57,21 +57,49 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第二篇 业务SRE的职业规范</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#_2">(一) 梳理工作，使得每个运维任务都有流程，流程化做事情</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_3">(二) 自动化一切</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一  业务运维的职业标准</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#1">1 注重可视化:</a>
+    <li class="toctree-l3"><a class="reference internal" href="#_3">(一) 梳理工作，使得每个运维任务都有流程，流程化做事情</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#2-3">2 明白运维自动化平台的核心是3大能力：</a>
+    <li class="toctree-l3"><a class="reference internal" href="#_4">(二) 自动化一切</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1">1 注重可视化:</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-3">2 明白运维自动化平台的核心是3大能力：</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_4">（三）做任何重大变更之前一定要双重确认</a>
+    <li class="toctree-l3"><a class="reference internal" href="#_5">（三）做任何重大变更之前一定要双重确认</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_5">（四）任何重大线上改动 一定要遵守灰度发布原则</a>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">（四）任何重大线上改动 一定要遵守灰度发布原则</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_6">（五） 有变动及时告知业务方</a>
+    <li class="toctree-l3"><a class="reference internal" href="#_7">（五） 有变动及时告知业务方</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_8">二   业务运维和同事（上游和下游）的沟通标准</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_9">三   线上各种操作要善用检查技能</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_1">1  重点:</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_10">四   平时应该主动提高的技术工程能力</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_11">五  运维工作指导性原则的汇总</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_12">六  业务运维找事情做的各个方面汇总</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_2">1 平时日常</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2">2  大方向</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3">3  职业成长周期</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_13">七   业务运维平时的意识</a>
     </li>
     </ul>
                   </li>
@@ -245,15 +273,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <blockquote>
-<p>本文旨在阐述业务SRE在平时工作中，做的更加职业化的一些感悟和总结.下文中业务运维等同于业务SRE.</p>
-</blockquote>
-<h1 id="_1">一  业务运维的职业标准</h1>
-<h2 id="_2">(一) 梳理工作，使得每个运维任务都有流程，流程化做事情</h2>
+                <h1 id="_1">概述</h1>
+<ul>
+<li>本文旨在阐述业务SRE在平时工作中，做的更加职业化的一些感悟和总结.下文中业务运维等同于业务SRE.</li>
+</ul>
+<h2 id="_2">一  业务运维的职业标准</h2>
+<h3 id="_3">(一) 梳理工作，使得每个运维任务都有流程，流程化做事情</h3>
 <p>其中就涉及到做标准化,标准化是自动化的前提,有些运维任务可能暂时没有自动化,但是SRE一定要把他先梳理成流程,总结各个任务的标准输入和标准输出,形成流程文档.并努力做到以运维平台API形式体现.</p>
-<h2 id="_3">(二) 自动化一切</h2>
+<h3 id="_4">(二) 自动化一切</h3>
 <p>做自动化的重要性相信大家都明白，这里主要是想说一下对SRE做自动化的一些感悟.</p>
-<h3 id="1">1 注重可视化:</h3>
+<h4 id="1">1 注重可视化:</h4>
 <ul>
 <li>
 <p>使运维流程变得自动化，同时注重自动化当中的可视化 。</p>
@@ -268,16 +297,16 @@
 <p>大到流程系统中的每一个流程，小到tomcat启动过程甚至一个shell脚本的执行。</p>
 </li>
 </ul>
-<h3 id="2-3">2 明白运维自动化平台的核心是3大能力：</h3>
+<h4 id="2-3">2 明白运维自动化平台的核心是3大能力：</h4>
 <p>配置管理能力、变更管理能力、状态管理能力</p>
-<h2 id="_4">（三）做任何重大变更之前一定要双重确认</h2>
+<h3 id="_5">（三）做任何重大变更之前一定要双重确认</h3>
 <ul>
 <li>做任何重大改动前一定要double check</li>
 <li>具体体现在有组内互相review机制和具体review记录文档</li>
 </ul>
-<h2 id="_5">（四）任何重大线上改动 一定要遵守灰度发布原则</h2>
-<h2 id="_6">（五） 有变动及时告知业务方</h2>
-<h1 id="_7">二   业务运维和同事（包括我们服务的对象和服务我们的对象）的沟通标准</h1>
+<h3 id="_6">（四）任何重大线上改动 一定要遵守灰度发布原则</h3>
+<h3 id="_7">（五） 有变动及时告知业务方</h3>
+<h2 id="_8">二   业务运维和同事（上游和下游）的沟通标准</h2>
 <ul>
 <li>
 <p>任何时候都不能有情绪化的表达方式</p>
@@ -286,9 +315,8 @@
 <p>任何变更提前告知</p>
 </li>
 </ul>
-<h1 id="_8">三   线上各种操作要善用检查技能</h1>
-<h2 id="1-checkchecklist">1 注重check技能培养，总结checklist文档，并且积极分享</h2>
-<h2 id="2">2 重点:</h2>
+<h2 id="_9">三   线上各种操作要善用检查技能</h2>
+<h3 id="1_1">1  重点:</h3>
 <ul>
 <li>
 <p>项目上线之前，有一个checklist,上线之前必须一一检查</p>
@@ -297,7 +325,10 @@
 <p>项目研发期间，和各个底层支持部门的一些待解决问题进行罗列，并定期检查</p>
 </li>
 </ul>
-<h1 id="_9">四   平时应该主动提高的技术工程能力，包括但不限于以下这些</h1>
+<h2 id="_10">四   平时应该主动提高的技术工程能力</h2>
+<blockquote>
+<p>包括但不限于以下这些</p>
+</blockquote>
 <table>
 <thead>
 <tr>
@@ -354,7 +385,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="_10">五  运维工作指导性原则的汇总</h1>
+<h2 id="_11">五  运维工作指导性原则的汇总</h2>
 <ol>
 <li>一切运维工具要给用户这样的体验: 简单、靠谱</li>
 <li>做运维系统时注重标准化和可视化</li>
@@ -368,21 +399,21 @@
 <li>低成本:  合理利用各种资源，包括ip资源、端口资源等等</li>
 <li>总结是进步的阶梯，分享是快乐的源泉。运维工作中，应该常常总结，多多分享</li>
 </ol>
-<h1 id="_11">六  业务运维找事情做的各个方面汇总</h1>
-<h2 id="_12">平时日常</h2>
+<h2 id="_12">六  业务运维找事情做的各个方面汇总</h2>
+<h3 id="1_2">1 平时日常</h3>
 <ul>
 <li>梳理当前处于临界状态的设备、软件、系统（统称运维风险点），并进行改善</li>
 <li>不断完善自己团队的技能闭环</li>
 <li>把当前自己工作中做起来不方便的任务进行梳理，然后着手优化</li>
 </ul>
-<h2 id="_13">大方向</h2>
+<h3 id="2">2  大方向</h3>
 <ul>
 <li>聚焦产品根本需求，提供能够解决产品问题的服务器架构。 </li>
 <li>数据决策，通过数据来做架构优化的评估。 </li>
 <li>学习紧跟新技术方案，为产品提高稳定性、降低成本、提升效率。 </li>
 <li>总结运维经验，分享知识，推动公司产品进行架构升级或优化。</li>
 </ul>
-<h2 id="_14">职业成长周期</h2>
+<h3 id="3">3  职业成长周期</h3>
 <ul>
 <li>
 <p><img alt="zhiyechengzhang" src="../../img/WX20200730-202537.png" /></p>
@@ -391,7 +422,7 @@
 <p><code>技术+技术+技术</code> ==&gt; <code>产品+技术+运营</code></p>
 </li>
 </ul>
-<h1 id="_15">七   业务运维平时的意识</h1>
+<h2 id="_13">七   业务运维平时的意识</h2>
 <ol>
 <li>
 <p>抓住核心: 核心流程 核心应用     ##业务部分太多，必须抓住核心应用</p>
