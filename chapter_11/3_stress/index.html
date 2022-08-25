@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>一 说明 - Lott's Blog</title>
+    <title>第四篇 压测经验总结 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u4e00 \u8bf4\u660e";
-        var mkdocs_page_input_path = "chapter_7/5_sre_tools_chrome_plug-in.md";
+        var mkdocs_page_name = "\u7b2c\u56db\u7bc7 \u538b\u6d4b\u7ecf\u9a8c\u603b\u7ed3";
+        var mkdocs_page_input_path = "chapter_11/3_stress.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -138,25 +138,25 @@
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../1_sync_file/">第一篇 不同主机之间的文件传输</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/1_sync_file/">第一篇 不同主机之间的文件传输</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_server_side_evolution/">第五篇 服务端进化过程梳理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/5_server_side_evolution/">第五篇 服务端进化过程梳理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../6_elk/">第六篇 elk技术栈</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/6_elk/">第六篇 elk技术栈</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../7_charset/">第七篇 字符集和编码</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/7_charset/">第七篇 字符集和编码</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../8_locale/">第八篇 locale设置</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/8_locale/">第八篇 locale设置</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../9_http_protocol/">第九篇 http协议</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/9_http_protocol/">第九篇 http协议</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../10_http_cookie_session_token/">第十篇 cookie和session和token总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/10_http_cookie_session_token/">第十篇 cookie和session和token总结</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第八章 职场通用经验</span></p>
@@ -195,14 +195,38 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/1_theory/">第一篇 稳定性概论</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_theory/">第一篇 稳定性概论</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/10_high_avaliable/">第二篇 高可用原则总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_high_avaliable/">第二篇 高可用原则总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/2_slo_process/">第三篇 SLO实施流程</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_slo_process/">第三篇 SLO实施流程</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/3_stress/">第四篇 压测经验总结</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第四篇 压测经验总结</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 完整的压测流程</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#step1">Step1：压测目标制定</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#step2">Step2: 压测链路的梳理</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#step3">Step3：压测准备</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_3">服务端</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_4">客户端</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#step4">Step4：预压测</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#step5">Step5：压测</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#step6">Step6：扫尾工作</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
               </ul>
       </div>
@@ -218,7 +242,8 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li><li>一 说明</li>
+    <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>第十一章 SRE稳定性建设从理论到实践 &raquo;</li><li>第四篇 压测经验总结</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -228,41 +253,82 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="_1">一 说明</h1>
-<p>这篇博文中,记录通过各种渠道收获的chrome插件,主要用于提升平时运维工作中的效率.
-大部分是转载而来.</p>
-<h1 id="_2">二 开发类插件</h1>
-<h2 id="jsonview">(一) JSONView</h2>
-<p>是一个方便查看 Json 结构的插件，展开，折叠，可以非常方便的查看接口返回数据.
-当我们调试后台API时非常有用,因为我们后台API返回的结果几乎都是json格式,chrome开启这个插件
-之后就能以更友好的方式展示后台返回的数据.</p>
-<p><img alt="WX20190829-172538.png" src="../../img/WX20190829-172538.png" /></p>
-<h2 id="postman">(二) Postman</h2>
-<p>相信开发者朋友一定知道这款插件，这是一款强大的 API &amp; HTTP 请求调试工具，它不仅可以调试简单的 HTML、CSS 以及脚本等简单的网页基本信息，这款 Chrome 插件甚至还能发送几乎所有的 HTTP 请求，可谓是 Web 开发者的一大利器。</p>
-<p><img alt="WX20190829-172600.png" src="../../img/WX20190829-172600.png" /></p>
-<h2 id="cookies">(三) Cookies</h2>
-<p>管理chrome的cookie</p>
-<p><img alt="WX20190829-173318.png" src="../../img/WX20190829-173318.png" /></p>
-<h1 id="_3">三 通用类插件</h1>
-<h2 id="_4">(一) 广告过滤</h2>
-<p>广告终结者.
-清除网页上的所有广告：浮动广告，购物广告，恶意弹窗，跟踪代码，视频广告。让你浏览网页更快更清爽。广告终结者，你唯一需要的广告插件</p>
-<p>WX20190829-172709</p>
-<p><img alt="WX20190829-172709.png" src="../../img/WX20190829-172709.png" /></p>
-<h2 id="_5">(二) 截图插件</h2>
-<p>网页截图:注释&amp;录屏.</p>
-<p>录屏，捕获整个页面或任何部分，矩形，圆形，箭头，线条和文字，模糊敏感信息，一键上传分享注释。支持PNG和链接</p>
-<p><img alt="WX20190829-172731.png" src="../../img/WX20190829-172731.png" /></p>
-<h2 id="_6">(三) 自动刷新网页</h2>
-<p>Auto Refresh</p>
-<p>Auto Refresh is the best extension to refresh on a timer</p>
-<p><img alt="WX20190829-173000.png" src="../../img/WX20190829-173000.png" /></p>
-<h2 id="_7">（四） 画流程图</h2>
-<p>draw.io 是一个著名的在线画图网站,这个插件就是该网站的一个chrome插件,方便本地直接画图.</p>
-<p><img alt="WX20190829-173055.png" src="../../img/WX20190829-173055.png" /></p>
+                <h1 id="_1">概述</h1>
+<ul>
+<li>本篇总结压测经验</li>
+<li>
+<ul>
+<li>压测最终应该输出一份报告总结，其实也就是把整个压测方案、过程、结论记录下来，写明压测目标、压测接口、压测数据、压测结论，给出发现的问题并提供优化方案。报告的意义在于梳理前面的整个流程，给后续的压测提供经验指导。</li>
+</ul>
+</li>
+</ul>
+<h2 id="_2">一 完整的压测流程</h2>
+<h3 id="step1">Step1：压测目标制定</h3>
+<ul>
+<li>目标qps（绝大部分的性能问题，都可以通过qps来体现）</li>
+<li>
+<ul>
+<li>qps不仅是入口的数值，同时需要关注系统及子系统的性能表现（业务指标+系统指标）；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>压测的目标系统及重要子系统需要有明确的压测熔断指标（业务指标+系统指标）；</li>
+</ul>
+</li>
+<li>
+<p>业务需求的验证</p>
+</li>
+<li>
+<ul>
+<li>服务端压力状况下的各项产品功能是否符合预期, 比如验证<code>系统租户隔离的情况</code>, 比如验证<code>高优任务不排队</code>等.</li>
+</ul>
+</li>
+</ul>
+<h3 id="step2">Step2: 压测链路的梳理</h3>
+<ul>
+<li>1) 上下游实例数量配比检查</li>
+<li>2) 上下游连接关系检查</li>
+</ul>
+<h3 id="step3">Step3：压测准备</h3>
+<h4 id="_3">服务端</h4>
+<ul>
+<li>1) 测试环境与线上环境服务隔离，若无法隔离则必须要有明确的止损预案</li>
+<li>2) 如果是线上环境直接压测的话，需要有压测流量的标记。比如申请一个专门的压测账号。</li>
+<li>3）观察（监控）指标梳理</li>
+</ul>
+<h4 id="_4">客户端</h4>
+<ul>
+<li>1) 发压脚本/测试工具准备：</li>
+<li>
+<ul>
+<li>优先业界通用，避免自造轮子</li>
+</ul>
+</li>
+<li>2) 降级/止损预案准备</li>
+</ul>
+<h3 id="step4">Step4：预压测</h3>
+<p>发压工具以较低qps请求服务集群，目的：</p>
+<ul>
+<li>1）预演整个压测流程；</li>
+<li>2）分析流量分发到各服务的比例；</li>
+</ul>
+<h3 id="step5">Step5：压测</h3>
+<p>压力应阶段性增长，每个阶段必须要有一定的停留观察时间；</p>
+<h3 id="step6">Step6：扫尾工作</h3>
+<ul>
+<li>压测日志保存；</li>
+<li>压测指标曲线图保存；</li>
+<li>如若有，回收压测资源(服务器、Bot机器)；</li>
+<li>如若有，关闭实验开关；</li>
+<li>如若有，清理压测流量记录；</li>
+</ul>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../2_slo_process/" class="btn btn-neutral float-left" title="第三篇 SLO实施流程"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
 
   <hr/>
 
@@ -283,6 +349,8 @@
   <div class="rst-versions" role="note" aria-label="Versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     
+    
+      <span><a href="../2_slo_process/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
   </span>

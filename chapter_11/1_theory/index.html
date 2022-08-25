@@ -201,12 +201,30 @@
     <li class="toctree-l2"><a class="reference internal" href="#1">1 网站可用性指标</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#2">2 稳定性建设思路</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#21">2.1 高可用工具体系介绍</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#211">2.1.1 压测体系</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#212">2.1.2 管控体系</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#213">2.1.3 监控体系</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#214">2.1.4 恢复体系</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#215">2.1.5 度量体系</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../10_high_avaliable/">第二篇 高可用原则总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../2_slo_process/">第三篇 SLO实施流程</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_stress/">第四篇 压测经验总结</a>
                   </li>
               </ul>
       </div>
@@ -259,6 +277,32 @@
 <p>网站稳定性的建设是一项综合的系统工程, 就像人的健康一样, 如果平时不注意健康饮食、不注意锻炼，时间一长身体肯定会出问题，对稳定性的考量也是贯穿整个研发生命周期的. 如下图所示:</p>
 <p><img alt="png" src="../../img/%E7%A8%B3%E5%AE%9A%E6%80%A7%E5%BB%BA%E8%AE%BE%E8%B4%AF%E7%A9%BF%E7%A0%94%E5%8F%91%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.png" /></p>
 <p>稳定性的建设中有2个重要因素: 一是思想上的重视, 开发人员对稳定性的重视(也就是敬畏之心)可以避免70% ~ 80%的故障；二是规范和工具的建设, 用以保障稳定性.</p>
+<h3 id="21">2.1 高可用工具体系介绍</h3>
+<blockquote>
+<p>分别为压测体系、管控体系、监控体系、恢复体系和度量体系</p>
+</blockquote>
+<h4 id="211">2.1.1 压测体系</h4>
+<h5 id="a">a 单系统压测</h5>
+<h5 id="b">b 全链路压测</h5>
+<ul>
+<li>流量的制造</li>
+<li>流量的标记</li>
+<li>测试数据的处理</li>
+</ul>
+<blockquote>
+<p>待补充完整的压测流程图</p>
+</blockquote>
+<h4 id="212">2.1.2 管控体系</h4>
+<h5 id="a_1">a 开关系统</h5>
+<h5 id="b_1">b 预案系统</h5>
+<h5 id="c">c 限流降级系统</h5>
+<h4 id="213">2.1.3 监控体系</h4>
+<h5 id="a_2">a 端到端监控</h5>
+<h5 id="b_2">b 调用链路跟踪系统</h5>
+<h5 id="c_1">c 业务数据轨迹重现系统</h5>
+<h5 id="d">d 对账系统</h5>
+<h4 id="214">2.1.4 恢复体系</h4>
+<h4 id="215">2.1.5 度量体系</h4>
               
             </div>
           </div><footer>

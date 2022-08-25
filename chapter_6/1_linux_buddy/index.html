@@ -230,6 +230,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/2_slo_process/">第三篇 SLO实施流程</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/3_stress/">第四篇 压测经验总结</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -331,6 +333,7 @@ typedef struct zone_struct {
 <li>上图中, 每一个Memory部分, 在内核中使用<code>struct pg_data_t</code>表示, 即是一个NUMA Node</li>
 </ul>
 <p><img alt="png" src="../../img/WechatIMG268.png" /></p>
+<p><img alt="png" src="../../img/WechatIMG38.png" /></p>
 <ul>
 <li>每个Node下面, 有多个Zone, 每个Zone在内核中使用<code>struct zone_t</code>表示.</li>
 <li>每个<code>struct zone_t</code>下有一个<code>free_area</code>数组, 该数组中有11个元素. 每个元素是一个<code>struct free_area_t</code>, 每个<code>free_area_t</code>用链表关联了多个<code>struct page</code>, 并且符合free_area[i] 管理 2i 个内存页面大小的内存块列表.</li>
@@ -382,6 +385,7 @@ typedef struct zone_struct {
 <li><a href="https://mp.weixin.qq.com/s/Rm5ahGwb5MLG2ysZ7okskA">参考文档1</a></li>
 <li><a href="https://mp.weixin.qq.com/s/FU5UERfanYa-z4OKL33cCA">参考文档2</a></li>
 <li><a href="https://mp.weixin.qq.com/s/d0T6IaRYlYB2wgAWwqRccg">参考文档3</a></li>
+<li><a href="https://www.kernel.org/doc/gorman/html/understand/understand005.html#sec:%20Nodes">Describing Physical Memory</a></li>
 </ul>
               
             </div>
