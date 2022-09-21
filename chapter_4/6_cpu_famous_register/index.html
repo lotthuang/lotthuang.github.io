@@ -113,6 +113,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_3">著名的汇编语言指令</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#cpu">CPU时间的感知</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#_4">计算机的启动过程</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#bios">为什么是BIOS主导?</a>
@@ -303,6 +305,13 @@
 <li>
 <p>3 还有其他的诸如 call,mov,jmp 等</p>
 </li>
+</ul>
+<h2 id="cpu">CPU时间的感知</h2>
+<p>1Ghz 的 CPU 频率理论上 1ns 可以执行一个 cycle，即执行一条指令。
+一个经典的时间图：</p>
+<p><img alt="png" src="../../img/cpu_time.png" /></p>
+<ul>
+<li>一次system call消耗时间为76ns</li>
 </ul>
 <h2 id="_4">计算机的启动过程</h2>
 <blockquote>
