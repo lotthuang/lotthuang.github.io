@@ -354,6 +354,9 @@
 <p>连接池的核心是什么？两个核心数据结构：连接数组，锁数据；三个核心接口：初始化，拿出连接，放回连接；</p>
 <h3 id="_18">线程池</h3>
 <h4 id="worker"><a href="https://mp.weixin.qq.com/s/OKTW_mZnNJcRBrIFHONR3g">线程池技术</a>解决的问题是： 保持一定量的worker线程，把提交任务和执行任务进行解耦.</h4>
+<ul>
+<li>当任务到达时，任务可以不需要等到线程创建就能立即执行.</li>
+</ul>
 <h4 id="7">线程池有7个核心参数</h4>
 <p><img alt="png" src="../../img/DE25F5F4-4689-4DFC-8D00-1D012765CB84.png" /></p>
 <ul>
