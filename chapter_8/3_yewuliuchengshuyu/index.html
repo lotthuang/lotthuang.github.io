@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第三篇 业务流程术语梳理 - Lott's Blog</title>
+    <title>第三篇 项目管理总结 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u4e09\u7bc7 \u4e1a\u52a1\u6d41\u7a0b\u672f\u8bed\u68b3\u7406";
+        var mkdocs_page_name = "\u7b2c\u4e09\u7bc7 \u9879\u76ee\u7ba1\u7406\u603b\u7ed3";
         var mkdocs_page_input_path = "chapter_8/3_yewuliuchengshuyu.md";
         var mkdocs_page_url = null;
       </script>
@@ -163,11 +163,23 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../2_bangzhuqitatongxue/">第二篇 工作能力评价体系</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第三篇 业务流程术语梳理</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第三篇 项目管理总结</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#_2">二 专业话术</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_3">三 体现专业化的词语</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#a">A 专业词语</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#b">B 各类导向</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">四 项目管理总结</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#a_1">A 生命中的一切事情，本质上都是一个项目。</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -235,7 +247,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>第八章 职场通用经验 &raquo;</li>
-      <li>第三篇 业务流程术语梳理</li>
+      <li>第三篇 项目管理总结</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -246,12 +258,12 @@
               
                 <h1 id="_1">一 说明</h1>
 <ul>
-<li>本篇博客梳理了常用的业务层的流程术语,使得SRE和业务侧同学交流沟通时更加专业化</li>
+<li>本篇博客梳理了常用的业务层的流程术语和项目管理方向的总结,使得 SRE 和业务侧同学交流沟通时更加专业化</li>
 <li>以下内容是覆盖了一些关键点,具体使用时灵活运用即可</li>
 </ul>
 <h2 id="_2">二 专业话术</h2>
 <ol>
-<li>压测流程: 研发提供压测方法、压测机器人，QA负责跟进压测和记录压测数据</li>
+<li>压测流程: 研发提供压测方法、压测机器人，QA 负责跟进压测和记录压测数据</li>
 <li>做某个事情之前先回答要付出的成本和预计的收益(<code>投产比</code>)</li>
 <li>推出新服务替代老服务,通常是先收口,再把存量实例迁移到新服务上</li>
 <li>这个方案的风险、收益、参与项目的各方在什么时间点交付什么东西, 要明确下来</li>
@@ -260,28 +272,66 @@
 <li>自己手上的任务,完成了要及时交付结果,没完成要及时说明没完成的原因和计划安排</li>
 <li>内部运维工具不好用，如果有人提出来，那是工具开发者的锅，如果没人提出来而导致实际使用过程中发现故障，那是使用者的锅</li>
 <li>一个好的监控系统要能够实现端到端的监控.</li>
-<li>1分钟发现问题，5分钟定位问题，10分钟解决问题.</li>
+<li>1 分钟发现问题，5 分钟定位问题，10 分钟解决问题.</li>
 <li>某个工具的成熟度是否高，高的话才能在生产环境中使用</li>
-<li>某个方案的落地性强不强. </li>
+<li>某个方案的落地性强不强.</li>
 <li>去场景化的基础能力向场景化的服务能力延伸</li>
 <li>持续地顺畅地高质量交付有效价值</li>
 <li>很多细节被模糊掉</li>
 <li>手工统计的数据容易出现精度问题</li>
 <li>通用操作工具化、重复操作一键化</li>
-<li>分析一个问题的<code>现状</code>就是从<code>工具、流程、角色</code>3个方面去分析, 然后从该问题的全生命周期(不仅是<code>流程</code>结束就结束了)去发现改进点</li>
+<li>分析一个问题的<code>现状</code>就是从<code>工具、流程、角色</code>3 个方面去分析, 然后从该问题的全生命周期(不仅是<code>流程</code>结束就结束了)去发现改进点</li>
 <li>给客户提供多个方案模型,供客户选型.</li>
-<li>提升SRE工作的先进性.</li>
+<li>提升 SRE 工作的先进性.</li>
 <li>实施过程中要做好控量.</li>
 <li>将一组商业目标转化为明确的可以实现的工程目标.</li>
-<li>某项功能/事情,沉淀了很长时间, 现在可以XXXX了</li>
-<li>他们的诉求点拆出来的其实是XXXX </li>
+<li>某项功能/事情,沉淀了很长时间, 现在可以 XXXX 了</li>
+<li>他们的诉求点拆出来的其实是 XXXX</li>
 <li>某个属性上可控、不可控, 比如<code>时间上不可控</code>。通过什么方式来控制。某个属性达到了一比较高的程度。</li>
-<li>某个功能具备了ToB产品化的能力。</li>
+<li>某个功能具备了 ToB 产品化的能力。</li>
 </ol>
 <h2 id="_3">三 体现专业化的词语</h2>
+<h3 id="a">A 专业词语</h3>
 <blockquote>
 <p>收敛、治理、触达、覆盖、关键路径、存量问题、关键指标</p>
 </blockquote>
+<h3 id="b">B 各类导向</h3>
+<ul>
+<li>结果导向/目标导向</li>
+<li>用户导向</li>
+</ul>
+<h2 id="_4">四 项目管理总结</h2>
+<h3 id="a_1">A 生命中的一切事情，本质上都是一个项目。</h3>
+<ul>
+<li>
+<p>在项目管理中，第一个关键要素，就是：
+  <strong>循环</strong>。</p>
+</li>
+<li>
+<p><a href="https://mp.weixin.qq.com/s/aPr__jRzc53bhFc7ziOSiQ">既然是有头有尾的事情</a>，就要：“用循环解决问题”。
+  循环过程分为 5 个步骤：
+  <code>启动、计划、执行、控制(监控)、收尾</code>。</p>
+</li>
+<li>1）何谓启动？
+  这事儿值不值得干？我们要不要干？需要哪些人？需要多少钱？</li>
+<li>2）何谓计划？
+  这事怎么干？投入多少时间？谁负责什么事？什么时间节点完成什么结果？资金怎么分配？资源怎么调配？时间怎么分配？任务怎么分配？</li>
+<li>3）何谓执行？
+  既然分配了，那就按照公司战略完善高效执行下去，不要眼高手低。</li>
+<li>4）何谓控制(监控)？
+  谁在负责这件事情？做的进展如何？达成目标了吗？按照进度跟进了吗？</li>
+<li>5）何谓收尾？
+  无论成败与否，我们来复盘一下有什么经验？什么教训？
+  这 5 个步骤，构成完整循环，且缺一不可。
+  凡事有交代的背后，是一组严密执行的步骤。</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG54.jpeg" /></p>
+<p><img alt="png" src="../../img/WechatIMG102.png" /></p>
+<ul>
+<li>做事之前, 先和领导、同事对齐目标, 对齐评价体系(目标怎么衡量), 拆分任务、确定排期.</li>
+<li>事中按评价体系及时汇报进度</li>
+<li>事后及时复盘总结</li>
+</ul>
               
             </div>
           </div><footer>
