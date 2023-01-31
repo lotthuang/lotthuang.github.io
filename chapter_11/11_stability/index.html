@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第十一篇 稳定性建设总结 - Lott's Blog</title>
+    <title>第五篇 稳定性理论总结 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u5341\u4e00\u7bc7 \u7a33\u5b9a\u6027\u5efa\u8bbe\u603b\u7ed3";
-        var mkdocs_page_input_path = "chapter_2/11_stability.md";
+        var mkdocs_page_name = "\u7b2c\u4e94\u7bc7 \u7a33\u5b9a\u6027\u7406\u8bba\u603b\u7ed3";
+        var mkdocs_page_input_path = "chapter_11/11_stability.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -52,48 +52,26 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../yunweijiazhi/">第一篇 运维的价值和目标</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../yunweipingtailinian/">第三篇 运维平台建设的理念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../guzhangguanli/">第四篇 故障管理概述</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/guzhangguanli/">第四篇 故障管理概述</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../biangengguanli/">第五篇 变更管理概述</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/biangengguanli/">第五篇 变更管理概述</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../rongliangguanli/">第六篇 容量管理概述</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/rongliangguanli/">第六篇 容量管理概述</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../cicd/">第八篇 CICD流程概述</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/cicd/">第八篇 CICD流程概述</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../9_changkanchangxin/">第九篇 常看常新</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/9_changkanchangxin/">第九篇 常看常新</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第十一篇 稳定性建设总结</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#_2">不出问题的基线</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_3">稳定性保障</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_4">一些说明</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_5">稳定性现状怎么梳理？</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_6">稳定性目标怎么制定？</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_7">关键目标</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_8">达成目标的路径分享</a>
-    </li>
-    </ul>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../12_monitor_and_alert/">第十二篇 监控报警最佳实践</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/12_monitor_and_alert/">第十二篇 监控报警最佳实践</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
@@ -219,14 +197,38 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/1_theory/">第一篇 稳定性概论</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_theory/">第一篇 稳定性概论</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/10_high_avaliable/">第二篇 高可用原则总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_high_avaliable/">第二篇 高可用原则总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/2_slo_process/">第三篇 SLO实施流程</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_slo_process/">第三篇 SLO实施流程</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/3_stress/">第四篇 压测经验总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_stress/">第四篇 压测经验总结</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第五篇 稳定性理论总结</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">不出问题的基线</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">稳定性保障</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_4">一些说明</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">稳定性现状怎么梳理？</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_6">稳定性目标怎么制定？</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_7">关键目标</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_8">达成目标的路径分享</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_9">稳定性运营怎么运营?</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十二章 商业化知识总结</span></p>
@@ -248,8 +250,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>第二章 运维工作总结 &raquo;</li>
-      <li>第十一篇 稳定性建设总结</li>
+          <li>第十一章 SRE稳定性建设从理论到实践 &raquo;</li>
+      <li>第五篇 稳定性理论总结</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -277,9 +279,7 @@
 <p>一方面，让报警更加准确和完善，减少误报和漏报，防止大家不必要的介入，另一方面产出自动化机器人，自动进行一些机器重启，工单查询，问题简单排查之类的工作，还有就是建立值班轮班，让每个人都参与进来，既能让大家熟悉业务，又能提高每个人的稳定性意识。</p>
 <p>对于 SRE 来说，指定机制并且严格落地，比事必躬亲更加重要。上面这些机制，将在后面的章节中详细论述。</p>
 <h2 id="_3">稳定性保障</h2>
-<blockquote>
-<p>着重介绍稳定性保障方案的子项</p>
-</blockquote>
+<p><strong>着重介绍稳定性保障方案子项</strong></p>
 <ul>
 <li>监控报警</li>
 <li>
@@ -329,31 +329,73 @@
 <p>主要分如下模块</p>
 </blockquote>
 <p><img alt="png" src="../../img/WechatIMG97.png" /></p>
-<p>主要考核MTTR达标率和事故主动发现率.
-- 比如规定MTTR为<code>1-5-10</code>, 那么有多少事故处理过程是符合该规定的, 占总体事故数比例为多少.
-- 事故主动发现率很好理解, 就是有多少事故是技术团队主动发现的, 占总体事故数比例为多少.</p>
+<p>主要考核 MTTR 达标率和事故主动发现率.</p>
+<ul>
+<li>比如规定 MTTR 为<code>1-5-10</code>, 那么有多少事故处理过程是符合该规定的, 占总体事故数比例为多少.</li>
+<li>事故主动发现率很好理解, 就是有多少事故是技术团队主动发现的, 占总体事故数比例为多少.</li>
+</ul>
 <h2 id="_6">稳定性目标怎么制定？</h2>
 <h3 id="_7">关键目标</h3>
-<ol>
-<li>事故数目标</li>
-<li>XX全年事故数目标同比下降 20% 左右</li>
-<li>XX 全年某个等级以上事故数不超过 1</li>
-<li>事故 MTTR 目标</li>
-<li>全年所有服务端事故 30min 恢复率 ≥ 40%，其中下半年  ≥ 50% // MTTR 3-15-30 </li>
-<li>全年所有客户端事故 2d 恢复率 ≥ 60%，其中下半年 ≥ 80% // MTTR 1-x-2</li>
-<li>上述所有事故中涉及外部客户有感的事故 30min 恢复率 ≥ 50% // MTTR 3-15-30 </li>
-<li>其他关键目标</li>
-<li>全年事故主动发现率 ≥ 60%</li>
-<li>各类变更系统或流程在 Q4 结束前变更成熟度评级 L3 达标率 ≥ 90%，L3+ 达标率 ≥ 40%</li>
-<li>各业务单元的 SLI 指数可衡量且 ≥ 99%</li>
-</ol>
+<ul>
+<li>
+<p>1 事故数目标</p>
+</li>
+<li>
+<ul>
+<li>1 XX 全年事故数目标同比下降 20% 左右</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>2 XX 全年某个等级以上事故数不超过 1</li>
+</ul>
+</li>
+<li>
+<p>2 事故 MTTR 目标</p>
+</li>
+<li>
+<ul>
+<li>1 全年所有服务端事故 30min 恢复率 ≥ 40%，其中下半年 ≥ 50% // MTTR 3-15-30</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>2 全年所有客户端事故 2d 恢复率 ≥ 60%，其中下半年 ≥ 80% // MTTR 1-x-2</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>3 上述所有事故中涉及外部客户有感的事故 30min 恢复率 ≥ 50% // MTTR 3-15-30</li>
+</ul>
+</li>
+<li>
+<p>3 其他关键目标</p>
+</li>
+<li>
+<ul>
+<li>1 全年事故主动发现率 ≥ 60%</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>2 各类变更系统或流程在 Q4 结束前变更成熟度评级 L3 达标率 ≥ 90%，L3+ 达标率 ≥ 40%</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>3 各业务单元的 SLI 指数可衡量且 ≥ 99%</li>
+</ul>
+</li>
+</ul>
 <h2 id="_8">达成目标的路径分享</h2>
+<h2 id="_9">稳定性运营怎么运营?</h2>
+<p><img alt="png" src="../../img/WX20230130-1308512222.png" /></p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../9_changkanchangxin/" class="btn btn-neutral float-left" title="第九篇 常看常新"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../12_monitor_and_alert/" class="btn btn-neutral float-right" title="第十二篇 监控报警最佳实践">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../3_stress/" class="btn btn-neutral float-left" title="第四篇 压测经验总结"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_12/1_shifouzhide/" class="btn btn-neutral float-right" title="第一篇 如何判断一件事情值不值得做">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -376,10 +418,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../9_changkanchangxin/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../3_stress/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../12_monitor_and_alert/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../chapter_12/1_shifouzhide/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
