@@ -105,17 +105,21 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第五篇 进程、线程、协程</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#_2">基础知识</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_3">区别</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 基础知识</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_4">协程</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#_5">协程比多线程好在哪呢？</a>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 内核中的结构体</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#_6">协程的适用 &amp; 不适用场景</a>
+    <li class="toctree-l3"><a class="reference internal" href="#2">2 进程状态</a>
     </li>
         </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">二 区别</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">三 协程</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_1">1 协程比多线程好在哪呢？</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2_1">2 协程的适用 &amp; 不适用场景</a>
     </li>
         </ul>
     </li>
@@ -126,6 +130,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../7_linux_signal/">第七篇 Linux信号机制</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../8_linux_scheduler/">第八篇 Linux进程调度</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
@@ -258,29 +264,29 @@
 <ul>
 <li>本篇文档总结进程、线程、协程的联系和区别</li>
 </ul>
-<h2 id="_2">基础知识</h2>
+<h2 id="_2">一 基础知识</h2>
+<h3 id="1">1 内核中的结构体</h3>
 <ul>
-<li>Linux内核中, 进程和线程都用同一个结构体表示, 即<code>task_struct</code></li>
+<li>Linux 内核中, 进程和线程都用同一个结构体表示, 即<code>task_struct</code></li>
 <li>同一个进程内, 不同线程的<code>task_struct</code>不同, 但是其<code>mm_struct</code>相同</li>
 </ul>
-<h2 id="_3">区别</h2>
+<h3 id="2">2 进程状态</h3>
+<p>当进程创建后进入 TASK_RUNNING 状态，表示可运行等待状态；后面被 CPU 调度运行一段时间进入睡眠阻塞状态；满足条件后被唤醒又进入可运行状态；直到最后 exit 终止。</p>
+<p><img alt="png" src="../../img/1280X1280202302153.png" /></p>
+<h2 id="_3">二 区别</h2>
 <ul>
-<li>1 进程是系统资源(CPU资源)分配的基本单位，线程是独立运行和独立调度的基本单位（CPU上真正运行的是线程), 是一个独立的调度实体。</li>
-<li>2 进程拥有自己的资源空间，一个进程包含若干个线程，线程与CPU资源分配无关，多个线程共享同一进程内的资源。</li>
-<li>3 线程的调度与切换比进程快很多。<ul>
-<li>为什么？因为不同进程切换需要切换其<code>页表</code>, 而同一个进程内不同线程切换无需切换<code>页表</code>. <code>页表</code>在Linux里面就用<code>mm_struct</code>表示</li>
+<li>1 进程是系统资源(CPU 资源)分配的基本单位，线程是独立运行和独立调度的基本单位（CPU 上真正运行的是线程), 是一个独立的调度实体。</li>
+<li>2 进程拥有自己的资源空间，一个进程包含若干个线程，线程与 CPU 资源分配无关，多个线程共享同一进程内的资源。</li>
+<li>3 线程的调度与切换比进程快很多。</li>
+<li>为什么？因为不同进程切换需要切换其<code>页表</code>, 而同一个进程内不同线程切换无需切换<code>页表</code>. <code>页表</code>在 Linux 里面就用<code>mm_struct</code>表示</li>
 </ul>
-</li>
-</ul>
-<h3 id="_4">协程</h3>
+<h2 id="_4">三 协程</h2>
 <ul>
-<li>协程(coroutine), 是一种<code>用户态的轻量级线程</code>,怎么调度由用户空间自主控制.<ul>
+<li>协程(coroutine), 是一种<code>用户态的轻量级线程</code>,怎么调度由用户空间自主控制.</li>
 <li>内核感知不到协程的存在, 对内核空间来说就是单用户线程在运行.</li>
-<li>协程是一种异步IO技术.</li>
+<li>协程是一种异步 IO 技术.</li>
 </ul>
-</li>
-</ul>
-<h4 id="_5">协程比多线程好在哪呢？</h4>
+<h3 id="1_1">1 协程比多线程好在哪呢？</h3>
 <ul>
 <li>
 <p>线程的控制权在操作系统手中，而 <code>协程的控制权完全掌握在用户自己手中</code>，因此利用协程可以减少程序运行时的上下文切换，有效提高程序运行效率。</p>
@@ -292,13 +298,13 @@
 <p>由于协程的本质不是多线程而是单线程，所以不需要多线程的锁机制。因为只有一个线程，也不存在同时写变量而引起的冲突。在协程中控制共享资源不需要加锁，只需要判断状态即可。所以协程的执行效率比多线程高很多，同时也有效避免了多线程中的竞争关系。</p>
 </li>
 </ul>
-<h4 id="_6">协程的适用 &amp; 不适用场景</h4>
+<h3 id="2_1">2 协程的适用 &amp; 不适用场景</h3>
 <ul>
 <li>
 <p>适用场景：协程适用于被阻塞的，且需要大量并发的场景。</p>
 </li>
 <li>
-<p>不适用场景：协程不适用于存在大量CPU密集型的场景（因为协程的本质是单线程来回切换, 无法利用多核CPU进行大量计算), 如果遇到这种情况，还是应该使用其他手段去解决。</p>
+<p>不适用场景：协程不适用于存在大量 CPU 密集型的场景（因为协程的本质是单线程来回切换, 无法利用多核 CPU 进行大量计算), 如果遇到这种情况，还是应该使用其他手段去解决。</p>
 </li>
 </ul>
               

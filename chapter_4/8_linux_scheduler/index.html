@@ -111,7 +111,45 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第八篇 Linux进程调度</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 进程调度的原理</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 时钟中断</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2">2 进程的调度</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3">3 切换进程</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">二 调度器的进化历史:</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#cfs-o1">三 CFS 和基于时间片调度的 O(1)算法的本质区别（本质区别是啥）？</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#cfs">四 CFS（完全公平调度器）简化版</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-cpu-runqueues">1 CPU runqueues</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-vruntime">2 vruntime(虚拟时间)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3_1">3 简化版原理</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4">4 调度</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">五 进程调度相关负载均衡</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_1">1 负载跟踪</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2_1">2 调度域</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-task">3 task 迁移时机</a>
+    </li>
+        </ul>
+    </li>
     </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
@@ -240,9 +278,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h2 id="_1">概述</h2>
+                <h1 id="_1">概述</h1>
 <ul>
-<li>本篇讲述Linux进程调度器</li>
+<li>本篇讲述 Linux 进程调度器</li>
 </ul>
 <h2 id="_2">一 进程调度的原理</h2>
 <p>计算机中有一个设备，叫定时器，准确说叫可编程定时/计数器。
@@ -255,7 +293,7 @@
 
 </code></pre>
 <p>发起的中断叫时钟中断，其中断向量号被设置为了 0x20。</p>
-<h3 id="_3">时钟中断</h3>
+<h3 id="1">1 时钟中断</h3>
 <p>一切的源头，就源于这个每 10ms 产生的一次时钟中断。
 当然如果没有操作系统的存在，这个 10ms 一次的时钟中断，就打了水漂，CPU 会收到这个时钟中断信号，但不会做出任何反应。
 但很不幸，linux 提前设置好了中断向量表。</p>
@@ -296,7 +334,7 @@ void do_timer(long cpl) {
 <li>如果时间片仍然大于零，则什么都不做直接返回。 <strong>后续继续从内核空间返回用户空间、运行当前的进程.</strong></li>
 <li>如果时间片已经为零，则调用 <code>schedule()</code>，用脚去想也知道，这就是进行进程调度的主干。</li>
 </ul>
-<h3 id="_4">进程的调度</h3>
+<h3 id="2">2 进程的调度</h3>
 <pre><code>
 void schedule(void) {
     int i, next, c;
@@ -334,7 +372,7 @@ void schedule(void) {
 </code></pre>
 <p>很简答，这个函数就做了三件事：</p>
 <ul>
-<li>1 拿到剩余时间片（counter的值）最大且在 runnable 状态（state = 0）的进程号 next。</li>
+<li>1 拿到剩余时间片（counter 的值）最大且在 runnable 状态（state = 0）的进程号 next。</li>
 </ul>
 <p><img alt="png" src="../../img/WX20220529-205748.png" /></p>
 <ul>
@@ -345,7 +383,7 @@ void schedule(void) {
 <p>3 最后拿到了一个进程号 next，调用了 <code>switch_to(next)</code> 这个方法，就切换到了这个进程去执行了。</p>
 </li>
 </ul>
-<h3 id="_5">切换进程</h3>
+<h3 id="3">3 切换进程</h3>
 <p>看 switch_to 方法，是用内联汇编语句写的。</p>
 <p>其实主要就干了两件事。</p>
 <ol>
@@ -370,52 +408,82 @@ void schedule(void) {
 <li>接着，这个进程就舒舒服服地运行了起来，等待着下一次滴答的来临。</li>
 </ol>
 <p><img alt="png" src="../../img/WechatIMG509.jpeg" /></p>
-<h2 id="_6">二 调度器的进化历史:</h2>
+<h2 id="_3">二 调度器的进化历史:</h2>
 <ul>
 <li>
-<p>通过上文我们知道了内核代码里的<code>schedule()</code>函数, 其实就是调度器.  这里说明下调度器的进化历史</p>
+<p>通过上文我们知道了内核代码里的<code>schedule()</code>函数, 其实就是调度器. 这里说明下调度器的进化历史</p>
 </li>
 <li>
-<p>2.4 版本  O(n)调度器</p>
+<p>2.4 版本 O(n)调度器</p>
 </li>
-<li>2.6 O(1)调度器 </li>
-<li>2.6 CFS调度器</li>
+<li>2.6 O(1)调度器</li>
+<li>2.6 CFS 调度器</li>
 </ul>
-<h2 id="cfso1">三 CFS和基于时间片调度的O(1)算法的本质区别（本质区别是啥）？</h2>
+<h2 id="cfs-o1">三 CFS 和基于时间片调度的 O(1)算法的本质区别（本质区别是啥）？</h2>
 <p>O(1) 调度器还是基于时间片的。</p>
 <p>有一个比较简单的方法就是：让每个进程都运行一段相同的时间片，这就是 基于时间片轮询调度算法。如下图所示：</p>
 <p><img alt="png" src="../../img/WX20220529-204337.png" /></p>
-<p>如上图所示，开始时进程1获得 time0 ~ time1 的CPU运行时间。当进程1的时间片使用完后，进程2获得 time1 ~ time2 的CPU运行时间。而当进程2的时间片使用完后，进程3获得 time2 ~ time3 的CPU运行时间。
-如此类推，由于每个时间片都是相等的，所以理论上每个进程都能获得相同的CPU运行时间。这个算法看起来很不错，但存在两个问题：
-* 不能按权重分配不同的运行时间，例如有些进程权重大的应该获得更多的运行时间。
-* 每次调度时都需要遍历运行队列中的所有进程，找到优先级最大的进程运行，时间复杂度为 O(n)。对于一个高性能的操作系统来说，这是不能接受的。
-为了解决上面两个问题，Linux内核的开发者创造了 完全公平调度算法。</p>
+<p>如上图所示，开始时进程 1 获得 time0 ~ time1 的 CPU 运行时间。当进程 1 的时间片使用完后，进程 2 获得 time1 ~ time2 的 CPU 运行时间。而当进程 2 的时间片使用完后，进程 3 获得 time2 ~ time3 的 CPU 运行时间。
+如此类推，由于每个时间片都是相等的，所以理论上每个进程都能获得相同的 CPU 运行时间。这个算法看起来很不错，但存在两个问题：</p>
 <ul>
-<li>1 进程权重的问题，应该O(n)和O(1)调度算法也可以解决.</li>
-<li>2 随着进程数上升，找到优先级最大的那个进程放到CPU上去运行，最原始的做法是随着进程数增大而耗费的时间增大，这个O(n)调度算法的缺陷，到了O(1)调度算法已经得到了解决.</li>
+<li>不能按权重分配不同的运行时间，例如有些进程权重大的应该获得更多的运行时间。</li>
+<li>
+<p>每次调度时都需要遍历运行队列中的所有进程，找到优先级最大的进程运行，时间复杂度为 O(n)。对于一个高性能的操作系统来说，这是不能接受的。
+  为了解决上面两个问题，Linux 内核的开发者创造了 完全公平调度算法。</p>
+</li>
+<li>
+<p>1 进程权重的问题，应该 O(n)和 O(1)调度算法也可以解决.</p>
+</li>
+<li>2 随着进程数上升，找到优先级最大的那个进程放到 CPU 上去运行，最原始的做法是随着进程数增大而耗费的时间增大，这个 O(n)调度算法的缺陷，到了 O(1)调度算法已经得到了解决.</li>
 <li>3 还有一个问题是： 一个新的调度周期开始的时候所有进程的剩余时间片都是满满的，这个时候找谁来运行呢？ 这个问题一直没有很好的得到解决.</li>
 </ul>
 <h2 id="cfs">四 CFS（完全公平调度器）简化版</h2>
+<h3 id="1-cpu-runqueues">1 CPU runqueues</h3>
+<p>内核为每个 CPU 创建了一个 runqueue 结构，用于管理调度该 CPU 上的所有可运行状态的 task_struct。在存在多个可运行状态的 task 时，选择最优的一个 task 运行达到延时和吞吐之间的平衡。</p>
+<h3 id="2-vruntime">2 vruntime(虚拟时间)</h3>
+<p>vruntime 的概念：CFS 调度算法不再有分配时间片的概念，而是追求所有 task 的 vruntime 相等的理想结果，当 task 之间的 vruntime 差值达到阈值时就需要进行调度切换，选择下一个 vruntime 最小的 task，也就是 complete fair scheduler 的核心思想。</p>
+<p><img alt="png" src="../../img/1280X1280202302152.png" /></p>
+<p>为了满足高效的插入，删除和查找最小 vruntime 的操作，CFS 用了红黑树管理所有的 task_struct，按 vruntime 大小排序。</p>
+<h3 id="3_1">3 简化版原理</h3>
 <ul>
-<li>看的是进程在run queue里等待的时间（虚拟时间），谁等待的越久，下一个就选择谁运行。</li>
-<li>在同一个run queue里，同一个调度周期里，大家的虚拟时间都是相等的。比如 同一个调度周期里，进程一共有2个。
-那么虚拟时间上，2个进程平分整个调度周期，各自运行一半时间。如果同一个调度周期里有3个可运行进程，那么每个进程拿到1/3的虚拟时间，放到CPU上去运行。</li>
+<li>看的是进程在 run queue 里等待的时间（虚拟时间），谁等待的越久，下一个就选择谁运行。</li>
+<li>在同一个 run queue 里，同一个调度周期里，大家的虚拟时间都是相等的。比如 同一个调度周期里，进程一共有 2 个。
+  那么虚拟时间上，2 个进程平分整个调度周期，各自运行一半时间。如果同一个调度周期里有 3 个可运行进程，那么每个进程拿到 1/3 的虚拟时间，放到 CPU 上去运行。</li>
 <li>但是虚拟时间到真实时间的映射比例是不同的，是按照进程权重来的。</li>
 <li>
 <ul>
-<li>比如调度周期为30ms，2个进程，A权重为1，B权重为2，那么虚拟时间大家都是15ms 
-但是虚拟时间到真实时间的映射不相同， 真实的时间 A为10ms，B为20ms。 虚拟时间里，A每过1ms，真实时间上过去为0.66ms， B每过1ms，真实时间上过去1.33ms
-而调度算法选择进程的时候，只看A和B在队列里等待的时间，而且是以虚拟时间为考量.</li>
+<li>比如调度周期为 30ms，2 个进程，A 权重为 1，B 权重为 2，那么虚拟时间大家都是 15ms
+    但是虚拟时间到真实时间的映射不相同， 真实的时间 A 为 10ms，B 为 20ms。 虚拟时间里，A 每过 1ms，真实时间上过去为 0.66ms， B 每过 1ms，真实时间上过去 1.33ms
+    而调度算法选择进程的时候，只看 A 和 B 在队列里等待的时间，而且是以虚拟时间为考量.</li>
 </ul>
 </li>
 </ul>
 <p>由此可知，虚拟时钟和真实时间的换算是根据进程的权重（也就是优先级）来的。</p>
+<h3 id="4">4 调度</h3>
+<p>内核依赖两种方式驱动进程的被动调度，一种是有 task 唤醒加入 runqueue 时判断是否 task 应该抢占 curr，一种是周期性时钟中断判断是否 curr 应该切换到 vruntime 更小的 task。
+主动调度则是 curr 由于资源等待进入睡眠状态等待后面被唤醒，或者调用 yield 让出 CPU。</p>
+<h2 id="_4">五 进程调度相关负载均衡</h2>
+<ul>
+<li>在多 CPU 系统上，进程运行负载应该尽可能在所有的 CPU 上均衡调度，达到最优化的性能。除非有节能等其他需求。</li>
+</ul>
+<h3 id="1_1">1 负载跟踪</h3>
+<p>task 是在 CPU 之间负载迁移的最小单位，为了比较 CPU 之间的负载和迁移计算，需要跟踪每个 task 的负载，内核用 PELT 算法对 task 的 runnable 时间比例，running 时间比例和权重进行了计算，得到某个时刻的 task 运行负载。</p>
+<h3 id="2_1">2 调度域</h3>
+<p>由于 CPU 硬件架构的多样性，task 在 CPU 之间迁移的代价也是不同的，内核主要考虑 cache 和内存对负载迁移的影响。所以按照 CPU 硬件架构划分了调度域。</p>
+<p><img alt="png" src="../../img/edfee7be-25e8-4cd8-9f9a-0052601a779e.png" /></p>
+<h3 id="3-task">3 task 迁移时机</h3>
+<p>task 在 CPU 之间的迁移时机主要有：</p>
+<ol>
+<li>唤醒时迁移：push</li>
+<li>CPU 进入 idle 前迁移：pull</li>
+<li>CPU 周期性 load_balance：pull，在软中断进行。</li>
+</ol>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../7_linux_signal/" class="btn btn-neutral float-left" title="第七篇 Linux信号机制"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../../chapter_5/1_four_object_of_VFS/" class="btn btn-neutral float-right" title="第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../9_linux_arch_overall_introduction/" class="btn btn-neutral float-right" title="第九篇 Linux架构整体介绍">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -441,7 +509,7 @@ void schedule(void) {
       <span><a href="../7_linux_signal/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../../chapter_5/1_four_object_of_VFS/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../9_linux_arch_overall_introduction/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
