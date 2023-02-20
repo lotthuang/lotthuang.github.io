@@ -327,6 +327,19 @@ struct thread_info {
 <li>内核栈通常是 2 个 page 大小。因为 32 位和 64 位体系结构的页面大小分别是 4KB 和 8KB，所以通常它们的内核 栈 的 大小 分 别 是 8 K B 和 1 6 K B。</li>
 <li>其中<code>内核栈</code>是使用<code>thread_union</code>结构体表示, 并且<code>thread_info</code>结构体位于栈底部.</li>
 </ul>
+<p>进程描述符 task_struct 中有一个成员：void *stack;就是指向该进程内核栈的<strong>栈底</strong>。</p>
+<pre><code>
+union thread_union {
+#ifndef CONFIG_ARCH_TASK_STRUCT_ON_STACK
+    struct task_struct task;
+#endif
+#ifndef CONFIG_THREAD_INFO_IN_TASK
+    struct thread_info thread_info;
+#endif
+    unsigned long stack[THREAD_SIZE/sizeof(long)];
+};
+
+</code></pre>
 <p><img alt="png" src="../../img/WechatIMG125.png" /></p>
 <p><img alt="png" src="../../img/WX20230220-095459%402x202302201.png" /></p>
 <h4 id="21">2.1 内核栈作用</h4>
@@ -436,7 +449,8 @@ CPU 把 Thead B 的 kernel stack copy 到 Thread B 的 user stack，并且进入
 1 同一个线程内，CPU 由 user mode 进入 kernel mode，应该是要把 user stack 的内容 copy 到 kernel stack，然后开始运行 system call 所指定的那部分代码.</p>
 <p>2 同一个进程之间不同线程之间的 context switch ，无需替换当前的 mm_struct</p>
 <p>3 不同进程之间进行 context switch，除了上述步骤之外，仍需替换整个 mm_struct,新进程的 pagetable 应该要被装入 MMU 管理单元。CPU 发出的内存地址都是虚拟机地址，有 MMU 管理单元（硬件）自动完成虚拟地址到物理地址的转化</p>
-<p><a href="https://medium.com/@yovan/os-process-thread-user-kernel-%E7%AD%86%E8%A8%98-aa6e04d35002">参考</a></p>
+<p><a href="https://medium.com/@yovan/os-process-thread-user-kernel-%E7%AD%86%E8%A8%98-aa6e04d35002">参考 1</a></p>
+<p><a href="https://mp.weixin.qq.com/s/mCzPSWaar0Y-SlofaxaU5g">参考 2</a></p>
               
             </div>
           </div><footer>
