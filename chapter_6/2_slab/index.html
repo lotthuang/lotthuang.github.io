@@ -113,6 +113,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/10_linux_context_switch/">第十篇 低视角看context switch</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
               <ul>
@@ -129,6 +131,12 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第二篇 Slab层介绍</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一  内存管理里核心模型之间的关系总结</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 一些结构体的关系</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
@@ -246,7 +254,7 @@
 <ul>
 <li>本文总结 Linux 内存分配之 slab 层</li>
 </ul>
-<h1 id="_2">内存管理里核心模型之间的关系总结</h1>
+<h2 id="_2">一  内存管理里核心模型之间的关系总结</h2>
 <ul>
 <li>1 物理内存，被分割为最小的单位，一个一个页，也就是一个一个 page。一个 page 通常是 4KB</li>
 <li>2 内核代码申请内存时，可能大于 4KB，也可能小于 4KB，小于 4KB 时，也至少得分配一个 page，那么就会出现浪费情况。因此 Linux 内核专门做了一层 slab 层。 slab 层 = slab 分配器</li>
@@ -255,6 +263,20 @@
 <p><img alt="png" src="../../img/WechatIMG484.jpeg" /></p>
 <p><img alt="png" src="../../img/WechatIMG485.jpeg" /></p>
 <p><img alt="png" src="../../img/WechatIMG119.jpeg" /></p>
+<h3 id="1">1 一些结构体的关系</h3>
+<ul>
+<li>每种高速缓存组都由struct kmem_cache结构体表示, 有多种高速缓存, 比如inode,afs_inode,task_struct</li>
+<li>
+<ul>
+<li>会产生inode_cachep, afs_inode_cachep, task_struct_cachep</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>每个XX_cachep会有一个或多个struct slab, 每个slab会有一个或多个struct page</li>
+</ul>
+</li>
+</ul>
               
             </div>
           </div><footer>

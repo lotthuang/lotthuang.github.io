@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第七篇 Linux信号机制 - Lott's Blog</title>
+    <title>第十篇 低视角看context switch - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u4e03\u7bc7 Linux\u4fe1\u53f7\u673a\u5236";
-        var mkdocs_page_input_path = "chapter_4/7_linux_signal.md";
+        var mkdocs_page_name = "\u7b2c\u5341\u7bc7 \u4f4e\u89c6\u89d2\u770bcontext switch";
+        var mkdocs_page_input_path = "chapter_4/10_linux_context_switch.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -107,15 +107,51 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../6_cpu_famous_register/">第六篇 CPU中的著名寄存器梳理</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第七篇 Linux信号机制</a>
-    <ul class="current">
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_linux_signal/">第七篇 Linux信号机制</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../8_linux_scheduler/">第八篇 Linux进程调度</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../10_linux_context_switch/">第十篇 低视角看context switch</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第十篇 低视角看context switch</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#task_struct">一 每个新的 task_struct 内核至少要关注三个核心模型</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-thread_info">1 thread_info 结构体</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#a-thread_info">A 进程平台相关信息--thread_info</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#b-thread_info">B 为什么需要 thread_info</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2">2 内核栈</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#21">2.1 内核栈作用</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#22">2.2 为什么需要单独的进程内核栈？</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#context-switch-mode-switch">二 context switch 和 mode switch 区别</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-mode-switch">1 mode switch</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-context-switch">2 context switch</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-context">3 一个 context</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#context-switch">三 关于 context switch 的一些其他见解</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-context-switch">1 context switch 分为哪几种</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
@@ -235,7 +271,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>第四章 Linux CPU子系统 &raquo;</li>
-      <li>第七篇 Linux信号机制</li>
+      <li>第十篇 低视角看context switch</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -244,133 +280,169 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h2 id="_1">概述</h2>
+                <h1 id="_1">概述</h1>
 <ul>
-<li>本篇主要讲述Linux信号机制</li>
+<li>本篇讲述 context switch 和 mode switch</li>
 </ul>
-<h2 id="_2">进程处理信号的时机</h2>
-<h3 id="_3">用户进程处理信号的时机</h3>
-<p>我们对一个进程发送一个信号以后，其实并没有硬中断发生，只是简单把信号挂载到目标进程的信号 pending 队列上去，信号真正得到执行的时机是进程执行完异常/中断返回到用户态的时刻。</p>
-<p>让信号看起来是一个异步中断的关键就是，正常的用户进程是会频繁的在用户态和内核态之间切换的（这种切换包括：系统调用、缺页异常、系统中断…），所以信号能很快的能得到执行。</p>
-<p><img alt="png" src="../../img/WechatIMG501.png" /></p>
-<h4 id="_4">不同状态的用户进程</h4>
+<h2 id="task_struct">一 每个新的 task_struct 内核至少要关注三个核心模型</h2>
 <ul>
-<li>运行状态</li>
+<li>每次创建一个新的 task_struct, 内核层面都至少创建三个核心模型:</li>
 <li>
 <ul>
-<li>运行状态（TASK_RUNNING）进程对信号的响应时机：信号发送后挂到目标进程的信号队列，进程返回用户态的时候在 do_notify_resume() 中处理信号</li>
+<li><code>内核栈</code>, <code>task_struct</code>结构体, <code>thread_info</code>结构体, 我们重点关注<code>内核栈</code>, <code>task_struct</code>结构体, <code>thread_info</code>结构体</li>
 </ul>
 </li>
-<li>阻塞状态</li>
 <li>
 <ul>
-<li>那么对于阻塞状态的进程又怎么样来响应信号呢？</li>
+<li>其中<code>用户栈</code>将在未来讨论</li>
 </ul>
 </li>
 </ul>
-<p>让一个进程进入阻塞状态，我们可以选择让其进入可中断（TASK_INTERRUPTIBLE）或者不可中断（TASK_UNINTERRUPTIBLE）状态，比如 mutex 操作分为 mutex_lock() 和 mutex_lock_interruptible()。
-所谓的<strong>可中断</strong>和<strong>不可中断</strong>就是说是否可以被<code>中断信号</code>打断：</p>
-<ul>
-<li>如果进程处于可中断（TASK_INTERRUPTIBLE）状态，信号发送函数会直接唤醒进程，让进程处理完内核态操作去返回用户态，让进程迅速去执行信号处理函数；</li>
-<li>如果进程处于不可中断（TASK_UNINTERRUPTIBLE）状态俗称为 D 进程，信号只会挂到信号队列，但是没有机会去立即执行。</li>
-</ul>
-<h3 id="_5">内核进程处理信号的时机</h3>
-<p>让信号看起来是一个异步中断的关键就是，正常的用户进程是会频繁的在用户态和内核态之间切换的（这种切换包括：系统调用、缺页异常、系统中断…），所以信号能很快的能得到执行。但这也带来了一点问题，内核进程是不响应信号的，除非它刻意的去查询。所以通常情况下我们无法通过kill命令去杀死一个内核进程。</p>
-<p>内核进程普通情况下是不会响应信号的，如果需要内核进程响应信号，可以在内核进程中加入如下代码：</p>
+<h3 id="1-thread_info">1 thread_info 结构体</h3>
+<h4 id="a-thread_info">A 进程平台相关信息--thread_info</h4>
+<p>struct thread_info 是记录部分进程信息的结构体(具体来说是平台相关的进程信息，该结构体是平台相关的)，其中包括了进程上下文信息:</p>
 <pre><code>
-    if (signal_pending(current))
-    {
-        // 自定义信号处理函数
-    }
-    flush_signals(current);
+struct thread_info {
+    unsigned long       flags;      /* low level flags */
+    int         preempt_count;  /* 0 =&gt; preemptable, &lt;0 =&gt; bug */
+    mm_segment_t        addr_limit; /* address limit */
+    struct task_struct  *task;      /* main task structure */
+    __u32           cpu;        /* cpu */
+    __u32           cpu_domain; /* cpu domain */
+        ...
+    struct cpu_context_save cpu_context;    /* cpu context */
+    __u32           syscall;    /* syscall number */
+       ...
+};
 
 </code></pre>
-<h2 id="_6">常见的信号分类</h2>
-<p>在给大家引出重点的信号响应时机以后，还是简单介绍以下信号的背景知识。<strong>信号也是一种进程间通讯的机制，它传递的信息很短，只有一个编号</strong>。</p>
-<h3 id="_7">常规信号和实时信号</h3>
-<p>Linux 传统的信号 1~31 为常规信号（regular signal），POSIX 还引入了一种新的信号实时信号（real-time signal）编号为 32~64。它们的不同在于：常规信号同一个编号在 pending 队列中只存在一份，如果有重复的则直接丢弃；实时信号的多个相同信号不能丢弃，需要保证每个信号都能送达。</p>
-<p>Linux 常用的是常规信号，以下是具体的定义1</p>
-<p><img alt="png" src="../../img/WX20220528-124716.png" /></p>
-<h3 id="_8">可以被用户空间捕获的信号</h3>
-<table>
-<thead>
-<tr>
-<th>序号</th>
-<th>名称</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>HUP</td>
-<td>终端短线</td>
-</tr>
-<tr>
-<td>15</td>
-<td>TERM</td>
-<td>终止</td>
-</tr>
-<tr>
-<td>9</td>
-<td>KILL</td>
-<td>强制终止</td>
-</tr>
-<tr>
-<td>18</td>
-<td>CONT</td>
-<td>继续（与STOP相反）</td>
-</tr>
-<tr>
-<td>19</td>
-<td>STOP</td>
-<td>暂停（同ctrl + z）</td>
-</tr>
-</tbody>
-</table>
 <ul>
-<li><a href="https://mp.weixin.qq.com/s/rcpK-UEYIy628b77IG-obA">捕获信号之后的处理过程</a>:</li>
+<li>关键是其中的 task 成员，指向的是所创建的进程的 struct task_struct 结构体。</li>
 </ul>
-<p><img alt="png" src="../../img/WechatIMG500.jpeg" /></p>
-<h3 id="_9">信号的发送</h3>
-<p>信号的发送者可以是 user 也可以是 kernel，我们经常是通过用户态来调用 kill()、tkill() 等函数来发送信号的，我们通过分析这些系统调用来理解信号的具体发送过程。</p>
-<p>与信号相关的系统调用主要有以下函数：</p>
-<table>
-<thead>
-<tr>
-<th>系统调用</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>kill</td>
-<td>向线程组发送信号</td>
-</tr>
-<tr>
-<td>tkill</td>
-<td>向进程发送信号</td>
-</tr>
-<tr>
-<td>tgkill</td>
-<td>向指定线程组中的进程发送信号</td>
-</tr>
-<tr>
-<td>signal</td>
-<td>注册信号的用户态处理函数</td>
-</tr>
-<tr>
-<td>sigprocmask</td>
-<td>block/unblock信号</td>
-</tr>
-</tbody>
-</table>
+<h4 id="b-thread_info">B 为什么需要 thread_info</h4>
+<p>内核还需要存储每个进程的 PCB 信息, linux 内核是支持不同体系的的, 但是不同的体系结构可能进程需要存储的信息不尽相同, 这就需要我们实现一种通用的方式, 我们将体系结构相关的部分和无关的部门进行分离。</p>
+<p>用一种通用的方式来描述进程, 这就是 struct task_struct, 而 thread_info 就保存了特定体系结构的汇编代码段需要访问的那部分进程的数据,我们在 thread_info 中嵌入指向 task_struct 的指针, 则我们可以很方便的通过 thread_info 来查找 task_struct。</p>
+<h3 id="2">2 内核栈</h3>
+<ul>
+<li>内核栈通常是 2 个 page 大小。因为 32 位和 64 位体系结构的页面大小分别是 4KB 和 8KB，所以通常它们的内核 栈 的 大小 分 别 是 8 K B 和 1 6 K B。</li>
+<li>其中<code>内核栈</code>是使用<code>thread_union</code>结构体表示, 并且<code>thread_info</code>结构体位于栈底部.</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG125.png" /></p>
+<p><img alt="png" src="../../img/WX20230220-095459%402x202302201.png" /></p>
+<h4 id="21">2.1 内核栈作用</h4>
+<p>在陷入内核后，系统调用中也是存在函数调用和自动变量，这些都需要栈支持。用户空间的栈显然不安全，需要内核栈的支持。</p>
+<h4 id="22">2.2 为什么需要单独的进程内核栈？</h4>
+<p>所有进程运行的时候，都可能通过系统调用陷入内核态继续执行。假设第一个进程 A 陷入内核态执行的时候，需要等待读取网卡的数据，主动调用 schedule() 让出 CPU；此时调度器唤醒了另一个进程 B，碰巧进程 B 也需要系统调用进入内核态。那问题就来了，如果内核栈只有一个，那进程 B 进入内核态的时候产生的压栈操作，必然会破坏掉进程 A 已有的内核栈数据；一但进程 A 的内核栈数据被破坏，很可能导致进程 A 的内核态无法正确返回到对应的用户态了。</p>
+<h2 id="context-switch-mode-switch">二 context switch 和 mode switch 区别</h2>
+<ul>
+<li>At a high level, there are two separate mechanisms to understand.</li>
+<li>
+<ul>
+<li>The first is the kernel entry/exit mechanism: this switches a single running thread from running usermode code to running kernel code in the context of that thread, and back again.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>The second is the context switch mechanism itself, which switches in kernel mode from running in the context of one thread to another.</li>
+</ul>
+</li>
+</ul>
+<p>So, when Thread A calls <code>sched_yield()</code> and is replaced by Thread B, what happens is:</p>
+<ul>
+<li>
+<ul>
+<li>Thread A enters the kernel, changing from user mode to kernel mode;</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>Thread A in the kernel context-switches to Thread B in the kernel;</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>Thread B exits the kernel, changing from kernel mode back to user mode.</li>
+</ul>
+</li>
+</ul>
+<p>Each user thread has both a user-mode stack and a kernel-mode stack. When a thread enters the kernel, the current value of the user-mode stack (SS:ESP) and instruction pointer (CS:EIP) are saved to the thread’s kernel-mode stack, and the CPU switches to the kernel-mode stack – with the int $80 syscall mechanism, this is done by the CPU itself. The remaining register values and flags are then also saved to the kernel stack.
+When a thread returns from the kernel to user-mode, the register values and flags are popped from the kernel-mode stack, then the user-mode stack and instruction pointer values are restored from the saved values on the kernel-mode stack.</p>
+<p>When a thread context-switches, it calls into the scheduler (the scheduler does not run as a separate thread – it always runs in the context of the current thread). The scheduler code selects a process to run next, and calls the switchto() function. This function essentially just switches the kernel stacks – it saves the current value of the stack pointer into the TCB for the current thread (called struct taskstruct in Linux), and loads a previously-saved stack pointer from the TCB for the next thread. At this point it also saves and restores some other thread state that isn’t usually used by the kernel – things like floating point/SSE registers.</p>
+<p>So you can see that the core user-mode state of a thread isn’t saved and restored at context-switch time – it’s saved and restored to the thread’s kernel stack when you enter and leave the kernel. The context-switch code doesn’t have to worry about clobbering the user-mode register values – those are already safely saved away in the kernel stack by that point.</p>
+<p><a href="https://stackoverflow.com/questions/12630214/context-switch-internals">参考</a></p>
+<h3 id="1-mode-switch">1 mode switch</h3>
+<p><strong>mode switch</strong>是一个运行的 task 从 user-mode 切换到 kernel-mode，或者切换回来。</p>
+<h3 id="2-context-switch">2 context switch</h3>
+<p><strong>context switch</strong>一定发生在 kernel mode，进行 task 的切换。因此 context switch 时，不用担心把 user-space 的数据弄丢。</p>
+<p>每个用户的 task_struct 有一个 user-mode stack 和一个 kernel-mode stack，当从 user-mode 切换到 kernel-mode 时，寄存器的值要保存到 kernel-mode stack，反之，从 kernel-mode 切换回 user-mode 时，要把寄存器的值恢复出来。这是 CPU 自动做的。(因此肯定比 context switch 成本要低)
+进行“context switch”时，scheduler 将当前 kernel-mode stack 中的值保存在 task_struct 中，并把下一个将要运行 task 的 task_struct 值恢复到 kernel-mode stack 中， （scheduler 是内核代码）这样，从 kernel-mode 返回到 user-mode，（此时 CPU 自动把 kernel-mode stack 上的内容全部复制到了该 task_struct 的 user-mode stack），就会运行另外一个 task。</p>
+<h3 id="3-context">3 一个 context</h3>
+<p>一个 Context 包含了：
+存储程序运行所需的 CPU 寄存器 和 一个指令计数器,前者是在 CPU 内部的，存储一些变量的地寄存器，
+后者是用于表示 CPU 当前执行的指令或者下一个要执行的指令。</p>
+<h2 id="context-switch">三 关于 context switch 的一些其他见解</h2>
+<h3 id="1-context-switch">1 context switch 分为哪几种</h3>
+<p>context swich 分为 3 种：</p>
+<ul>
+<li>1 同一个线程之间由 user mode 进入 kernel mode（反之依然）</li>
+<li>2 同一的进程的不同线程之间</li>
+<li>3 不同的进程之间
+  这 3 种消耗依次增大；</li>
+</ul>
+<p><strong>理论上 CPU 由 user mode 进入 kernel mode 或者 kernel mode 进入 user mode 称为 mode switch 而不是 context switch ,然而在使用 vmstat 工具进行监控时，明显发现把 mode switch 也统计了进去.</strong></p>
+<p>我们再来总结下，为什么上述消耗依次增大</p>
+<p>Linux 内核中，没有进程和线程的区别，取而代之的是一个 task_struct 结构体的概念，用于统一表示 CPU 要运行的任务;</p>
+<p>我们看下 task_struct 中有哪些重要的字段:
+1 当前 thread 的状态</p>
+<pre><code>/* task_struct 記錄著目前這 Process 的狀態 */
+
+struct task_struct {  volatile long state; // -1 unrunnable, 0 runnable, &gt;0 stopped};
+</code></pre>
+<p>2 当前 thread 的 mm_struct</p>
+<pre><code>/* task_struct 就有一個指向 mm_struct 的變數 */
+
+struct task_struct {  struct mm_struct *mm // point to memory descriptor};
+</code></pre>
+<p>其实也就是说，Process 都有自己的 mm_struct,如果新生成出来的 task_struct 有自己独立的 mm_struct，那么它就代表是一个新进程；如果没有 mm_struct，而是共用它的父进程的 mm_struct,那么它就是一个线程, 如下图所示:</p>
+<p><img alt="png" src="../../img/WechatIMG126.png" /></p>
+<p>另外，每个 task_struct 都有自己的 kernel stack 和 user stack；
+kernel stack 如下:</p>
+<pre><code>
+linux中进程使用task_struct数据结构描述，其中有一个stack指针
+
+struct task_struct
+{
+    // ...
+    void *stack;    //  指向内核栈的指针
+    // ...
+};
+
+
+task_struct数据结构中的stack成员指向thread_union结构（Linux内核通过thread_union联合体来表示进程的内核栈）
+
+每個 task_structs 都會有一個 kernel stack ，提供在 Kernel mode 時進行運算時，可存放臨時變數的地方。
+</code></pre>
+<p>在真正 context switch 时，CPU 是如何工作的呢?</p>
+<pre><code>
+Thread A enters the kernel, changing from user mode to kernel mode;
+Thread A in the kernel context-switches to Thread B in the kernel;
+Thread B exits the kernel, changing from kernel mode back to user mode.
+
+</code></pre>
+<p>也就是说，CPU 进入 kernel mode，把 Thread A 的 user stack 的内容 copy 到自己的 kernel stack；调度代码开始执行(scheduler 开始执行)，CPU 切换至 Thread B 的 kernel stack；
+CPU 把 Thead B 的 kernel stack copy 到 Thread B 的 user stack，并且进入 user mode；这样就从 Thread A context switch 到 Thread B.</p>
+<p>我们知道 stack 的特性：1 体积很小 2 数量充足 3 在 CPU 内部 4 速度很快</p>
+<p>由此我们可以理解为什么 context switch 的消耗依次增大了:
+1 同一个线程内，CPU 由 user mode 进入 kernel mode，应该是要把 user stack 的内容 copy 到 kernel stack，然后开始运行 system call 所指定的那部分代码.</p>
+<p>2 同一个进程之间不同线程之间的 context switch ，无需替换当前的 mm_struct</p>
+<p>3 不同进程之间进行 context switch，除了上述步骤之外，仍需替换整个 mm_struct,新进程的 pagetable 应该要被装入 MMU 管理单元。CPU 发出的内存地址都是虚拟机地址，有 MMU 管理单元（硬件）自动完成虚拟地址到物理地址的转化</p>
+<p><a href="https://medium.com/@yovan/os-process-thread-user-kernel-%E7%AD%86%E8%A8%98-aa6e04d35002">参考</a></p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../6_cpu_famous_register/" class="btn btn-neutral float-left" title="第六篇 CPU中的著名寄存器梳理"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../8_linux_scheduler/" class="btn btn-neutral float-right" title="第八篇 Linux进程调度">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../9_linux_arch_overall_introduction/" class="btn btn-neutral float-left" title="第九篇 Linux架构整体介绍"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_5/1_four_object_of_VFS/" class="btn btn-neutral float-right" title="第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -393,10 +465,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../6_cpu_famous_register/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../9_linux_arch_overall_introduction/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../8_linux_scheduler/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../chapter_5/1_four_object_of_VFS/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
