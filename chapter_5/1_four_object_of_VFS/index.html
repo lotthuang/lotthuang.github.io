@@ -139,6 +139,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/6_alloc_mem_apis/">第六篇 Linux内核内存分配API分类</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
               <ul>
@@ -244,10 +246,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <p>超级块（super_block）、索引节点（inode）、目录结构（dentry） 和 文件结构（file）这几个结构体组成了VFS的核心概念. </p>
-<h1 id="inode">一 inode数据结构</h1>
+                <p>超级块（super_block）、索引节点（inode）、目录结构（dentry） 和 文件结构（file）这几个结构体组成了 VFS 的核心概念.</p>
+<h1 id="inode">一 inode 数据结构</h1>
 <ul>
-<li>磁盘上真正的一个文件，在内核中是使用一个inode数据结构表示.</li>
+<li>磁盘上真正的一个文件，在内核中是使用一个 inode 数据结构表示.</li>
 <li>struct inode 在源码中的位置: include/linux/fs.h:788</li>
 <li>struct inode 整体面貌如下:</li>
 </ul>
@@ -257,7 +259,7 @@
     struct list_head    i_sb_list;
     struct list_head    i_dentry;
     unsigned long        i_ino;
-    atomic_t        i_count; 
+    atomic_t        i_count;
     unsigned int        i_nlink;
     uid_t            i_uid;
     gid_t            i_gid;
@@ -335,8 +337,8 @@
 </code></pre>
 <h1 id="dentry">二 dentry</h1>
 <p>1 目录项的主要作用是方便查找文件。一个路径的各个组成部分，不管是目录还是普通的文件，都是一个目录项对象。如，在路径 /home/hero/example.c 中，目录 /, home/, hero/ 和文件 example.c 都对应一个目录项对象。
-2 目录项里有一个 d_inode成员，指向真正的inode</p>
-<p>dentry的源码 ,在  include/linux/dcache.h  89行</p>
+2 目录项里有一个 d_inode 成员，指向真正的 inode</p>
+<p>dentry 的源码 ,在 include/linux/dcache.h 89 行</p>
 <pre><code>struct dentry {
     atomic_t d_count;
     unsigned int d_flags;       /* protected by d_lock */
@@ -370,12 +372,12 @@
     unsigned char d_iname[DNAME_INLINE_LEN_MIN];    /* small names */
 };
 </code></pre>
-<h1 id="file">三 file结构体</h1>
+<h1 id="file">三 file 结构体</h1>
 <ul>
-<li>每当进程打开一个文件,内核返回的是一个file结构体，用于管理被打开的文件</li>
+<li>每当进程打开一个文件,内核返回的是一个 file 结构体，用于管理被打开的文件</li>
 <li>文件结构用于描述一个已打开的文件，其包含文件当前的读写偏移量，文件打开模式和文件操作函数列表等</li>
-<li>进程task_struct 结构体中，有files成员指向files_struct (文件描述符表),files_struct里有fd_array指向一个个file结构体.file结构体里有文件支持的操作函数，例如读、写、文件偏移等. 这些操作函数可以真正的改变文件的内容.</li>
-<li>file结构体里还含有dentry的指针，因此通过file结构体也可以找到具体的inode.</li>
+<li>进程 task_struct 结构体中，有 files 成员指向 files_struct (文件描述符表),files_struct 里有 fd_array 指向一个个 file 结构体.file 结构体里有文件支持的操作函数，例如读、写、文件偏移等. 这些操作函数可以真正的改变文件的内容.</li>
+<li>file 结构体里还含有 dentry 的指针，因此通过 file 结构体也可以找到具体的 inode.</li>
 </ul>
 <pre><code>struct file {
     /*
@@ -427,14 +429,14 @@ struct path {
     struct dentry *dentry;
 };
 </code></pre>
-<p>file结构体和 inode的对应关系:</p>
+<p>file 结构体和 inode 的对应关系:</p>
 <ul>
 <li>
-<p>多个file结构体可以指向同一个inode，例如进程A和进程B都打开了同一个文件/home/hero/example.c ,内核会产生2个file结构体</p>
+<p>多个 file 结构体可以指向同一个 inode，例如进程 A 和进程 B 都打开了同一个文件/home/hero/example.c ,内核会产生 2 个 file 结构体</p>
 </li>
 <li>
-<p>进程的FD和file结构体的对应关系:</p>
-<ul>
+<p>进程的 FD 和 file 结构体的对应关系:</p>
+</li>
 <li>
 <ul>
 <li>一开始是一对一，也可以有多对一的情况</li>
@@ -442,24 +444,24 @@ struct path {
 </li>
 <li>
 <ul>
-<li>例如进程A，通过fork()系统调用产生了子进程，那么子进程的FD table默认是复制了父进程的,这个时候进程的FD就对应同一个file结构体了.</li>
-</ul>
-</li>
+<li>例如进程 A，通过 fork()系统调用产生了子进程，那么子进程的 FD table 默认是复制了父进程的,这个时候进程的 FD 就对应同一个 file 结构体了.</li>
 </ul>
 </li>
 </ul>
 <h1 id="super_block">super_block</h1>
-<p>Linux支持多文件系统，所以在内核中必须通过一个数据结构来描述具体文件系统的信息和相关的操作等，VFS 定义了一个名为 超级块（super_block） 的数据结构来描述具体的文件系统，也就是说内核是通过超级块来认知具体的文件系统的，一个具体的文件系统会对应一个超级块结构</p>
-<p>下面我们介绍一下一些比较重要的成员：
-- s_dev：用于保存设备的设备号
-- s_blocksize：用于保存文件系统的数据块大小（文件系统是以数据块为单位的）
-- s_type：文件系统的类型（提供了读取设备中文件系统超级块的方法）
-- s_op：超级块相关的操作列表
-- s_root：挂载的根目录</p>
-<p>inode数据结构中，有个const struct inode_operations    <em>i_op ，用来指向inode本身属性的一些修改，
-struct super_block    </em>i_sb; 则指向该inode对应的super_block.
-因此例如删除一个真正的文件(inode)，必须更新其对应super_block信息.</p>
-<h2 id="super_block_1">super_block源码</h2>
+<p>Linux 支持多文件系统，所以在内核中必须通过一个数据结构来描述具体文件系统的信息和相关的操作等，VFS 定义了一个名为 超级块（super_block） 的数据结构来描述具体的文件系统，也就是说内核是通过超级块来认知具体的文件系统的，一个具体的文件系统会对应一个超级块结构</p>
+<p>下面我们介绍一下一些比较重要的成员：</p>
+<ul>
+<li>s_dev：用于保存设备的设备号</li>
+<li>s_blocksize：用于保存文件系统的数据块大小（文件系统是以数据块为单位的）</li>
+<li>s_type：文件系统的类型（提供了读取设备中文件系统超级块的方法）</li>
+<li>s_op：超级块相关的操作列表</li>
+<li>s_root：挂载的根目录</li>
+</ul>
+<p>inode 数据结构中，有个 const struct inode_operations <em>i_op ，用来指向 inode 本身属性的一些修改，
+struct super_block </em>i_sb; 则指向该 inode 对应的 super_block.
+因此例如删除一个真正的文件(inode)，必须更新其对应 super_block 信息.</p>
+<h2 id="super_block_1">super_block 源码</h2>
 <p>super block 源代码位置</p>
 <p>include/linux/fs.h:1424</p>
 <pre><code>struct super_block {
@@ -538,6 +540,12 @@ struct super_block    </em>i_sb; 则指向该inode对应的super_block.
 </code></pre>
 <h1 id="_1">五 总结一下各个结构体之间的联系</h1>
 <p><img alt="请在这里输入图片描述" src="../../img/20200416120056.jpg" /></p>
+<p><img alt="png" src="../../img/WechatIMG128202302211.jpeg" /></p>
+<p><img alt="png" src="../../img/WechatIMG129202302212.png" /></p>
+<p><img alt="png" src="../../img/WechatIMG1302023022133.jpeg" /></p>
+<ul>
+<li>同时我们注意到<strong>super_block</strong>对象也有<strong>s_inodes</strong>成员, 指向本文件系统的所有<strong>inode</strong></li>
+</ul>
               
             </div>
           </div><footer>

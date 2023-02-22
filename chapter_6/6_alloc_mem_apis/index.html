@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第二篇 高可用原则总结 - Lott's Blog</title>
+    <title>第六篇 Linux内核内存分配API分类 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u4e8c\u7bc7 \u9ad8\u53ef\u7528\u539f\u5219\u603b\u7ed3";
-        var mkdocs_page_input_path = "chapter_11/10_high_avaliable.md";
+        var mkdocs_page_name = "\u7b2c\u516d\u7bc7 Linux\u5185\u6838\u5185\u5b58\u5206\u914dAPI\u5206\u7c7b";
+        var mkdocs_page_input_path = "chapter_6/6_alloc_mem_apis.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -126,18 +126,34 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/1_linux_buddy/">第一篇 伙伴系统介绍</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_linux_buddy/">第一篇 伙伴系统介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/2_slab/">第二篇 Slab层介绍</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_slab/">第二篇 Slab层介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理原理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_linux_mem_theory/">第四篇 Linux内存管理原理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/6_alloc_mem_apis/">第六篇 Linux内核内存分配API分类</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第六篇 Linux内核内存分配API分类</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">具体分类</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-alloc-page">1 alloc page 内存</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-slab">2 slab 内存</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-vmalloc">3 vmalloc 内存</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4">4 用户态内存</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#5">5 汇总图</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -203,28 +219,16 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../1_theory/">第一篇 稳定性概论</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/1_theory/">第一篇 稳定性概论</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第二篇 高可用原则总结</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#1">1 高并发整体可用性(限流、降级和熔断)概述</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#2">2 高可用设计原则</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#21">2.1 系统架构设计</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#22">2.2 服务部署</a>
-    </li>
-        </ul>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/10_high_avaliable/">第二篇 高可用原则总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../2_slo_process/">第三篇 SLO实施流程</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/2_slo_process/">第三篇 SLO实施流程</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../3_stress/">第四篇 压测经验总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/3_stress/">第四篇 压测经验总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../11_stability/">第五篇 稳定性理论总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/11_stability/">第五篇 稳定性理论总结</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十二章 商业化知识总结</span></p>
@@ -246,8 +250,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>第十一章 SRE稳定性建设从理论到实践 &raquo;</li>
-      <li>第二篇 高可用原则总结</li>
+          <li>第六章 Linux Mem子系统 &raquo;</li>
+      <li>第六篇 Linux内核内存分配API分类</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -258,51 +262,39 @@
               
                 <h1 id="_1">概述</h1>
 <ul>
-<li>本篇文档总结和梳理高可用相关设计</li>
+<li>本篇总结各类 Linux 内核内存分配的 API 函数</li>
 </ul>
-<h2 id="1">1 高并发整体可用性(限流、降级和熔断)概述</h2>
-<p><img alt="png" src="../../img/WechatIMG548.jpeg" /></p>
+<h2 id="_2">具体分类</h2>
+<h3 id="1-alloc-page">1 alloc page 内存</h3>
 <ul>
-<li><a href="https://mp.weixin.qq.com/s/skab9U0dkWy83lsEPwtQTg">参考</a></li>
+<li>直接调用__get_free_page/alloc_pages 等函数从伙伴系统申请单个或多个连续的页面。</li>
 </ul>
-<h2 id="2">2 高可用设计原则</h2>
-<h3 id="21">2.1 系统架构设计</h3>
+<h3 id="2-slab">2 slab 内存</h3>
 <ul>
-<li>2.1.1 无状态设计：便于水平扩展</li>
-<li>2.1.2 服务拆分：</li>
-<li>
+<li>使用 kmalloc()/kmem_cache_alloc() 等 slab 接口申请内存。kmalloc()可以申请物理上连续的内存,这个函数返回 一个指向内存块的指针，其内存块至少要有 size 大小。<strong>所分配的内存区在物 理上是连续的。</strong></li>
+<li>slab 分配器基于伙伴系统，提供了小内存的分配能力(虽然也兼容大内存分配)。</li>
+<li>slab 分配器从伙伴系统"批发"大内存，然后把大内存分成许多小块内存，一个小块内存块称为 object, 最后把 object "零售"给其他内核组件使用</li>
+</ul>
+<h3 id="3-vmalloc">3 vmalloc 内存</h3>
 <ul>
-<li>2.1.2.1 按照业务功能拆分</li>
+<li>vmalloc 内存也是基于伙伴系统，实现了线性映射非连续内存的能力，能够分配更多，更大的内存。</li>
+<li>vmalloc 函数的工作方式类似于 kmalloc 函数，只不过<strong>前者分配的内存虛拟地址是连续的</strong>，<strong>而物理地址则无须连续。</strong>这也是用户空间分配西数的工作方式:由 malloc 函数 返回的页在进程的虛拟 地址空间内是连续的，但是，这并不保证它们在物理 RAM 中也是连续的。</li>
+<li>kmalloc 函数确保页 在物理地址上是连续的 (虛拟地址自然也是连续的)。</li>
+<li>vmalloc 函数只确保页在虚拟地址空间内 是连续的。它通过分配非连续的物理内存块，再“修正” 页表，把内存映射到逻辑地址空间的连 续区域中，就能做到这点。</li>
 </ul>
-</li>
-<li>
+<h3 id="4">4 用户态内存</h3>
 <ul>
-<li>2.1.2.2 DB读写特征：读多，考虑增加多级缓存；写多，考虑分库分表</li>
+<li>主要指 anon page 和 file cache，最终由内核一个个单一的页面映射而成.</li>
+<li>用户空间的 malloc()</li>
 </ul>
-</li>
-<li>
-<ul>
-<li>2.1.2.3 服务高内聚、低耦合</li>
-</ul>
-</li>
-<li>2.1.3 服务化：利用Nginx、HaProxy、LVS等实现负载均衡，ZooKeeper、Consul等实现自动注册和服务发现</li>
-</ul>
-<h3 id="22">2.2 服务部署</h3>
-<ul>
-<li>高可用集群：可水平扩展，单节点故障时可以被自动摘除；</li>
-<li>热备：比如：MySQL/Redis主从等，故障时触发切换；</li>
-<li>冷备：对于无法实现高可用集群和热备的服务，可以通过冷备方案实现高可用；</li>
-<li>降级：集中化管理降级开关；高并发下，保证核心业务，对次要功能进行降级；</li>
-<li>限流：防止超出系统峰值或恶意请求攻击。比如：登录排队、DDOS攻击流量清洗等；</li>
-<li>资源隔离：容器、读写隔离、进程隔离、机房隔离、集群隔离等；</li>
-<li>配额技术：设置进程使用的内存、CPU、IO等资源的合理上限；</li>
-</ul>
+<h3 id="5">5 汇总图</h3>
+<p><img alt="png" src="../../img/WechatIMG132202302221.jpeg" /></p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../1_theory/" class="btn btn-neutral float-left" title="第一篇 稳定性概论"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../2_slo_process/" class="btn btn-neutral float-right" title="第三篇 SLO实施流程">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../5_buffers_cached/" class="btn btn-neutral float-left" title="第五篇 Free命令中buffers和cached区别"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_7/1_sync_file/" class="btn btn-neutral float-right" title="第一篇 不同主机之间的文件传输">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -325,10 +317,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../1_theory/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../5_buffers_cached/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../2_slo_process/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../chapter_7/1_sync_file/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
