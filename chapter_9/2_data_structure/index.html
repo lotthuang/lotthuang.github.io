@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第七篇 Linux信号机制 - Lott's Blog</title>
+    <title>第二篇 数据结构总结 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u4e03\u7bc7 Linux\u4fe1\u53f7\u673a\u5236";
-        var mkdocs_page_input_path = "chapter_4/7_linux_signal.md";
+        var mkdocs_page_name = "\u7b2c\u4e8c\u7bc7 \u6570\u636e\u7ed3\u6784\u603b\u7ed3";
+        var mkdocs_page_input_path = "chapter_9/2_data_structure.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -96,28 +96,26 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../1_process_ulimit/">第一篇 进程Max open files的设置</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../2_pid_max/">第二篇 kernel源码中pid的最大值</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../3_interrupt_one/">第三篇 硬中断</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/3_interrupt_one/">第三篇 硬中断</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_soft_irq/">第四篇 软中断</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/5_soft_irq/">第四篇 软中断</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../6_cpu_famous_register/">第六篇 CPU中的著名寄存器梳理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/6_cpu_famous_register/">第六篇 CPU中的著名寄存器梳理</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第七篇 Linux信号机制</a>
-    <ul class="current">
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/7_linux_signal/">第七篇 Linux信号机制</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../8_linux_scheduler/">第八篇 Linux进程调度</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/8_linux_scheduler/">第八篇 Linux进程调度</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../10_linux_context_switch/">第十篇 低视角看context switch</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/10_linux_context_switch/">第十篇 低视角看context switch</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
@@ -189,10 +187,30 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第九章 编程经验</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/1_suanfa/">第一篇 算法总结</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_suanfa/">第一篇 算法总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/2_data_structure/">第二篇 数据结构总结</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第二篇 数据结构总结</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 链表</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">二 队列</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">三 映射</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">四 红黑树</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 什么是二叉树</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2">2 什么是搜索二叉树</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3">3 什么是自平衡搜索二叉树</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4">4 什么是红黑树</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -240,8 +258,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>第四章 Linux CPU子系统 &raquo;</li>
-      <li>第七篇 Linux信号机制</li>
+          <li>第九章 编程经验 &raquo;</li>
+      <li>第二篇 数据结构总结</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -250,133 +268,44 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h2 id="_1">概述</h2>
+                <h1 id="_1">概述</h1>
 <ul>
-<li>本篇主要讲述Linux信号机制</li>
+<li>本篇总结重点数据结构</li>
 </ul>
-<h2 id="_2">进程处理信号的时机</h2>
-<h3 id="_3">用户进程处理信号的时机</h3>
-<p>我们对一个进程发送一个信号以后，其实并没有硬中断发生，只是简单把信号挂载到目标进程的信号 pending 队列上去，信号真正得到执行的时机是进程执行完异常/中断返回到用户态的时刻。</p>
-<p>让信号看起来是一个异步中断的关键就是，正常的用户进程是会频繁的在用户态和内核态之间切换的（这种切换包括：系统调用、缺页异常、系统中断…），所以信号能很快的能得到执行。</p>
-<p><img alt="png" src="../../img/WechatIMG501.png" /></p>
-<h4 id="_4">不同状态的用户进程</h4>
-<ul>
-<li>运行状态</li>
-<li>
-<ul>
-<li>运行状态（TASK_RUNNING）进程对信号的响应时机：信号发送后挂到目标进程的信号队列，进程返回用户态的时候在 do_notify_resume() 中处理信号</li>
-</ul>
-</li>
-<li>阻塞状态</li>
-<li>
-<ul>
-<li>那么对于阻塞状态的进程又怎么样来响应信号呢？</li>
-</ul>
-</li>
-</ul>
-<p>让一个进程进入阻塞状态，我们可以选择让其进入可中断（TASK_INTERRUPTIBLE）或者不可中断（TASK_UNINTERRUPTIBLE）状态，比如 mutex 操作分为 mutex_lock() 和 mutex_lock_interruptible()。
-所谓的<strong>可中断</strong>和<strong>不可中断</strong>就是说是否可以被<code>中断信号</code>打断：</p>
-<ul>
-<li>如果进程处于可中断（TASK_INTERRUPTIBLE）状态，信号发送函数会直接唤醒进程，让进程处理完内核态操作去返回用户态，让进程迅速去执行信号处理函数；</li>
-<li>如果进程处于不可中断（TASK_UNINTERRUPTIBLE）状态俗称为 D 进程，信号只会挂到信号队列，但是没有机会去立即执行。</li>
-</ul>
-<h3 id="_5">内核进程处理信号的时机</h3>
-<p>让信号看起来是一个异步中断的关键就是，正常的用户进程是会频繁的在用户态和内核态之间切换的（这种切换包括：系统调用、缺页异常、系统中断…），所以信号能很快的能得到执行。但这也带来了一点问题，内核进程是不响应信号的，除非它刻意的去查询。所以通常情况下我们无法通过kill命令去杀死一个内核进程。</p>
-<p>内核进程普通情况下是不会响应信号的，如果需要内核进程响应信号，可以在内核进程中加入如下代码：</p>
-<pre><code>
-    if (signal_pending(current))
-    {
-        // 自定义信号处理函数
-    }
-    flush_signals(current);
-
-</code></pre>
-<h2 id="_6">常见的信号分类</h2>
-<p>在给大家引出重点的信号响应时机以后，还是简单介绍以下信号的背景知识。<strong>信号也是一种进程间通讯的机制，它传递的信息很短，只有一个编号</strong>。</p>
-<h3 id="_7">常规信号和实时信号</h3>
-<p>Linux 传统的信号 1~31 为常规信号（regular signal），POSIX 还引入了一种新的信号实时信号（real-time signal）编号为 32~64。它们的不同在于：常规信号同一个编号在 pending 队列中只存在一份，如果有重复的则直接丢弃；实时信号的多个相同信号不能丢弃，需要保证每个信号都能送达。</p>
-<p>Linux 常用的是常规信号，以下是具体的定义1</p>
-<p><img alt="png" src="../../img/WX20220528-124716.png" /></p>
-<h3 id="_8">可以被用户空间捕获的信号</h3>
-<table>
-<thead>
-<tr>
-<th>序号</th>
-<th>名称</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>HUP</td>
-<td>终端短线</td>
-</tr>
-<tr>
-<td>15</td>
-<td>TERM</td>
-<td>终止</td>
-</tr>
-<tr>
-<td>9</td>
-<td>KILL</td>
-<td>强制终止</td>
-</tr>
-<tr>
-<td>18</td>
-<td>CONT</td>
-<td>继续（与STOP相反）</td>
-</tr>
-<tr>
-<td>19</td>
-<td>STOP</td>
-<td>暂停（同ctrl + z）</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li><a href="https://mp.weixin.qq.com/s/rcpK-UEYIy628b77IG-obA">捕获信号之后的处理过程</a>:</li>
-</ul>
-<p><img alt="png" src="../../img/WechatIMG500.jpeg" /></p>
-<h3 id="_9">信号的发送</h3>
-<p>信号的发送者可以是 user 也可以是 kernel，我们经常是通过用户态来调用 kill()、tkill() 等函数来发送信号的，我们通过分析这些系统调用来理解信号的具体发送过程。</p>
-<p>与信号相关的系统调用主要有以下函数：</p>
-<table>
-<thead>
-<tr>
-<th>系统调用</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>kill</td>
-<td>向线程组发送信号</td>
-</tr>
-<tr>
-<td>tkill</td>
-<td>向进程发送信号</td>
-</tr>
-<tr>
-<td>tgkill</td>
-<td>向指定线程组中的进程发送信号</td>
-</tr>
-<tr>
-<td>signal</td>
-<td>注册信号的用户态处理函数</td>
-</tr>
-<tr>
-<td>sigprocmask</td>
-<td>block/unblock信号</td>
-</tr>
-</tbody>
-</table>
+<h2 id="_2">一 链表</h2>
+<h2 id="_3">二 队列</h2>
+<h2 id="_4">三 映射</h2>
+<h2 id="_5">四 红黑树</h2>
+<h3 id="1">1 什么是二叉树</h3>
+<ol>
+<li>所有节点都有 0、1、2 个子节点</li>
+</ol>
+<h3 id="2">2 什么是<strong>搜索二叉树</strong></h3>
+<ol>
+<li>节点左侧子节点的值都小于节点</li>
+<li>节点右侧子节点的值都大于节点</li>
+<li>所有子树也是搜索二叉树</li>
+</ol>
+<h3 id="3">3 什么是<strong>自平衡搜索二叉树</strong></h3>
+<ol>
+<li>在<strong>搜索二叉树</strong>基础上, 加上所有叶子节点的深度差不超过 1</li>
+</ol>
+<h3 id="4">4 什么是<strong>红黑树</strong></h3>
+<p><strong>红黑树</strong>是一种<strong>自平衡搜索二叉树</strong></p>
+<ol>
+<li>所有节点要么是红色, 要么是黑色</li>
+<li>所有<strong>叶子节点</strong>都是黑色</li>
+<li><strong>叶子节点</strong>不包含数据</li>
+<li>所有<strong>非叶子节点</strong>必须包含 2 个子节点</li>
+<li>如果一个节点是红色, 那么它的子节点必须是黑色, 两个红色节点不能直接相连</li>
+<li>从一个节点到该节点的子孙节点的所有路径上包含相同数目的黑色节点</li>
+</ol>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../6_cpu_famous_register/" class="btn btn-neutral float-left" title="第六篇 CPU中的著名寄存器梳理"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../8_linux_scheduler/" class="btn btn-neutral float-right" title="第八篇 Linux进程调度">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../1_suanfa/" class="btn btn-neutral float-left" title="第一篇 算法总结"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_10/1_dockerfile_best_practice/" class="btn btn-neutral float-right" title="第一篇 dockerfile最佳实践">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -399,10 +328,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../6_cpu_famous_register/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../1_suanfa/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../8_linux_scheduler/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../chapter_10/1_dockerfile_best_practice/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
