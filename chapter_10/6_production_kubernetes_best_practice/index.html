@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>第六篇 生产环境Kubernetes部署最佳实践 - Lott's Blog</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u7b2c\u516d\u7bc7 \u751f\u4ea7\u73af\u5883Kubernetes\u90e8\u7f72\u6700\u4f73\u5b9e\u8df5";
+        var mkdocs_page_input_path = "chapter_10/6_production_kubernetes_best_practice.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <script src="../../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Lott's Blog
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首页</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第一章 各种杂项基础</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/3_linux_kernel_basic/">第三篇 Linux内核基础</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/guzhangguanli/">第四篇 故障管理概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/biangengguanli/">第五篇 变更管理概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/rongliangguanli/">第六篇 容量管理概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/cicd/">第八篇 CICD流程概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/9_changkanchangxin/">第九篇 常看常新</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/12_monitor_and_alert/">第十二篇 监控报警最佳实践</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/5_conntrack/">第五篇 conntrack的常见应用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/6_tcp/">第六篇 TCP协议总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/3_interrupt_one/">第三篇 硬中断</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/5_soft_irq/">第四篇 软中断</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/6_cpu_famous_register/">第六篇 CPU中的著名寄存器梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/7_linux_signal/">第七篇 Linux信号机制</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/8_linux_scheduler/">第八篇 Linux进程调度</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/10_linux_context_switch/">第十篇 低视角看context switch</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/11_linux_cpu_usage/">第十一篇 CPU利用率统计</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/2_io_stack/">第二篇 Linux IO栈总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/1_linux_buddy/">第一篇 伙伴系统介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/2_slab/">第二篇 Slab层介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理原理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/6_alloc_mem_apis/">第六篇 Linux内核内存分配API函数分类</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/1_sync_file/">第一篇 不同主机之间的文件传输</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/5_server_side_evolution/">第五篇 服务端进化过程梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/6_elk/">第六篇 elk技术栈</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/7_charset/">第七篇 字符集和编码</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/8_locale/">第八篇 locale设置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/9_http_protocol/">第九篇 http协议</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/10_http_cookie_session_token/">第十篇 cookie和session和token总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第八章 职场通用经验</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/1_xuexixinde/">第一篇 学习心得和工作箴言</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/2_bangzhuqitatongxue/">第二篇 工作能力评价体系</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/3_yewuliuchengshuyu/">第三篇 项目管理总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/4_jishunenglimoxing/">第四篇 技术能力模型总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/5_chanpingsiwei_1/">第五篇 产品思维总结和梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/6_jixiaobaogao/">第六篇 如何写绩效报告</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/7_xiangshangguanli/">第七篇 如何向上管理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/9_speaking_skills/">第九篇 沟通能力和演讲技巧</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/10_jixiaofangtan/">第十篇 绩效访谈总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第九章 编程经验</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/1_suanfa/">第一篇 算法总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/2_data_structure/">第二篇 数据结构总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_benefits_of_containerization/">第二篇 容器化的好处</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_docker_basic_concepts/">第三篇 一些基础概念</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../5_kubernetes_monitor/">第五篇 Kubernetes监控</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第六篇 生产环境Kubernetes部署最佳实践</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 网络插件选择和网络方案</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 网络插件</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#11-cnm-cni">1.1 CNM &amp; CNI 阵营：</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#12-kubernetes">1.2 Kubernetes 网络设计原则</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#13-kubernetes">1.3 Kubernetes 网络主要解决以下网络通信问题:</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-lb">2 LB 方案</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-flanel">3 网络插件之 Flanel</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-calico">4 网络插件之 Calico</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">二 存储方案</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">三 监控和告警方案</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">四 用户权限管理</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#kubernetes">五 Kubernetes 组件应用实践</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-deployment">1 生产环境 Deployment 全注释</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#a">案例 A</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-docker">2 生产环境 Docker 日志最佳实践</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#21-docker">2.1 限制 Docker 容器日志大小</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#22-docker">2.2 Docker 日志策略和最佳实践</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-serviceaccount-secret">2 生产环境 ServiceAccount 和 Secret 全注释</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-daemonset">3 生产环境 DaemonSet 全注释</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#service-mesh">六 Service Mesh 最佳实践</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/1_theory/">第一篇 稳定性概论</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/10_high_avaliable/">第二篇 高可用原则总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/2_slo_process/">第三篇 SLO实施流程</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/3_stress/">第四篇 压测经验总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/11_stability/">第五篇 稳定性理论总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十二章 商业化知识总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_12/1_shifouzhide/">第一篇 如何判断一件事情值不值得做</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十三章 芯片知识总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_13/1_about_riscv/">第一篇 RISC-V 简介</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十四章 Linux驱动方向总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/1_demo_of_led_driver/">第一篇 一个LED驱动Demo</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Lott's Blog</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>第十章 容器化和Kubernetes &raquo;</li>
+      <li>第六篇 生产环境Kubernetes部署最佳实践</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="_1">概述</h1>
+<ul>
+<li>本篇总结生产环境部署和应用 Kubernetes 最佳实践</li>
+</ul>
+<h2 id="_2">一 网络插件选择和网络方案</h2>
+<h3 id="1">1 网络插件</h3>
+<h4 id="11-cnm-cni">1.1 CNM &amp; CNI 阵营：</h4>
+<ul>
+<li>容器网络发展到现在，形成了两大阵营，就是 Docker 的 CNM 和 Google、CoreOS、Kuberenetes 主导的 CNI。</li>
+<li>首先明确一点，CNM 和 CNI 并不是网络实现，他们是网络规范和网络体系，从研发的角度他们就是一堆接口，你底层是用 Flannel 也好、用 Calico 也好，他们并不关心，CNM 和 CNI 关心的是网络管理的问题。</li>
+<li>
+<ul>
+<li>CNM (Container Network Model)</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>CNI（Container Network Interface）</li>
+</ul>
+</li>
+</ul>
+<h4 id="12-kubernetes">1.2 Kubernetes 网络设计原则</h4>
+<p>首先我们得先了解 Kubernetes 网络的设计原则，然后才能更好的理解 flannel 网络的应用
+Kubernetes 网络设计模型：</p>
+<ul>
+<li>在 Kubernetes 网络中存在两种 IP（Pod IP 和 Service Cluster IP）, Pod IP 地址是实际存在于某个网卡(可以是虚拟设备)上的，Service Cluster IP 它是一个虚拟 IP，是由 kube-proxy 使用 Iptables 规则重新定向到其本地端口，再均衡到后端 Pod 的。</li>
+<li>基本原则：</li>
+<li>
+<ul>
+<li>每个 Pod 都拥有一个独立的 IP 地址（IP per Pod），而且假定所有的 pod 都在一个可以直接连通的、扁平的网络空间中。</li>
+</ul>
+</li>
+<li>设计原因：</li>
+<li>
+<ul>
+<li>用户不需要额外考虑如何建立 Pod 之间的连接，也不需要考虑将容器端口映射到主机端口等问题。</li>
+</ul>
+</li>
+<li>网络要求：</li>
+<li>
+<ul>
+<li>所有的容器都可以在不用 NAT 的方式下同别的容器通讯；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>所有节点(Node)都可在不用 NAT 的方式下同所有容器通讯；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>容器自己看到的 IP 和别人看到的 IP 是同一个地址。</li>
+</ul>
+</li>
+</ul>
+<h4 id="13-kubernetes">1.3 Kubernetes 网络主要解决以下网络通信问题:</h4>
+<ul>
+<li>同一 pod 下容器与容器的通信；</li>
+<li>同一节点下不同的 pod 之间的容器间通信；</li>
+<li>不同节点下容器之间的通信；</li>
+<li>集群外部与内部组件的通信；</li>
+<li>pod 与 service 之间的通信；</li>
+</ul>
+<h5 id="a-pod">A 同一 Pod 下容器与容器的通信</h5>
+<p>同一个 Pod 的容器共享同一个网络命名空间，它们之间的访问可以用
+localhost 地址 + 容器端口就可以访问。</p>
+<h5 id="b-node-pod">B 同一 Node 下，不同 Pod 之间的通信</h5>
+<p><img alt="png" src="../../img/WechatIMG140.png" /></p>
+<h5 id="c-node-pod">C 不同 Node 下，不同 Pod 之间的通信</h5>
+<h5 id="d">D 集群外部与内部组件的通信</h5>
+<h5 id="e-pod-service">E Pod 和 Service 之间的通信</h5>
+<h3 id="2-lb">2 LB 方案</h3>
+<h3 id="3-flanel">3 网络插件之 Flanel</h3>
+<p><img alt="png" src="../../img/WechatIMG141B60AEDEE-CD57-4BF2-9453-1DCA5BC702E0.jpeg" /></p>
+<ul>
+<li>
+<p>Flannel 首先创建了一个名为 flannel0 的网桥，而且这个网桥的一端连接 docker0 的网桥，另一端连接一个名为 flanneld 的服务进程。</p>
+</li>
+<li>
+<p>Flanneld 进程并不简单，它首先上连 etcd，利用 etcd 来管理可分配的 IP 地址段资源，同时监控 etcd 中每个 Pod 的实际地址，并在内存中建立了一个 Pod 节点路由表；然后下连 docker0 和物理网络，使用内存中的 Pod 节点路由表，将 docker0 发给它的数据包包装起来，利用物理网络的连接将数据包投递到目标 flanneld 上，从而完成 pod 到 pod 之间的直接的地址通信。</p>
+</li>
+<li>
+<p>Flannel 之间的底层通信协议的可选余地有很多，比如 UDP、VXlan、AWS VPC 等等。只要能通到对端的 Flannel 就可以了。源 Flannel 封包，目标 Flannel 解包，最终 docker0 看到的就是原始的数据，非常透明，根本感觉不到中间 Flannel 的存在。</p>
+</li>
+<li>
+<p>Flannel 的安装配置网上讲的很多，在这里就不在赘述了。在这里注意一点，就是 flannel 使用 etcd 作为数据库，所以需要预先安装好 etcd。</p>
+</li>
+</ul>
+<p>下面说说几个场景：</p>
+<ul>
+<li>1 同一 Pod 内的网络通信。在同一个 Pod 内的容器共享同一个网络命名空间，共享同一个 Linux 协议栈。所以对于网络的各类操作，就和它们在同一台机器上一样，它们可以用 localhost 地址直接访问彼此的端口。其实这和传统的一组普通程序运行的环境是完全一样的，传统的程序不需要针对网络做特别的修改就可以移植了。这样做的结果是简单、安全和高效，也能减少将已经存在的程序从物理机或者虚拟机移植到容器下运行的难度。</li>
+<li>2 Pod1 到 Pod2 的网络，分两种情况。Pod1 与 Pod2 不在同一台主机与 Pod1 与 Pod2 在同一台主机。</li>
+<li>
+<ul>
+<li>2.1 先说 Pod1 与 Pod2 不在同一台主机。Pod 的地址是与 docker0 在同一个网段的，但 docker0 网段与宿主机网卡是两个完全不同的 IP 网段，并且不同 Node 之间的通信只能通过宿主机的物理网卡进行。将 Pod 的 IP 和所在 Node 的 IP 关联起来，通过这个关联让 Pod 可以互相访问。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>2.2 Pod1 与 Pod2 在同一台主机。Pod1 和 Pod2 在同一台主机的话，由 Docker0 网桥直接转发请求到 Pod2，不需要经过 Flannel。</li>
+</ul>
+</li>
+<li>
+<p>3 Pod 到 Service 的网络。创建一个 Service 时，相应会创建一个指向这个 Service 的域名，域名规则为{服务名}.{namespace}.svc.{集群名称}。之前 Service IP 的转发由 iptables 和 kube-proxy 负责，目前基于性能考虑，全部为 iptables 维护和转发。iptables 则由 kubelet 维护。Service 仅支持 UDP 和 TCP 协议，所以像 ping 的 ICMP 协议是用不了的，所以无法 ping 通 Service IP。</p>
+</li>
+<li>4 Pod 到外网。Pod 向外网发送请求，查找路由表, 转发数据包到宿主机的网卡，宿主网卡完成路由选择后，iptables 执行 Masquerade，把源 IP 更改为宿主网卡的 IP，然后向外网服务器发送请求。</li>
+<li>5 集群外部访问 Pod 或 Service
+  由于 Pod 和 Service 是 Kubernetes 集群范围内的虚拟概念，所以集群外的客户端系统无法通过 Pod 的 IP 地址或者 Service 的虚拟 IP 地址和虚拟端口号访问到它们。为了让外部客户端可以访问这些服务，可以将 Pod 或 Service 的端口号映射到宿主机，以使得客户端应用能够通过物理机访问容器应用。</li>
+</ul>
+<p>总结：</p>
+<p>Flannel 实现了对 Kubernetes 网络的支持，但是它引入了多个网络组件，在网络通信时需要转到 flannel0 网络接口，再转到用户态的 flanneld 程序，到对端后还需要走这个过程的反过程，所以也会引入一些网络的时延损耗。另外 Flannel 默认的底层通信协议是 UDP。UDP 本身是非可靠协议，虽然两端的 TCP 实现了可靠传输，但在大流量、高并发应用场景下还需要反复调试，确保不会出现传输质量的问题。特别是对网络依赖重的应用，需要评估对业务的影响。</p>
+<h3 id="4-calico">4 网络插件之 Calico</h3>
+<h2 id="_3">二 存储方案</h2>
+<h2 id="_4">三 监控和告警方案</h2>
+<h2 id="_5">四 用户权限管理</h2>
+<h2 id="kubernetes">五 Kubernetes 组件应用实践</h2>
+<p>诸如 namespace、deployment、configmap、scret、</p>
+<h3 id="1-deployment">1 生产环境 Deployment 全注释</h3>
+<ul>
+<li>
+<p><a href="https://unofficial-kubernetes.readthedocs.io/en/latest/concepts/workloads/controllers/deployment/#selector">Deployment 说明</a></p>
+</li>
+<li>
+<p>查看官方说明, 除了官方文档, 还可以使用 kubectl explain 命令</p>
+</li>
+</ul>
+<pre><code>
+[root@k8s-master ~]# kubectl explain pod.spec.terminationGracePeriodSeconds
+KIND:     Pod
+VERSION:  v1
+
+FIELD:    terminationGracePeriodSeconds &lt;integer&gt;
+
+DESCRIPTION:
+     Optional duration in seconds the pod needs to terminate gracefully. May be
+     decreased in delete request. Value must be non-negative integer. The value
+     zero indicates stop immediately via the kill signal (no opportunity to shut
+     down). If this value is nil, the default grace period will be used instead.
+     The grace period is the duration in seconds after the processes running in
+     the pod are sent a termination signal and the time when the processes are
+     forcibly halted with a kill signal. Set this value longer than the expected
+     cleanup time for your process. Defaults to 30 seconds.
+
+
+
+</code></pre>
+<h4 id="a">案例 A</h4>
+<pre><code>apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:#注释
+    deployment.kubernetes.io/revision: &quot;1&quot;
+  creationTimestamp: &quot;2022-07-04T13:29:55Z&quot;
+  generation: 1
+  labels:#该Deployment本身的label
+    GCE_CLUSTER: wuhan
+    name: dp-2e2d83bae2
+    psm: your.test.hello
+  name: dp-2e2d83bae2
+  namespace: ues-workers
+  ownerReferences:
+  - apiVersion: you.yourdomain.org/v1alpha2
+    blockOwnerDeletion: true
+    controller: true
+    kind: Task
+    name: task-vsh8z
+    uid: 647e19e5-fb9d-11ec-a7fb-fa163edec582
+  resourceVersion: &quot;95427195&quot;
+  selfLink: /apis/extensions/v1beta1/namespaces/ues-workers/deployments/dp-2e2d83bae2
+  uid: 6480217a-fb9d-11ec-a7fb-fa163edec582
+spec:
+  minReadySeconds: 10 #最少启动10秒,才认为他是Ready
+  progressDeadlineSeconds: 600 #Deployment 控制器在（通过 Deployment 状态） 标示 Deployment 进展停滞之前，需要等待所给的时长。 单位秒。
+  replicas: 1 #副本数,1
+  revisionHistoryLimit: 3 #历史版本保留几个, 用于回滚deployment。如果设置为0，则表示不保存历史版本. 默认是保留所有历史版本.
+  selector:
+    matchLabels:
+      cluster_id: &quot;2300&quot;
+      name: dp-2e2d83bae2
+      paas_cluster: wuhan
+      psm: your.test.hello
+      service_id: &quot;181&quot;
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        deployment.gce.kubernetes.io/requestCpuUserDemand: 100m
+        deployment.gce.kubernetes.io/requestMemUserDemand: 102Mi
+        image_version: 1.0.0.4
+      creationTimestamp: null
+      labels:
+        cluster_id: &quot;2300&quot;
+        name: dp-2e2d83bae2
+        paas_cluster: wuhan
+        psm: your.test.hello
+        service_id: &quot;181&quot;
+    spec:
+      containers:
+      - env:
+        - name: API_MANAGER_ADDR
+        - name: BIND_IF
+          value: eth0
+        - name: CONSUL_HTTP_HOST
+          value: 127.0.0.1
+        - name: ENABLE_CONSUL
+          value: &quot;True&quot;
+        - name: IS_DOCKER_ENV
+          value: &quot;true&quot;
+        - name: IS_EDGE_ENVIRONMENT
+          value: &quot;1&quot;
+        - name: IS_PORT_ENV
+          value: &quot;1&quot;
+        - name: IS_READY_CHECK
+          value: &quot;1&quot;
+        - name: MY_CPU_LIMIT
+          valueFrom:
+            resourceFieldRef:
+              containerName: dp-2e2d83bae2
+              divisor: &quot;0&quot;
+              resource: limits.cpu
+        - name: MY_CPU_REQUEST
+          valueFrom:
+            resourceFieldRef:
+              containerName: dp-2e2d83bae2
+              divisor: &quot;0&quot;
+              resource: requests.cpu
+        - name: MY_HOST_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.hostIP
+        - name: MY_MEM_LIMIT
+          valueFrom:
+            resourceFieldRef:
+              containerName: dp-2e2d83bae2
+              divisor: &quot;0&quot;
+              resource: limits.memory
+        - name: MY_MEM_REQUEST
+          valueFrom:
+            resourceFieldRef:
+              containerName: dp-2e2d83bae2
+              divisor: &quot;0&quot;
+              resource: requests.memory
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: NET_WORK_MODE
+          value: &quot;1&quot;
+        - name: REGION
+          value: China-Edge
+        - name: RUNTIME_IDC_NAME
+          value: uploadagwh
+        - name: GCE_CLUSTER
+          value: wuhan
+        - name: GCE_CLUSTER_ID
+          value: &quot;2300&quot;
+        - name: GCE_CONTAINER_NAME
+          value: dp-2e2d83bae2
+        - name: GCE_ENV
+          value: prod
+        - name: GCE_HOST_ENV
+          value: online
+        - name: GCE_INSTANCE_WEIGHT
+          value: &quot;10&quot;
+        - name: GCE_LOGICAL_CLUSTER
+          value: wuhan
+        - name: GCE_PHYSICAL_CLUSTER
+          value: uploadagwh
+        - name: GCE_PORTS
+        - name: GCE_PSM
+          value: your.test.hello
+        - name: GCE_PSM_OWNER
+          value: your.yzy
+        - name: GCE_STAGE
+          value: all_dc
+        lifecycle: #container生命周期钩子, 有poststart和preStop
+          preStop:
+            exec:
+              # SIGTERM triggers a quick exit; gracefully terminate instead
+              command: [&quot;/usr/sbin/nginx&quot;,&quot;-s&quot;,&quot;quit&quot;]
+        image: hub.yourdomain.com/project/cm_hello:b0748cc264e1756b2dd3226e5e39f1ce
+        imagePullPolicy: IfNotPresent
+        name: dp-2e2d83bae2
+        resources:
+          limits:
+            cpu: 100m
+            memory: 102Mi
+          requests:
+            cpu: 100m
+            memory: 102Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File #默认值是File, 表明terminationMessage只能从特定文件获取. 该选项也可以设置为'FallbackToLogsOnError', 表明让Kubernetes去Container日志文件里去找terminationMessage, 那么具体是啥位置呢?就是Container对应日志文件的最后一个Chunk.
+        volumeMounts:
+        - name: sys-resolv-conf
+          mountPath: /etc/resolv.conf
+          mountPropagation: HostToContainer
+          readOnly: true
+      hostNetwork: true #默认为false. 当pod 设置hostNetwork: true时候，Pod中的所有容器就直接暴露在宿主机的网络环境中，这时候，Pod的PodIP就是其所在Node的IP。对于同Deployment下的hostNetwork: true启动的Pod，每个node上只能启动一个。也就是说，Host模式的Pod启动副本数不可以多于“目标node”的数量，
+      dnsPolicy: ClusterFirstWithHostNet # 如果未明确指定 dnsPolicy，则使用 &quot;ClusterFirst&quot;. 如果没有以hostNetwork 方式运行的 Pod, 其实设置了 ClusterFirstWithHostNet后也会回退到ClusterFirst.
+      restartPolicy: Always
+      schedulerName: default-scheduler #如果默认的调度器不满足要求，还可以部署自定义的调度器。并且，在整个集群中还可以同时运行多个调度器实例，通过 pod.Spec.schedulerName 来选择使用哪一个调度器（默认使用内置的调度器）
+      securityContext: {}
+      terminationGracePeriodSeconds: 30 #向容器进程发送KILL信号之前的等待时间. 首先运行preStop勾子, 然后向容器发送停止命令(比如docker stop xxxx), 然后等待一段时间后, 发送SIGKILL信号、强制关闭. 运行preStop勾子 + docker stop是串行的, 并且时间加在一起不能超过terminationGracePeriodSeconds.
+      volumes:
+      - name: sys-resolv-conf
+        hostPath:
+          path: /etc/resolv.conf
+          type: FileOrCreate
+
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: &quot;2022-07-04T13:29:55Z&quot;
+    lastUpdateTime: &quot;2022-07-04T13:30:15Z&quot;
+    message: ReplicaSet &quot;dp-2e2d83bae2-7fd8bdbfd8&quot; has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: &quot;True&quot;
+    type: Progressing
+  - lastTransitionTime: &quot;2022-11-17T09:40:24Z&quot;
+    lastUpdateTime: &quot;2022-11-17T09:40:24Z&quot;
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: &quot;True&quot;
+    type: Available
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
+</code></pre>
+<h3 id="2-docker">2 生产环境 Docker 日志最佳实践</h3>
+<ul>
+<li>在默认情况下 Docker 容器的日志会输出到一个 json-file 文件中，容器输出到 stdout 和 stderr 的内容加上时间戳会被记录到宿主机。</li>
+<li>这些日志文件在宿主机的 /var/lib/docker/containers/ 文件夹下，以这样的形式命名：</li>
+</ul>
+<p><code>/var/lib/docker/containers/&lt;container id&gt;/&lt;container id&gt;-json.log</code></p>
+<h4 id="21-docker">2.1 限制 Docker 容器日志大小</h4>
+<ol>
+<li>A 修改 Docker 配置 vi /etc/docker/daemon.json</li>
+</ol>
+<pre><code>
+{
+  &quot;log-driver&quot;: &quot;json-file&quot;,
+  &quot;log-opts&quot;: {&quot;max-size&quot;: &quot;100m&quot;, &quot;max-file&quot;: &quot;5&quot;}
+}
+
+
+</code></pre>
+<ol>
+<li>B 或者命令行：</li>
+</ol>
+<pre><code>
+docker run --log-opt max-size=10m --log-opt max-file=5 my-app:latest
+
+</code></pre>
+<h4 id="22-docker">2.2 Docker 日志策略和最佳实践</h4>
+<h5 id="a_1">A 通过应用自己管理日志</h5>
+<p>应用自己去管理自己的日志，比如使用 Logging Framework，在 Java 中通常使用 log4j 将日志打印到一个远端的中心化地方，这样就可以绕过 Docker 和操作系统。这种方式给予了开发者更多的控制权。
+为了保存日志数据，你可以配置一个持久化的存储或将日志转发到一个远程日志的系统，比如 Elastic Stack 或 Sematext Cloud，但是基于应用的日志框架存在的问题便是如果部署了多个容器，那么你需要一个方式来告诉日志系统，哪些日志属于哪个容器。</p>
+<h5 id="b-data-volumes">B 通过 Data Volumes 记录日志</h5>
+<p>你可以在容器内部创建一个目录，然后将该目录挂载到宿主机上，那么一些长期或共享使用的数据可以长久的存储。你可以复制，备份，或者从其他容器访问这些数据。也可以在多个容器之间共享这些 volume。
+但是使用 Data Volume 存在的问题是，很难将这些容器迁移到其他宿主机而不丢失数据。</p>
+<h5 id="c-docker-logging-driver">C 通过 Docker Logging Driver 记录日志</h5>
+<ul>
+<li>在 Docker 下，另外一个记录日志的方式是使用 logging drivers。不像 Data Volumes, Docker logging driver 会从容器的 stdout 和 stderr 输出中直接读取数据。默认的配置会将这些日志记录到宿主机的一个文件中，但是改变 logging driver 可以允许你将事件转发给 syslog, gelf, journald 或其他 endpoints。</li>
+<li>
+<p>因为容器不再需要读写日志文件，可以提升一定的性能。但是也有一些弊端，<code>Docker log</code> 命令只能在 json-file log driver 下使用；log diver 有一些功能限制，日志文件只能被传输而不能被解析；当 TCP 服务不可达时，容器会 shut down。</p>
+</li>
+<li>
+<p>Docker Logging Driver 之 <code>json-file</code> 和 <code>syslog</code>区别:</p>
+</li>
+<li>
+<ul>
+<li><code>json-file</code>模式开销小, 但不支持多行消息.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><code>syslog</code>模式开销大, 但支持多行消息.</li>
+</ul>
+</li>
+</ul>
+<h6 id="logging-driver">Logging Driver 选项</h6>
+<p>选项解释：</p>
+<ul>
+<li>logagent：这是一个通用的 log shipper，Logagent Docker image 是一个提前配置好 Log 收集的镜像，Logagent 不仅会收集日志，还会收集诸如镜像名字，容器 ID，容器名字，Swarm service 等 meta-data 或 Kubernetes meta-data。并且它可以处理多行日志，可以解析容器的日志等等</li>
+<li>syslog: 将日志转发到 syslog 服务</li>
+<li>journald:将容器日志发送到 systemd journal</li>
+<li>fluentd: 将日志信息发送到 Fluentd 收集器</li>
+<li>elf：将容器的日志写到 Graylog Extended Log Format(GELF) 端，比如 GrayLog 或 Logstash</li>
+<li>awslogs：将日志发送到 AWS CloudWatch Logs</li>
+<li>splunk：通过 HTTP Event Collector（HEC）将日志写到 Splunk</li>
+<li>cplogs：将日志发送到 Google Cloud Platform（GCP）Logging</li>
+<li>logentries: 将日志写到 Rapid7 Logentries</li>
+<li>etwlogs: 将日志写到 Event Tracing for Windows（ETW）</li>
+</ul>
+<h5 id="d_1">D 使用专用的日志容器记录日志</h5>
+<p>另一个解决方案是通过一个专用的、独立的日志容器来记录和手机日志，这非常适用于微服务架构。这个优势在于这完全不依赖与宿主机。相反，专用的日志容器可以允许你在 Docker 的环境中管理日志文件。他会自动从其他容器收集日志，监控，分析，并且将他们转存到一个中心存储上。
+这种方式使得我们可以轻易地将容器在不同的宿主机中移动，并且可以非常轻松的扩展日志基础设施，只需要增加日志容器即可。</p>
+<h5 id="e-logging-using-the-sidecar-approach-sidecar">E Logging Using the Sidecar Approach(使用日志 Sidecar)</h5>
+<p>和专用的日志容器类似，使用日志容器，但是不同点在于，每一个应用容器都有专用的日志容器，允许你对每一个应用的日志进行自定义。第一个容器会将日志文件打印到 volume，然后日志文件会日志容器打上标签，然后再被传送到日志管理系统。
+使用 sidecar 的一个主要的优势是，你可以为每一个 log 增加额外自定义的标签，可以更好地确定其来源。
+同样也有一些劣势，设置或扩容可能会变得非常复杂和困难，并且需要更多的资源。你需要确保应用容器和 sidecar 容器是一起进行工作的，否则可能会造成数据丢失。</p>
+<h3 id="2-serviceaccount-secret">2 生产环境 ServiceAccount 和 Secret 全注释</h3>
+<pre><code>
+# kubectl get serviceaccount prometheus -o yaml -n monitoring
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    meta.helm.sh/release-name: edge-monitor
+    meta.helm.sh/release-namespace: default
+  creationTimestamp: &quot;2022-03-17T08:28:27Z&quot;
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: prometheus
+  namespace: monitoring
+  resourceVersion: &quot;1822&quot;
+  selfLink: /api/v1/namespaces/monitoring/serviceaccounts/prometheus
+  uid: 384e441e-a5cc-11ec-a7fb-fa163edec582
+secrets:
+- name: prometheus-token-nk6ns #该ServiceAccount绑定的Secret
+
+
+</code></pre>
+<pre><code>
+# kubectl get secret  prometheus-token-nk6ns -o yaml -n monitoring
+apiVersion: v1
+kind: Secret
+metadata:
+  annotations:
+    kubernetes.io/service-account.name: prometheus
+    kubernetes.io/service-account.uid: 384e441e-a5cc-11ec-a7fb-fa163edec582
+  creationTimestamp: &quot;2022-03-17T08:28:27Z&quot;
+  name: prometheus-token-nk6ns
+  namespace: monitoring
+  resourceVersion: &quot;1818&quot;
+  selfLink: /api/v1/namespaces/monitoring/secrets/prometheus-token-nk6ns
+  uid: 384f2f5f-a5cc-11ec-a8a9-fa163eb4a930
+type: kubernetes.io/service-account-token # Secret有3种类型, ServiceAccount、Opaque 、Docker工厂认证信息
+data: #ServiceAccount类型的Secret就有证书和token
+  ca.crt: XXXXXXXXXX
+  namespace: bW9uaXRvcmluZw==
+  token: XXXXXXX
+
+</code></pre>
+<h3 id="3-daemonset">3 生产环境 DaemonSet 全注释</h3>
+<pre><code>
+# kubectl get daemonset edge-agent -n edge-agent -o yaml
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  annotations:
+    meta.helm.sh/release-name: edge-agent
+    meta.helm.sh/release-namespace: default
+  creationTimestamp: &quot;2022-08-03T02:47:04Z&quot;
+  generation: 2
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: edge-agent
+  namespace: edge-agent
+  resourceVersion: &quot;112753741&quot;
+  selfLink: /apis/extensions/v1beta1/namespaces/edge-agent/daemonsets/edge-agent
+  uid: 8e75c2cf-12d6-11ed-ae3f-fa163e3fb8c4
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: agent
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: agent
+    spec:
+      containers:
+      - command:
+        - /opt/www/your_agent/bin/yourdomain.agent
+        image: hub.youdomain.org/your_agent/yourdomain_agent:v1.0.3
+        imagePullPolicy: IfNotPresent
+        name: edge-agent
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 500m
+            memory: 512Mi
+        securityContext: #表示进程以root权限运行
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/tmp
+          name: metrics
+        - mountPath: /appstore/app/kubernetes/log
+          name: k8s-log
+        - mountPath: /data00/www/gce/containers
+          name: containers
+        - mountPath: /var/log
+          name: agent-log
+        - mountPath: /opt/www/edge_agent/etc/conf.yaml
+          name: config
+          subPath: conf.yaml
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      tolerations: #容忍度配置, 表示它可以调度到Master节点上.
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+        operator: Exists
+      volumes:
+      - hostPath:
+          path: /opt/tmp
+          type: DirectoryOrCreate
+        name: metrics
+      - configMap:
+          defaultMode: 420
+          name: clean-log-path
+        name: config
+      - hostPath:
+          path: /appstore/app/kubernetes/log
+          type: DirectoryOrCreate
+        name: k8s-log
+      - hostPath:
+          path: /data00/www/gce/containers
+          type: DirectoryOrCreate
+        name: containers
+      - hostPath:
+          path: /var/log
+          type: DirectoryOrCreate
+        name: agent-log
+  templateGeneration: 2 #新版本已经不推荐
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 100%
+    type: RollingUpdate
+status:
+  currentNumberScheduled: 24
+  desiredNumberScheduled: 24
+  numberAvailable: 24
+  numberMisscheduled: 0
+  numberReady: 24
+  observedGeneration: 2
+  updatedNumberScheduled: 24
+
+</code></pre>
+<h2 id="service-mesh">六 Service Mesh 最佳实践</h2>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../5_kubernetes_monitor/" class="btn btn-neutral float-left" title="第五篇 Kubernetes监控"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_11/1_theory/" class="btn btn-neutral float-right" title="第一篇 稳定性概论">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../5_kubernetes_monitor/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../../chapter_11/1_theory/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme_extra.js" defer></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

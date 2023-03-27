@@ -44,13 +44,15 @@
                 <li class="toctree-l1"><a class="reference internal" href="../..">首页</a>
                 </li>
               </ul>
-              <p class="caption"><span class="caption-text">第一章 常用软件</span></p>
+              <p class="caption"><span class="caption-text">第一章 各种杂项基础</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/3_linux_kernel_basic/">第三篇 Linux内核基础</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -209,6 +211,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../5_kubernetes_monitor/">第五篇 Kubernetes监控</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
               <ul>
@@ -226,6 +230,16 @@
               <p class="caption"><span class="caption-text">第十二章 商业化知识总结</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_12/1_shifouzhide/">第一篇 如何判断一件事情值不值得做</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十三章 芯片知识总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_13/1_about_riscv/">第一篇 RISC-V 简介</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十四章 Linux驱动方向总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/1_demo_of_led_driver/">第一篇 一个LED驱动Demo</a>
                   </li>
               </ul>
       </div>
@@ -252,7 +266,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h2 id="kubernetes">Kubernetes的主要功能</h2>
+                <h2 id="kubernetes">Kubernetes 的主要功能</h2>
 <p>主要功能包括:</p>
 <ol>
 <li>基于容器的应用部署、维护和滚动升级</li>
@@ -263,13 +277,13 @@
 <li>广泛的 Volume 支持</li>
 <li>插件机制保证扩展性</li>
 </ol>
-<h2 id="masternode">Master和Node节点</h2>
+<h2 id="master-node">Master 和 Node 节点</h2>
 <ul>
 <li>
 <p>Master 负责管理整个集群。 Master 协调集群中的所有活动，例如调度应用、维护应用的所需状态、应用扩容以及推出新的更新。</p>
 </li>
 <li>
-<p>Node 是一个虚拟机或者物理机，它在 Kubernetes 集群中充当工作机器的角色 每个Node都有 Kubelet , 它管理 Node 而且是 Node 与 Master 通信的代理。 Node 还应该具有用于处理容器操作的工具，例如 Docker 或 rkt 。处理生产级流量的 Kubernetes 集群至少应具有三个 Node 。</p>
+<p>Node 是一个虚拟机或者物理机，它在 Kubernetes 集群中充当工作机器的角色 每个 Node 都有 Kubelet , 它管理 Node 而且是 Node 与 Master 通信的代理。 Node 还应该具有用于处理容器操作的工具，例如 Docker 或 rkt 。处理生产级流量的 Kubernetes 集群至少应具有三个 Node 。</p>
 </li>
 </ul>
 <h2 id="pod">Pod</h2>
@@ -278,7 +292,7 @@
 <p>A Pod is the basic execution unit of a Kubernetes application. Each Pod represents a part of a workload that is running on your cluster.</p>
 </li>
 <li>
-<p>pod ,是集群内的一个最小的运行实例、最小的调度单位。 一个pod是典型的可多常一概念，一个pod里可以运行多个docker容器, 但实际应用中，常常是一个pod运行一个docker容器 </p>
+<p>pod ,是集群内的一个最小的运行实例、最小的调度单位。 一个 pod 是典型的可多常一概念，一个 pod 里可以运行多个 docker 容器, 但实际应用中，常常是一个 pod 运行一个 docker 容器</p>
 </li>
 <li>
 <p>Pod 是一组紧密关联的容器集合，支持多个容器在一个 Pod 中共享网络和文件系统，可以通过进程间通信和文件共享这种简单高效的方式完成服务。Pod 是 Kubernetes 调度的基本单位，Pod 的设计理念是<code>每个 Pod 都有一个唯一的 IP</code>。</p>
@@ -297,16 +311,97 @@
 <li>Init Container 在所有容器运行之前执行，常用来初始化配置</li>
 <li>容器生命周期钩子函数，用于监听容器生命周期的特定事件，并在事件发生时执行已注册的回调函数，支持两种钩子函数：postStart 和 preStop，前者是在容器启动后执行，后者是在容器停止前执行</li>
 </ul>
+<h3 id="1-init-containers">1 Init Containers</h3>
+<p><a href="https://unofficial-kubernetes.readthedocs.io/en/latest/concepts/workloads/pods/init-containers/">Init Containers 介绍</a></p>
+<ul>
+<li>1 一个 Pod 可以由多个 App Container 和一个或者多个 Init Container</li>
+<li>2 Init Container 和 App Container 区别:</li>
+<li>
+<ul>
+<li>2.1 Init Container 的目标就是运行到正常结束. 如果一个 Init Container 没有运行到正常结束, 默认情况下 Kubelet 会不停地重启该 Pod.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>2.2 如果有多个 Init Container, 则必须前一个运行完成, 才能启动下一个.</li>
+</ul>
+</li>
+<li>3 Init Container 应用场景(主要还是通用类、运维类操作集成到一起, 和业务进行分割):</li>
+<li>
+<ul>
+<li>3.1 探测依赖服务(下游)是否已经 Ready</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>3.2 向服务中心注册本 Pod</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-container">2 Container</h3>
+<h4 id="21-image">2.1 Image 拉取策略</h4>
+<ul>
+<li>
+<p><strong>IfNotPresent</strong></p>
+</li>
+<li>
+<ul>
+<li>the image is pulled only if it is not already present locally.</li>
+</ul>
+</li>
+<li>
+<p><strong>Always</strong></p>
+</li>
+<li>
+<ul>
+<li>every time the kubelet launches a container, the kubelet queries the container image registry to resolve the name to an image digest. If the kubelet has a container image with that exact digest cached locally, the kubelet uses its cached image; otherwise, the kubelet pulls the image with the resolved digest, and uses that image to launch the container.</li>
+</ul>
+</li>
+<li>
+<p><strong>Never</strong></p>
+</li>
+<li>
+<ul>
+<li>the kubelet does not try fetching the image. If the image is somehow already present locally, the kubelet attempts to start the container; otherwise, startup fails.</li>
+</ul>
+</li>
+<li>
+<p><a href="https://kubernetes.io/docs/concepts/containers/images/">Image 拉取策略</a></p>
+</li>
+</ul>
+<h4 id="22-container">2.2 Container 生命周期勾子</h4>
+<ul>
+<li><strong>PostStart</strong></li>
+<li>
+<p><strong>PreStop</strong></p>
+</li>
+<li>
+<p><a href="https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/">Container 生命周期勾子</a></p>
+</li>
+</ul>
+<h4 id="23-termination-message">2.3 关于 termination message</h4>
+<p>1 为什么需要 termination message？</p>
+<ul>
+<li>当 Pod 异常退出时, 我们需要加速问题定位. 因此需要专门的 termination message, 直接从 container 这边传递给 Kubectl 命令</li>
+</ul>
+<p>2 怎么读和写 termination message</p>
+<ul>
+<li><a href="https://kubernetes.io/docs/tasks/debug/debug-application/determine-reason-pod-failure/">Writing and reading a termination message</a></li>
+<li><a href="https://jamesdefabia.github.io/docs/user-guide/production-pods/">参考 2</a></li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG1453AD340CF-D88E-4EE2-BC6B-2B752B4178A1.png" /></p>
+<h3 id="3-pod-and-container">3 Pod and Container 日志</h3>
+<p><a href="https://kubernetes.io/docs/concepts/cluster-administration/logging/#basic-logging-in-kubernetes">Pod and container logs</a></p>
 <h2 id="node">Node</h2>
 <ul>
-<li>Node是Pod运行的载体、可以是物理机 、也可以是虚拟机 . Node 本质上不是 Kubernetes 来创建的， Kubernetes 只是管理 Node 上的资源。为了管理 Pod，每个 Node 节点上至少需要运行 <code>Container Runtime（Docker）</code>、<code>Kubelet</code> 和 <code>Kube-proxy</code> 服务。</li>
+<li>Node 是 Pod 运行的载体、可以是物理机 、也可以是虚拟机 . Node 本质上不是 Kubernetes 来创建的， Kubernetes 只是管理 Node 上的资源。为了管理 Pod，每个 Node 节点上至少需要运行 <code>Container Runtime（Docker）</code>、<code>Kubelet</code> 和 <code>Kube-proxy</code> 服务。</li>
 </ul>
-<h3 id="podnode2">Pod选择Node时常用的2大类技能</h3>
+<h3 id="pod-node-2">Pod 选择 Node 时常用的 2 大类技能</h3>
 <ul>
 <li>Node Selector(根据宿主机标签,选择合适的宿主机)</li>
 <li>
 <ul>
-<li>Node节点常用的操作是，可以设置调度和不可调度.</li>
+<li>Node 节点常用的操作是，可以设置调度和不可调度.</li>
 </ul>
 </li>
 <li>Taint(污点)</li>
@@ -317,12 +412,12 @@
 </li>
 </ul>
 <h2 id="namespace">Namespace（命名空间）</h2>
-<p>Kubernetes中对一组资源和对象的抽象集合，比如可以用来将系统内部的对象划分为不同的项目组或者用户组。常见的 <code>Pod</code>、<code>Service</code>、<code>ReplicaSet</code> 和 <code>Deployment</code>、<code>ConfigMap</code>、<code>Secret</code>等都是属于某一个 <code>Namespace</code> 的 (默认是 default)，而 <code>Node</code>, <code>PersistentVolumes</code> 等则不属于任何<code>Namespace</code>。</p>
+<p>Kubernetes 中对一组资源和对象的抽象集合，比如可以用来将系统内部的对象划分为不同的项目组或者用户组。常见的 <code>Pod</code>、<code>Service</code>、<code>ReplicaSet</code> 和 <code>Deployment</code>、<code>ConfigMap</code>、<code>Secret</code>等都是属于某一个 <code>Namespace</code> 的 (默认是 default)，而 <code>Node</code>, <code>PersistentVolumes</code> 等则不属于任何<code>Namespace</code>。</p>
 <h3 id="_1">什么是命名空间，为什么它很重要？</h3>
-<p>命名空间（namespace）是Kubernetes提供的组织机制，用于给集群中的任何对象组进行分类、筛选和管理。每一个添加到Kubernetes集群的工作负载必须放在一个命名空间中。</p>
+<p>命名空间（namespace）是 Kubernetes 提供的组织机制，用于给集群中的任何对象组进行分类、筛选和管理。每一个添加到 Kubernetes 集群的工作负载必须放在一个命名空间中。</p>
 <p>命名空间为集群中的对象名称赋予作用域。虽然在命名空间中名称必须是唯一的，但是相同的名称可以在不同的命名空间中使用。这对于某些场景来说可能帮助很大。例如，如果使用命名空间来划分应用程序生命周期环境（如开发、staging、生产），则可以在每个环境中维护利用同样的名称维护相同对象的副本。</p>
-<p>命名空间还可以让用户轻松地将策略应用到集群的具体部分。你可以通过定义ResourceQuota对象来控制资源的使用，该对象在每个命名空间的基础上设置了使用资源的限制。类似地，当在集群上使用支持网络策略的CNI（容器网络接口）时，比如Calico或Canal（calico用于策略，flannel用于网络）。你可以将NetworkPolicy应用到命名空间，其中的规则定义了pod之间如何彼此通信。不同的命名空间可以有不同的策略。</p>
-<p>使用命名空间最大的好处之一是能够利用Kubernetes RBAC（基于角色的访问控制）。RBAC允许您在单个名称下开发角色，这样将权限或功能列表分组。ClusterRole对象用于定义集群规模的使用模式，而角色对象类型（Role object type）应用于具体的命名空间，从而提供更好的控制和粒度。在角色创建后，RoleBinding可以将定义的功能授予单个命名空间上下文中的具体具体用户或用户组。通过这种方式，命名空间可以使得集群操作者能够将相同的策略映射到组织好的资源集合。</p>
+<p>命名空间还可以让用户轻松地将策略应用到集群的具体部分。你可以通过定义 ResourceQuota 对象来控制资源的使用，该对象在每个命名空间的基础上设置了使用资源的限制。类似地，当在集群上使用支持网络策略的 CNI（容器网络接口）时，比如 Calico 或 Canal（calico 用于策略，flannel 用于网络）。你可以将 NetworkPolicy 应用到命名空间，其中的规则定义了 pod 之间如何彼此通信。不同的命名空间可以有不同的策略。</p>
+<p>使用命名空间最大的好处之一是能够利用 Kubernetes RBAC（基于角色的访问控制）。RBAC 允许您在单个名称下开发角色，这样将权限或功能列表分组。ClusterRole 对象用于定义集群规模的使用模式，而角色对象类型（Role object type）应用于具体的命名空间，从而提供更好的控制和粒度。在角色创建后，RoleBinding 可以将定义的功能授予单个命名空间上下文中的具体具体用户或用户组。通过这种方式，命名空间可以使得集群操作者能够将相同的策略映射到组织好的资源集合。</p>
 <h4 id="_2">简而言之</h4>
 <p>不同的命名空间，可以有</p>
 <ul>
@@ -330,23 +425,25 @@
 <li>不同的资源限制(ResourceQuota)</li>
 <li>不同的用户权限(RBAC)</li>
 </ul>
-<h3 id="3">常见的命名空间使用模式（3种）</h3>
+<h3 id="3">常见的命名空间使用模式（3 种）</h3>
 <p>命名空间是一种非常灵活的特性，它不强制使用特定的结构或组织模式。不过尽管如此，还是有许多在团队内常使用的模式。</p>
 <h4 id="1">1 将命名空间映射到团队或项目上</h4>
 <p>在设置命名空间时有一个惯例是，为每个单独的项目或者团队创建一个命名空间。这和我们前面提到的许多命名空间的特性很好的结合在了一起。</p>
-<p>通过给团队提供专门的命名空间，你可以用RBAC策略委托某些功能来实现自我管理和自动化。比如从命名空间的RoleBinding对象中添加或删除成员就是对团队资源访问的一种简单方法。除此之外，给团队和项目设置资源配额也非常有用。有了这种方式，你可以根据组织的业务需求和优先级合理地访问资源。</p>
+<p>通过给团队提供专门的命名空间，你可以用 RBAC 策略委托某些功能来实现自我管理和自动化。比如从命名空间的 RoleBinding 对象中添加或删除成员就是对团队资源访问的一种简单方法。除此之外，给团队和项目设置资源配额也非常有用。有了这种方式，你可以根据组织的业务需求和优先级合理地访问资源。</p>
 <h4 id="2">2 使用命名空间对生命周期环境进行分区</h4>
 <p>命名空间非常适合在集群中划分<code>开发</code>、<code>staging</code>以及<code>生产环境</code>。通常情况下我们会被建议将生产工作负载部署到一个完全独立的集群中，来确保最大程度的隔离。不过对于较小的团队和项目来说，命名空间会是一个可行的解决方案。</p>
-<p>和前面的用例一样，网络策略、RBAC策略以及配额是实现用例的重要因素。在管理环境时，通过将网络隔离来控制和组件之间的通信能力是很有必要的。同样，命名空间范围的RBAC策略允许运维人员为生产环节设置严格的权限。配额能够确保对最敏感环境的重要资源的访问。</p>
+<p>和前面的用例一样，网络策略、RBAC 策略以及配额是实现用例的重要因素。在管理环境时，通过将网络隔离来控制和组件之间的通信能力是很有必要的。同样，命名空间范围的 RBAC 策略允许运维人员为生产环节设置严格的权限。配额能够确保对最敏感环境的重要资源的访问。</p>
 <p>重新使用对象名称的能力在这里很有帮助。在测试和发布对象时，可以把它们放到新环境中，同时保留其命名空间。这样可以避免因为环境中出现相似的对象而产生的混淆，并且减少认知开销。</p>
 <h4 id="3_1">3 使用命名空间隔离不同的使用者</h4>
 <p>另一个命名空间可以解决的用例是根据使用者对工作负载进行分段。比如，如果你的集群为多个客户提供基础设施，那么按命名空间进行分段就能够实现管理每个客户，同时跟踪账单的去向。</p>
 <p>另外，命名空间的特性可以让你控制网络和访问策略，为你的使用者定义不同的配额。在通用的情况下，命名空间允许你为每个用户开发和部署相同模板化环境的不同实例。这种一致性可以大大简化管理和故障诊断的过程。</p>
-<h3 id="kubernetes_1">理解预配置的Kubernetes命名空间</h3>
-<p>在我们进行创建命名空间之前，先讨论一下Kubernetes是如何自动设置它的。在默认情况下，新的集群上有三个命名空间：
-default：向集群中添加对象而不提供命名空间，这样它会被放入默认的命名空间中。在创建替代的命名空间之前，该命名空间会充当用户新添加资源的主要目的地，无法删除。
-kube-public：kube-public命名空间的目的是让所有具有或不具有身份验证的用户都能全局可读。这对于公开bootstrap组件所需的集群信息非常有用。它主要是由Kubernetes自己管理。
-kube-system：kube-system命名空间用于Kubernetes管理的Kubernetes组件，一般规则是，避免向该命名空间添加普通的工作负载。它一般由系统直接管理，因此具有相对宽松的策略。</p>
+<h3 id="kubernetes_1">理解预配置的 Kubernetes 命名空间</h3>
+<p>在我们进行创建命名空间之前，先讨论一下 Kubernetes 是如何自动设置它的。在默认情况下，新的集群上有三个命名空间：</p>
+<ul>
+<li><strong>default</strong>：向集群中添加对象而不提供命名空间，这样它会被放入默认的命名空间中。在创建替代的命名空间之前，该命名空间会充当用户新添加资源的主要目的地，无法删除。</li>
+<li><strong>kube-public</strong>：kube-public 命名空间的目的是让所有具有或不具有身份验证的用户都能全局可读。这对于公开 bootstrap 组件所需的集群信息非常有用。它主要是由 Kubernetes 自己管理。</li>
+<li><strong>kube-system</strong>：kube-system 命名空间用于 Kubernetes 管理的 Kubernetes 组件，一般规则是，避免向该命名空间添加普通的工作负载。它一般由系统直接管理，因此具有相对宽松的策略。</li>
+</ul>
 <h3 id="namespace_1">常用 Namespace 操作：</h3>
 <ul>
 <li>
@@ -371,7 +468,7 @@ kube-system：kube-system命名空间用于Kubernetes管理的Kubernetes组件�
 <p>Service 有如下四种类型，默认是 ClusterIP：</p>
 <ul>
 <li>
-<p>ClusterIP: 默认类型，自动分配一个仅集群内部可以访问的虚拟IP</p>
+<p>ClusterIP: 默认类型，自动分配一个仅集群内部可以访问的虚拟 IP</p>
 </li>
 <li>
 <p>NodePort: 在 ClusterIP 基础上为 Service 在每台机器上绑定一个端口，这样就可以通过 NodeIP:NodePort 来访问该服务</p>
@@ -383,14 +480,14 @@ kube-system：kube-system命名空间用于Kubernetes管理的Kubernetes组件�
 <p>ExternalName: 将服务通过 DNS CNAME 记录方式转发到指定的域名</p>
 </li>
 </ul>
-<h3 id="servicelb">Service相当于集群内部的LB</h3>
+<h3 id="service-lb">Service 相当于集群内部的 LB</h3>
 <p><img alt="png" src="../../img/B80FCFE0-C473-4DF3-A0AC-DD8323D440F5.png" /></p>
-<p>有了service之后，集群内部不同的pod，可以形成微服务架构了</p>
+<p>有了 service 之后，集群内部不同的 pod，可以形成微服务架构了</p>
 <p><img alt="png" src="../../img/681380C2-DE0D-4BC7-A044-1802718E6ADD.png" /></p>
-<p>Service B为前端微服务，CD EA等为后端微服务，他们之间通过Service（也就是LB）互相
-调用，Service默认的cluster IP是Kubernetes集群里的虚拟IP</p>
+<p>Service B 为前端微服务，CD EA 等为后端微服务，他们之间通过 Service（也就是 LB）互相
+调用，Service 默认的 cluster IP 是 Kubernetes 集群里的虚拟 IP</p>
 <p><img alt="png" src="../../img/WX20211222-212150.png" /></p>
-<h2 id="volume">volume存储卷</h2>
+<h2 id="volume">volume 存储卷</h2>
 <p>默认情况下容器的数据是非持久化的，容器消亡以后数据也会跟着丢失。所以 Docker 提供了 Volume 机制以便将数据持久化存储。Kubernetes 提供了更强大的 Volume 机制和插件，解决了容器数据持久化以及容器间共享数据的问题。</p>
 <p>目前 Kubernetes 主要支持以下 Volume 类型：</p>
 <ul>
@@ -431,22 +528,22 @@ PersistentVolume 和 PersistentVolumeClaim (PVC) 提供了方便的持久化卷:
 <p>不是每一种存储都支持这三种方式，像共享方式，目前支持的还比较少，比较常用的是 NFS。在 PVC 绑定 PV 时通常根据两个条件来绑定，<code>一个是存储的大小</code>，<code>另一个就是访问模式</code>。</p>
 <h2 id="storageclass">StorageClass</h2>
 <ul>
-<li>简化提前创建PV的过程,管理员无需提前创建静态PV</li>
-<li>系统为PVC选择对应PV时，很可能存在PV空间大于PVC申请的空间，存在资源浪费的情况。而使用StorageClass的动态存储供应模式就避免了这种情况.</li>
+<li>简化提前创建 PV 的过程,管理员无需提前创建静态 PV</li>
+<li>系统为 PVC 选择对应 PV 时，很可能存在 PV 空间大于 PVC 申请的空间，存在资源浪费的情况。而使用 StorageClass 的动态存储供应模式就避免了这种情况.</li>
 </ul>
-<h2 id="configmap">ConfigMap配置中心</h2>
+<h2 id="configmap">ConfigMap 配置中心</h2>
 <p>ConfigMap 用于保存配置数据的键值对，可以用来保存单个属性，也可以用来保存配置文件。ConfigMap 跟 Secret 很类似，但它可以更方便地处理不包含敏感信息的字符串。</p>
 <p>ConfigMap 可以通过三种方式在 Pod 中使用，三种分别方式为:</p>
 <ul>
 <li>设置环境变量</li>
 <li>设置容器命令行参数</li>
-<li>在Volume 中直接挂载文件或目录。</li>
+<li>在 Volume 中直接挂载文件或目录。</li>
 </ul>
 <p>你可以使用 kubectl create configmap 从文件、目录或者 key-value 字符串创建等创建 ConfigMap。也可以通过 kubectl create -f value.yaml 来创建。</p>
-<h3 id="configmap_1">ConfigMap最佳实践</h3>
+<h3 id="configmap_1">ConfigMap 最佳实践</h3>
 <ul>
-<li>实际应用中通常是一个namespace对应一个ConfigMap, NS的名称和CM的名称相同</li>
-<li>ConfigMap下的不同key，可以理解是Linux的一个文件名，比如nginx.conf, server.conf，而文件总是放在某个<code>路径</code>下（例如/root/conf目录）， <code>路径</code>是由volumeMounts.”mountPath”决定的</li>
+<li>实际应用中通常是一个 namespace 对应一个 ConfigMap, NS 的名称和 CM 的名称相同</li>
+<li>ConfigMap 下的不同 key，可以理解是 Linux 的一个文件名，比如 nginx.conf, server.conf，而文件总是放在某个<code>路径</code>下（例如/root/conf 目录）， <code>路径</code>是由 volumeMounts.”mountPath”决定的</li>
 </ul>
 <h2 id="deployment">Deployment 无状态应用</h2>
 <p>一般情况下我们不需要手动创建 Pod 实例，而是采用更高一层的抽象或定义来管理 Pod。针对无状态类型的应用，Kubernetes 使用 Deloyment 的 Controller 对象与之对应。其典型的应用场景包括：</p>
@@ -511,7 +608,7 @@ PersistentVolume 和 PersistentVolumeClaim (PVC) 提供了方便的持久化卷:
 <p>从 K8S 使用者角度来看，用户会直接操作 Deployment 部署服务，而当 Deployment 被部署的时候，K8S 会自动生成要求的 ReplicaSet 和 Pod。</p>
 </li>
 <li>
-<p>在K8S 官方文档中也指出用户只需要关心 Deployment 而不操心 ReplicaSet：</p>
+<p>在 K8S 官方文档中也指出用户只需要关心 Deployment 而不操心 ReplicaSet：</p>
 </li>
 </ul>
 <pre><code>This actually means that you may never need to manipulate ReplicaSet objects: use a Deployment instead, and define your application in the spec section.
@@ -524,7 +621,7 @@ PersistentVolume 和 PersistentVolumeClaim (PVC) 提供了方便的持久化卷:
 <li>稳定的持久化存储，即 Pod 重新调度后还是能访问到相同的持久化数据，基于 PVC 来实现</li>
 <li>稳定的网络标志，即 Pod 重新调度后其 PodName 和 HostName 不变，基于 Headless Service (即没有 Cluster IP 的 Service )来实现</li>
 <li>有序部署，有序扩展，即 Pod 是有顺序的。在部署或者扩展的时候要依据定义的顺序依次进行操作 (即从 0 到 N-1，在下一个 Pod 运行之前所有之前的 Pod 必须都是 Running 和 Ready 状态)，基于 Init Containers 来实现</li>
-<li>有序收缩，有序删除 (即从 N-1 到0)</li>
+<li>有序收缩，有序删除 (即从 N-1 到 0)</li>
 </ul>
 <h3 id="_5">支持两种更新策略</h3>
 <ul>
@@ -532,7 +629,7 @@ PersistentVolume 和 PersistentVolumeClaim (PVC) 提供了方便的持久化卷:
 <p>OnDelete: 当 .spec.template 更新时，并不立即删除旧的 Pod，而是等待用户手动删除这些旧 Pod 后自动创建新 Pod。这是默认的更新策略，兼容 v1.6 版本的行为</p>
 </li>
 <li>
-<p>RollingUpdate: 当 .spec.template更新时，自动删除旧的 Pod 并创建新 Pod 替换。在更新时这些 Pod 是按逆序的方式进行，依次删除、创建并等待 Pod 变成 Ready 状态才进行下一个 Pod 的更新。</p>
+<p>RollingUpdate: 当 .spec.template 更新时，自动删除旧的 Pod 并创建新 Pod 替换。在更新时这些 Pod 是按逆序的方式进行，依次删除、创建并等待 Pod 变成 Ready 状态才进行下一个 Pod 的更新。</p>
 </li>
 </ul>
 <h2 id="daemonset">DaemonSet 守护进程集</h2>
@@ -543,36 +640,46 @@ PersistentVolume 和 PersistentVolumeClaim (PVC) 提供了方便的持久化卷:
 <li>系统程序，比如 Kube-Proxy、Kube-Dns、Glusterd、Ceph、Ingress-Controller 等</li>
 </ul>
 <h3 id="node_1">指定 Node 节点</h3>
-<p>DaemonSet 会忽略 Node 的 unschedulable 状态，有两种方式来指定 Pod 只运行在指定的 Node 节点上:
-* nodeSelector: 只调度到匹配指定 Label 的 Node 上
-* nodeAffinity: 功能更丰富的 Node 选择器，比如支持集合操作
-* podAffinity: 调度到满足条件的 Pod 所在的 Node 上</p>
-<p>目前支持两种策略
-* OnDelete: 默认策略，更新模板后，只有手动删除了旧的 Pod 后才会创建新的 Pod
-* RollingUpdate: 更新 DaemonSet 模版后，自动删除旧的 Pod 并创建新的 Pod</p>
+<p>DaemonSet 会忽略 Node 的 unschedulable 状态，有两种方式来指定 Pod 只运行在指定的 Node 节点上:</p>
+<ul>
+<li>nodeSelector: 只调度到匹配指定 Label 的 Node 上</li>
+<li>nodeAffinity: 功能更丰富的 Node 选择器，比如支持集合操作</li>
+<li>podAffinity: 调度到满足条件的 Pod 所在的 Node 上</li>
+</ul>
+<p>目前支持两种策略</p>
+<ul>
+<li>OnDelete: 默认策略，更新模板后，只有手动删除了旧的 Pod 后才会创建新的 Pod</li>
+<li>RollingUpdate: 更新 DaemonSet 模版后，自动删除旧的 Pod 并创建新的 Pod</li>
+</ul>
 <h2 id="ingress">Ingress 负载均衡</h2>
-<p>Kubernetes 中的负载均衡我们主要用到了以下两种机制：
-* Service：使用 Service 提供集群内部的负载均衡，Kube-proxy 负责将 Service 请求负载均衡到后端的 Pod 中
-* Ingress Controller：使用 Ingress 提供集群外部的负载均衡</p>
+<p>Kubernetes 中的负载均衡我们主要用到了以下两种机制：</p>
+<ul>
+<li>Service：使用 Service 提供集群内部的负载均衡，Kube-proxy 负责将 Service 请求负载均衡到后端的 Pod 中</li>
+<li>Ingress Controller：使用 Ingress 提供集群外部的负载均衡</li>
+</ul>
 <p>Service 和 Pod 的 IP 仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到 Service 所在节点暴露的端口上，然后再由 Kube-Proxy 通过边缘路由器将其转发到相关的 Pod。
-Ingress 可以给 Service 提供集群外部访问的 URL、负载均衡、HTTP 路由等，为了配置这些Ingress 规则，集群管理员需要部署一个 Ingress Controller，它监听 Ingress 和 Service 的变化，并根据规则配置负载均衡并提供访问入口。</p>
-<p>常用的 Ingress Controller 有：
-* Nginx
-* Traefik
-* Kong
-* Openresty</p>
+Ingress 可以给 Service 提供集群外部访问的 URL、负载均衡、HTTP 路由等，为了配置这些 Ingress 规则，集群管理员需要部署一个 Ingress Controller，它监听 Ingress 和 Service 的变化，并根据规则配置负载均衡并提供访问入口。</p>
+<p>常用的 Ingress Controller 有：</p>
+<ul>
+<li>Nginx</li>
+<li>Traefik</li>
+<li>Kong</li>
+<li>Openresty</li>
+</ul>
 <h2 id="job-cronjob">Job &amp; CronJob 任务和定时任务</h2>
 <p>Job 负责批量处理短暂的一次性任务 (short lived one-off tasks)，即仅执行一次的任务，它保证批处理任务的一个或多个 Pod 成功结束。
 CronJob 即定时任务，就类似于 Linux 系统的 Crontab，在指定的时间周期运行指定的任务。</p>
 <h2 id="hpahorizontal-pod-autoscaling">HPA（Horizontal Pod Autoscaling） 水平自动伸缩</h2>
-<p>Horizontal Pod Autoscaling 可以根据 CPU、内存使用率或应用自定义 Metrics 自动扩展 Pod 数量 (支持 Replication Controller、Deployment 和 Replicaset)。
-* 控制管理器默认每隔 30s 查询 Metrics 的资源使用情况 (可以通过 --horizontal-pod-autoscaler-sync-period 修改)
-* 支持三种 Metrics 类型
-    * 预定义 Metrics (比如 Pod 的 CPU)以利用率的方式计算
-    * 自定义的 Pod Metrics，以原始值 (Raw Value) 的方式计算
-    * 自定义的 Object Metrics
-* 支持两种 Metrics 查询方式 :Heapster 和自定义的 REST API
-* 支持多 Metrics</p>
+<p>Horizontal Pod Autoscaling 可以根据 CPU、内存使用率或应用自定义 Metrics 自动扩展 Pod 数量 (支持 Replication Controller、Deployment 和 Replicaset)。</p>
+<ul>
+<li>控制管理器默认每隔 30s 查询 Metrics 的资源使用情况 (可以通过 --horizontal-pod-autoscaler-sync-period 修改)</li>
+<li>支持三种 Metrics 类型</li>
+<li>预定义 Metrics (比如 Pod 的 CPU)以利用率的方式计算</li>
+<li>自定义的 Pod Metrics，以原始值 (Raw Value) 的方式计算</li>
+<li>自定义的 Object Metrics</li>
+<li>支持两种 Metrics 查询方式 :Heapster 和自定义的 REST API</li>
+<li>支持多 Metrics</li>
+</ul>
 <p>你可以通过如下命令来创建 HPA：
 $ kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10</p>
 <h2 id="service-account">Service Account</h2>
@@ -580,18 +687,57 @@ $ kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10</p>
 <h3 id="_6">授权</h3>
 <p>Service Account 为服务提供了一种方便的认证机制，但它不关心授权的问题。可以配合 RBAC (Role Based Access Control) 来为 Service Account 鉴权，通过定义 Role、RoleBinding、ClusterRole、ClusterRoleBinding 来对 sa 进行授权。</p>
 <h2 id="secret">Secret 密钥</h2>
-<p>Sercert 密钥解决了密码、Token、密钥等敏感数据的配置问题，而不需要把这些敏感数据暴露到镜像或者 Pod Spec 中。Secret 可以以 Volume 或者环境变量的方式使用。
+<p><a href="https://kubernetes.io/docs/concepts/configuration/secret/">Sercert</a> 密钥解决了密码、Token、密钥等敏感数据的配置问题，而不需要把这些敏感数据暴露到镜像或者 Pod Spec 中。Secret 可以以 Volume 或者环境变量的方式使用。
 有如下三种类型：</p>
 <ul>
 <li>Service Account: 用来访问 Kubernetes API，由 Kubernetes 自动创建，并且会自动挂载到 Pod 的 /run/secrets/kubernetes.io/serviceaccount 目录中;</li>
 <li>Opaque: Base64 编码格式的 Secret，用来存储密码、密钥等;</li>
 <li>kubernetes.io/dockerconfigjson: 用来存储私有 Docker Registry 的认证信息。</li>
 </ul>
-<h2 id="kubernetes_2">Kubernetes接口机制</h2>
+<h2 id="kubernetes_2">Kubernetes 接口机制</h2>
 <ul>
 <li>CRI(容器运行时接口, Container Runtime Interface)</li>
 <li>CNI(容器网络接口, Container Network Interface)</li>
 <li>CSI(容器存储接口, Container Storage Interface)</li>
+</ul>
+<h2 id="securitycontext">SecurityContext</h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/tasks/configure-pod-container/security-context/">Security Context</a> 的目的是限制不可信容器的行为，保护系统和其他容器不受其影响。</li>
+<li>Kubernetes 提供了三种配置 Security Context 的方法：</li>
+<li>
+<ul>
+<li>Container-level Security Context：仅应用到指定的容器</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>Pod-level Security Context：应用到 Pod 内所有容器以及 Volume</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>Pod Security Policies（PSP）：应用到集群内部所有 Pod 以及 Volume</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-securitycontext">1 SecurityContext 有什么用?</h3>
+<ul>
+<li>包括但不限于给进程添加部分 Linux Capabilities 权限(注意不一定是全部 ROOT 权限)</li>
+<li>当然也可以给 Pod 或者 Container 添加宿主机 ROOT 权限.</li>
+</ul>
+<h4 id="linux-capabilities">关于 Linux Capabilities</h4>
+<ul>
+<li><a href="https://linux-audit.com/linux-capabilities-hardening-linux-binaries-by-removing-setuid/">Linux Capabilities</a>主要作用就是可以避免让可执行文件加上 setuid.</li>
+<li>举个例子, 比如/usr/bin/ping 加上 setuid 权限后 , 系统上任何用户启用 ping 进程时, 每个 ping 进程都会在执行时拥有 root 权限. 咋看上去没啥问题, 问题在于某些软件可能出现 BUG(ping 也有可能), 出现 BUG 的时候就可能导致非法用户获得 ROOT 权限, 去掉/usr/bin/ping 的 setuid 权限后, 非 ROOT 用户启动 ping 进程就会发现无法申请 icmp socket</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG1493EF4E75C-0366-42EC-A355-E54FCD6D8491.png" />
+<img alt="png" src="../../img/WechatIMG14821C6E08F-85EE-443D-A967-0FBFD5B1B8F0.png" /></p>
+<ul>
+<li>
+<ul>
+<li>Linux Capabilities 则进一步细化了这个权限, 可以只给/usr/bin/ping 加上申请 icmp socket 的权限. (注意 icmp socket 权限和 tcp socket 权限是不同的). 这样就算是 ping 二进制文件出现 BUG, 那么非 ROOT 用户也无法获取全部 ROOT 权限, 避免使用 setuid 权限.</li>
+</ul>
+</li>
 </ul>
               
             </div>

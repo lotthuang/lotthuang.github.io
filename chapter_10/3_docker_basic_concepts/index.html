@@ -44,13 +44,15 @@
                 <li class="toctree-l1"><a class="reference internal" href="../..">首页</a>
                 </li>
               </ul>
-              <p class="caption"><span class="caption-text">第一章 常用软件</span></p>
+              <p class="caption"><span class="caption-text">第一章 各种杂项基础</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/3_linux_kernel_basic/">第三篇 Linux内核基础</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -203,13 +205,15 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第三篇 一些基础概念</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#linuxnamespace">Linux支持的Namespace</a>
+    <li class="toctree-l2"><a class="reference internal" href="#linux-namespace">Linux 支持的 Namespace</a>
     </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../5_kubernetes_monitor/">第五篇 Kubernetes监控</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -228,6 +232,16 @@
               <p class="caption"><span class="caption-text">第十二章 商业化知识总结</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_12/1_shifouzhide/">第一篇 如何判断一件事情值不值得做</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十三章 芯片知识总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_13/1_about_riscv/">第一篇 RISC-V 简介</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十四章 Linux驱动方向总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/1_demo_of_led_driver/">第一篇 一个LED驱动Demo</a>
                   </li>
               </ul>
       </div>
@@ -271,8 +285,8 @@
 <li>联合文件系统 (Union File System)</li>
 <li>Linux 虚拟网络支持：本地和容器内创建虚拟接口</li>
 </ul>
-<h3 id="linuxnamespace">Linux支持的Namespace</h3>
-<p>Linux支持6种资源的 namespace，分别为：</p>
+<h3 id="linux-namespace">Linux 支持的 Namespace</h3>
+<p>Linux 支持 8 种资源的 <a href="https://www.testerfans.com/archives/linux-namespaces-overview">namespace</a>，分别为：</p>
 <table>
 <thead>
 <tr>
@@ -312,9 +326,19 @@
 <td>CLONE_NEWUSER</td>
 <td>Linux 2.6.23</td>
 </tr>
+<tr>
+<td>Cgroups</td>
+<td>CLONE_NEWCGROUP</td>
+<td>Linux 4.6</td>
+</tr>
+<tr>
+<td>Time</td>
+<td>CLONE_NEWTIME</td>
+<td>Linux 5.6</td>
+</tr>
 </tbody>
 </table>
-<h2 id="docker">Docker中的基本概念</h2>
+<h2 id="docker">Docker 中的基本概念</h2>
 <p>Docker 包括三个基本概念</p>
 <ul>
 <li>镜像（Image）</li>
@@ -323,11 +347,11 @@
 </ul>
 <h3 id="_2">镜像和容器的关系</h3>
 <ul>
-<li>镜像和容器的关系，相当于python中类和实例的关系。 </li>
+<li>镜像和容器的关系，相当于 python 中类和实例的关系。</li>
 <li>镜像是静态的概念，容器是镜像的运行实例，是动态的概念。</li>
 </ul>
-<h2 id="dockerkubernetes">有了Docker了，为啥还要有Kubernetes</h2>
-<p>尽管Docker为容器化的应用程序提供了开放标准，但随着容器越来越多出现了一系列新问题：</p>
+<h2 id="docker-kubernetes">有了 Docker 了，为啥还要有 Kubernetes?</h2>
+<p>尽管 Docker 为容器化的应用程序提供了开放标准，但随着容器越来越多出现了一系列新问题：</p>
 <ul>
 <li>如何协调和调度这些容器？</li>
 <li>如何在升级应用程序时不会中断服务？</li>
@@ -335,7 +359,7 @@
 <li>如何批量重新启动容器里的程序？</li>
 </ul>
 <p>解决这些问题需要容器编排技术，可以将众多机器抽象，对外呈现出一台超大机器。现在业界比较流行的有：Kubernetes、Mesos、Docker Swarm。</p>
-<p>Kubernetes融合了虚拟化和自动化运维管理，是多主机面对高并发的一种很好的解决方案。</p>
+<p>Kubernetes 融合了虚拟化和自动化运维管理，是多主机面对高并发的一种很好的解决方案。</p>
               
             </div>
           </div><footer>
