@@ -54,6 +54,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -130,6 +132,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 I/O调度层总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
               <ul>
@@ -189,6 +193,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/10_jixiaofangtan/">第十篇 绩效访谈总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/11_classic_technical_thinking/">第十一篇 经典技术思维汇总</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第九章 编程经验</span></p>
               <ul>
@@ -239,13 +245,25 @@
               <ul class="current">
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第一篇 一个LED驱动Demo</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#1">1 驱动程序</a>
+    <li class="toctree-l2"><a class="reference internal" href="#1-hello-world">1 如何编译一个内核模块(Hello World 驱动教程)</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#2">2 相关联想</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#3">3 驱动程序基本概念</a>
+    <li class="toctree-l2"><a class="reference internal" href="#3">3 驱动程序从入门到精通路径</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#4-hello_drv">4 一个完整的 hello_drv</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#a-hello_drvc">A hello_drv.c</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#b-hello_drv_testc">B hello_drv_test.c</a>
+    </li>
+        </ul>
     </li>
     </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_qianrushidev/">第二篇 嵌入式开发基础</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_linux_kernel_api_list/">第三篇 Linux内核API汇总</a>
                   </li>
               </ul>
       </div>
@@ -274,10 +292,11 @@
               
                 <h1 id="_1">概述</h1>
 <ol>
-<li>这一章主要讲述 Linux 驱动程序开发方向的总结</li>
+<li>这一章主要讲述 Linux 驱动程序开发方向的总结. <strong>Linux 驱动 = 软件框架 + 硬件操作</strong></li>
 <li>本篇用于描述一个 LED 驱动 Demo, 有个初步印象</li>
 </ol>
-<h2 id="1">1 驱动程序</h2>
+<h2 id="1-hello-world">1 如何编译一个内核模块(Hello World 驱动教程)</h2>
+<p><a href="https://zhuanlan.zhihu.com/p/506702094">内核模块 Hello World 教程</a></p>
 <h2 id="2">2 相关联想</h2>
 <ol>
 <li>Linux 的 file 结构体, 本身就有一个 private_data 成员, 是一个空指针</li>
@@ -287,15 +306,204 @@
 <li>在驱动程序中, 通过传入 file 结构体, 然后通过它的 private_data 成员拿到具体的设备结构体</li>
 </ol>
 <p><img alt="png" src="../../img/WechatIMG1433FBA2A9F-FCC3-4FBA-9A2D-1211748BD9BC.png" /></p>
-<h2 id="3">3 驱动程序基本概念</h2>
+<h2 id="3">3 驱动程序从入门到精通路径</h2>
 <ul>
-<li>单片系统或片上系统（英语：System on a Chip，缩写：SoC）是一个将电脑或其他电子系统集成到单一芯片的集成电路.</li>
+<li>1 HelloWorld 教程</li>
+<li>2 理解 module_init, module_exit, file_operation</li>
+<li>
+<ul>
+<li>写好驱动程序后, 出现/dev/yourdevfile, 应用层可以 open, read, write, ioctl, 然后驱动程序就真正的和硬件交互(读写指令、数据)</li>
 </ul>
+</li>
+<li>3 各自项目实践, 实际和理论相结合</li>
+</ul>
+<h2 id="4-hello_drv">4 一个完整的 hello_drv</h2>
+<ul>
+<li>什么是完整? 包括创建了/dev/hello 文件, 有实现对应 open, close, read, write 操作</li>
+</ul>
+<h3 id="a-hello_drvc">A hello_drv.c</h3>
+<pre><code>#include &lt;linux/module.h&gt;
+
+#include &lt;linux/fs.h&gt;
+#include &lt;linux/errno.h&gt;
+#include &lt;linux/miscdevice.h&gt;
+#include &lt;linux/kernel.h&gt;
+#include &lt;linux/major.h&gt;
+#include &lt;linux/mutex.h&gt;
+#include &lt;linux/proc_fs.h&gt;
+#include &lt;linux/seq_file.h&gt;
+#include &lt;linux/stat.h&gt;
+#include &lt;linux/init.h&gt;
+#include &lt;linux/device.h&gt;
+#include &lt;linux/tty.h&gt;
+#include &lt;linux/kmod.h&gt;
+#include &lt;linux/gfp.h&gt;
+
+/* 1. 确定主设备号                                                                 */
+static int major = 0;
+static char kernel_buf[1024];
+static struct class *hello_class;
+
+
+#define MIN(a, b) (a &lt; b ? a : b)
+
+/* 3. 实现对应的open/read/write等函数，填入file_operations结构体                   */
+static ssize_t hello_drv_read (struct file *file, char __user *buf, size_t size, loff_t *offset)
+{
+    int err;
+    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
+    err = copy_to_user(buf, kernel_buf, MIN(1024, size));
+    return MIN(1024, size);
+}
+
+static ssize_t hello_drv_write (struct file *file, const char __user *buf, size_t size, loff_t *offset)
+{
+    int err;
+    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
+    err = copy_from_user(kernel_buf, buf, MIN(1024, size));
+    return MIN(1024, size);
+}
+
+static int hello_drv_open (struct inode *node, struct file *file)
+{
+    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
+    return 0;
+}
+
+static int hello_drv_close (struct inode *node, struct file *file)
+{
+    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
+    return 0;
+}
+
+/* 2. 定义自己的file_operations结构体                                              */
+static struct file_operations hello_drv = {
+    .owner   = THIS_MODULE,
+    .open    = hello_drv_open,
+    .read    = hello_drv_read,
+    .write   = hello_drv_write,
+    .release = hello_drv_close,
+};
+
+/* 4. 把file_operations结构体告诉内核：注册驱动程序                                */
+/* 5. 谁来注册驱动程序啊？得有一个入口函数：安装驱动程序时，就会去调用这个入口函数 */
+static int __init hello_init(void)
+{
+    int err;
+
+    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
+    major = register_chrdev(0, &quot;hello&quot;, &amp;hello_drv);  /* /dev/hello */
+
+
+    hello_class = class_create(THIS_MODULE, &quot;hello_class&quot;);
+    err = PTR_ERR(hello_class);
+    if (IS_ERR(hello_class)) {
+        printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
+        unregister_chrdev(major, &quot;hello&quot;);
+        return -1;
+    }
+
+    device_create(hello_class, NULL, MKDEV(major, 0), NULL, &quot;hello&quot;); /* /dev/hello */
+
+    return 0;
+}
+
+/* 6. 有入口函数就应该有出口函数：卸载驱动程序时，就会去调用这个出口函数           */
+static void __exit hello_exit(void)
+{
+    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
+    device_destroy(hello_class, MKDEV(major, 0));
+    class_destroy(hello_class);
+    unregister_chrdev(major, &quot;hello&quot;);
+}
+
+
+/* 7. 其他完善：提供设备信息，自动创建设备节点                                     */
+
+module_init(hello_init);
+module_exit(hello_exit);
+
+MODULE_LICENSE(&quot;GPL&quot;);
+
+
+
+
+</code></pre>
+<p>问题清单:</p>
+<ol>
+<li>major 号是怎么确定的?</li>
+<li>linux 为什么一定要 copy_to_user 和 copy_from_user</li>
+<li>内核现成函数 register_chrdev 和 unregister_chrdev 最佳实践</li>
+<li>class_create 和 device_create 最佳实践</li>
+</ol>
+<h3 id="b-hello_drv_testc">B hello_drv_test.c</h3>
+<ul>
+<li>这个是用户空间的测试程序, 对/dev/hello 文件进行写和读</li>
+</ul>
+<pre><code>
+
+#include &lt;sys/types.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+/*
+ * ./hello_drv_test -w abc
+ * ./hello_drv_test -r
+ */
+int main(int argc, char **argv)
+{
+    int fd;
+    char buf[1024];
+    int len;
+
+    /* 1. 判断参数 */
+    if (argc &lt; 2)
+    {
+        printf(&quot;Usage: %s -w &lt;string&gt;\n&quot;, argv[0]);
+        printf(&quot;       %s -r\n&quot;, argv[0]);
+        return -1;
+    }
+
+    /* 2. 打开文件 */
+    fd = open(&quot;/dev/hello&quot;, O_RDWR);
+    if (fd == -1)
+    {
+        printf(&quot;can not open file /dev/hello\n&quot;);
+        return -1;
+    }
+
+    /* 3. 写文件或读文件 */
+    if ((0 == strcmp(argv[1], &quot;-w&quot;)) &amp;&amp; (argc == 3))
+    {
+        len = strlen(argv[2]) + 1;
+        len = len &lt; 1024 ? len : 1024;
+        write(fd, argv[2], len);
+    }
+    else
+    {
+        len = read(fd, buf, 1024);
+        buf[1023] = '\0';
+        printf(&quot;APP read : %s\n&quot;, buf);
+    }
+
+    close(fd);
+
+    return 0;
+}
+
+
+
+
+</code></pre>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../../chapter_13/1_about_riscv/" class="btn btn-neutral float-left" title="第一篇 RISC-V 简介"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../2_qianrushidev/" class="btn btn-neutral float-right" title="第二篇 嵌入式开发基础">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -320,6 +528,8 @@
     
       <span><a href="../../chapter_13/1_about_riscv/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
+    
+      <span><a href="../2_qianrushidev/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

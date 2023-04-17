@@ -54,6 +54,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -130,6 +132,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 I/O调度层总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
               <ul class="current">
@@ -143,7 +147,7 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#_2">虚拟内存的由来</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#cpu">著名的CPU寄存器</a>
+    <li class="toctree-l3"><a class="reference internal" href="#cpu">著名的 CPU 寄存器</a>
     </li>
         </ul>
     </li>
@@ -163,17 +167,17 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_7">内存分页</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#linux">Linux下页表</a>
+    <li class="toctree-l3"><a class="reference internal" href="#linux">Linux 下页表</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#_8">单极页表的问题和多级页表的引入</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#linux_1">Linux下段页式内存管理</a>
+    <li class="toctree-l2"><a class="reference internal" href="#linux_1">Linux 下段页式内存管理</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1">1 什么是段页式内存管理</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#2-linux">2 Linux下的段页式内存管理</a>
+    <li class="toctree-l3"><a class="reference internal" href="#2-linux">2 Linux 下的段页式内存管理</a>
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#21-linux">2.1 Linux 内存主要采用的是页式内存管理，但同时也不可避免地涉及了段机制。</a>
     </li>
@@ -183,9 +187,9 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#linux_2">Linux 下内存子系统的优化技能</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#1-ksm">1  KSM 和 透明大页的区别</a>
+    <li class="toctree-l3"><a class="reference internal" href="#1-ksm">1 KSM 和 透明大页的区别</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#2-linux_1">2  Linux内存子系统所有优化点罗列</a>
+    <li class="toctree-l3"><a class="reference internal" href="#2-linux_1">2 Linux 内存子系统所有优化点罗列</a>
     </li>
         </ul>
     </li>
@@ -239,6 +243,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/10_jixiaofangtan/">第十篇 绩效访谈总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/11_classic_technical_thinking/">第十一篇 经典技术思维汇总</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第九章 编程经验</span></p>
               <ul>
@@ -289,6 +295,10 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/1_demo_of_led_driver/">第一篇 一个LED驱动Demo</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/2_qianrushidev/">第二篇 嵌入式开发基础</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/3_linux_kernel_api_list/">第三篇 Linux内核API汇总</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -316,7 +326,7 @@
               
                 <h1 id="_1">概述</h1>
 <ul>
-<li>总结Linux内存管理原理. 讲述虚拟内存、分段、分页的进化过程.</li>
+<li>总结 Linux 内存管理原理. 讲述虚拟内存、分段、分页的进化过程.</li>
 <li>计算机启动时, 分页机制必须提交准备好才可以运行真正的<code>start_kernel()</code>函数.</li>
 </ul>
 <h2 id="_2">虚拟内存的由来</h2>
@@ -347,21 +357,17 @@
 <p>操作系统是如何管理虚拟地址与物理地址之间的关系？</p>
 <p>主要有两种方式，分别是<strong>内存分段</strong>和<strong>内存分页</strong>，分段是比较早提出的，我们先来看看内存分段。</p>
 <blockquote>
-<p>了解分段的原理之前我们需要提前说明一些CPU寄存器.</p>
+<p>了解分段的原理之前我们需要提前说明一些 CPU 寄存器.</p>
 </blockquote>
-<h3 id="cpu">著名的CPU寄存器</h3>
+<h3 id="cpu">著名的 CPU 寄存器</h3>
 <ul>
 <li>cs （代码段寄存器）</li>
 <li>ss （栈段寄存器）</li>
 <li>ds （数据段寄存器）</li>
-<li>gdtr寄存器, 存放 <code>全局描述符GDT（Global Descriptor Table)</code>的地址.<ul>
-<li>GDT本身则存放在内存中.</li>
-</ul>
-</li>
-<li>idtr，存放中断向量表的地址. <code>中断向量表IDT(Interrupt  Descriptor Table)</code>  有多行，每一行代表某一个中断号发生之后，要执行的函数.<ul>
-<li>IDT本身则存放在内存中</li>
-</ul>
-</li>
+<li>gdtr 寄存器, 存放 <code>全局描述符GDT（Global Descriptor Table)</code>的地址.</li>
+<li>GDT 本身则存放在内存中.</li>
+<li>idtr，存放中断向量表的地址. <code>中断向量表IDT(Interrupt Descriptor Table)</code> 有多行，每一行代表某一个中断号发生之后，要执行的函数.</li>
+<li>IDT 本身则存放在内存中</li>
 </ul>
 <h2 id="_3">内存分段</h2>
 <p>程序是由若干个逻辑分段组成的，如可由<code>代码分段</code>、<code>数据分段</code>、<code>栈段</code>、<code>堆段</code>组成。不同的段是有不同的属性的，所以就用<code>分段（Segmentation）</code>的形式把这些段分离出来。</p>
@@ -375,7 +381,7 @@
 <p>虚拟地址中的<strong>段内偏移量</strong>应该位于 0 和段界限之间，如果段内偏移量是合法的，就将段基地址加上段内偏移量得到物理内存地址。</p>
 </li>
 <li>
-<p>这里提到的<code>段表</code>, 就是 <code>全局描述符表GDT（Global Descriptor Table)</code>, 它的实际位置存放在内存中, CPU的<code>gdtr寄存器</code>存放了GDT的地址.</p>
+<p>这里提到的<code>段表</code>, 就是 <code>全局描述符表GDT（Global Descriptor Table)</code>, 它的实际位置存放在内存中, CPU 的<code>gdtr寄存器</code>存放了 GDT 的地址.</p>
 </li>
 </ul>
 <p>在上面了，知道了虚拟地址是通过<code>段表</code>与物理地址进行映射的，分段机制会把程序的虚拟地址分成 4 个段，每个段在段表中有一个项，在这一项找到段的基地址，再加上偏移量，于是就能找到物理内存中的地址，如下图：</p>
@@ -383,12 +389,12 @@
 <p>如果要访问段 3 中偏移量 500 的虚拟地址，我们可以计算出物理地址为，段 3 基地址 7000 + 偏移量 500 = 7500。</p>
 <h3 id="_4">如何从虚拟地址得到对应的物理地址</h3>
 <p><strong>【段选择子+段偏移地址】</strong>中的<code>段选择子</code>可以认为是一个索引，这个索引指向了<code>全局段描述符表</code>中的一项，全局段描述表存储在内存中，它的起始地址存储在全局段描述符寄存器中。</p>
-<p>全局段描述符表有很多个<code>段描述符</code>，每个<code>段描述符</code>占用8个字节，这个<code>段描述符</code>里面就包括了<code>段基址</code>，另外还有一些安全性相关的描述信息例如段的<code>可读，可写，可执行，段的大小</code>等。</p>
-<p>段选择子存储在了段寄存器中，总共16位,其中高13位就是全局段描述表的索引。</p>
-<p>段选择符的结构： <img alt="png" src="../../img/3B7FB0E9-9828-44A2-9EA4-2BC635D136B0.jpg" /></p>
-<p>当CPU开始执行代码段的第一条指令时,会将代码段的选择子放入到CS段寄存器中,然后CPU从段寄存器中的获取段选择子，然后截取选择子的高13位获取索引，然后根据全局描述符表寄存器的地址找到全局描述符表的起始地址，根据起始地址+索引*8找到段描述符,然后根据段描述符获取段的基址，段的基址加上ip寄存器中的偏移地址就是指令的物理地址，如下图所示1~6步骤所示</p>
+<p>全局段描述符表有很多个<code>段描述符</code>，每个<code>段描述符</code>占用 8 个字节，这个<code>段描述符</code>里面就包括了<code>段基址</code>，另外还有一些安全性相关的描述信息例如段的<code>可读，可写，可执行，段的大小</code>等。</p>
+<p>段选择子存储在了段寄存器中，总共 16 位,其中高 13 位就是全局段描述表的索引。</p>
+<p>段选择符（段选择子）结构： <img alt="png" src="../../img/3B7FB0E9-9828-44A2-9EA4-2BC635D136B0.jpg" /></p>
+<p>当 CPU 开始执行代码段的第一条指令时,会将代码段的选择子放入到 CS 段寄存器中,然后 CPU 从段寄存器中的获取段选择子，然后截取选择子的高 13 位获取索引，然后根据全局描述符表寄存器的地址找到全局描述符表的起始地址，根据起始地址+索引*8 找到段描述符,然后根据段描述符获取段的基址，段的基址加上 ip 寄存器中的偏移地址就是指令的物理地址，如下图所示 1~6 步骤所示</p>
 <p><img alt="png" src="../../img/WechatIMG291.jpeg" /></p>
-<p>当CPU执行到0x00600000处的代码指令时，该指令为MOV AX,[0]，该指令的意思是把地址0处的数据存储到AX寄存器，这个0就是数据段的偏移地址，此时CPU会将数据段的选择子加入到DS段寄存器中,然后CPU获取段选择的高13位获取索引，然后根据全局描述符表寄存器的地址找到全局描述符表的起始地址，根据起始地址+索引*8找到段描述符,然后根据段描述符获取段的基址，段的基址加上数据段的偏移地址就是数据的物理地址，如下图1~6步骤所示</p>
+<p>当 CPU 执行到 0x00600000 处的代码指令时，该指令为 MOV AX,[0]，该指令的意思是把地址 0 处的数据存储到 AX 寄存器，这个 0 就是数据段的偏移地址，此时 CPU 会将数据段的选择子加入到 DS 段寄存器中,然后 CPU 获取段选择的高 13 位获取索引，然后根据全局描述符表寄存器的地址找到全局描述符表的起始地址，根据起始地址+索引*8 找到段描述符,然后根据段描述符获取段的基址，段的基址加上数据段的偏移地址就是数据的物理地址，如下图 1~6 步骤所示</p>
 <p><img alt="png" src="../../img/WechatIMG292.jpeg" /></p>
 <h2 id="_5">分段机制的问题</h2>
 <p>分段的办法很好，解决了程序本身不需要关心具体的物理内存地址的问题，但它也有一些不足之处：</p>
@@ -457,7 +463,7 @@
 </blockquote>
 <p>在分页机制下，虚拟地址分为两部分，<code>页号</code>和<code>页内偏移</code>。<code>页号</code>作为<code>页表</code>的索引，<code>页表</code>包含物理页每页所在<code>物理内存的基地址</code>，这个基地址与页内偏移的组合就形成了物理内存地址，见下图。</p>
 <p><img alt="png" src="../../img/WechatIMG335.jpeg" /></p>
-<h4 id="linux">Linux下页表</h4>
+<h4 id="linux">Linux 下页表</h4>
 <ul>
 <li>Linux 中使用<code>struct mm_struct</code>表示进程的虚拟地址空间</li>
 <li><code>mm_struct</code>中有一个<code>pgd</code>域, 指向 <code>struct pgd_t</code>表示进程的页表</li>
@@ -478,9 +484,9 @@
 <p>下面举个例子，虚拟内存中的页通过页表映射为了物理内存中的页，如下图：</p>
 <p><img alt="png" src="../../img/WechatIMG336.jpeg" /></p>
 <h3 id="_8">单极页表的问题和多级页表的引入</h3>
-<p><a href="https://mp.weixin.qq.com/s/HJB_ATQFNqG82YBCRr97CA">参考1</a>
-<a href="https://mp.weixin.qq.com/s/80LjQ9o8JIZu0PxY7PgKAw?locale=zh-CN">参考2</a></p>
-<h2 id="linux_1">Linux下段页式内存管理</h2>
+<p><a href="https://mp.weixin.qq.com/s/HJB_ATQFNqG82YBCRr97CA">参考 1</a>
+<a href="https://mp.weixin.qq.com/s/80LjQ9o8JIZu0PxY7PgKAw?locale=zh-CN">参考 2</a></p>
+<h2 id="linux_1">Linux 下段页式内存管理</h2>
 <h3 id="1">1 什么是段页式内存管理</h3>
 <p>内存分段和内存分页并不是对立的，它们是可以组合起来在同一个系统中使用的，那么组合起来后，通常称为<strong>段页式内存管理</strong>。</p>
 <p><img alt="png" src="../../img/WechatIMG539.png" /></p>
@@ -509,7 +515,7 @@
 </li>
 </ul>
 <p>可用软、硬件相结合的方法实现段页式地址变换，这样虽然增加了硬件成本和系统开销，但提高了内存的利用率。</p>
-<h3 id="2-linux">2 Linux下的段页式内存管理</h3>
+<h3 id="2-linux">2 Linux 下的段页式内存管理</h3>
 <p>那么，Linux 操作系统采用了哪种方式来管理内存呢？</p>
 <blockquote>
 <p>在回答这个问题前，我们得先看看 Intel 处理器的发展历史.</p>
@@ -533,7 +539,7 @@
 <p>但是事实上，Linux 内核所采取的办法是使段式映射的过程实际上不起什么作用。也就是说，“上有政策，下有对策”，若惹不起就躲着走。</p>
 <p>Linux 系统中的每个段都是从 0 地址开始的整个 4GB 虚拟空间（32 位环境下），也就是所有的段的起始地址都是一样的。这意味着，Linux 系统中的代码，包括操作系统本身的代码和应用程序代码，所面对的地址空间都是线性地址空间（虚拟地址），这种做法相当于屏蔽了处理器中的逻辑地址概念，段只被用于访问控制和内存保护。</p>
 <ul>
-<li>四个主要的Linux段的段描述符字段的值</li>
+<li>四个主要的 Linux 段的段描述符字段的值</li>
 </ul>
 <table>
 <thead>
@@ -607,12 +613,12 @@
 </li>
 <li>
 <ul>
-<li>1 与段相关的线性地址都0开始，达到2的32次方-1的寻址限长. 这就意味着在用户态或内核态下的所有进程可以使用相同的逻辑地址.</li>
+<li>1 与段相关的线性地址都 0 开始，达到 2 的 32 次方-1 的寻址限长. 这就意味着在用户态或内核态下的所有进程可以使用相同的逻辑地址.</li>
 </ul>
 </li>
 <li>
 <ul>
-<li>2 所有段都从<code>0x00000000</code>开始, 表明Linux下<code>逻辑地址</code>与<code>线性地址</code>是一致的,即<code>逻辑地址</code>的偏移量字段的值与相应<code>线性地址</code>的值总是一致.</li>
+<li>2 所有段都从<code>0x00000000</code>开始, 表明 Linux 下<code>逻辑地址</code>与<code>线性地址</code>是一致的,即<code>逻辑地址</code>的偏移量字段的值与相应<code>线性地址</code>的值总是一致.</li>
 </ul>
 </li>
 </ul>
@@ -669,21 +675,21 @@
 </li>
 </ul>
 <h2 id="linux_2">Linux 下内存子系统的优化技能</h2>
-<h3 id="1-ksm">1  KSM 和 透明大页的区别</h3>
+<h3 id="1-ksm">1 KSM 和 透明大页的区别</h3>
 <ul>
 <li>
-<p>如果开启KSM，kernel层面会有 ksmd进程把内容完全一样的物理页进行合并，并标记为 cow (copy on write)， 以减少物理页消耗</p>
+<p>如果开启 KSM，kernel 层面会有 ksmd 进程把内容完全一样的物理页进行合并，并标记为 cow (copy on write)， 以减少物理页消耗</p>
 </li>
 <li>
-<p>透明大页的作用是: </p>
+<p>透明大页的作用是:</p>
 </li>
 <li>
 <ul>
-<li>一个进程如果需要大量内存，那么底层申请的物理页可以大于4KB，比如16KB一个物理页，减少虚拟地址到物理地址的映射条目，从而减少页表大小，加快虚拟地址到物理地址的翻译速度</li>
+<li>一个进程如果需要大量内存，那么底层申请的物理页可以大于 4KB，比如 16KB 一个物理页，减少虚拟地址到物理地址的映射条目，从而减少页表大小，加快虚拟地址到物理地址的翻译速度</li>
 </ul>
 </li>
 </ul>
-<h3 id="2-linux_1">2  Linux内存子系统所有优化点罗列</h3>
+<h3 id="2-linux_1">2 Linux 内存子系统所有优化点罗列</h3>
 <ul>
 <li>（一） 节约内存</li>
 <li>
@@ -693,12 +699,12 @@
 </li>
 <li>
 <ul>
-<li>2 父子进程的COW（写时Copy）</li>
+<li>2 父子进程的 COW（写时 Copy）</li>
 </ul>
 </li>
 <li>
 <ul>
-<li>3 能够分配小于一个page的内存，slab分配器</li>
+<li>3 能够分配小于一个 page 的内存，slab 分配器</li>
 </ul>
 </li>
 <li>
@@ -711,7 +717,7 @@
 </li>
 <li>
 <ul>
-<li>2 NUMBA 。让CPU就近访问内存</li>
+<li>2 NUMBA 。让 CPU 就近访问内存</li>
 </ul>
 </li>
 </ul>
