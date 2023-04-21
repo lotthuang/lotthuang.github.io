@@ -329,6 +329,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/3_linux_kernel_api_list/">第三篇 Linux内核API汇总</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/4_zifushebeiqudongyuanli/">第四篇 字符设备驱动原理</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -360,6 +362,14 @@
 <li>
 <ul>
 <li>总体思路仍然是: <strong>是什么</strong>, <strong>有啥好</strong>, <strong>怎么办</strong></li>
+</ul>
+</li>
+<li>
+<p>通过 <code>grep resched_curr</code> 可以找出大多数标记抢占的场景, 这个技能也是通用：</p>
+</li>
+<li>
+<ul>
+<li>根据内核 API 来找场景. 这里内核 API <code>resched_curr</code> 是用于标记抢占的, 那么对内核源码进行<code>grep resched_curr</code> 就可以找出大多数标记抢占的场景.</li>
 </ul>
 </li>
 </ul>
