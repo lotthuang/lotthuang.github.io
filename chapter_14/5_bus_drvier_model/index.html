@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第四篇 Linux内核空间内存概述 - Lott's Blog</title>
+    <title>第五篇 总线驱动模型 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u56db\u7bc7 Linux\u5185\u6838\u7a7a\u95f4\u5185\u5b58\u6982\u8ff0";
-        var mkdocs_page_input_path = "chapter_1/4_linux_kernel_mm_basic.md";
+        var mkdocs_page_name = "\u7b2c\u4e94\u7bc7 \u603b\u7ebf\u9a71\u52a8\u6a21\u578b";
+        var mkdocs_page_input_path = "chapter_14/5_bus_drvier_model.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -45,44 +45,16 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">第一章 各种杂项基础</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../3_linux_kernel_basic/">第三篇 Linux内核基础</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/3_linux_kernel_basic/">第三篇 Linux内核基础</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第四篇 Linux内核空间内存概述</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#kernel-space">一 Kernel Space 内内存分类</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#1">1 常规内存</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#2-io">2 I/O 设备内存</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#a">a 前置知识</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#b">b 前置知识</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#3">3 高端内存</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#a_1">a 为啥会要有高端内存</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#b_1">b 高端内存怎么用</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#c">c 高端内存其他常见问题</a>
-    </li>
-        </ul>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_2">二 参考</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -272,16 +244,36 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十四章 Linux驱动方向总结</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/1_demo_of_led_driver/">第一篇 一个LED驱动Demo</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_demo_of_led_driver/">第一篇 一个LED驱动Demo</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/2_qianrushidev/">第二篇 嵌入式开发基础</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_qianrushidev/">第二篇 嵌入式开发基础</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/3_linux_kernel_api_list/">第三篇 Linux内核API汇总</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_linux_kernel_api_list/">第三篇 Linux内核API汇总</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/4_zifushebeiqudongyuanli/">第四篇 字符设备驱动原理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_zifushebeiqudongyuanli/">第四篇 字符设备驱动原理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/5_bus_drvier_model/">第五篇 总线驱动模型</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第五篇 总线驱动模型</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 什么是设备树</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">二 有啥好</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 为什么要用设备树？</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#a">A</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#b">B</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-x86">2 为什么 x86 上不需要设备树?</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">三 怎么办</a>
+    </li>
+    </ul>
                   </li>
               </ul>
       </div>
@@ -298,8 +290,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>第一章 各种杂项基础 &raquo;</li>
-      <li>第四篇 Linux内核空间内存概述</li>
+          <li>第十四章 Linux驱动方向总结 &raquo;</li>
+      <li>第五篇 总线驱动模型</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -310,129 +302,86 @@
               
                 <h1 id="_1">概述</h1>
 <ul>
-<li>本篇讲述 Linux 内核内存管理的一些基础描述</li>
+<li>总线驱动模型</li>
+<li>设备树(是什么, 有啥好, 怎么办)</li>
 </ul>
-<h2 id="kernel-space">一 Kernel Space 内内存分类</h2>
+<h2 id="_2">一 什么是设备树</h2>
 <ul>
-<li>32 位处理器的 Linux 的每个进程享有 4GB 的内存空间，0~3GB 属于用户空 间，3~4GB 属于内核空间，内核空间对常规内存、I/O 设备内存以及高端内存有不同的处理方式。</li>
-<li>可见内核部分内存分为<strong>常规内存</strong>、<strong>I/O 设备内存</strong>和<strong>高端内存</strong></li>
+<li>什么是设备树？</li>
 </ul>
-<h3 id="1">1 常规内存</h3>
+<p>设备树(Device Tree)，将这个词分开就是“设备”和“树”，描述设备树的文件叫做 DTS(Device Tree Source)，这个 DTS 文件采用树形结构描述板级设备，也就是开发板上的设备信息。</p>
+<p>设备树的机制其实也是总线型的 <code>BUS/Dev/Drv</code> 模型，只是编写 Dev 的方式变了。即编写 设备树文件 .dts。dts 文件会被编译成 dtb 文件。dtb 文件会传给内核, 内核会解析 dtb 文件, 构造出一系列的 device_node 结构体,device_node 结构体会转换为 platform_device 结构体。</p>
+<p>Linux 内核是从 V2.6 开始引入设备树的概念，其起源于 OF:OpenFirmware， 用于描述一个硬件平台的硬件资源信息，这些信息包括：CPU 的数量和类别、内存基地址和大小、总线和桥、外设连接、中断控制器和中断使用情况、GPIO 控制器和 GPIO 使用情况、Clock 控制器和 Clock 使用情况等等。</p>
 <ul>
-<li>这块可以参考<strong>第六章第六篇</strong></li>
+<li>官方说明</li>
 </ul>
-<h3 id="2-io">2 I/O 设备内存</h3>
-<h4 id="a">a 前置知识</h4>
-<p><strong>CPU 地址总线的宽度决定了可访问的内存空间的大小。</strong>比如 16 位的 CPU 地址总线宽度为 20 位，地址范围是 1M。32 位的 CPU 地址总线宽度为 32 位，地址范围是 4G。你可以算算我们现在的 64 位机的地址范围。</p>
-<p>可是，可访问的内存空间这么大，并不等于说全都给内存使用，也就是说寻址的对象不只有内存，还有一些外设也要通过地址总线的方式去访问，那怎么去访问这些外设呢？就是在地址范围中划出一片片的区域，这块给显存使用，那块给硬盘控制器使用，等等 。</p>
-<p>这样说，其实就不符合我们的前置知识了，所以可以有一种不太正确的理解方式，那就是内存中的这块位置就是显存，那块位置就是硬盘控制器。我们在相应的位置上读取或者写入，就相当于在显存等外设的相应位置上读取或者写入，就好像这些外设的存储区域，被<strong>映射</strong>到了内存中的某一片区域一样。这样我们就不用管那些外设啦，关注点仍然是一个简简单单的内存。这就是所谓的<strong>内存映射</strong>。</p>
-<h4 id="b">b 前置知识</h4>
-<p>程序员必须寻址许多设备,与内存的处理方式类似。因此现代处理器提供了对 I/O 端口进行内存映射的选项，将特定外设的端又地址映射到普通内存中，可以像处理普通内存那样操作外设。图形卡 通常会使用这类操作，因为与使用特定的端口命令相比，处理大量图像数据时使用普通处理器命令要更容易。诸如 PCI 之类的系统总线通常也是通过 I/O 地址映射进行寻址的。
-为使用内存映射，首先必须將 I/O 端口映射到普通的系统内存中 (使用特定于处理器的例程)。
-在不同的底层体系结构之上，完成这一任务的方法有很大的不同，内核再次提供了一个小的抽象层，主要包括<code>ioremap</code>和<code>iounmap</code>命令，分别用于映射 I/O 内存区和解除映射。</p>
-<h3 id="3">3 高端内存</h3>
-<h4 id="a_1">a 为啥会要有高端内存</h4>
+<blockquote>
+<p>The "Open Firmware Device Tree", or simply Device Tree (DT), is a data structure and language for describing hardware.</p>
+</blockquote>
+<p>设备树是一种数据结构和一种用于描述硬件信息的语言。</p>
 <ul>
-<li>
-<p>这个其实是针对 32 位的 Linux 的。我们知道 32 位 Linux 虚拟地址空间只有 4GB。假设计算机实际物理内存大于 4GB 比如有 8GB, 那么如果按照虚拟地址到物理地址一一映射, 那么内核地址空间最多就只能访问到 1GB 的物理内存, 这显然是不符合预期的.</p>
-</li>
-<li>
-<p><a href="https://www.jianshu.com/p/0b8e1879729a">更加详细的解释</a>:</p>
-</li>
-<li>
-<p>当内核模块代码或线程访问内存时，代码中的内存地址都为逻辑地址，而对应到真正的物理内存地址，需要地址一对一的映射，如逻辑地址 0xc0000003 对应的物理地址为 0×3，0xc0000004 对应的物理地址为 0×4，… …，逻辑地址与物理地址对应的关系为:</p>
-</li>
+<li>dts, dtc, dtb 分别是什么的缩写?</li>
 </ul>
-<pre><code>
-物理地址 = 逻辑地址 – 0xC0000000
-
-</code></pre>
-<p>假设按照上述简单的地址映射关系，那么内核逻辑地址空间访问为 0xc0000000 ~ 0xffffffff，那么对应的物理内存范围就为 0×0 ~ 0×40000000，即只能访问 1G 物理内存。若机器中安装 8G 物理内存，那么内核就只能访问前 1G 物理内存，后面 7G 物理内存将会无法访问，因为内核 的地址空间已经全部映射到物理内存地址范围 0×0 ~ 0×40000000。即使安装了 8G 物理内存，那么物理地址为 0×40000001 的内存，内核该怎么去访问呢？代码中必须要有内存逻辑地址 的，0xc0000000 ~ 0xffffffff 的地址空间已经被用完了，所以无法访问物理地址 0×40000000 以后的内存。</p>
-<p>显然不能将内核地址空间 0xc0000000 ~ 0xfffffff 全部用来简单的地址映射。</p>
-<ul>
-<li>因此 x86 架构中将内核地址空间划分三部分：<strong>ZONE_DMA</strong>, <strong>ZONE_NORMAL</strong> 和 <strong>ZONE_HIGHMEM</strong>。</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>范围</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>ZONE_DMA</td>
-<td>内存开始的 16MB</td>
-</tr>
-<tr>
-<td>ZONE_NORMAL</td>
-<td>16MB~896MB</td>
-</tr>
-<tr>
-<td>ZONE_HIGHMEM</td>
-<td>896MB ~ 结束</td>
-</tr>
-</tbody>
-</table>
+<p>DTS (device tree source)</p>
+<p>DTC (device tree compiler)</p>
+<p>Device Tree Blob (.dtb)</p>
 <ul>
 <li>
-<ul>
-<li><strong>ZONE_HIGHMEM</strong> 即为高端内存，这就是内存高端内存概念的由来。</li>
-</ul>
-</li>
-</ul>
-<h4 id="b_1">b 高端内存怎么用</h4>
-<ul>
-<li>高端内存 HIGH_MEM 地址空间范围为 0xF8000000~0xFFFFFFFF（896MB ～ 1024MB）。那么如内核是如何借助 128MB 高端内存地址空间是如何实现访问可以所有物理内存？</li>
-<li>
-<ul>
-<li>最基本思想：<strong>借一段虚拟地址空间，建立临时地址映射，用完后释放，达到这段地址空间可以循环使用，访问所有物理内存。</strong></li>
-</ul>
-</li>
-<li>
-<p>在高端内存中的页不能永久地映射到内核地址空间上。因此，通过<code>alloc_pages</code> 函数以<code>_GFP_HGHMEM</code>标志获得的页不可能有逻辑地址。</p>
-</li>
-</ul>
-<h4 id="c">c 高端内存其他常见问题</h4>
-<ul>
-<li>
-<p>1 用户空间（进程）是否有高端内存概念？</p>
+<p>设备树的特点：</p>
 </li>
 <li>
 <ul>
-<li>用户进程没有高端内存概念。只有在内核空间才存在高端内存。用户进程最多只可以访问 3G 物理内存，而内核进程可以访问所有物理内存。</li>
-</ul>
-</li>
-<li>
-<p>2 64 位内核中有高端内存吗？</p>
-</li>
-<li>
-<ul>
-<li>目前现实中，64 位 Linux 内核不存在高端内存，因为 64 位内核可以支持超过 512GB 内存。若机器安装的物理内存超过内核地址空间范围，就会存在高端内存。</li>
-</ul>
-</li>
-<li>
-<p>3 用户进程能访问多少物理内存？内核代码能访问多少物理内存？</p>
-</li>
-<li>
-<ul>
-<li>32 位系统用户进程最大可以访问 3GB，内核代码可以访问所有物理内存。</li>
+<li>实现驱动代码与设备硬件信息相分离。</li>
 </ul>
 </li>
 <li>
 <ul>
-<li>64 位系统用户进程最大可以访问超过 512GB，内核代码可以访问所有物理内存。</li>
+<li>通过被 bootloader(uboot)传递到 Linux 内核， 内核可以从设备树中获取对应的硬件信息。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>对于同一 SOC 的不同主板，只需更换设备树文件即可实现不同主板的无差异支持，而无需更换内核文件，实现了内核和不同板级硬件数据的拆分。</li>
 </ul>
 </li>
 </ul>
-<h2 id="_2">二 参考</h2>
-<p><a href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247483867&amp;idx=1&amp;sn=76ece31324d32922a7cb9db129decd3f&amp;chksm=c2c67b76f5b1f260bb459e12c029f8e6a7a813055811ab8ed794a3f36d0d7d50e66df27f4f0a&amp;scene=21#wechat_redirect">全网最硬核讲解计算机的启动过程</a></p>
+<p><img alt="png" src="../../img/WechatIMG213.jpeg" /></p>
+<h2 id="_3">二 有啥好</h2>
+<h3 id="1">1 为什么要用设备树？</h3>
+<h4 id="a">A</h4>
+<p>明白了设备树的概念，不妨思考一下：<code>为什么要引入设备树？</code></p>
+<p>在 Linux 内核 v2.6 版本以前，ARM 架构用于描述不同的硬件信息的文件都存放在 arch/arm/plat-xxx 和 arch/arm/mach-xxx 文件夹下，如下：</p>
+<p><img alt="png" src="../../img/WechatIMG211.png" /></p>
+<p>在这些文件内，都是通过手动定义不同的硬件设备，步骤非常繁琐</p>
+<p><img alt="png" src="../../img/WechatIMG212.png" /></p>
+<p>这样就导致了 Linux 内核代码中充斥着大量的垃圾代码，因为不同的板级他们的硬件信息都不相同，这些都是硬件特有的信息，对内核而言没有任何的意义，但是往往这部分代码特别的多，造成内核的冗余。</p>
+<p>设备树的引入就是为了解决这个问题，通过引入设备树，我们可以直接通过它来传递给 Linux，而不再需要内核中大量的垃圾代码。</p>
+<h4 id="b">B</h4>
+<p>Device Tree 改变了原来用 hardcode 方式将 HW 配置信息嵌入到内核代码的方法，改用 bootloader 传递一个 DB 的形式。</p>
+<p>对于基于 ARM CPU 的嵌入式系统，我们习惯于针对每一个 platform 进行内核的编译。但是随着 ARM 在消费类电子上的广泛应用（甚至桌面系统、服务器系统），我们期望 ARM 能够象 X86 那样用一个 kernel image 来支持多个 platform。在这种情况下，如果我们认为 kernel 是一个 black box，那么其输入参数应该包括：</p>
+<p>1、识别 platform 的信息</p>
+<p>2、runtime 的配置参数</p>
+<p>3、设备的拓扑结构以及特性</p>
+<p>对于嵌入式系统，在系统启动阶段，bootloader 会加载内核并将控制权转交给内核，此外，还需要把上述的三个参数信息传递给 kernel，以便 kernel 可以有较大的灵活性。在 linux kernel 中，Device Tree 的设计目标就是如此。</p>
+<h3 id="2-x86">2 为什么 x86 上不需要设备树?</h3>
+<p>因为 arm 绝大部分设备无法自动探测到,所以要有个方式让系统知道有哪些设备, 一开始是程序写死的, 后来有了设备树.</p>
+<p>x86/x64 上许多设备是基于 PCI/PCIe 总线的, 可以自动枚举到, 这种设备不需要设备树来告诉系统.</p>
+<p>但是 Intel 还是搞了 ACPI, 也能将设备信息告知系统. 比如 x86 平台就说通过 ACPI 知道 CPU 有几个 core 的. 这套机制和设备树机制类似.</p>
+<h2 id="_4">三 怎么办</h2>
+<ul>
+<li>内核会解析 dtb 文件, 构造出一系列的 device_node 结构体,
+  device_node 结构体会转换为 platform_device 结构体。</li>
+<li>
+<ul>
+<li>总体流程: <code>解析 dtb 文件 ----&gt; 构造 device_node 结构体 ---&gt; 转换为 platform_device 结构体</code></li>
+</ul>
+</li>
+</ul>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../3_linux_kernel_basic/" class="btn btn-neutral float-left" title="第三篇 Linux内核基础"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../5_how_kernel_call_bios/" class="btn btn-neutral float-right" title="第五篇 Linux内核调用BIOS案例">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../4_zifushebeiqudongyuanli/" class="btn btn-neutral float-left" title="第四篇 字符设备驱动原理"><span class="icon icon-circle-arrow-left"></span> Previous</a>
     </div>
 
   <hr/>
@@ -455,10 +404,8 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../3_linux_kernel_basic/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../4_zifushebeiqudongyuanli/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
-    
-      <span><a href="../5_how_kernel_call_bios/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

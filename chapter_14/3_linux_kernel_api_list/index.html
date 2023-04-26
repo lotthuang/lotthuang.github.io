@@ -257,9 +257,13 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#struct">二 各种 struct</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../4_zifushebeiqudongyuanli/">第四篇 字符设备驱动原理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../5_bus_drvier_model/">第五篇 总线驱动模型</a>
                   </li>
               </ul>
       </div>
@@ -341,6 +345,17 @@ static inline int register_chrdev(unsigned int major, const char *name,
 <pre><code>major = register_chrdev(0, &quot;hello&quot;, &amp;hello_drv);  /* /dev/hello */
 
 </code></pre>
+<h2 id="struct">二 各种 struct</h2>
+<ul>
+<li>字符设备 <code>struct cdev</code></li>
+<li>块设备 <code>struct block_device</code></li>
+<li>网络设备 <code>struct net_device</code></li>
+</ul>
+<p>从代码的角度来看，整个路径包含的过程基本可以概括为:</p>
+<p><code>虚拟文件系统--&gt;块设备实际文件系统--&gt;通用块层--&gt;I/O scheduler--&gt;块设备驱动程序</code></p>
+<p>描述块设备的数据结构有两个，一个是<code>struct block_device</code>,用来描述一个块设备或者块设备的一个分区；</p>
+<p>另一个是<code>struct gendisk</code>，用来描述整个块设备的特性。</p>
+<p><strong>对于一个包含多个分区的块设备，struct block_device 结构有多个,每个分区一个 block_device, 整个设备也对应一个 block_device,而 struct gendisk 结构永远只有一个。</strong></p>
               
             </div>
           </div><footer>

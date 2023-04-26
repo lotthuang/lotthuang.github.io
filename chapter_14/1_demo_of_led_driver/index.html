@@ -261,6 +261,8 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#5-devnull-devfull">5 关于/dev/null 和 /dev/full 等字符设备</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../2_qianrushidev/">第二篇 嵌入式开发基础</a>
@@ -268,6 +270,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../3_linux_kernel_api_list/">第三篇 Linux内核API汇总</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../4_zifushebeiqudongyuanli/">第四篇 字符设备驱动原理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../5_bus_drvier_model/">第五篇 总线驱动模型</a>
                   </li>
               </ul>
       </div>
@@ -433,13 +437,6 @@ MODULE_LICENSE(&quot;GPL&quot;);
 
 
 </code></pre>
-<p>问题清单:</p>
-<ol>
-<li>major 号是怎么确定的?</li>
-<li>linux 为什么一定要 copy_to_user 和 copy_from_user</li>
-<li>内核现成函数 register_chrdev 和 unregister_chrdev 最佳实践</li>
-<li>class_create 和 device_create 最佳实践</li>
-</ol>
 <h3 id="b-hello_drv_testc">B hello_drv_test.c</h3>
 <ul>
 <li>这个是用户空间的测试程序, 对/dev/hello 文件进行写和读</li>
@@ -500,6 +497,36 @@ int main(int argc, char **argv)
 
 
 
+
+</code></pre>
+<h2 id="5-devnull-devfull">5 关于/dev/null 和 /dev/full 等字符设备</h2>
+<ul>
+<li>基于上面的理解, <code>/dev/null</code>设备的实现就很好实现</li>
+<li>
+<ul>
+<li>从空设备读取时什么也不返回, 代码如下:</li>
+</ul>
+</li>
+</ul>
+<pre><code>
+static ssize_t read_null (struct file *file, const char __user *buf, size_t size, loff_t *offset)
+{
+    return 0;
+}
+
+</code></pre>
+<ul>
+<li>
+<ul>
+<li>无论用户空间怎么写都写不满, 代码如下:</li>
+</ul>
+</li>
+</ul>
+<pre><code>
+static ssize_t write_null (struct file *file, const char __user *buf, size_t size, loff_t *offset)
+{
+    return count;
+}
 
 </code></pre>
               
