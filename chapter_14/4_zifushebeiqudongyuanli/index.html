@@ -79,6 +79,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/12_monitor_and_alert/">第十二篇 监控报警最佳实践</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
               <ul>
@@ -204,6 +206,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/2_data_structure/">第二篇 数据结构总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/3_c_lang/">第三篇 c语言总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul>
@@ -283,7 +287,11 @@
     </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_bus_drvier_model/">第五篇 总线驱动模型</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../5_device_tree/">第五篇 设备树</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_device_driver_sop/">第六篇 设备驱动程序编写步骤</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_linux_kernel_clipping/">第七篇 Linux移植</a>
                   </li>
               </ul>
       </div>
@@ -313,6 +321,11 @@
                 <h1 id="_1">概述</h1>
 <ul>
 <li>本篇总结字符设备驱动原理</li>
+<li>
+<ul>
+<li><strong>如果只想了解原理, 只需看<code>结论</code>部分</strong></li>
+</ul>
+</li>
 <li>简单描述 <code>ioremap</code> 和为什么需要有 <code>ioremap</code></li>
 </ul>
 <h2 id="_2">一 结论</h2>
@@ -326,15 +339,33 @@
 </li>
 <li>
 <ul>
-<li>2 修改虚拟内存地址, 比如设置为 1 表示打开 LED 灯, 设置为 0 表示关闭 LED 灯.</li>
+<li>2 修改虚拟内存地址, 比如:</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>设置为 1 表示打开 LED 灯,</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>设置为 0 表示关闭 LED 灯.</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <h2 id="_3">二 参考</h2>
 <h3 id="ioremap">一、 ioremap() <a href="https://blog.csdn.net/zqixiao_09/article/details/50859505">函数基础概念</a></h3>
 <ul>
-<li><strong>几乎每一种外设都是通过读写设备上的寄存器来进行的</strong>，通常包括<strong>控制寄存器</strong>、<strong>状态寄存器</strong>和<strong>数据寄存器</strong>三大类，外设的寄存器通常被连续地编址。</li>
-<li>根据 CPU 体系结构的不同，CPU 对 IO 端口的编址方式有两种：</li>
+<li><strong>几乎每一种外设都是通过读写设备上的寄存器来进行的</strong>，通常包括<code>控制寄存器</code>、<code>状态寄存器</code>和<code>数据寄存器</code>三大类，外设的寄存器通常被连续地编址。</li>
+<li>根据 CPU 体系结构的不同，CPU 对 IO 端口的编址方式有两种:</li>
 </ul>
 <h4 id="a-io-io-mapped">a -- I/O 映射方式（I/O-mapped）</h4>
 <ul>
@@ -419,7 +450,7 @@ static void rk3288_clk_init(struct device_node *np) {
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../3_linux_kernel_api_list/" class="btn btn-neutral float-left" title="第三篇 Linux内核API汇总"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../5_bus_drvier_model/" class="btn btn-neutral float-right" title="第五篇 总线驱动模型">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../5_device_tree/" class="btn btn-neutral float-right" title="第五篇 设备树">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -445,7 +476,7 @@ static void rk3288_clk_init(struct device_node *np) {
       <span><a href="../3_linux_kernel_api_list/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../5_bus_drvier_model/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../5_device_tree/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

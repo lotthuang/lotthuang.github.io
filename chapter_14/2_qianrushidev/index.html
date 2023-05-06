@@ -79,6 +79,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/12_monitor_and_alert/">第十二篇 监控报警最佳实践</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
               <ul>
@@ -203,6 +205,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/1_suanfa/">第一篇 算法总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/2_data_structure/">第二篇 数据结构总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/3_c_lang/">第三篇 c语言总结</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -341,7 +345,11 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../4_zifushebeiqudongyuanli/">第四篇 字符设备驱动原理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_bus_drvier_model/">第五篇 总线驱动模型</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../5_device_tree/">第五篇 设备树</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_device_driver_sop/">第六篇 设备驱动程序编写步骤</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_linux_kernel_clipping/">第七篇 Linux移植</a>
                   </li>
               </ul>
       </div>
@@ -566,6 +574,7 @@ $ dtc -I dtb -O dts .dtb &gt; .dts
 </ul>
 <h2 id="_3">二 待解决的问题</h2>
 <p hidden>
+
 1. 研发手册从哪里下载 ---> 已解
 2. 烧写系统时的总结。我理解： uboot 模块是专门搞 boot 的，设备树文件是专门搞设备驱动的，还有内核文件 zImage. 然后上面所有这些都可以整合成一个系统镜像文件，用专门的烧写工具烧到开发板上. 开发板有 EMMC 和 SD 卡.
 3. 设备树，是什么 有啥好 怎么办?
@@ -575,7 +584,17 @@ $ dtc -I dtb -O dts .dtb &gt; .dts
 7. linux 为什么一定要 copy_to_user 和 copy_from_user
 8. 内核现成函数 register_chrdev 和 unregister_chrdev 最佳实践
 9. class_create 和 device_create 最佳实践
-10. SoC上寄存器的物理地址是怎么确定的?
+10. SoC上寄存器的物理地址是怎么确定的? ----> 是硬件手册上会带的
+  - I.MX6ULL 对应端口总结, 端口怎么命名
+11. 模电和数电入门到精通
+12. 每个开发板，能做哪些实验，列出清单。并且尝试看 pdf，自己评估能不能做这些实验
+13. 每个开发板，板载硬件，列出清单
+14. 每个开发板，需要自己的电脑准备什么软件和硬件。----> 需要一台 Windows PC
+15. 每个开发板烧录的时候，他的软件是否支撑 Mac OS ----> 不支持
+16. device_node 转换为 platform_device, 为什么要进行转换? 看看设备树下的 LED 实验，看看文档和视频教程，是否能找到答案.
+    device_node 多，platform_device 少.
+    每个 platform_device 可能是一个 Major，其他 device_node 都是 minor,本质上都用的一个驱动，比如两个网卡，多个硬盘的场景，其实底层都是相同的驱动程序.
+
 </p>
 
 <h2 id="_4">三 嵌入式学习路线</h2>
@@ -974,9 +993,9 @@ https://space.bilibili.com/661326452</p>
 <p>另外，推荐正点原子，野火，韦东山三个 Linux 开发教程，韦老师的课程好评居多，但还是看哪个更适合自己。</p>
 <h4 id="_13">七 总结</h4>
 <p>全文整体的学习路线：<code>嵌入式基础学习 -&gt; 51 单片机 -&gt; STM32 单片机 -&gt; RTOS 篇 -&gt; ARM+Linux</code></p>
-<p>纯软件, 25 岁巅峰, 35 岁被裁.
-嵌入式, 29 岁巅峰, 45 ~ 50 岁被裁.
-硬件工程师, 35 岁巅峰, 60 岁以后走下坡路.</p>
+<p>纯软件, 25 岁巅峰, 35 岁被裁.</p>
+<p>嵌入式, 29 岁巅峰, 45 ~ 50 岁被裁.</p>
+<p>硬件工程师, 35 岁巅峰, 60 岁以后走下坡路.</p>
               
             </div>
           </div><footer>

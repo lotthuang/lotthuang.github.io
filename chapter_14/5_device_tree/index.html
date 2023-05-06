@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第五篇 总线驱动模型 - Lott's Blog</title>
+    <title>第五篇 设备树 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u4e94\u7bc7 \u603b\u7ebf\u9a71\u52a8\u6a21\u578b";
-        var mkdocs_page_input_path = "chapter_14/5_bus_drvier_model.md";
+        var mkdocs_page_name = "\u7b2c\u4e94\u7bc7 \u8bbe\u5907\u6811";
+        var mkdocs_page_input_path = "chapter_14/5_device_tree.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -78,6 +78,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/9_changkanchangxin/">第九篇 常看常新</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/12_monitor_and_alert/">第十二篇 监控报警最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
@@ -204,6 +206,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/2_data_structure/">第二篇 数据结构总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/3_c_lang/">第三篇 c语言总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul>
@@ -253,7 +257,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../4_zifushebeiqudongyuanli/">第四篇 字符设备驱动原理</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第五篇 总线驱动模型</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第五篇 设备树</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#_2">一 什么是设备树</a>
     </li>
@@ -272,8 +276,30 @@
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_4">三 怎么办</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_5">(一) 总体流程</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">(二) 设备树语法</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1_1">1 数据格式</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2">2 数据结构</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3">3 详细属性介绍</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#dts-dtc-dtb">(三) DTS 和 DTC 和 DTB 使用</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#led">(四) 基于设备树的 LED 驱动实验</a>
+    </li>
+        </ul>
     </li>
     </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_device_driver_sop/">第六篇 设备驱动程序编写步骤</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_linux_kernel_clipping/">第七篇 Linux移植</a>
                   </li>
               </ul>
       </div>
@@ -291,7 +317,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>第十四章 Linux驱动方向总结 &raquo;</li>
-      <li>第五篇 总线驱动模型</li>
+      <li>第五篇 设备树</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -368,6 +394,7 @@
 <p>x86/x64 上许多设备是基于 PCI/PCIe 总线的, 可以自动枚举到, 这种设备不需要设备树来告诉系统.</p>
 <p>但是 Intel 还是搞了 ACPI, 也能将设备信息告知系统. 比如 x86 平台就说通过 ACPI 知道 CPU 有几个 core 的. 这套机制和设备树机制类似.</p>
 <h2 id="_4">三 怎么办</h2>
+<h3 id="_5">(一) 总体流程</h3>
 <ul>
 <li>内核会解析 dtb 文件, 构造出一系列的 device_node 结构体,
   device_node 结构体会转换为 platform_device 结构体。</li>
@@ -377,11 +404,215 @@
 </ul>
 </li>
 </ul>
+<h3 id="_6">(二) <a href="https://mp.weixin.qq.com/s/E5rPU66HEvqX1mc46_siCA">设备树语法</a></h3>
+<p><code>dts</code>文件是一种<code>ASCII</code>文本格式的设备树描述，它有以下几种特性：</p>
+<ul>
+<li>
+<p>每个设备树文件都有一个根节点，每个设备都是一个节点。</p>
+</li>
+<li>
+<p>节点间可以嵌套，形成父子关系，这样就可以方便的描述设备间的关系。</p>
+</li>
+<li>
+<p>每个设备的属性都用一组 key-value 对(键值对)来描述。</p>
+</li>
+<li>
+<p>每个属性的描述用<code>;</code>结束</p>
+</li>
+</ul>
+<blockquote>
+<p>记住上面的几个核心特性，往下看！</p>
+</blockquote>
+<h4 id="1_1">1 数据格式</h4>
+<pre><code>
+/dts-v1/;
+
+/ {
+    node1 {
+        a-string-property = &quot;A string&quot;;
+        a-string-list-property = &quot;first string&quot;, &quot;second string&quot;;
+        // hex is implied in byte arrays. no '0x' prefix is required
+        a-byte-data-property = [0x01 0x23 0x34 0x56];
+        child-node1 {
+            first-child-property;
+            second-child-property = &lt;1&gt;;
+            a-string-property = &quot;Hello, world&quot;;
+        };
+        child-node2 {
+        };
+    };
+    node2 {
+        an-empty-property;
+        a-cell-property = &lt;1 2 3 4&gt;; /* each number (cell) is a uint32 */
+        child-node1 {
+        };
+    };
+};
+
+</code></pre>
+<ul>
+<li>
+<p><code>/dts-v1/;</code>：表示这是一个 dts 设备树文件</p>
+</li>
+<li>
+<p><code>/</code>：表示根节点</p>
+</li>
+<li>
+<p><code>node1、node2</code>：表示根节点下的两个子节点</p>
+</li>
+<li>
+<p><code>child-node1、child-node2</code>：表示子节点 node1 下的两个子节点</p>
+</li>
+<li>
+<p><code>a-string-property = "A string";</code>：字符串属性，用双引号表示</p>
+</li>
+<li>
+<p><code>cell-property = &lt;0xbeef 123 0xabcd1234&gt;;</code>：32bit 的无符号整数，用尖括号表示</p>
+</li>
+<li>
+<p><code>binary-property = [0x01 0x23 0x45 0x67];</code>：二进制数据用方括号表示</p>
+</li>
+<li>
+<p><code>a-string-list-property = "first string", "second string";</code>：用逗号表示字符串列表</p>
+</li>
+</ul>
+<h4 id="2">2 数据结构</h4>
+<p><img alt="png" src="../../img/WechatIMG225.jpeg" /></p>
+<p><strong>DeviceTree</strong>的结构非常简单，由两种元素组成：<strong>Node(节点)</strong>和<strong>Property(属性)</strong>。</p>
+<pre><code>
+[label:] node-name[@unit-address] {
+    [properties definitions]
+    [child nodes]
+}
+
+</code></pre>
+<blockquote>
+<p>想象一下，一棵大树，每一个树干都认为是一个节点，每一片树叶，想作一个属性！</p>
+</blockquote>
+<ul>
+<li>
+<p><code>label</code>：节点的一个标签，可以作为别名</p>
+</li>
+<li>
+<p><code>node-name</code>：节点的名称</p>
+</li>
+<li>
+<p><code>unit-address</code>：单元地址，也就是控制器的地址</p>
+</li>
+<li>
+<p><code>properties</code>：属性名称</p>
+</li>
+<li>
+<p><code>definitions</code>：属性的值</p>
+</li>
+</ul>
+<p><img alt="png" src="../../img/5f8e68ea95f5f-thumb.jpg" /></p>
+<h4 id="3">3 详细属性介绍</h4>
+<ul>
+<li>以下代码段为例子</li>
+</ul>
+<pre><code>
+/dts-v1/;
+
+/ {
+    compatible = &quot;acme,coyotes-revenge&quot;;
+    #address-cells = &lt;1&gt;;
+    #size-cells = &lt;0&gt;;
+    cpus {
+        cpu@0 {
+            compatible = &quot;arm,cortex-a9&quot;;
+            reg = &lt;0&gt;;
+        };
+        cpu@1 {
+            compatible = &quot;arm,cortex-a9&quot;;
+            reg = &lt;1&gt;;
+        };
+    };
+
+    serial@101f0000 {
+     #address-cells = &lt;1&gt;;
+     #size-cells = &lt;1&gt;;
+        compatible = &quot;arm,pl011&quot;;
+        reg = &lt;0x101f0000 0x1000 &gt;;
+    };
+
+};
+
+</code></pre>
+<h5 id="31">3.1 基本属性</h5>
+<p>下面几个属性是基本属性</p>
+<ul>
+<li>
+<p><code>/dts-v1/;</code>：表示一个 dts 设备树文件</p>
+</li>
+<li>
+<p><code>/</code>：表示根节点</p>
+</li>
+<li>
+<p><code>compatible = "acme,coyotes-revenge";</code></p>
+</li>
+<li>
+<ul>
+<li><code>compatible</code>：“兼容性” 属性，这是非常重要的一个属性, 兼容属性，由该属性值来匹配对应的驱动代码。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><code>"acme,coyotes-revenge"</code>：该值遵循<strong>"manufacturer,model"</strong>格式<code>manufacturer</code>表示芯片厂商，<code>model</code>表示驱动名称</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>compatible 是一个字符串列表。列表中的第一个字符串指定节点在表单中表示的确切设备"<manufacturer>,<model>"。</p>
+<p>例如，飞思卡尔 MPC8349 片上系统 (SoC) 有一个串行设备，可实现 National Semiconductor ns16550 寄存器接口。因此，MPC8349 串行设备的 compatible 属性应为：<code>compatible = "fsl,mpc8349-uart", "ns16550"</code>. 在这种情况下，fsl,mpc8349-uart 指定确切的设备， ns16550 声明它与 National Semiconductor 16550 UART 的寄存器级兼容。</p>
+</blockquote>
+<ul>
+<li>
+<p><code>cpus</code>：表示一个子节点，该子节点下又有两个子节点，分别为 <code>cpu0</code> 和 <code>cpu1</code>。</p>
+</li>
+<li>
+<p><code>cpu@0</code>：遵循<code>&lt;name&gt;[@&lt;unit-address&gt;]</code>格式</p>
+</li>
+<li>
+<p><code>&lt;name&gt;</code>：ascii 字符串，表示节点名称</p>
+</li>
+<li>
+<p><code>&lt;unit-address&gt;</code>：单元地址，设备的私有地址，在节点<code>reg</code> 属性中描述。</p>
+</li>
+</ul>
+<h5 id="32">3.2 寻址属性</h5>
+<blockquote>
+<p>下面几个属性与寻址相关的</p>
+</blockquote>
+<ul>
+<li>
+<p><code>#address-cells</code> ：表示<code>reg</code>属性中<strong>地址字段的单元个数，每个单元 32bit</strong>，即用多少个 32bit 单元表示地址信息。</p>
+</li>
+<li>
+<p><code>#size-cells</code>：表示<code>reg</code>属性中表示长度字段的单元个数，每个单元 32bit，即用多少个 32bit 单元表示长度信息。</p>
+</li>
+<li>
+<p><code>reg</code>：该属性一般用于描述设备地址空间资源信息，一般都是某个外设的寄存器地址范围信息。其式为<code>reg = &lt;address1 length1 [address2 length2] [address3 length3] ... &gt;</code>。每个地址值都是一个或多个 32 位整数的列表，称为<em>单元格</em>。同样，长度值可以是单元格列表，也可以是空的</p>
+</li>
+</ul>
+<h5 id="33">3.3 中断属性</h5>
+<h5 id="34">3.4 其他属性</h5>
+<h3 id="dts-dtc-dtb">(三) DTS 和 DTC 和 DTB 使用</h3>
+<blockquote>
+<p>整个设备树牵涉面比较广，即增加了新的用于描述设备硬件信息的文本格式，又增加了编译这个文本的工具，同时还得支持 Bootloader 解析设备树，并将信息传递给内核。</p>
+</blockquote>
+<p>整个设备树包含 DTC（device tree compiler），DTS（device tree source）和 DTB（device tree blob）。</p>
+<p><img alt="png" src="../../img/WechatIMG223.jpeg" /></p>
+<h3 id="led">(四) 基于设备树的 LED 驱动实验</h3>
+<blockquote>
+<p>待补充</p>
+</blockquote>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../4_zifushebeiqudongyuanli/" class="btn btn-neutral float-left" title="第四篇 字符设备驱动原理"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../6_device_driver_sop/" class="btn btn-neutral float-right" title="第六篇 设备驱动程序编写步骤">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -406,6 +637,8 @@
     
       <span><a href="../4_zifushebeiqudongyuanli/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
+    
+      <span><a href="../6_device_driver_sop/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

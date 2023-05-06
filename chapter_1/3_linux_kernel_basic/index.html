@@ -55,6 +55,10 @@
     <li class="toctree-l2"><a class="reference internal" href="#_2">一 操作系统的本质</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#linux">二 Linux 内核的组成</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#linux-vmlinuxvmlinuzimagezimagebzimageuimage">几种 linux 内核文件的区别(vmlinux、vmlinuz、Image、zImage、bzImage、uImage）</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -84,6 +88,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/9_changkanchangxin/">第九篇 常看常新</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/12_monitor_and_alert/">第十二篇 监控报警最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
@@ -210,6 +216,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/2_data_structure/">第二篇 数据结构总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/3_c_lang/">第三篇 c语言总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul>
@@ -259,7 +267,11 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/4_zifushebeiqudongyuanli/">第四篇 字符设备驱动原理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/5_bus_drvier_model/">第五篇 总线驱动模型</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/5_device_tree/">第五篇 设备树</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/6_device_driver_sop/">第六篇 设备驱动程序编写步骤</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/7_linux_kernel_clipping/">第七篇 Linux移植</a>
                   </li>
               </ul>
       </div>
@@ -308,6 +320,42 @@
 <p><img alt="png" src="../../img/WechatIMG1342BFD228219F9.png" /></p>
 <p>当开发虚拟内存以便更容易地进行多任务处理时，将<strong>vm</strong>放在文件的前面，以显示内核支持虚拟内存。有一段时间，Linux 内核被称为 vmlinux，但是内核变得太大，无法装入可用的引导内存，因此压缩了内核映像，并将末尾的 x 更改为 z，以显示它是用 zlib 压缩的。并不总是使用相同的压缩，通常用 LZMA 或 BZIP2 替换，一些内核简单地称为 zImage。</p>
 <p>在/boot 文件夹中还有其他非常重要的文件，称为 initrd.img-version、system.map-version, config-version。initrd 文件用作一个小 RAM 磁盘，用于提取和执行实际的内核文件。这个系统。map 文件用于内核完全加载之前的内存管理，配置文件告诉内核在编译内核映像时要加载哪些选项和模块。</p>
+<h3 id="linux-vmlinuxvmlinuzimagezimagebzimageuimage">几种 linux 内核文件的区别(vmlinux、vmlinuz、Image、zImage、bzImage、uImage）</h3>
+<ul>
+<li>
+<p><code>vmlinux</code>: 是内核编译出来的原始的内核文件未经压缩的。是 ELF 格式的，即编译出来的最原始的文件。用于 kernel-debug，产生 system.map 符号表，不能用于直接加载，不可以作为启动内核。只是启动过程中的中间媒体。</p>
+</li>
+<li>
+<p><code>vmlinuz</code>: vmlinuz 是可引导的、压缩的内核。“vm”代表“Virtual Memory”。 vmlinuz 是由 ELF 文件<code>vmlinux</code>经过 <code>objcopy</code> 后，并经过压缩后的文件，它是可引导的文件。</p>
+</li>
+</ul>
+<p>vmlinuz 的建立有两种方式</p>
+<ul>
+<li>
+<ul>
+<li>一种是通过编译内核时通过“make zImage”创建，也就是 zImage，它适用于小内核的情况，适用于低端内存（640K），它的存在是为了向后的兼容性。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>另外一种是通过编译内核时通过“make bzImage”创建，也就是 bzImage，它是压缩的内核映像，适用于高端内存（1M 以上）</li>
+</ul>
+</li>
+<li>
+<p><code>Image</code>: Image 是 Linux 内核镜像文件，但是 Image 仅包含可执行的二进制数据。Image 就是使
+  用 <code>objcopy工具</code> 取消掉 vmlinux 中的一些其他信息，比如符号表什么的。但是 Image 是没有压缩过 的.</p>
+</li>
+<li>
+<p><code>zImage</code>: 是经过 gzip 压缩后的 Image, 一般用作 uboot 的镜像文件。 zImage 是 ARM Linux 常用的一种压缩映像文件. zImage 可以在嵌入式系统经常看到.</p>
+</li>
+<li>
+<p><code>uImage</code>: uImage 是 早期<code>U-boot</code> 专用的映像文件，它是在 zImage 之前加上一个长度为 0x40 的“头”，说明这个映像文件的类型、加载位置、生成时间、大小等信息。换句话说，如果直接从 uImage 的 0x40 位置开始执行，zImage 和 uImage 没有任何区别。现在<code>u-boot</code>已经支持<code>zImage</code>了, 不再需要制作专门的<code>uImage</code>.</p>
+</li>
+<li>
+<p><code>bzImage</code>: bz 表示<code>big zImage</code>，不是用<code>bzip2</code>压缩的。两者的不同之处在于，zImage 解压缩内核到低端内存(第一个 640K)，bzImage 解压缩内核到高端内存(1M 以上)。如果内核比较小，那么采用 zImage 或 bzImage 都行，如果比较大应该用 bzImage。</p>
+</li>
+</ul>
+<p><a href="https://www.zhiwanyuzhou.com/index.php/2022/06/05/vmlinux%E3%80%81vmlinuz%E3%80%81uimage%E3%80%81linuxrc%E7%9A%84%E5%8C%BA%E5%88%AB/">参考</a></p>
               
             </div>
           </div><footer>
