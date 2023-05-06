@@ -249,7 +249,7 @@
               </ul>
               <p class="caption"><span class="caption-text">第十四章 Linux驱动方向总结</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../1_demo_of_led_driver/">第一篇 一个LED驱动Demo</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../1_demo_of_led_driver/">第一篇 驱动程序的Hello World</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../2_qianrushidev/">第二篇 嵌入式开发基础</a>
                   </li>
@@ -257,7 +257,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../4_zifushebeiqudongyuanli/">第四篇 字符设备驱动原理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_device_tree/">第五篇 设备树</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../5_device_tree/">第五篇 platform总线模型和设备树</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../6_device_driver_sop/">第六篇 设备驱动程序编写步骤</a>
                   </li>
@@ -384,8 +384,8 @@
 </ul>
 <p>make install</p>
 <p>默认会在当前目录生成一个_install 目录，这个目录就是产生的根文件系统了。它里面生成了几个系统引导时候必须的几个文件目录：/bin  /sbin  /usr，其它的目录会在系统启动时候创建。这些文件夹里面的命令其实都是一个软链接，连接到 busybox 这一个实实在在的可执行程序。linuxrc 是 kernel 启动过程中很关键的一步，可在详细了解 Linux 启动流程中遇到。</p>
-<p><a href="https://blog.csdn.net/fuhanghang/article/details/128849560">参考 1</a>
-<a href="https://www.bilibili.com/read/cv4959669/">参考 2</a></p>
+<p><a href="https://blog.csdn.net/fuhanghang/article/details/128849560">参考 1</a></p>
+<p><a href="https://www.bilibili.com/read/cv4959669/">参考 2</a></p>
 <h2 id="linux">二 嵌入式 Linux 系统移植四大部分</h2>
 <ul>
 <li>一、搭建交叉开发环境</li>
@@ -393,7 +393,8 @@
 <li>三、kernel 的配置、编译、和移植</li>
 <li>四、根文件系统的制作</li>
 </ul>
-<p><a href="https://z.itpub.net/article/detail/A4D4995A2035757F82E1F38BDDFC2F57">参考</a></p>
+<p><a href="https://z.itpub.net/article/detail/A4D4995A2035757F82E1F38BDDFC2F57">参考 3</a></p>
+<p><a href="http://xstarcd.github.io/wiki/Linux/ShengRuLiJie_linux_2.6_initramfs.html">参考 4</a></p>
               
             </div>
           </div><footer>
