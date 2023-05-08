@@ -127,6 +127,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/12_linux_preemption/">第十二篇 内核抢占基础篇</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/13_interrupt_handler_examples/">第十三篇 中断处理程序的例子</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
               <ul>
@@ -283,6 +285,10 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../7_linux_kernel_clipping/">第七篇 Linux移植</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_linux_driver_framework/">第八篇 Linux驱动框架和SoC驱动框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -312,6 +318,9 @@
 <blockquote>
 <p>基于 I.MX6ULL 总结 LED 点灯程序</p>
 </blockquote>
+<ul>
+<li>本篇总结不同场景下驱动程序编写的步骤</li>
+</ul>
 <h2 id="_2">一些基础知识</h2>
 <h3 id="1">1 基础知识</h3>
 <ul>
@@ -375,7 +384,7 @@
 <h2 id="imx6ull-">问题二 更多 I.MX6ULL 硬件知识 ---- 更多寄存器</h2>
 <ul>
 <li>
-<p>SW<em>MUX_CTL_PAD</em><em> 和 SW</em>PAD_CTL_PAD**两种寄存器用来设置 IO 的复用功能和 IO 属性 配置, 也就是我们通过设置上面这两种寄存器的不同值之后, 终于将某个 IO 口设置为了 GPIO 功能. 现在我们要接着来配置 GPIO 特有的寄存器了.</p>
+<p>SW<em>MUX_CTL_PAD** 和 SW</em>PAD_CTL_PAD**两种寄存器用来设置 IO 的复用功能和 IO 属性 配置, 也就是我们通过设置上面这两种寄存器的不同值之后, 终于将某个 IO 口设置为了 GPIO 功能. 现在我们要接着来配置 GPIO 特有的寄存器了.</p>
 </li>
 <li>
 <p>当 IO 用作 GPIO 的时候需要设置的寄存器，一共有八个: DR、GDIR、PSR、ICR1、ICR2、EDGE_SEL、IMR 和 ISR。前面我们说了 I.MX6U 一共有 GPIO1~GPIO5 共五组 GPIO，每组 GPIO 都有这 8 个寄存器。</p>
@@ -408,8 +417,8 @@
 <li>PSR: 状态寄存器. 用于获取对应 IO 口的当前状态(当前是高电平或者低电平)</li>
 <li>ICR1 和 ICR2: 这两个寄存器，都是中断控制寄存器，ICR1 用于配置低 16 个 IO, ICR2 用于配置高 16 个 IO, 也就是每 2 位配置一个 IO. 比如某个外设（比如键盘）可以上升沿触发中断.</li>
 <li>IMR: 是中断屏蔽寄存器. IMR 寄存器也是一个 IO 对应一个位，IMR 寄存器用来设置 IO 的中断禁止和使能，如果使能某个 IO 的中断，那么设置相应的位为 1 即可，反之，如果要禁止中断，那么就设 置相应的位为 0 即可。例如，要使能 GPIO1_IO00 的中断，那么就可以设置 GPIO1.MIR=1 即 可。</li>
-<li>ISR: 中断状态寄存器. </li>
-<li>EDGE_SEL:  是边沿选择寄存器. EDGE_SEL 寄存器用来设置边沿中断，这个寄存器会覆盖 ICR1 和 ICR2 的设置，同样是一个 IO 对应一个位。如果相应的位被置 1，那么就相当与设置了对应的 IO 是上升沿和下降 沿(双边沿)触发。例如，我们设置 GPIO1.EDGE_SEL=1，那么就表示 GPIO1_IO01 是双边沿触 发中断，无论 GFPIO1_ICR1 的设置为多少，都是双边沿触发。</li>
+<li>ISR: 中断状态寄存器.</li>
+<li>EDGE_SEL: 是边沿选择寄存器. EDGE_SEL 寄存器用来设置边沿中断，这个寄存器会覆盖 ICR1 和 ICR2 的设置，同样是一个 IO 对应一个位。如果相应的位被置 1，那么就相当与设置了对应的 IO 是上升沿和下降 沿(双边沿)触发。例如，我们设置 GPIO1.EDGE_SEL=1，那么就表示 GPIO1_IO01 是双边沿触 发中断，无论 GFPIO1_ICR1 的设置为多少，都是双边沿触发。</li>
 </ul>
 <h2 id="_4">问题三 外设时钟使能</h2>
 <ul>
@@ -418,8 +427,8 @@
 <p>CCM 有 CCM_CCGR0~CCM_CCGR6 这 7 个寄存器，这 7 个寄存器控制着 I.MX6U 的所有外设时钟开关</p>
 </li>
 <li>
-<p>根据CCM_CCGR0寄存器的使用说明, 我们发现如果我们要打开 GPIO2 的外设时钟，那么只需要设置
-CCM_CCGR0 的 bit31 和 bit30 都为 1 即可，也就是 CCM_CCGR0=3 &lt;&lt; 30。反之，如果要关闭 GPIO2 的外设时钟，那就设置 CCM_CCGR0 的 bit31 和 bit30 都为 0 即可。</p>
+<p>根据 CCM_CCGR0 寄存器的使用说明, 我们发现如果我们要打开 GPIO2 的外设时钟，那么只需要设置
+  CCM_CCGR0 的 bit31 和 bit30 都为 1 即可，也就是 CCM_CCGR0=3 &lt;&lt; 30。反之，如果要关闭 GPIO2 的外设时钟，那就设置 CCM_CCGR0 的 bit31 和 bit30 都为 0 即可。</p>
 </li>
 </ul>
               

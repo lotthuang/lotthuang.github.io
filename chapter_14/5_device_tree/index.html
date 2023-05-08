@@ -127,6 +127,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/12_linux_preemption/">第十二篇 内核抢占基础篇</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/13_interrupt_handler_examples/">第十三篇 中断处理程序的例子</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
               <ul>
@@ -319,6 +321,10 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../7_linux_kernel_clipping/">第七篇 Linux移植</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_linux_driver_framework/">第八篇 Linux驱动框架和SoC驱动框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -411,6 +417,7 @@
 <h4 id="3">3 设备树版本</h4>
 <blockquote>
 <p>设备树版本其实是把 platform_device 的定义过程移交给了 dts, 然后由 bootloader 告知内核 dtb 文件位置,由内核自动解析 dtb 文件生成 platform_device</p>
+<p>在没有设备树的 Linux 内核下，我们需要分别编写并注册 <code>platform_device</code> 和 <code>platform_driver</code>，分别代表<code>设备</code>和<code>驱动</code>。在使用设备树的时候，<code>设备</code>的描述被放到了<code>设备树</code>中，因此 <code>platform_device</code> 就不需要我们去编写了，我们只需要实现<code>platform_driver</code>即可</p>
 </blockquote>
 <h3 id="_6">三 怎么办</h3>
 <p>参考<a href="https://mp.weixin.qq.com/s/2C9m6OiOnVR-ZglkAn8Pvw">这篇文章</a></p>
