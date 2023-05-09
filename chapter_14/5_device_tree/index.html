@@ -257,7 +257,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../3_linux_kernel_api_list/">第三篇 Linux内核API汇总</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../4_zifushebeiqudongyuanli/">第四篇 字符设备驱动原理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_zifushebeiqudongyuanli/">第四篇 字符设备驱动实现原理和物理内存地址空间和IO端口空间</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第五篇 platform总线模型和设备树</a>
     <ul class="current">
@@ -299,7 +299,7 @@
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#_11">(一) 总体流程</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#_12">(二) 设备树语法</a>
+    <li class="toctree-l4"><a class="reference internal" href="#_14">(二) 设备树语法</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#dts-dtc-dtb">(三) DTS 和 DTC 和 DTB 使用</a>
     </li>
@@ -309,19 +309,15 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_13">关于总线的拓展知识点</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_14">内核总线相关结构体变量</a>
-    </li>
-        </ul>
-    </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../6_device_driver_sop/">第六篇 设备驱动程序编写步骤</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_device_driver_sop/">第六篇 从阅读硬件手册开始设备驱动程序编写</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../7_linux_kernel_clipping/">第七篇 Linux移植</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../8_linux_driver_framework/">第八篇 Linux驱动框架和SoC驱动框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_linux_device_class/">第九篇 Linux设备分类</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
@@ -486,6 +482,7 @@
 <p>但是 Intel 还是搞了 ACPI, 也能将设备信息告知系统. 比如 x86 平台就说通过 ACPI 知道 CPU 有几个 core 的. 这套机制和设备树机制类似.</p>
 <h3 id="_10">三 怎么办</h3>
 <h4 id="_11">(一) 总体流程</h4>
+<h5 id="_12">其一</h5>
 <ul>
 <li>内核会解析 dtb 文件, 构造出一系列的 device_node 结构体,
   device_node 结构体会转换为 platform_device 结构体。</li>
@@ -495,7 +492,29 @@
 </ul>
 </li>
 </ul>
-<h4 id="_12">(二) <a href="https://mp.weixin.qq.com/s/E5rPU66HEvqX1mc46_siCA">设备树语法</a></h4>
+<h5 id="_13">其二</h5>
+<ol>
+<li>
+<p>系统启动后，uboot 会从网络或者 flash、sd 卡中读取设备树文件(具体由 uboot 命令给出)，</p>
+</li>
+<li>
+<p>引导 linux 内核启动后，会把设备树镜像保存到的内存地址传递给 Linux 内核，Linux 内核会解析设备树镜像，从设备树中提取硬件信息并逐一初始化。</p>
+</li>
+<li>
+<p>其中设备树信息会被转换成<code>struct platform_device</code>类型变量。</p>
+</li>
+<li>
+<p>而驱动要解析设备树，必须定义 <code>struct platform_driver</code>类型结构体变量，并通过函数<code>platform_driver_register()</code>注册。</p>
+</li>
+<li>
+<p>这两者都会注册到<code>platform总线</code>，当驱动和设备树节点匹配成功后，就调用 <code>struct platform_driver</code>中<code>.probe</code>方法。</p>
+</li>
+<li>
+<p>其中设备树节点会封装在<code>struct device_node</code>结构体变量中 各个属性信息会封装在 <code>struct property</code>结构体变量中， 他们与<code>struct platform_device</code>结构体之间关系如下：</p>
+</li>
+</ol>
+<p><img alt="png" src="../../img/WechatIMG240.jpeg" /></p>
+<h4 id="_14">(二) <a href="https://mp.weixin.qq.com/s/E5rPU66HEvqX1mc46_siCA">设备树语法</a></h4>
 <p><code>dts</code>文件是一种<code>ASCII</code>文本格式的设备树描述，它有以下几种特性：</p>
 <ul>
 <li>
@@ -698,78 +717,12 @@
 <blockquote>
 <p>待补充</p>
 </blockquote>
-<h2 id="_13">关于总线的拓展知识点</h2>
-<h3 id="_14">内核<code>总线</code>相关结构体变量</h3>
-<ul>
-<li>内核维护的所有的<code>总线</code>都需要用以下结构体注册一个变量。</li>
-</ul>
-<pre><code>
-
-struct bus_type {
- const char  *name;
- const char  *dev_name;
- struct device  *dev_root;
- struct device_attribute *dev_attrs; /* use dev_groups instead */
- const struct attribute_group **bus_groups;
- const struct attribute_group **dev_groups;
- const struct attribute_group **drv_groups;
-
- int (*match)(struct device *dev, struct device_driver *drv);
- int (*uevent)(struct device *dev, struct kobj_uevent_env *env);
- int (*probe)(struct device *dev);
- int (*remove)(struct device *dev);
- void (*shutdown)(struct device *dev);
-
- int (*online)(struct device *dev);
- int (*offline)(struct device *dev);
-
- int (*suspend)(struct device *dev, pm_message_t state);
- int (*resume)(struct device *dev);
-
- const struct dev_pm_ops *pm;
-
- struct iommu_ops *iommu_ops;
-
- struct subsys_private *p;
- struct lock_class_key lock_key;
-};
-
-</code></pre>
-<ul>
-<li>platform 总线变量的定义<code>struct bus_type platform_bus_type</code>定义如下：</li>
-</ul>
-<pre><code>
-struct bus_type platform_bus_type = {
- .name  = &quot;platform&quot;,
- .dev_groups = platform_dev_groups,
- .match  = platform_match,
- .uevent  = platform_uevent,
- .pm  = &amp;platform_dev_pm_ops,
-};
-
-</code></pre>
-<ul>
-<li>
-<ul>
-<li>其中最重要的成员是<strong>.match</strong>。</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>当有设备的硬件信息注册到<code>platform_bus_type 总线</code>的时候，会遍历所有 platform 总线维护的驱动， 通过名字来匹配，如果相同，就说明硬件信息和驱动匹配，就会调用驱动的<code>platform_driver -&gt;probe函数</code>,初始化驱动的所有资源，让该驱动生效。</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>也就是内核维护了许多 bus_type 实例, 有一些 bus_type 是对应真实物理总线的, 比如 I2c、SPI、USB、uart、PCIE、APB、AHB
-同时内核也维护了一条虚拟总线就是名为<code>platform</code>的<code>platform_bus_type 总线</code></p>
-</blockquote>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../4_zifushebeiqudongyuanli/" class="btn btn-neutral float-left" title="第四篇 字符设备驱动原理"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../6_device_driver_sop/" class="btn btn-neutral float-right" title="第六篇 设备驱动程序编写步骤">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../4_zifushebeiqudongyuanli/" class="btn btn-neutral float-left" title="第四篇 字符设备驱动实现原理和物理内存地址空间和IO端口空间"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../6_device_driver_sop/" class="btn btn-neutral float-right" title="第六篇 从阅读硬件手册开始设备驱动程序编写">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>

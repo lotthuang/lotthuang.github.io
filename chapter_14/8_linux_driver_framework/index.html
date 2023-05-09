@@ -257,11 +257,11 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../3_linux_kernel_api_list/">第三篇 Linux内核API汇总</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../4_zifushebeiqudongyuanli/">第四篇 字符设备驱动原理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_zifushebeiqudongyuanli/">第四篇 字符设备驱动实现原理和物理内存地址空间和IO端口空间</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../5_device_tree/">第五篇 platform总线模型和设备树</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../6_device_driver_sop/">第六篇 设备驱动程序编写步骤</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_device_driver_sop/">第六篇 从阅读硬件手册开始设备驱动程序编写</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../7_linux_kernel_clipping/">第七篇 Linux移植</a>
                   </li>
@@ -279,7 +279,15 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_4">问题总结</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">关于总线的拓展知识点</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">内核总线相关结构体变量</a>
+    </li>
+        </ul>
+    </li>
     </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_linux_device_class/">第九篇 Linux设备分类</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
@@ -538,6 +546,10 @@ struct device_driver {
 };
 
 </code></pre>
+<ul>
+<li>关系图:</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG240.jpeg" /></p>
 <p><a href="https://www.cnblogs.com/schips/p/linux_device_model_5.html">参考 1</a></p>
 <p><a href="https://hughesxu.github.io/posts/Linux_device_and_driver_model/">参考 2</a></p>
 <h2 id="_4">问题总结</h2>
@@ -590,16 +602,87 @@ struct platform_device s3c_device_wdt = {
 <ul>
 <li>
 <ul>
+<li>有太多的硬件设备信息存放在内核代码目录下, 导致内核代码虚胖.</li>
+</ul>
+</li>
+<li>
+<ul>
 <li>Device Tree 改变了原来用 hardcode 方式将 HW 配置信息嵌入到内核代码的方法，改用 bootloader 传递一个 DB 的形式. <strong>解决了内核代码虚胖问题.</strong></li>
 </ul>
 </li>
 </ul>
+<h2 id="_5">关于总线的拓展知识点</h2>
+<h3 id="_6">内核<code>总线</code>相关结构体变量</h3>
+<ul>
+<li>内核维护的所有的<code>总线</code>都需要用以下结构体注册一个变量。</li>
+</ul>
+<pre><code>
+
+struct bus_type {
+ const char  *name;
+ const char  *dev_name;
+ struct device  *dev_root;
+ struct device_attribute *dev_attrs; /* use dev_groups instead */
+ const struct attribute_group **bus_groups;
+ const struct attribute_group **dev_groups;
+ const struct attribute_group **drv_groups;
+
+ int (*match)(struct device *dev, struct device_driver *drv);
+ int (*uevent)(struct device *dev, struct kobj_uevent_env *env);
+ int (*probe)(struct device *dev);
+ int (*remove)(struct device *dev);
+ void (*shutdown)(struct device *dev);
+
+ int (*online)(struct device *dev);
+ int (*offline)(struct device *dev);
+
+ int (*suspend)(struct device *dev, pm_message_t state);
+ int (*resume)(struct device *dev);
+
+ const struct dev_pm_ops *pm;
+
+ struct iommu_ops *iommu_ops;
+
+ struct subsys_private *p;
+ struct lock_class_key lock_key;
+};
+
+</code></pre>
+<ul>
+<li>platform 总线变量的定义<code>struct bus_type platform_bus_type</code>定义如下：</li>
+</ul>
+<pre><code>
+struct bus_type platform_bus_type = {
+ .name  = &quot;platform&quot;,
+ .dev_groups = platform_dev_groups,
+ .match  = platform_match,
+ .uevent  = platform_uevent,
+ .pm  = &amp;platform_dev_pm_ops,
+};
+
+</code></pre>
+<ul>
+<li>
+<ul>
+<li>其中最重要的成员是<strong>.match</strong>。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>当有设备的硬件信息注册到<code>platform_bus_type 总线</code>的时候，会遍历所有 platform 总线维护的驱动， 通过名字来匹配，如果相同，就说明硬件信息和驱动匹配，就会调用驱动的<code>platform_driver -&gt;probe函数</code>,初始化驱动的所有资源，让该驱动生效。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>也就是内核维护了许多 bus_type 实例, 有一些 bus_type 是对应真实物理总线的, 比如 I2c、SPI、USB、uart、PCIE、APB、AHB
+同时内核也维护了一条虚拟总线就是名为<code>platform</code>的<code>platform_bus_type 总线</code></p>
+</blockquote>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../7_linux_kernel_clipping/" class="btn btn-neutral float-left" title="第七篇 Linux移植"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../13_embedded_development_direction/" class="btn btn-neutral float-right" title="第十三篇 嵌入式开发方向和分类">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../9_linux_device_class/" class="btn btn-neutral float-right" title="第九篇 Linux设备分类">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -625,7 +708,7 @@ struct platform_device s3c_device_wdt = {
       <span><a href="../7_linux_kernel_clipping/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../13_embedded_development_direction/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../9_linux_device_class/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
