@@ -140,6 +140,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 I/O调度层总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/5_fs_only_in_kernel/">第五篇 仅在内核空间可见的文件系统梳理</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
               <ul>
@@ -154,6 +156,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/6_alloc_mem_apis/">第六篇 Linux内核内存分配API函数分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -209,6 +213,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/2_data_structure/">第二篇 数据结构总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/3_c_lang/">第三篇 c语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/4_symbol_table/">第四篇 符号表总结</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -279,15 +285,15 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_6">三 怎么办</a>
+    <li class="toctree-l3"><a class="reference internal" href="#_7">三 怎么办</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_7">设备树</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_8">设备树</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_8">一 是什么</a>
+    <li class="toctree-l3"><a class="reference internal" href="#_9">一 是什么</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_9">二 有啥好</a>
+    <li class="toctree-l3"><a class="reference internal" href="#_10">二 有啥好</a>
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#1_1">1 为什么要用设备树？</a>
     </li>
@@ -295,11 +301,11 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_10">三 怎么办</a>
+    <li class="toctree-l3"><a class="reference internal" href="#_11">三 怎么办</a>
         <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#_11">(一) 总体流程</a>
+    <li class="toctree-l4"><a class="reference internal" href="#_12">(一) 总体流程</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#_14">(二) 设备树语法</a>
+    <li class="toctree-l4"><a class="reference internal" href="#_15">(二) 设备树语法</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#dts-dtc-dtb">(三) DTS 和 DTC 和 DTB 使用</a>
     </li>
@@ -318,6 +324,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../8_linux_driver_framework/">第八篇 Linux驱动框架和SoC驱动框架</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../9_linux_device_class/">第九篇 Linux设备分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_u_boot/">第十篇 u-boot梳理和总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
@@ -400,7 +408,7 @@
 </code></pre>
 <p><code>struct resource</code>是嵌套在<code>struct platform_device</code>内部的一个成员, 是一个<code>struct platform_device</code>内部的一个数组成员.</p>
 <h3 id="_5">二 为什么</h3>
-<p>与传统的 bus/device/driver 机制相比，platform 由内核进行统一管理，在驱动中使用<code>资源 resource</code>，提高了代码的安全性和可移植性。</p>
+<p>与传统的 bus/device/driver 机制相比，platform 由内核进行统一管理，在驱动中使用<code>资源 resource</code>，提高了代码的安全性和<strong>可移植性</strong>。</p>
 <p>总体来说这块需要看最原始的驱动程序的进化过程, 以 LED 灯驱动程序为例子.</p>
 <h4 id="1">1 原始版</h4>
 <blockquote>
@@ -410,15 +418,42 @@
 <p><img alt="png" src="../../img/WechatIMG233.jpeg" /></p>
 <p><img alt="png" src="../../img/WechatIMG234.jpeg" /></p>
 <p>写驱动程序要分两个文件: <code>device.ko</code> 和 <code>driver.ko</code>, 并且分别加载<code>insmod device.ko</code>, <code>insmod driver.ko</code></p>
+<h5 id="_6">正规流程梳理</h5>
+<ul>
+<li>安装模块:</li>
+<li>
+<ul>
+<li><code>insmod device.ko</code> ---&gt; 相当于插入设备</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><code>insmod driver.ko</code> ---&gt; 相当于启动驱动程序, 然后内核会自动匹配, 匹配到了之后就会自动调用<code>probe</code>方法, 因此<strong>原始版</strong>中的初始化需要在<code>probe</code>函数中实现</li>
+</ul>
+</li>
+<li>
+<p>卸载模块:</p>
+</li>
+<li>
+<ul>
+<li><code>rmmod device.ko</code> ---&gt; 模拟设备拔出的情况, 会自动调用<code>driver.ko</code>中的<code>remove</code>方法, 设备拔出时其实设备驱动程序应该要做一些事情.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><code>rmmod driver.ko</code> ---&gt; 相当于卸载驱动程序</li>
+</ul>
+</li>
+</ul>
 <h4 id="3">3 设备树版本</h4>
 <blockquote>
 <p>设备树版本其实是把 platform_device 的定义过程移交给了 dts, 然后由 bootloader 告知内核 dtb 文件位置,由内核自动解析 dtb 文件生成 platform_device</p>
 <p>在没有设备树的 Linux 内核下，我们需要分别编写并注册 <code>platform_device</code> 和 <code>platform_driver</code>，分别代表<code>设备</code>和<code>驱动</code>。在使用设备树的时候，<code>设备</code>的描述被放到了<code>设备树</code>中，因此 <code>platform_device</code> 就不需要我们去编写了，我们只需要实现<code>platform_driver</code>即可</p>
 </blockquote>
-<h3 id="_6">三 怎么办</h3>
+<h3 id="_7">三 怎么办</h3>
 <p>参考<a href="https://mp.weixin.qq.com/s/2C9m6OiOnVR-ZglkAn8Pvw">这篇文章</a></p>
-<h2 id="_7">设备树</h2>
-<h3 id="_8">一 是什么</h3>
+<h2 id="_8">设备树</h2>
+<h3 id="_9">一 是什么</h3>
 <ul>
 <li>什么是设备树？</li>
 </ul>
@@ -459,7 +494,7 @@
 </li>
 </ul>
 <p><img alt="png" src="../../img/WechatIMG213.jpeg" /></p>
-<h3 id="_9">二 有啥好</h3>
+<h3 id="_10">二 有啥好</h3>
 <h4 id="1_1">1 为什么要用设备树？</h4>
 <h5 id="a">A</h5>
 <p>明白了设备树的概念，不妨思考一下：<code>为什么要引入设备树？</code></p>
@@ -480,9 +515,9 @@
 <p>因为 arm 绝大部分设备无法自动探测到,所以要有个方式让系统知道有哪些设备, 一开始是程序写死的, 后来有了设备树.</p>
 <p>x86/x64 上许多设备是基于 PCI/PCIe 总线的, 可以自动枚举到, 这种设备不需要设备树来告诉系统.</p>
 <p>但是 Intel 还是搞了 ACPI, 也能将设备信息告知系统. 比如 x86 平台就说通过 ACPI 知道 CPU 有几个 core 的. 这套机制和设备树机制类似.</p>
-<h3 id="_10">三 怎么办</h3>
-<h4 id="_11">(一) 总体流程</h4>
-<h5 id="_12">其一</h5>
+<h3 id="_11">三 怎么办</h3>
+<h4 id="_12">(一) 总体流程</h4>
+<h5 id="_13">其一</h5>
 <ul>
 <li>内核会解析 dtb 文件, 构造出一系列的 device_node 结构体,
   device_node 结构体会转换为 platform_device 结构体。</li>
@@ -492,7 +527,7 @@
 </ul>
 </li>
 </ul>
-<h5 id="_13">其二</h5>
+<h5 id="_14">其二</h5>
 <ol>
 <li>
 <p>系统启动后，uboot 会从网络或者 flash、sd 卡中读取设备树文件(具体由 uboot 命令给出)，</p>
@@ -514,7 +549,7 @@
 </li>
 </ol>
 <p><img alt="png" src="../../img/WechatIMG240.jpeg" /></p>
-<h4 id="_14">(二) <a href="https://mp.weixin.qq.com/s/E5rPU66HEvqX1mc46_siCA">设备树语法</a></h4>
+<h4 id="_15">(二) <a href="https://mp.weixin.qq.com/s/E5rPU66HEvqX1mc46_siCA">设备树语法</a></h4>
 <p><code>dts</code>文件是一种<code>ASCII</code>文本格式的设备树描述，它有以下几种特性：</p>
 <ul>
 <li>

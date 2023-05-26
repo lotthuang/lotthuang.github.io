@@ -140,6 +140,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 I/O调度层总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/5_fs_only_in_kernel/">第五篇 仅在内核空间可见的文件系统梳理</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
               <ul>
@@ -154,6 +156,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/6_alloc_mem_apis/">第六篇 Linux内核内存分配API函数分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -209,6 +213,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/2_data_structure/">第二篇 数据结构总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/3_c_lang/">第三篇 c语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/4_symbol_table/">第四篇 符号表总结</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -269,6 +275,8 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#2-imx6ull-gpio">2 基于 I.MX6ULL 的 GPIO 配置流程</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-imx6ull-io">3 I.MX6ULL 的寄存器和对应 IO 口的命名</a>
+    </li>
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#gpio">问题一 怎么找到对应 GPIO 的物理地址?</a>
@@ -281,11 +289,21 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_4">问题三 外设时钟使能</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#gpio1_io03-io">问题四 配置 GPIO1_IO03 的 IO 属性</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#imx6ull-rom">问题五 I.MX6ULL ROM 程序启动之后, 其执行地址</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#linux">Linux 内核层面字符设备框架</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1_1">1 字符设备架构是如何实现的？</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#2-api">2 字符驱动相关内核 API</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_5">概要版本</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_6">详细</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#3">3 如何编写字符设备驱动</a>
         <ul>
@@ -314,6 +332,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../8_linux_driver_framework/">第八篇 Linux驱动框架和SoC驱动框架</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../9_linux_device_class/">第九篇 Linux设备分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_u_boot/">第十篇 u-boot梳理和总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
@@ -347,7 +367,13 @@
 <p>基于 I.MX6ULL 总结 LED 点灯程序, 从阅读硬件手册开始编写驱动程序.</p>
 </blockquote>
 <ul>
-<li>本篇总结不同场景下驱动程序编写的步骤</li>
+<li>本篇总结不同场景下驱动程序编写的步骤。</li>
+<li>Linux 系统下编写驱动程序，最终本质都是操作寄存器, 但需要吃透其驱动框架.</li>
+<li>
+<ul>
+<li>有点儿类似你写 Web 服务, 可以从 0 开始写一个 Web 服务, 也可以通过框架(比如 python 的 flask 框架)写一个 Web 服务.</li>
+</ul>
+</li>
 </ul>
 <h2 id="_2">一些基础知识</h2>
 <h3 id="1">1 基础知识</h3>
@@ -396,6 +422,37 @@
 <li>设置寄存器 IOMUXC_SW_PAD_CTL_PAD_XX_XX，设置 IO 的上下拉、速度设置、驱动能力设置、压摆率设置等等。</li>
 <li>第 2 步已经将 IO 改为了 GPIO 功能，所以需要配置 GPIO，设置输入/输出、是否使用中断、默认输出电平等。</li>
 </ol>
+<h3 id="3-imx6ull-io">3 I.MX6ULL 的寄存器和对应 IO 口的命名</h3>
+<table>
+<thead>
+<tr>
+<th>寄存器名称</th>
+<th>IO 口名称</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SW_PAD_CTL_PAD_GPIO1_IO00 PAD Control Register</code></td>
+<td><code>IOMUXC_SW_PAD_CTL_PAD_GPIO1_IO00</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SW_MUX_CTL_PAD_GPIO1_IO00 SW MUX Control Register</code></td>
+<td><code>IOMUXC_SW_MUX_CTL_PAD_GPIO1_IO00</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SW_MUX_CTL_PAD_UART1_TX_DATA SW MUX Control Register</code></td>
+<td><code>IOMUXC_SW_MUX_CTL_PAD_UART1_TX_DATA</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><img alt="png" src="../../img/WX20230515-094400222.png" /></p>
+<ul>
+<li>多个寄存器控制和配置<code>IO口</code>作用, 一个<code>IO口</code>对应一个<code>引脚</code>, 每个<code>引脚</code>可以连接一个<code>外设</code></li>
+</ul>
 <h2 id="gpio">问题一 怎么找到对应 GPIO 的物理地址?</h2>
 <blockquote>
 <p>查看对应的数据手册里对应端口的介绍, 其中有 Address, 如下图:</p>
@@ -412,7 +469,7 @@
 <h2 id="imx6ull-">问题二 更多 I.MX6ULL 硬件知识 ---- 更多寄存器</h2>
 <ul>
 <li>
-<p>SW<em>MUX_CTL_PAD** 和 SW</em>PAD_CTL_PAD**两种寄存器用来设置 IO 的复用功能和 IO 属性 配置, 也就是我们通过设置上面这两种寄存器的不同值之后, 终于将某个 IO 口设置为了 GPIO 功能. 现在我们要接着来配置 GPIO 特有的寄存器了.</p>
+<p><code>SW_MUX_CTL_PAD**</code> 和 <code>SW_PAD_CTL_PAD**</code>两种寄存器用来设置 IO 的复用功能和 IO 属性 配置, 也就是我们通过设置上面这两种寄存器的不同值之后, 终于将某个 IO 口设置为了 GPIO 功能. 现在我们要接着来配置 GPIO 特有的寄存器了.</p>
 </li>
 <li>
 <p>当 IO 用作 GPIO 的时候需要设置的寄存器，一共有八个: DR、GDIR、PSR、ICR1、ICR2、EDGE_SEL、IMR 和 ISR。前面我们说了 I.MX6U 一共有 GPIO1~GPIO5 共五组 GPIO，每组 GPIO 都有这 8 个寄存器。</p>
@@ -459,6 +516,14 @@
   CCM_CCGR0 的 bit31 和 bit30 都为 1 即可，也就是 CCM_CCGR0=3 &lt;&lt; 30。反之，如果要关闭 GPIO2 的外设时钟，那就设置 CCM_CCGR0 的 bit31 和 bit30 都为 0 即可。</p>
 </li>
 </ul>
+<h2 id="gpio1_io03-io">问题四 配置 GPIO1_IO03 的 IO 属性</h2>
+<ul>
+<li>这么多<code>IO属性</code>是干嘛的?</li>
+</ul>
+<h2 id="imx6ull-rom">问题五 I.MX6ULL ROM 程序启动之后, 其执行地址</h2>
+<ul>
+<li>目前根据文档<strong>8.4.15</strong>来看, 启动之后 ROM 程序就会执行<code>0X87800000</code>这个地址的代码.</li>
+</ul>
 <h2 id="linux">Linux <a href="https://mp.weixin.qq.com/s/oIYQJbnVpiFqixNXWc_KMg">内核层面字符设备框架</a></h2>
 <h3 id="1_1">1 字符设备架构是如何实现的？</h3>
 <p>在 Linux 的世界里面一切皆文件，所有的硬件设备操作到应用层都会被抽象成文件的操作。我们知道如果应用层要访问硬件设备，它必定要调用到硬件对应的驱动程序。Linux 内核中有那么多驱动程序，应用层怎么才能精确的调用到底层的驱动程序呢？</p>
@@ -488,6 +553,26 @@
 <p>3.找到 struct cdev 结构体后，Linux 内核就会将 struct cdev 结构体所在的内存空间首地记录在 struct inode 结构体的 i_cdev 成员中。将 struct cdev 结构体的中记录的函数操作接口地址记录在 struct file 结构体的 f_op 成员中。</p>
 <p>4.任务完成，VFS 层会给应用层返回一个文件描述符（fd)。这个 fd 是和 struct file 结构体对应的。接下来上层的应用程序就可以通过 fd 来找到 strut file,然后在由 struct file 找到操作字符设备的函数接口了。</p>
 <h3 id="2-api">2 字符驱动相关内核 API</h3>
+<h4 id="_5">概要版本</h4>
+<ul>
+<li>申请设备号: <code>alloc_chrdev_region()</code> </li>
+<li>
+<p>占用设备号: ``</p>
+</li>
+<li>
+<p>设备号是dev_t类型, 本质是一个int类型. 该类型前几位代表MAJOR，后几位代表MINOR</p>
+</li>
+<li><code>MAJOR()</code>和<code>MINOR()</code> ---&gt; 这两个宏可以从dev_t类型获取主设备号和次设备号. </li>
+<li>初始化cdev: <code>cdev_init()</code></li>
+<li>注册cdev: <code>cdev_add()</code></li>
+<li><code>class_create()</code>在sysfs中创建类</li>
+<li><code>device_create()</code>在devfs中创建设备</li>
+<li>如果使用<code>register_chrdev()</code> API, 则可以免去<code>cdev_init</code>和<code>cdev_add</code>过程</li>
+<li>register_chrdev如果是入参为0, 则会动态注册设备号dev_t. </li>
+<li>register_chrdev_region是静态注册设备号, 也就是说先人工定义设备号然后用register_chrdev_region去注册. 可能出现失败的情况. 加个判断，出现失败的时候就调用alloc_chrdev_region动态申请设备号.</li>
+<li>register_chrdev内部也会初始化cdev,并进行cdev_add, 然后会调用__register_chrdev_region静态注册设备号. 并且register_chrdev是相对比较老的版本的内核的做法, 理论上现在更加推荐走的新的做法.</li>
+</ul>
+<h4 id="_6">详细</h4>
 <ul>
 <li><code>cdev_init()</code></li>
 </ul>
@@ -634,7 +719,9 @@ mknod /dev/hello c 250 0
 
 </code></pre>
 <h6 id="32-udev">3.2 自动创建设备节点(udev 机制)</h6>
-<p>除了使用 mknod 命令手动创建设备节点，还可以利用 linux 的 <code>udev、mdev 机制</code>，而我们的 ARM 开发板上移植的 <strong>busybox 有 mdev 机制</strong>，那么就使用 mdev 机制来自动创建设备节点。</p>
+<p>除了使用 mknod 命令手动创建设备节点，还可以利用 linux 的 <code>udev、mdev 机制</code>，
+busybox 会创建一个 udev 的简化版本--mdev
+而我们的 ARM 开发板上移植的 <strong>busybox 有 mdev 机制</strong>，那么就使用 mdev 机制来自动创建设备节点。</p>
 <p>在 etc/init.d/rcS 文件里有一句：</p>
 <pre><code>
 echo /sbin/mdev &gt; /proc/sys/kernel/hotplug

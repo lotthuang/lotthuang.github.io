@@ -140,6 +140,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 I/O调度层总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/5_fs_only_in_kernel/">第五篇 仅在内核空间可见的文件系统梳理</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
               <ul>
@@ -154,6 +156,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/6_alloc_mem_apis/">第六篇 Linux内核内存分配API函数分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -209,6 +213,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/2_data_structure/">第二篇 数据结构总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/3_c_lang/">第三篇 c语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/4_symbol_table/">第四篇 符号表总结</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -288,6 +294,10 @@
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#io">三 更多关于物理内存地址空间和 IO 端口空间</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">背景</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -300,6 +310,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../8_linux_driver_framework/">第八篇 Linux驱动框架和SoC驱动框架</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../9_linux_device_class/">第九篇 Linux设备分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_u_boot/">第十篇 u-boot梳理和总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
@@ -456,6 +468,24 @@ static void rk3288_clk_init(struct device_node *np) {
 
 </code></pre>
 <h2 id="io">三 更多关于物理内存地址空间和 IO 端口空间</h2>
+<h3 id="_6">背景</h3>
+<p>外设都是通过读写设备上的寄存器来进行工作的，外设寄存器也称为<code>IO端口</code>，而<code>IO端口</code>的编址方式有两种，<strong>独立编址</strong>和<strong>统一编址</strong>。</p>
+<ul>
+<li><code>独立编址</code> 为端口地址单独开辟一部分地址空间，其访问指令也需要使用单独的指令（不同于内存访问指令）。</li>
+<li><code>统一编址</code>: 外设接口中的 IO 寄存器（即<strong>IO 端口</strong>）与主存单元一样看待，每个端口占用一个存储单元的地址，将主存的一部分划出来用作 IO 地址空间。 统一编址的原理是将 IO 的端口地址存储器寻址的地址空间范围之内，此方法也成为存储器映像编址。CPU 访问一个端口的操作与访问内存的操作相同，也使用访问内存的指令。</li>
+</ul>
+<p>根据 CPU 体系结构的不同，CPU 对 IO 端口的编址方式有两种：</p>
+<ul>
+<li>（1）I/O 映射方式（I/O-mapped）</li>
+</ul>
+<p>典型地，如 X86 处理器为外设专门实现了一个单独的地址空间，称为"I/O 地址空间"或者"I/O 端口空间"，CPU 通过专门的 I/O 指令（如 X86 的 IN 和 OUT 指令）来访问这一空间中的地址单元。</p>
+<ul>
+<li>（2）内存映射方式（Memory-mapped）
+  　　 RISC 指令系统的 CPU（如 ARM、PowerPC 等）通常只实现一个物理地址空间，外设 I/O 端口成为内存的一部分。此时，CPU 可以象访问一个内存单元那样访问外设 I/O 端口，而不需要设立专门的外设 I/O 指令。</li>
+</ul>
+<blockquote>
+<p>但是，<strong>这两者在硬件实现上的差异对于软件来说是完全透明的，驱动程序开发人员可以将内存映射方式的 I/O 端口和外设内存统一看作是"I/O 内存"资源。</strong></p>
+</blockquote>
               
             </div>
           </div><footer>
