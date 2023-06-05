@@ -142,6 +142,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/5_fs_only_in_kernel/">第五篇 仅在内核空间可见的文件系统梳理</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
               <ul>
@@ -296,6 +298,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../9_linux_device_class/">第九篇 Linux设备分类</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../10_u_boot/">第十篇 u-boot梳理和总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../11_linux_reset_subsystem_and_framework/">第十一篇 Linux Reset子系统及其框架</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
@@ -577,7 +581,15 @@ struct device_driver {
 </li>
 <li>
 <ul>
-<li>相比 PCI、USB 等实体总线，它主要用于描述 SOC 上的片上资源。platform 所描述的资源有一个共同点：在 CPU 的总线上直接取址。</li>
+<li>相比 PCI、USB 等实体总线，它主要用于描述 SOC 上的片上资源。platform 所描述的资源有一个共同点：<strong>在 CPU 的总线上直接取址。</strong></li>
+</ul>
+</li>
+<li>
+<p>什么是 platform_device（平台设备）？</p>
+</li>
+<li>
+<ul>
+<li>CPU 能够直接寻址的 SOC 上的外设，就是平台设备.</li>
 </ul>
 </li>
 <li>

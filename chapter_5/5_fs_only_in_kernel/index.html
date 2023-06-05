@@ -144,6 +144,8 @@
     <ul class="current">
     </ul>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_fss/">第六篇 各类文件系统梳理</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
               <ul>
@@ -279,6 +281,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/10_u_boot/">第十篇 u-boot梳理和总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/11_linux_reset_subsystem_and_framework/">第十一篇 Linux Reset子系统及其框架</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
               </ul>
@@ -310,13 +314,17 @@
 <ul>
 <li>本篇梳理一些仅存于内核空间的伪文件系统</li>
 </ul>
-<p>文件系统的精髓所在是让用户可以通过文件描述符来对指定的 inode 进行一系列的操作。伪文件系统和普通文件系统的区别在于，其 inode 对用户不可访问，即仅在内核态可见，从用户层的视角来看该文件系统并不存在。伪文件系统的作用是对一些操作系统中的元素进行封装，和普通的文件统一接口，如块设备<code>bdevfs</code>，管道文件<code>pipefs</code>，套接字<code>socketfs</code>等。通过这种方式的统一封装，才实现了 Linux 一切皆文件的思想。</p>
+<p>文件系统的精髓所在是让用户可以通过文件描述符来对指定的 inode 进行一系列的操作。</p>
+<p>伪文件系统和普通文件系统的区别在于，其 inode 对用户不可访问，即仅在内核态可见，从用户层的视角来看该文件系统并不存在。</p>
+<p>伪文件系统的作用是对一些操作系统中的元素进行封装，和普通的文件统一接口，如块设备<code>bdevfs</code>，管道文件<code>pipefs</code>，套接字<code>socketfs</code>等。</p>
+<p>通过这种方式的统一封装，才实现了 Linux 一切皆文件的思想。</p>
+<p><a href="https://ty-chen.github.io/linux-kernel-block-device/">参考</a></p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../4_io_scheduler_layer/" class="btn btn-neutral float-left" title="第四篇 I/O调度层总结"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../../chapter_6/1_linux_buddy/" class="btn btn-neutral float-right" title="第一篇 伙伴系统介绍">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../6_fss/" class="btn btn-neutral float-right" title="第六篇 各类文件系统梳理">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -342,7 +350,7 @@
       <span><a href="../4_io_scheduler_layer/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../../chapter_6/1_linux_buddy/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../6_fss/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

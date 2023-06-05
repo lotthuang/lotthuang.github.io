@@ -144,6 +144,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../5_fs_only_in_kernel/">第五篇 仅在内核空间可见的文件系统梳理</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_fss/">第六篇 各类文件系统梳理</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
               <ul>
@@ -278,6 +280,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/9_linux_device_class/">第九篇 Linux设备分类</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/10_u_boot/">第十篇 u-boot梳理和总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/11_linux_reset_subsystem_and_framework/">第十一篇 Linux Reset子系统及其框架</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
@@ -653,6 +657,20 @@ struct super_block </em>i_sb; 则指向该 inode 对应的 super_block.
 </tr>
 </tbody>
 </table>
+<h3 id="_2">一些例子</h3>
+<pre><code>
+static struct file_system_type dev_fs_type = {
+    .name = &quot;devtmpfs&quot;,
+    .mount = dev_mount,
+    .kill_sb = kill_litter_super,
+};
+
+</code></pre>
+<h3 id="api">一些内核API</h3>
+<ul>
+<li><code>register_filesystem(&amp;dev_fs_type);</code> //注册dev_fs_type文件系统，即将dev_fs_type添加到内核全局总链表中file_systems</li>
+<li><code>unregister_filesystem(&amp;dev_fs_type);</code> // 取消注册</li>
+</ul>
 <h2 id="2-task_struct">2 task_struct 中和文件系统相关的成员和结构体</h2>
 <h3 id="a-file_struct">A file_struct</h3>
 <ul>

@@ -142,6 +142,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/5_fs_only_in_kernel/">第五篇 仅在内核空间可见的文件系统梳理</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
               <ul>
@@ -286,6 +288,10 @@
         </ul>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#_7">三 怎么办</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-platfrom_driver">1 platfrom_driver 三要素</a>
+    </li>
+        </ul>
     </li>
         </ul>
     </li>
@@ -295,7 +301,7 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#_10">二 有啥好</a>
         <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#1_1">1 为什么要用设备树？</a>
+    <li class="toctree-l4"><a class="reference internal" href="#1_2">1 为什么要用设备树？</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#2-x86">2 为什么 x86 上不需要设备树?</a>
     </li>
@@ -326,6 +332,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../9_linux_device_class/">第九篇 Linux设备分类</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../10_u_boot/">第十篇 u-boot梳理和总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../11_linux_reset_subsystem_and_framework/">第十一篇 Linux Reset子系统及其框架</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
@@ -452,6 +460,78 @@
 </blockquote>
 <h3 id="_7">三 怎么办</h3>
 <p>参考<a href="https://mp.weixin.qq.com/s/2C9m6OiOnVR-ZglkAn8Pvw">这篇文章</a></p>
+<h4 id="1-platfrom_driver">1 platfrom_driver 三要素</h4>
+<p>驱动开发框架</p>
+<p>得益于设备模型，Linux kernel 平台驱动的开发有了一套非常固定的框架</p>
+<h5 id="1_1">1）模块的入口和出口</h5>
+<p>用于注册/注销 platform driver，这一部分的代码基本固定，包括函数和变量的命名方式也可固定，如下：</p>
+<pre><code>
+ /* 驱动模块加载 */
+ static int __init xxxdriver_init(void)
+{
+     return platform_driver_register(&amp;xxx_driver);
+}
+
+ /* 驱动模块卸载 */
+ static void __exit xxxdriver_exit(void)
+{
+     platform_driver_unregister(&amp;xxx_driver);
+}
+
+ module_init(xxxdriver_init);
+ module_exit(xxxdriver_exit);
+ MODULE_LICENSE(&quot;GPL V2&quot;);
+ MODULE_AUTHOR(&quot;QianRuShi-ABC&quot;);
+
+</code></pre>
+<h5 id="2platform-driver">2）platform driver</h5>
+<p>基本的 platform driver 包含三要素：<code>struct platform_driver变量</code>、<code>probe/remove函数</code>、<code>用于和device tree匹配的match table</code>，如下：</p>
+<pre><code>
+
+/*
+ * platform 平台驱动结构体
+ */
+static struct platform_driver xxx_driver = {
+ .driver = {
+ .name = &quot;xxx&quot;, /*如果没有match_table,则这里的name一定要和platform_device中的name对的起来*/
+ .of_match_table = xxx_of_match,
+ },
+ .probe = xxx_probe,
+ .remove = xxx_remove,
+};
+
+/*
+ * platform 驱动的 probe 函数
+ * 驱动与设备匹配成功以后此函数就会执行
+ */
+ static int xxx_probe(struct platform_device *dev)
+ {
+   match = of_match_device(xxx_of_match, &amp;pdev-&gt;dev);
+   if (!match) {
+      dev_err(&amp;pdev-&gt;dev, &quot;Error: No device match found\n&quot;);
+      return -ENODEV;
+   }
+   return 0;
+ }
+
+ static int xxx_remove(struct platform_device *dev)
+ {
+   // ......
+
+   /* 函数具体内容 */
+   return 0;
+ }
+
+ /* 匹配列表 */
+ static const struct of_device_id xxx_of_match[] = {
+   { .compatible = &quot;xxx-xxx&quot; },
+   { /* Sentinel */ }
+ };
+
+</code></pre>
+<ul>
+<li>注意，xxx_of_match 中的.compatible 需要和 DTS 文件中的 compatible 对应，一般格式是“厂商名称,芯片系列-模块名”，例如“actions,s900-serial”</li>
+</ul>
 <h2 id="_8">设备树</h2>
 <h3 id="_9">一 是什么</h3>
 <ul>
@@ -495,7 +575,7 @@
 </ul>
 <p><img alt="png" src="../../img/WechatIMG213.jpeg" /></p>
 <h3 id="_10">二 有啥好</h3>
-<h4 id="1_1">1 为什么要用设备树？</h4>
+<h4 id="1_2">1 为什么要用设备树？</h4>
 <h5 id="a">A</h5>
 <p>明白了设备树的概念，不妨思考一下：<code>为什么要引入设备树？</code></p>
 <p>在 Linux 内核 v2.6 版本以前，ARM 架构用于描述不同的硬件信息的文件都存放在 arch/arm/plat-xxx 和 arch/arm/mach-xxx 文件夹下，如下：</p>
@@ -568,7 +648,7 @@
 <blockquote>
 <p>记住上面的几个核心特性，往下看！</p>
 </blockquote>
-<h5 id="1_2">1 数据格式</h5>
+<h5 id="1_3">1 数据格式</h5>
 <pre><code>
 /dts-v1/;
 
