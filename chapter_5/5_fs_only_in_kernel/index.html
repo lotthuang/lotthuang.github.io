@@ -81,6 +81,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能优化专题</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
               <ul>
@@ -99,6 +101,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/9_linux_send_msg/">第九篇 拆解Linux发包过程</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
@@ -129,6 +133,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/13_interrupt_handler_examples/">第十三篇 中断处理程序的例子</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/14_linux_kernel_tracing/">第十四篇 理解内核追踪机制</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
               <ul class="current">
@@ -142,9 +148,13 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第五篇 仅在内核空间可见的文件系统梳理</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1-bdevfs">1 bdevfs</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../6_fss/">第六篇 各类文件系统梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_three_object_of_block_device/">第七篇 块设备三大对象block_device、gendisk、hd_struct数据结构总结</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
@@ -220,6 +230,10 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/4_symbol_table/">第四篇 符号表总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/5_golang/">第五篇 go语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul>
@@ -283,6 +297,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/11_linux_reset_subsystem_and_framework/">第十一篇 Linux Reset子系统及其框架</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/12_pinctl_and_gpio/">第十二篇 Linux pinctl和gpio子系统及其框架</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
               </ul>
@@ -319,6 +335,43 @@
 <p>伪文件系统的作用是对一些操作系统中的元素进行封装，和普通的文件统一接口，如块设备<code>bdevfs</code>，管道文件<code>pipefs</code>，套接字<code>socketfs</code>等。</p>
 <p>通过这种方式的统一封装，才实现了 Linux 一切皆文件的思想。</p>
 <p><a href="https://ty-chen.github.io/linux-kernel-block-device/">参考</a></p>
+<h2 id="1-bdevfs">1 bdevfs</h2>
+<p><code>bdevfs</code>对应的超级块名为<code>blockdev_superblock</code>，初始化工作在系统初始化时调用<code>bdev_cache_init()</code>完成。所有表示块设备的 <code>inode</code> 都保存在伪文件系统 <code>bdevfs</code> 中以方便块设备的管理。Linux 将块设备的 <code>block_device</code> 和 <code>bdev 文件系统</code>的块设备的 inode 通过 <code>struct bdev_inode</code> 进行关联。</p>
+<pre><code>
+struct super_block *blockdev_superblock __read_mostly;
+
+static struct file_system_type bd_type = {
+    .name = &quot;bdev&quot;,
+    .mount = bd_mount,
+    .kill_sb = kill_anon_super,
+};
+
+void __init bdev_cache_init(void)
+{
+    int err;
+    static struct vfsmount *bd_mnt;
+    bdev_cachep = kmem_cache_create(&quot;bdev_cache&quot;, sizeof(struct bdev_inode),
+            0, (SLAB_HWCACHE_ALIGN|SLAB_RECLAIM_ACCOUNT|
+                SLAB_MEM_SPREAD|SLAB_ACCOUNT|SLAB_PANIC),
+            init_once);
+    err = register_filesystem(&amp;bd_type);
+    if (err)
+        panic(&quot;Cannot register bdev pseudo-fs&quot;);
+    bd_mnt = kern_mount(&amp;bd_type);
+    if (IS_ERR(bd_mnt))
+        panic(&quot;Cannot create bdev pseudo-fs&quot;);
+    blockdev_superblock = bd_mnt-&gt;mnt_sb;   /* For writeback */
+}
+
+struct bdev_inode {
+    struct block_device bdev;
+    struct inode vfs_inode;
+};
+
+
+</code></pre>
+<p><a href="https://ty-chen.github.io/linux-kernel-block-device/">Linux 操作系统学习笔记（十四）块设备</a></p>
+<p><a href="http://blog.chinaunix.net/uid-28449808-id-5820139.html">块设备剖析之关键数据结构分析 - block_device/gendisk/hd_struct</a></p>
               
             </div>
           </div><footer>

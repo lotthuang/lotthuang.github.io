@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>第九篇 拆解Linux发包过程 - Lott's Blog</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u7b2c\u4e5d\u7bc7 \u62c6\u89e3Linux\u53d1\u5305\u8fc7\u7a0b";
+        var mkdocs_page_input_path = "chapter_3/9_linux_send_msg.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <script src="../../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Lott's Blog
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首页</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第一章 各种杂项基础</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/3_linux_kernel_basic/">第三篇 Linux内核基础</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/guzhangguanli/">第四篇 故障管理概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/biangengguanli/">第五篇 变更管理概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/rongliangguanli/">第六篇 容量管理概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/cicd/">第八篇 CICD流程概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/9_changkanchangxin/">第九篇 常看常新</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/12_monitor_and_alert/">第十二篇 监控报警最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能优化专题</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../5_conntrack/">第五篇 conntrack的常见应用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_tcp/">第六篇 TCP协议总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第九篇 拆解Linux发包过程</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 网络子系统核心描述符</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-sk_buff">1 sk_buff 结构体</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_3">详细代码</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-struct-proto-tcp_prot">2 struct proto tcp_prot</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-tcp">3 用户的 tcp 发送队列是一个链表</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-struct-sock">4 struct sock 讲解</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#5-linux-softnet_data">5 linux 实现软中断的重要数据结构 softnet_data</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_4">一些重要成员</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">网卡硬中断流程</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_6">参考文档</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/3_interrupt_one/">第三篇 硬中断</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/5_soft_irq/">第四篇 软中断</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/6_cpu_famous_register/">第六篇 CPU中的著名寄存器梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/7_linux_signal/">第七篇 Linux信号机制</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/8_linux_scheduler/">第八篇 Linux进程调度</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/10_linux_context_switch/">第十篇 低视角看context switch</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/11_linux_cpu_usage/">第十一篇 CPU利用率统计</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/12_linux_preemption/">第十二篇 内核抢占基础篇</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/13_interrupt_handler_examples/">第十三篇 中断处理程序的例子</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/14_linux_kernel_tracing/">第十四篇 理解内核追踪机制</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/2_io_stack/">第二篇 Linux IO栈总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 I/O调度层总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/5_fs_only_in_kernel/">第五篇 仅在内核空间可见的文件系统梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/7_three_object_of_block_device/">第七篇 块设备三大对象block_device、gendisk、hd_struct数据结构总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/1_linux_buddy/">第一篇 伙伴系统介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/2_slab/">第二篇 Slab层介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理原理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/6_alloc_mem_apis/">第六篇 Linux内核内存分配API函数分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/1_sync_file/">第一篇 不同主机之间的文件传输</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/5_server_side_evolution/">第五篇 服务端进化过程梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/6_elk/">第六篇 elk技术栈</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/7_charset/">第七篇 字符集和编码</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/8_locale/">第八篇 locale设置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/9_http_protocol/">第九篇 http协议</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/10_http_cookie_session_token/">第十篇 cookie和session和token总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第八章 职场通用经验</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/1_xuexixinde/">第一篇 学习心得和工作箴言</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/2_bangzhuqitatongxue/">第二篇 工作能力评价体系</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/3_yewuliuchengshuyu/">第三篇 项目管理总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/4_jishunenglimoxing/">第四篇 技术能力模型总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/5_chanpingsiwei_1/">第五篇 产品思维总结和梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/6_jixiaobaogao/">第六篇 如何写绩效报告</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/7_xiangshangguanli/">第七篇 如何向上管理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/9_speaking_skills/">第九篇 沟通能力和演讲技巧</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/10_jixiaofangtan/">第十篇 绩效访谈总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/11_classic_technical_thinking/">第十一篇 经典技术思维汇总</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第九章 编程经验</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/1_suanfa/">第一篇 算法总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/2_data_structure/">第二篇 数据结构总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/3_c_lang/">第三篇 c语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/4_symbol_table/">第四篇 符号表总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/5_golang/">第五篇 go语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/2_benefits_of_containerization/">第二篇 容器化的好处</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/3_docker_basic_concepts/">第三篇 一些基础概念</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/5_kubernetes_monitor/">第五篇 Kubernetes监控</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/1_theory/">第一篇 稳定性概论</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/10_high_avaliable/">第二篇 高可用原则总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/2_slo_process/">第三篇 SLO实施流程</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/3_stress/">第四篇 压测经验总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/11_stability/">第五篇 稳定性理论总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十二章 商业化知识总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_12/1_shifouzhide/">第一篇 如何判断一件事情值不值得做</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十三章 芯片知识总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_13/1_about_riscv/">第一篇 RISC-V 简介</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十四章 Linux驱动方向总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/1_demo_of_led_driver/">第一篇 驱动程序的Hello World</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/2_qianrushidev/">第二篇 嵌入式开发基础</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/3_linux_kernel_api_list/">第三篇 Linux内核API汇总</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/4_zifushebeiqudongyuanli/">第四篇 字符设备驱动实现原理和物理内存地址空间和IO端口空间</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/5_device_tree/">第五篇 platform总线模型和设备树</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/6_device_driver_sop/">第六篇 从阅读硬件手册开始设备驱动程序编写</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/7_linux_kernel_clipping/">第七篇 Linux移植</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/8_linux_driver_framework/">第八篇 Linux驱动框架和SoC驱动框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/9_linux_device_class/">第九篇 Linux设备分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/10_u_boot/">第十篇 u-boot梳理和总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/11_linux_reset_subsystem_and_framework/">第十一篇 Linux Reset子系统及其框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/12_pinctl_and_gpio/">第十二篇 Linux pinctl和gpio子系统及其框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Lott's Blog</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>第三章 Linux Net子系统 &raquo;</li>
+      <li>第九篇 拆解Linux发包过程</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="_1">概述</h1>
+<h2 id="_2">一 网络子系统核心描述符</h2>
+<ul>
+<li>struct msghdr</li>
+<li>struct socket VFS 层面的 socket 描述符, 有对应的 struct socket_file_ops, 用于存放对应的 read,write,poll 操作</li>
+<li>struct sock 协议层面的 socket 描述符</li>
+<li>struct proto 协议, 比如 tcp 协议. 有对应的 struct proto_ops, 可以用于存放协议对应的 accept,poll,sendmsg,recvmsg 函数</li>
+</ul>
+<h3 id="1-sk_buff">1 sk_buff 结构体</h3>
+<p>sk_buff 是 Linux 网络中最核心的结构体，它用来管理和控制接收或发送数据包的信息。
+各层协议都依赖于 sk_buff 而存在。
+<strong>内核中 sk_buff 结构体在各层协议之间传输不是用拷贝 sk_buff 结构体，而是通过增加协议头和移动指针来操作的。</strong>如果是从 L4 传输到 L2，则是通过往 sk_buff 结构体中增加该层协议头来操作；如果是从 L4 到 L2，则是通过移动 sk_buff 结构体中的 data 指针来实现，不会删除各层协议头。这样做是为了提高 CPU 的工作效率。</p>
+<h4 id="_3">详细代码</h4>
+<ul>
+<li><code>include/linux/skbuff.h</code>(sk_buff 结构定义和 sk_buff 宏)</li>
+</ul>
+<pre><code>struct sk_buff {
+    /* These two members must be first. */
+    struct sk_buff      *next;
+    struct sk_buff      *prev;
+
+    struct sock     *sk;
+    struct skb_timeval  tstamp;
+    struct net_device   *dev;
+    struct net_device   *input_dev;
+
+    union {
+        struct tcphdr   *th;
+        struct udphdr   *uh;
+        struct icmphdr  *icmph;
+        struct igmphdr  *igmph;
+        struct iphdr    *ipiph;
+        struct ipv6hdr  *ipv6h;
+        unsigned char   *raw;
+    } h;
+
+    union {
+        struct iphdr    *iph;
+        struct ipv6hdr  *ipv6h;
+        struct arphdr   *arph;
+        unsigned char   *raw;
+    } nh;
+
+    union {
+        unsigned char   *raw;
+    } mac;
+
+    struct  dst_entry   *dst;
+    struct  sec_path    *sp;
+
+    ....// 更多成员
+}
+</code></pre>
+<h3 id="2-struct-proto-tcp_prot">2 struct proto tcp_prot</h3>
+<p>在发送数据之前，我们往往还需要一个已经建立好连接的 socket。</p>
+<p>我们就以开篇服务器缩微源代码中提到的 accept 为例，当 accept 之后，进程会创建一个新的 socket 出来，然后把它放到当前进程的打开文件列表中，专门用于和对应的客户端通信。</p>
+<p>假设服务器进程通过 accept 和客户端建立了两条连接，我们来简单看一下这两条连接和进程的关联关系。</p>
+<p><img alt="png" src="../../img/2F8E69F6-03A6-4704-A9F4-7692DE382258.png" /></p>
+<p>其中代表一条连接的 socket 内核对象更为具体一点的结构图如下。</p>
+<p><img alt="png" src="../../img/661EF808-6EFF-4483-85D9-5C65C76B33AF.png" /></p>
+<p>从上面这个图得到如下结论:</p>
+<ul>
+<li>内核中不同的协议是使用<code>struct proto</code>结构体表示的, 比如 tcp 协议是使用<code>struct proto tcp_prot</code>表示.</li>
+<li>
+<ul>
+<li>按照经典的<strong>描述符</strong>+<strong>ops</strong>思想, 对应协议的操作能力是用结构体<code>struct proto_ops</code>表示, 比如 tcp 协议的一些操作是用<code>struct proto_ops inet_stream_ops</code>结构体表示.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><code>struct proto udp_prot = {</code> 定义在 <code>net/ipv4/udp.c:2650</code></li>
+</ul>
+</li>
+<li>
+<ul>
+<li><code>struct proto tcp_prot = {</code> 定义在 <code>net/ipv4/tcp_ipv4.c:2447</code></li>
+</ul>
+</li>
+<li>
+<ul>
+<li><code>struct proto {</code> 定义在 <code>include/net/sock.h:1048</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="3-tcp">3 用户的 tcp 发送队列是一个链表</h3>
+<p>skb 是 struct sk_buff 对象的简称，用户的发送队列就是该对象组成的一个链表。</p>
+<p><img alt="png" src="../../img/9EA77EDB-4091-41DC-8A8A-902CA205D6C2.png" /></p>
+<h3 id="4-struct-sock">4 struct sock 讲解</h3>
+<ul>
+<li>struct socket 是在虚拟文件系统上被创建出来的，可以把它看成一个文件。</li>
+<li>struct sock 是网络层对于 socket 的表示，结构体比较庞大.</li>
+</ul>
+<h3 id="5-linux-softnet_data">5 linux 实现软中断的重要数据结构 softnet_data</h3>
+<ul>
+<li>是用于实现软中断的重要数据结构,softnet_data 是每个 CPU 都拥有的一个数据结构.</li>
+</ul>
+<blockquote>
+<p>以下是基于 2.6.32 的源码</p>
+</blockquote>
+<pre><code>struct softnet_data
+
+{
+
+    struct Qdisc        *output_queue;  //发送帧队列
+
+    struct sk_buff_head input_pkt_queue;  //接收帧队列（入口队列）
+
+    struct list_head    poll_list; //这是一个双向链表
+
+    struct sk_buff      *completion_queue;
+
+
+
+    struct napi_struct  backlog;
+
+};
+
+</code></pre>
+<p><a href="https://developer.aliyun.com/article/11018">说明</a>：</p>
+<ol>
+<li>
+<p>可以看到发送帧队列并不是 skb 的链表，而是 Qdisc 的链表，这是因为发送一般需要 Qos 流控，所以发送帧会存入相应 dev 关联的 Qdisc 中（Qdisc 中有 skb 的队列），详见“后面链路层数据包发送”分析。</p>
+</li>
+<li>
+<p>poll_list 是一个双向链表，每一个节点是一个 napi_struct 结构，而 napi_struct 又是 net_device 的成员，所以这个链表也可以理解为一个 net_device 链表，这些 net_device 都带有输入帧等着被处理。</p>
+</li>
+<li>
+<p>input_pkt_queue 是设备驱动将数据从物理介质接收后封装成 skb 后存放的缓存队列，所有非 NAPI 设备共有这一个输入缓存队列，而 NAPI 设备有自己的私有队列用于存放输入包。</p>
+</li>
+</ol>
+<h4 id="_4">一些重要成员</h4>
+<ul>
+<li>缓冲队列(发送、接收)</li>
+</ul>
+<h2 id="_5">网卡硬中断流程</h2>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>函数</th>
+<th>是否开启硬中断</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>do_IRQ()</td>
+<td>3</td>
+</tr>
+<tr>
+<td>2</td>
+<td>handle_IRQ_event()</td>
+<td>3</td>
+</tr>
+<tr>
+<td>3</td>
+<td>驱动程序提供的 rtc_interrupt</td>
+<td>3</td>
+</tr>
+<tr>
+<td>4</td>
+<td>do_softirq</td>
+<td>3</td>
+</tr>
+<tr>
+<td>5</td>
+<td>net_rx_action</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_6">参考文档</h2>
+<p><a href="https://mp.weixin.qq.com/s/wThfD9th9e_-YGHJJ3HXNQ">一万字，拆解 Linux 网络包发送过程</a></p>
+<p><a href="https://mp.weixin.qq.com/s/GoYDsfy9m0wRoXi_NCfCmg">图解 Linux 网络包接收过程</a></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../8_io_multiplexing/" class="btn btn-neutral float-left" title="第八篇 IO多路复用总结"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_4/1_process_ulimit/" class="btn btn-neutral float-right" title="第一篇 进程Max open files的设置">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../8_io_multiplexing/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../../chapter_4/1_process_ulimit/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme_extra.js" defer></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

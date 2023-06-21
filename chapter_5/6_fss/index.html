@@ -81,6 +81,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能优化专题</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
               <ul>
@@ -99,6 +101,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/9_linux_send_msg/">第九篇 拆解Linux发包过程</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
@@ -128,6 +132,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/12_linux_preemption/">第十二篇 内核抢占基础篇</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/13_interrupt_handler_examples/">第十三篇 中断处理程序的例子</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/14_linux_kernel_tracing/">第十四篇 理解内核追踪机制</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
@@ -179,6 +185,8 @@
     <li class="toctree-l2"><a class="reference internal" href="#_3">其他文件系统</a>
     </li>
     </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_three_object_of_block_device/">第七篇 块设备三大对象block_device、gendisk、hd_struct数据结构总结</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
@@ -254,6 +262,10 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/4_symbol_table/">第四篇 符号表总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/5_golang/">第五篇 go语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul>
@@ -316,6 +328,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/10_u_boot/">第十篇 u-boot梳理和总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/11_linux_reset_subsystem_and_framework/">第十一篇 Linux Reset子系统及其框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/12_pinctl_and_gpio/">第十二篇 Linux pinctl和gpio子系统及其框架</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
@@ -539,6 +553,9 @@ cpu0  cpu1  cpu2  cpu3  cpuidle  isolated  kernel_max  microcode  modalias  nohz
 <li>devtmpfs 的功用是在 Linux 核心 启动早期建立一个初步的 /dev，令一般启动程序不用等待 udev，缩短 GNU/Linux 的开机时间。</li>
 </ul>
 <p>debugfs</p>
+<ul>
+<li>在内核追踪技术的发展初期，追踪相关的文件都放在 debugfs 虚拟文件系统中，debugfs 主要设计目的是为了提供一个通用的内核调试接口，内核的任意子系统都有可能使用 debugfs 做调试.</li>
+</ul>
 <p>socketfs</p>
 <p>pipefs</p>
 <p>ramfs</p>
@@ -549,7 +566,7 @@ cpu0  cpu1  cpu2  cpu3  cpuidle  isolated  kernel_max  microcode  modalias  nohz
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../5_fs_only_in_kernel/" class="btn btn-neutral float-left" title="第五篇 仅在内核空间可见的文件系统梳理"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../../chapter_6/1_linux_buddy/" class="btn btn-neutral float-right" title="第一篇 伙伴系统介绍">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../7_three_object_of_block_device/" class="btn btn-neutral float-right" title="第七篇 块设备三大对象block_device、gendisk、hd_struct数据结构总结">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -575,7 +592,7 @@ cpu0  cpu1  cpu2  cpu3  cpuidle  isolated  kernel_max  microcode  modalias  nohz
       <span><a href="../5_fs_only_in_kernel/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../../chapter_6/1_linux_buddy/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../7_three_object_of_block_device/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

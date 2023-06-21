@@ -81,6 +81,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能优化专题</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
               <ul>
@@ -99,6 +101,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/9_linux_send_msg/">第九篇 拆解Linux发包过程</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
@@ -129,6 +133,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/13_interrupt_handler_examples/">第十三篇 中断处理程序的例子</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/14_linux_kernel_tracing/">第十四篇 理解内核追踪机制</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
               <ul>
@@ -143,6 +149,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/5_fs_only_in_kernel/">第五篇 仅在内核空间可见的文件系统梳理</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/7_three_object_of_block_device/">第七篇 块设备三大对象block_device、gendisk、hd_struct数据结构总结</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
@@ -217,6 +225,10 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/3_c_lang/">第三篇 c语言总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/4_symbol_table/">第四篇 符号表总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/5_golang/">第五篇 go语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -299,6 +311,10 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#_6">背景</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#readxwritex">readX/writeX 系列函数</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#linux">更多Linux 读写寄存器命令</a>
+    </li>
         </ul>
     </li>
     </ul>
@@ -316,6 +332,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../10_u_boot/">第十篇 u-boot梳理和总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../11_linux_reset_subsystem_and_framework/">第十一篇 Linux Reset子系统及其框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_pinctl_and_gpio/">第十二篇 Linux pinctl和gpio子系统及其框架</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
@@ -387,6 +405,7 @@
 </ul>
 </li>
 </ul>
+<p><a href="https://ost.51cto.com/posts/3851">驱动必备基础知识</a></p>
 <h2 id="_3">二 参考</h2>
 <h3 id="ioremap">一、 ioremap() <a href="https://blog.csdn.net/zqixiao_09/article/details/50859505">函数基础概念</a></h3>
 <ul>
@@ -490,6 +509,100 @@ static void rk3288_clk_init(struct device_node *np) {
 <blockquote>
 <p>但是，<strong>这两者在硬件实现上的差异对于软件来说是完全透明的，驱动程序开发人员可以将内存映射方式的 I/O 端口和外设内存统一看作是"I/O 内存"资源。</strong></p>
 </blockquote>
+<h3 id="readxwritex">readX/writeX 系列函数</h3>
+<p>在将 I/O 内存资源的物理地址映射成核心虚地址后，理论上讲我们就可以象读写 RAM 那样直接读写 I/O 内存资源了。为了保证驱动程序的跨平台的可移植性，我们应该使用 Linux 中特定的函数来访问 I/O 内存资源，而不应该通过指向核心虚地址的指针来访问, 使用特定函数的话就用到 Linux 在这一层专门封装的一层子系统屏蔽了各个 CPU 平台的细节(使用这些特定函数, 会屏蔽 X86 和 Arm 平台细节)。读写 I/O 的函数就是这里提到的<code>readX/writeX()</code>系列函数, 包括后续的<code>inb</code>、<code>inw</code>、<code>inl</code>,<code>outb</code>、<code>outw</code>、<code>outl</code>等。</p>
+<p><code>readX/writeX()</code> are used to access memory mapped devices. On some architectures the memory mapped IO stuff needs to be accessed differently. On the simple architectures, we just read/write the memory location directly.</p>
+<ul>
+<li>writel() 往内存映射的 I/O 空间上写数据，wirtel() I/O 上写入 32 位数据 (4 字节)。</li>
+<li>原型：</li>
+</ul>
+<pre><code>
+#include
+
+void writel (unsigned char data , unsigned short addr )
+
+</code></pre>
+<ul>
+<li>readl() 从内存映射的 I/O 空间读取数据,readl 从 I/O 读取 32 位数据 ( 4 字节 )。</li>
+</ul>
+<p>原型：</p>
+<pre><code>#include
+
+unsigned char readl (unsigned int addr )
+
+</code></pre>
+<p>变量 addr 是 I/O 地址。</p>
+<p>返回值 ： 从 I/O 空间读取的数值。</p>
+<h3 id="linux">更多<a href="https://juejin.cn/s/linux%20%E8%AF%BB%E5%86%99%E5%AF%84%E5%AD%98%E5%99%A8%20%E5%91%BD%E4%BB%A4">Linux 读写寄存器命令</a></h3>
+<p>在 Linux 系统中，要读写寄存器，需要使用特定的命令和工具。以下是常用的几个命令：</p>
+<blockquote>
+<p>定义在<code>kernel/io.c</code>中</p>
+</blockquote>
+<ul>
+<li><code>inb</code>、<code>inw</code>、<code>inl</code>：用于读取一个字节、一个字或者一个双字的 I/O 端口。例如，要读取端口号为 0x80 的一个字节，可以使用以下命令：</li>
+</ul>
+<pre><code>inb 0x80
+</code></pre>
+<ul>
+<li><code>outb</code>、<code>outw</code>、<code>outl</code>：用于向一个 I/O 端口写入一个字节、一个字或者一个双字。例如，要向端口号为 0x80 的一个字节写入数据 0xAB，可以使用以下命令：</li>
+</ul>
+<pre><code>outb 0xAB, 0x80
+</code></pre>
+<ul>
+<li>
+<p><code>mmap</code>：用于将设备的寄存器映射到用户空间的内存地址。这样，在用户空间就可以直接读写设备的寄存器，而无需通过内核态的中断处理程序。具体使用方法可以参考 mmap() 系统调用的文档。</p>
+</li>
+<li>
+<p>网卡硬中断的一个使用<code>inw</code>的例子</p>
+</li>
+</ul>
+<pre><code>/*
+ * The typical workload of the driver:
+ * Handle the network interface interrupts.
+ */
+static irqreturn_t net_interrupt(int irq, void *dev_id)  // 注意参数是：中断号和设备id
+ {
+         struct net_device *dev = dev_id;
+         struct net_local *np;
+         int ioaddr, status;
+         int handled = 0;
+
+         ioaddr = dev-&gt;base_addr;       // 设备的IO地址
+
+         np = netdev_priv(dev);         // 得到dev私有数据
+         status = inw(ioaddr + 0);      // 从端口读两个字节
+
+         if (status == 0)
+                 goto out;
+         handled = 1;
+
+         if (status &amp; RX_INTR) {
+                 /* Got a packet(s). */
+                 net_rx(dev);          // 使用这个函数net_rx来获取一个数据包 -----&gt; receive
+         }                             // 这个函数下面会说到
+ #if TX_RING
+         if (status &amp; TX_INTR) {       // 发送数据
+                 /* Transmit complete. */
+                 net_tx(dev);             // 发送数据使用net_tx ------&gt; transmit
+                 np-&gt;stats.tx_packets++;  // 计数
+                 netif_wake_queue(dev);   // 处理结束，唤醒下一个队列中等待者                                                        }
+#endif
+         if (status &amp; COUNTERS_INTR)
+         {                                /* Increment the appropriate 'localstats' field. */
+              np-&gt;stats.tx_window_errors++;
+         }
+out:
+         return IRQ_RETVAL(handled); // 返回中断
+}
+</code></pre>
+<ul>
+<li>
+<ul>
+<li>可以看到网卡硬中断时，通过<code>inw</code>函数获取网卡状态,来判断是有数据接收完成还是有数据发送完成</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://zhuanlan.zhihu.com/p/550682703">更多参考</a></p>
               
             </div>
           </div><footer>

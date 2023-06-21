@@ -81,6 +81,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能优化专题</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
               <ul>
@@ -99,6 +101,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/9_linux_send_msg/">第九篇 拆解Linux发包过程</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
@@ -129,6 +133,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/13_interrupt_handler_examples/">第十三篇 中断处理程序的例子</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/14_linux_kernel_tracing/">第十四篇 理解内核追踪机制</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
               <ul>
@@ -143,6 +149,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/5_fs_only_in_kernel/">第五篇 仅在内核空间可见的文件系统梳理</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/7_three_object_of_block_device/">第七篇 块设备三大对象block_device、gendisk、hd_struct数据结构总结</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
@@ -218,6 +226,10 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/4_symbol_table/">第四篇 符号表总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/5_golang/">第五篇 go语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul>
@@ -275,6 +287,20 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#struct">二 各种 struct</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">三 各类风格</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-operations">1 描述符 + operations 风格</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2_1">2 框架风格 方便扩展、屏蔽底层细节</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#21">2.1 屏蔽底层细节</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#22">2.2 元素外包装, 方便扩展</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../4_zifushebeiqudongyuanli/">第四篇 字符设备驱动实现原理和物理内存地址空间和IO端口空间</a>
@@ -292,6 +318,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../10_u_boot/">第十篇 u-boot梳理和总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../11_linux_reset_subsystem_and_framework/">第十一篇 Linux Reset子系统及其框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_pinctl_and_gpio/">第十二篇 Linux pinctl和gpio子系统及其框架</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
@@ -400,6 +428,35 @@ static inline int register_chrdev(unsigned int major, const char *name,
 <p>描述块设备的数据结构有两个，一个是<code>struct block_device</code>,用来描述一个块设备或者块设备的一个分区；</p>
 <p>另一个是<code>struct gendisk</code>，用来描述整个块设备的特性。</p>
 <p><strong>对于一个包含多个分区的块设备，struct block_device 结构有多个,每个分区一个 block_device, 整个设备也对应一个 block_device,而 struct gendisk 结构永远只有一个。</strong></p>
+<h2 id="_2">三 各类风格</h2>
+<h3 id="1-operations">1 描述符 + operations 风格</h3>
+<ul>
+<li>Linux 内核总是各种<code>描述符</code> + <code>operations</code>风格 .</li>
+<li>
+<ul>
+<li>比如内核中不同的协议是使用<code>struct proto</code>结构体表示的, 比如 tcp 协议是使用<code>struct proto tcp_prot</code>表示</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>对应协议的操作能力是用结构体<code>struct proto_ops</code>表示, 比如 tcp 协议的一些操作是用<code>struct proto_ops inet_stream_ops</code>结构体表示.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>比如经典的<code>file</code> + <code>file_operations</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="2_1">2 框架风格 方便扩展、屏蔽底层细节</h3>
+<h4 id="21">2.1 屏蔽底层细节</h4>
+<ul>
+<li>Linux 内核总是使用汇编语言来抽象不同 CPU 平台细节，然后真正的<strong>主逻辑/主框架</strong>使用 C 语言实现。然后后续新的平台出现时就必须/只要遵守 C 语言实现的这个主框架，即可加入对 Linux 的支持, 方便扩展.</li>
+</ul>
+<h4 id="22">2.2 元素外包装, 方便扩展</h4>
+<ul>
+<li>Linux 内核不同子系统之间总是留有一层扩展性，比如 <code>wait_queue</code>等待队列里的元素是<code>wait_queue_t</code> ,代表等待实体, 但其实大部分场景下等待实体都是进程<code>task_struct</code>. 比如调度器调度的也是调度实体，其实大部分场景调度实体都是<code>task_struct</code>.</li>
+</ul>
               
             </div>
           </div><footer>

@@ -81,6 +81,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能优化专题</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
               <ul>
@@ -99,6 +101,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/9_linux_send_msg/">第九篇 拆解Linux发包过程</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
@@ -167,6 +171,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../13_interrupt_handler_examples/">第十三篇 中断处理程序的例子</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../14_linux_kernel_tracing/">第十四篇 理解内核追踪机制</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
               <ul>
@@ -181,6 +187,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/5_fs_only_in_kernel/">第五篇 仅在内核空间可见的文件系统梳理</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/7_three_object_of_block_device/">第七篇 块设备三大对象block_device、gendisk、hd_struct数据结构总结</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
@@ -256,6 +264,10 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/4_symbol_table/">第四篇 符号表总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/5_golang/">第五篇 go语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul>
@@ -319,6 +331,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/11_linux_reset_subsystem_and_framework/">第十一篇 Linux Reset子系统及其框架</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/12_pinctl_and_gpio/">第十二篇 Linux pinctl和gpio子系统及其框架</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
               </ul>
@@ -357,7 +371,7 @@
 <h3 id="_3">宏观层面</h3>
 <ul>
 <li><code>软中断</code>是纯软件实现的，宏观效果看上去和中断差不多的一种方式。
-什么叫宏观效果呢？意思就是说，中断在宏观层面看来，就是<strong>打断当前正在运行的程序，转而去执行中断处理程序，执行完之后再返回原程序</strong>。</li>
+  什么叫宏观效果呢？意思就是说，中断在宏观层面看来，就是<strong>打断当前正在运行的程序，转而去执行中断处理程序，执行完之后再返回原程序</strong>。</li>
 </ul>
 <p>从这个层面看，硬中断可以达到这个效果，软中断也可以达到这个效果，所以说宏观效果一样。
 那微观层面呢？就是我们需要了解的原理啦。</p>
@@ -392,7 +406,7 @@
 <p>接着看 <code>rest_init()</code> 这个方法。</p>
 <pre><code>static void rest_init(void) {
     kernel_thread(init, NULL, CLONE_KERNEL);
-} 
+}
 
 static int init(void * unused) {
     do_pre_smp_initcalls();
@@ -498,7 +512,7 @@ pending &gt;&gt;= 1;
 </li>
 <li>
 <p>第二步，<code>触发一个软中断</code>，其实就是修改 pending 的某个标志位，触发一次软中断，相当于硬中断中由外部硬件、异常、或者 INT 指令来触发硬中断一样。
-而实际上，Linux 就是这样做的，和我们猜的一样，我们一步步看。</p>
+  而实际上，Linux 就是这样做的，和我们猜的一样，我们一步步看。</p>
 </li>
 </ul>
 <h3 id="_7">注册中断向量表</h3>
@@ -598,21 +612,29 @@ static inline void __netif_rx_schedule(struct net_device *dev) {
 <h2 id="_10">中断的上半部和下半部说明</h2>
 <ul>
 <li>
-<p>中断的上半部是在具体irq号完全禁止的状态下执行的, 下半部则不是. 下半部由多种实现方式, 例如: <code>软中断</code>、<code>tasklet</code>、<code>workqueue</code>, 只有<code>workqueue</code>是在进程上下文中执行, 可以睡眠和被重新调度, 而软中断和tasklet是不能睡眠的, 因为他是在中断上下文中执行.</p>
+<p>中断的上半部是在具体 irq 号完全禁止的状态下执行的, 下半部则不是. 下半部由多种实现方式, 例如: <code>软中断</code>、<code>tasklet</code>、<code>workqueue</code>, 只有<code>workqueue</code>是在进程上下文中执行, 可以睡眠和被重新调度, 而软中断和 tasklet 是不能睡眠的, 因为他是在中断上下文中执行.</p>
 </li>
 <li>
-<p>上半部核心函数是<code>do_irq()</code>函数,每次调用<code>do_irq()</code>函数时，传入了CPU当前寄存器的状态.<code>unsigned do_IRQ(struct pt_regs regs)</code></p>
+<p>上半部核心函数是<code>do_irq()</code>函数,每次调用<code>do_irq()</code>函数时，传入了 CPU 当前寄存器的状态.<code>unsigned do_IRQ(struct pt_regs regs)</code></p>
 </li>
 </ul>
 <p><img alt="png" src="../../img/%E4%B8%AD%E6%96%AD%E4%B8%8A%E5%8D%8A%E9%83%A8%E6%9C%BA%E5%88%B6.png" /></p>
 <ul>
 <li>下半部运行时，允许硬中断（例如网卡下半部运行时，又允许其他硬中断了）</li>
-<li>上半部的中断处理程序中，触发了下半部程序.  </li>
-<li>下半部程序都是在do_softirq()函数中运行.</li>
-<li>那么触发后，具体何时运行呢？ 在上半部中断处理程序返回时，或者在ksoftirqd 线程里</li>
+<li>上半部的中断处理程序中，触发了下半部程序.</li>
+<li>下半部程序都是在 do_softirq()函数中运行.</li>
+<li>那么触发后，具体何时运行呢？ 在上半部中断处理程序返回时，或者在 ksoftirqd 线程里</li>
 <li>对于硬件驱动的研发人员，可以用</li>
-<li>request_irq()函数 —&gt; 注册上半部中断处理程序</li>
-<li>可以用 open_irq()函数 —&gt; 注册下半部中断处理程序</li>
+<li>
+<ul>
+<li>1 request_irq()函数 —&gt; 注册上半部中断处理程序</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>2 可以用 open_irq()函数 —&gt; 注册下半部中断处理程序</li>
+</ul>
+</li>
 </ul>
 <h3 id="_11">中断处理程序的上部分和下半部可以理解为：</h3>
 <ul>
@@ -639,12 +661,10 @@ static inline void __netif_rx_schedule(struct net_device *dev) {
 </ul>
 <h3 id="2">2 常用的一些优化经验</h3>
 <ul>
-<li>当你发现软中断占用的CPU利用率比较高时，可以从以下几个方面排查<ul>
-<li>网卡软中断的优化,把中断信号发给不同的CPU，因为默认情况下所有中断都发给了CPU0，导致CPU0被打满。把中断信号发给不同的CPU之后，多个CPU肯定比单个CPU处理起来快，因此性能能够显著提升。 </li>
-<li>硬件CPU功率是否开启最大性能模式. 如果一台机器是节能模式、一台是MaxPerformance模式, 那么在相同业务量的情况下, 节能模式那台的CPU soft irq就会高.</li>
-<li>高流量redis服务器，并没有把网卡软中断负载均衡到所有CPU上，而是把网卡软中断绑定的NUMA架构中的其中一个节点（例如该节点是4核CPU），然后把redis进程绑定的NUMA架构中的其他节点（例如其他1个节点）</li>
-</ul>
-</li>
+<li>当你发现软中断占用的 CPU 利用率比较高时，可以从以下几个方面排查</li>
+<li>网卡软中断的优化,把中断信号发给不同的 CPU，因为默认情况下所有中断都发给了 CPU0，导致 CPU0 被打满。把中断信号发给不同的 CPU 之后，多个 CPU 肯定比单个 CPU 处理起来快，因此性能能够显著提升。</li>
+<li>硬件 CPU 功率是否开启最大性能模式. 如果一台机器是节能模式、一台是 MaxPerformance 模式, 那么在相同业务量的情况下, 节能模式那台的 CPU soft irq 就会高.</li>
+<li>高流量 redis 服务器，并没有把网卡软中断负载均衡到所有 CPU 上，而是把网卡软中断绑定的 NUMA 架构中的其中一个节点（例如该节点是 4 核 CPU），然后把 redis 进程绑定的 NUMA 架构中的其他节点（例如其他 1 个节点）</li>
 </ul>
 <h3 id="3-cpu">3 如何定位软中断 CPU 使用率过高的问题？</h3>
 <p>要想知道当前的系统的软中断情况，我们可以使用 top 命令查看，下面是一台服务器上的 top 的数据：</p>
