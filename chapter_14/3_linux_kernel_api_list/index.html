@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第三篇 Linux内核API汇总 - Lott's Blog</title>
+    <title>第三篇 Linux内核API汇总和各类风格总结 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u4e09\u7bc7 Linux\u5185\u6838API\u6c47\u603b";
+        var mkdocs_page_name = "\u7b2c\u4e09\u7bc7 Linux\u5185\u6838API\u6c47\u603b\u548c\u5404\u7c7b\u98ce\u683c\u603b\u7ed3";
         var mkdocs_page_input_path = "chapter_14/3_linux_kernel_api_list.md";
         var mkdocs_page_url = null;
       </script>
@@ -55,6 +55,10 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/10_virtual_machine_on_mac_m1_chip/">第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -102,7 +106,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/9_linux_send_msg/">第九篇 拆解Linux发包过程</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/9_linux_send_msg/">第九篇 Linux Net子系统实现原理</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
@@ -122,8 +126,6 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/7_linux_signal/">第七篇 Linux信号机制</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/8_linux_scheduler/">第八篇 Linux进程调度</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/10_linux_context_switch/">第十篇 低视角看context switch</a>
                   </li>
@@ -275,13 +277,21 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../2_qianrushidev/">第二篇 嵌入式开发基础</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第三篇 Linux内核API汇总</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第三篇 Linux内核API汇总和各类风格总结</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#api">一 各种 API</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1-register_chrdev">1 register_chrdev()</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#2">2 内核高速缓存</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3">3 关闭中断和打开中断</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#31">3.1 关中断</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#31_1">3.1 开中断</a>
+    </li>
+        </ul>
     </li>
         </ul>
     </li>
@@ -298,6 +308,26 @@
     <li class="toctree-l4"><a class="reference internal" href="#22">2.2 元素外包装, 方便扩展</a>
     </li>
         </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">四 各种注册技能</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 软中断注册到一个数组</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-type">2 文件系统 type 是注册到链表</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-numa-node">3 多个 NUMA Node 使用链表相连</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">五 各种常用的宏</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-current">1 current 宏</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-container_of">2 container_of 宏</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-init_list_head">3 INIT_LIST_HEAD 用于在运行时初始化一个链表</a>
     </li>
         </ul>
     </li>
@@ -339,7 +369,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>第十四章 Linux驱动方向总结 &raquo;</li>
-      <li>第三篇 Linux内核API汇总</li>
+      <li>第三篇 Linux内核API汇总和各类风格总结</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -417,6 +447,33 @@ static inline int register_chrdev(unsigned int major, const char *name,
                 SLAB_MEM_SPREAD|SLAB_ACCOUNT|SLAB_PANIC),
             init_once);
 </code></pre>
+<h3 id="3">3 关闭中断和打开中断</h3>
+<h4 id="31">3.1 关中断</h4>
+<p>可以通过下面两个函数中的其中任何一个 关闭当前处理器上的所有中断处理， 这两个函数定义在 <code>&lt;asm/system.h&gt;</code>中:</p>
+<pre><code>void local_irq_save(unsigned long flags);
+void local_irq_disable(void);
+
+</code></pre>
+<ul>
+<li>local_irq_save 的调用把当前的中断状态（开或关）保存到 flags 中，然后禁用当前处理器上的中断。</li>
+<li>local_irq_disable 不保存状态而关闭本地处理器上的中断发送; 只有我们知道中断并未在其他地方被禁用的情况下，才能使用这个版本。</li>
+</ul>
+<h4 id="31_1">3.1 开中断</h4>
+<p>可通过如下函数打开中断:</p>
+<pre><code>void local_irq_restore(unsigned long flags);
+void local_irq_enable(void);
+
+</code></pre>
+<ul>
+<li>local_irq_restore 将 保存的 flags 状态值恢复（即 local_irq_save 的入参 flag ）, 恢复之前的状态（开或关）。</li>
+<li>
+<p>local_irq_enable 则无条件打开中断。</p>
+</li>
+<li>
+<p>local_irq_save 和 local_irq_restore 会更安全。</p>
+</li>
+</ul>
+<p>没有方法全局禁用整个系统的所有中断。 <a href="https://blog.csdn.net/u012247418/article/details/104180225">内核开发者认为关闭所有中断的代价太高，因此没有必要提供这个能力。</a></p>
 <h2 id="struct">二 各种 struct</h2>
 <ul>
 <li>字符设备 <code>struct cdev</code></li>
@@ -447,15 +504,146 @@ static inline int register_chrdev(unsigned int major, const char *name,
 <li>比如经典的<code>file</code> + <code>file_operations</code></li>
 </ul>
 </li>
+<li>
+<ul>
+<li>比如经典的<code>platform_device</code> + <code>file_operations</code>, <code>net_device</code> + <code>net_device_ops</code></li>
+</ul>
+</li>
 </ul>
 <h3 id="2_1">2 框架风格 方便扩展、屏蔽底层细节</h3>
 <h4 id="21">2.1 屏蔽底层细节</h4>
 <ul>
 <li>Linux 内核总是使用汇编语言来抽象不同 CPU 平台细节，然后真正的<strong>主逻辑/主框架</strong>使用 C 语言实现。然后后续新的平台出现时就必须/只要遵守 C 语言实现的这个主框架，即可加入对 Linux 的支持, 方便扩展.</li>
+<li>驱动程序也是如此, 首先需要实现特定于硬件的函数, 然后嵌入到内核事先定义好的结构体中. 比如<code>struct napi_struct</code>, 定义在<code>include/linux/netdevice.h</code></li>
+</ul>
+<pre><code>struct napi_struct {
+    /* The poll_list must only be managed by the entity which
+     * changes the state of the NAPI_STATE_SCHED bit.  This means
+     * whoever atomically sets that bit can add this napi_struct
+     * to the per-CPU poll_list, and whoever clears that bit
+     * can remove from the list right before clearing the bit.
+     */
+    struct list_head    poll_list;
+
+    unsigned long       state;
+    int         weight;
+    int         defer_hard_irqs_count;
+    unsigned long       gro_bitmask;
+    int         (*poll)(struct napi_struct *, int);
+#ifdef CONFIG_NETPOLL
+    /* CPU actively polling if netpoll is configured */
+    int         poll_owner;
+#endif
+    /* CPU on which NAPI has been scheduled for processing */
+    int         list_owner;
+    struct net_device   *dev;
+    struct gro_list     gro_hash[GRO_HASH_BUCKETS];
+    struct sk_buff      *skb;
+    struct list_head    rx_list; /* Pending GRO_NORMAL skbs */
+    int         rx_count; /* length of rx_list */
+    unsigned int        napi_id;
+    struct hrtimer      timer;
+    struct task_struct  *thread;
+    /* control-path-only fields follow */
+    struct list_head    dev_list;
+    struct hlist_node   napi_hash_node;
+};
+</code></pre>
+<ul>
+<li>
+<ul>
+<li>这里的 poll 函数就是特定于网卡硬件的.</li>
+</ul>
+</li>
 </ul>
 <h4 id="22">2.2 元素外包装, 方便扩展</h4>
 <ul>
 <li>Linux 内核不同子系统之间总是留有一层扩展性，比如 <code>wait_queue</code>等待队列里的元素是<code>wait_queue_t</code> ,代表等待实体, 但其实大部分场景下等待实体都是进程<code>task_struct</code>. 比如调度器调度的也是调度实体，其实大部分场景调度实体都是<code>task_struct</code>.</li>
+</ul>
+<h2 id="_3">四 各种注册技能</h2>
+<h3 id="1">1 软中断注册到一个数组</h3>
+<ul>
+<li>
+<p><code>open_softirq</code> 是注册到<code>softirq_vec</code>数组里的</p>
+</li>
+<li>
+<ul>
+<li>使用方式</li>
+</ul>
+</li>
+</ul>
+<pre><code> open_softirq(NET_TX_SOFTIRQ, net_tx_action);
+ open_softirq(NET_RX_SOFTIRQ, net_rx_action);
+
+</code></pre>
+<ul>
+<li>
+<ul>
+<li>定义</li>
+</ul>
+</li>
+</ul>
+<p><code>kernel/softirq.c</code></p>
+<pre><code>void open_softirq(int nr, void (*action)(struct softirq_action *))
+{
+    softirq_vec[nr].action = action;
+}
+</code></pre>
+<h3 id="2-type">2 文件系统 type 是注册到链表</h3>
+<ul>
+<li><code>register_filesystem(&amp;dev_fs_type);</code> //注册 dev_fs_type 文件系统，即将 dev_fs_type 添加到内核全局总链表中 file_systems</li>
+</ul>
+<pre><code>/**
+ *  register_filesystem - register a new filesystem
+ *  @fs: the file system structure
+ *
+ *  Adds the file system passed to the list of file systems the kernel
+ *  is aware of for mount and other syscalls. Returns 0 on success,
+ *  or a negative errno code on an error.
+ *
+ *  The &amp;struct file_system_type that is passed is linked into the kernel
+ *  structures and must not be freed until the file system has been
+ *  unregistered.
+ */
+
+int register_filesystem(struct file_system_type * fs)
+{
+    int res = 0;
+    struct file_system_type ** p;
+
+    if (fs-&gt;parameters &amp;&amp;
+        !fs_validate_description(fs-&gt;name, fs-&gt;parameters))
+        return -EINVAL;
+
+    BUG_ON(strchr(fs-&gt;name, '.'));
+    if (fs-&gt;next)
+        return -EBUSY;
+    write_lock(&amp;file_systems_lock);
+    p = find_filesystem(fs-&gt;name, strlen(fs-&gt;name));
+    if (*p)
+        res = -EBUSY;
+    else
+        *p = fs;
+    write_unlock(&amp;file_systems_lock);
+    return res;
+}
+
+</code></pre>
+<h3 id="3-numa-node">3 多个 NUMA Node 使用链表相连</h3>
+<p>在内核中使用<code>struct pg_data_t</code>表示一个 NUMA Node, 对于 UMA 架构 其实相当于只有一个 Node, 对于 NUMA 架构相当于有多个 Node, 多个 Node 形成一个链表.</p>
+<h2 id="_4">五 各种常用的宏</h2>
+<h3 id="1-current">1 current 宏</h3>
+<p>内核代码中，current 总是指向当前的进程的 task_struct</p>
+<h3 id="2-container_of">2 container_of 宏</h3>
+<p>是一个在 Linux 内核中常用的宏，用于获取某个数据结构的指针。</p>
+<p>例如下面通过 inode 结构体获取对应的 cdev 结构体, 然后将 file 结构体的 private_data 成员赋值给它, 是一个典型的 open 操作的实现方法.</p>
+<pre><code>cd   = container_of(inode-&gt;i_cdev,struct   mycdev,cdev);
+    file-&gt;private_data =   cd;
+
+</code></pre>
+<h3 id="3-init_list_head">3 INIT_LIST_HEAD 用于在运行时初始化一个链表</h3>
+<ul>
+<li>INIT_LIST_HEAD(ptr) 这个宏通常用于在运行时初始化一个链表</li>
 </ul>
               
             </div>

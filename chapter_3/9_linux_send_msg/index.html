@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第九篇 拆解Linux发包过程 - Lott's Blog</title>
+    <title>第九篇 Linux Net子系统实现原理 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u4e5d\u7bc7 \u62c6\u89e3Linux\u53d1\u5305\u8fc7\u7a0b";
+        var mkdocs_page_name = "\u7b2c\u4e5d\u7bc7 Linux Net\u5b50\u7cfb\u7edf\u5b9e\u73b0\u539f\u7406";
         var mkdocs_page_input_path = "chapter_3/9_linux_send_msg.md";
         var mkdocs_page_url = null;
       </script>
@@ -55,6 +55,10 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/10_virtual_machine_on_mac_m1_chip/">第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -102,7 +106,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../8_io_multiplexing/">第八篇 IO多路复用总结</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第九篇 拆解Linux发包过程</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第九篇 Linux Net子系统实现原理</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#_2">一 网络子系统核心描述符</a>
         <ul>
@@ -117,6 +121,10 @@
     <li class="toctree-l3"><a class="reference internal" href="#3-tcp">3 用户的 tcp 发送队列是一个链表</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#4-struct-sock">4 struct sock 讲解</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#socket-sock">socket 和 sock 是同一事物的两个侧面，为什么不把两个数据结构合并成一个呢?</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#5-linux-softnet_data">5 linux 实现软中断的重要数据结构 softnet_data</a>
         <ul>
@@ -127,6 +135,12 @@
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_5">网卡硬中断流程</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#linux-net">Linux Net 子系统核心组成</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#ptype_base-ptype_all">ptype_base 和 ptype_all</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_6">参考文档</a>
     </li>
@@ -150,8 +164,6 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/7_linux_signal/">第七篇 Linux信号机制</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/8_linux_scheduler/">第八篇 Linux进程调度</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/10_linux_context_switch/">第十篇 低视角看context switch</a>
                   </li>
@@ -303,7 +315,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/2_qianrushidev/">第二篇 嵌入式开发基础</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/3_linux_kernel_api_list/">第三篇 Linux内核API汇总</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/3_linux_kernel_api_list/">第三篇 Linux内核API汇总和各类风格总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/4_zifushebeiqudongyuanli/">第四篇 字符设备驱动实现原理和物理内存地址空间和IO端口空间</a>
                   </li>
@@ -341,7 +353,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>第三章 Linux Net子系统 &raquo;</li>
-      <li>第九篇 拆解Linux发包过程</li>
+      <li>第九篇 Linux Net子系统实现原理</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -442,6 +454,46 @@
 <li>struct socket 是在虚拟文件系统上被创建出来的，可以把它看成一个文件。</li>
 <li>struct sock 是网络层对于 socket 的表示，结构体比较庞大.</li>
 </ul>
+<h4 id="socket-sock">socket 和 sock 是同一事物的两个侧面，<a href="https://abcdxyzk.github.io/blog/2015/06/12/kernel-net-sock-socket/">为什么不把两个数据结构合并成一个呢?</a></h4>
+<ul>
+<li>这是因为 socket 是 inode 结构中的一部分，即把 inode 结 构内部的一个 union 用作 socket 结构。由于插口操作的特殊性，这个数据结构中需要有大量的结构成分，如果把这些成分全部放到 socket 结构中，则 inode 结构中的这个 union 就会变得很大，从而 inode 结构也会变得很大，而对于其他文件系统这个 union 是不需要这么大的， 所以会造成巨大浪费，系统中使用 inode 结构的数量要远远超过使用 socket 的数量，故解决的办法就是把插口分成两部分，把与文件系 统关系密切的放在 socket 结构中，把与通信关系密切的放在另一个单独结构 sock 中；</li>
+</ul>
+<pre><code>struct inode {
+    .....................
+    union {
+        struct ext2_inode_info ext2_i;
+        struct ext3_inode_info ext3_i;
+        struct socket socket_i;
+        .....................
+    } u;
+};
+
+</code></pre>
+<pre><code>struct socket
+{
+    socket_state state;      // 该state用来表明该socket的当前状态
+    typedef enum {
+        SS_FREE = 0,         /* not allocated */
+        SS_UNCONNECTED,      /* unconnected to any socket */
+        SS_CONNECTING,       /* in process of connecting */
+        SS_CONNECTED,        /* connected to socket */
+        SS_DISCONNECTING     /* in process of disconnecting */
+    } socket_state;
+    unsigned long flags;     //该成员可能的值如下，该标志用来设置socket是否正在忙碌
+    #define SOCK_ASYNC_NOSPACE 0
+    #define SOCK_ASYNC_WAITDATA 1
+    #define SOCK_NOSPACE 2
+    struct proto_ops *ops;   //依据协议邦定到该socket上的特定的协议族的操作函数指针，例如IPv4 TCP就是inet_stream_ops
+    struct inode *inode;     //表明该socket所属的inode
+    struct fasync_struct *fasync_list; //异步唤醒队列
+    struct file *file;       //file回指指针
+    struct sock *sk;         //sock指针
+    wait_queue_head_t wait;  //sock的等待队列，在TCP需要等待时就sleep在这个队列上
+    short type;              //表示该socket在特定协议族下的类型例如SOCK_STREAM,
+    unsigned char passcred;  //在TCP分析中无须考虑
+};
+
+</code></pre>
 <h3 id="5-linux-softnet_data">5 linux 实现软中断的重要数据结构 softnet_data</h3>
 <ul>
 <li>是用于实现软中断的重要数据结构,softnet_data 是每个 CPU 都拥有的一个数据结构.</li>
@@ -521,6 +573,145 @@
 </tr>
 </tbody>
 </table>
+<h2 id="linux-net">Linux Net 子系统核心组成</h2>
+<p>1 分层模型</p>
+<p><img alt="png" src="../../img/7467AD50-A529-4B0E-88CB-0B685860CFEE.png" /></p>
+<p>2 net_device 核心描述符内包含了驱动程序填充的各类函数, 包括发送、接收数据包</p>
+<p>以 <code>net/ethernet/intel/igb/igb_main.c</code>(igb 网卡驱动) 为例子, 包含了<code>open</code>,<code>close</code>,<code>xmit</code>,<code>ioctl</code> 等各种实现</p>
+<pre><code>static const struct net_device_ops igb_netdev_ops = {
+    .ndo_open       = igb_open,
+    .ndo_stop       = igb_close,
+    .ndo_start_xmit     = igb_xmit_frame,
+    .ndo_get_stats64    = igb_get_stats64,
+    .ndo_set_rx_mode    = igb_set_rx_mode,
+    .ndo_set_mac_address    = igb_set_mac,
+    .ndo_change_mtu     = igb_change_mtu,
+    .ndo_do_ioctl       = igb_ioctl,
+    .ndo_tx_timeout     = igb_tx_timeout,
+    .ndo_validate_addr  = eth_validate_addr,
+    .ndo_vlan_rx_add_vid    = igb_vlan_rx_add_vid,
+    .ndo_vlan_rx_kill_vid   = igb_vlan_rx_kill_vid,
+    .ndo_set_vf_mac     = igb_ndo_set_vf_mac,
+    .ndo_set_vf_vlan    = igb_ndo_set_vf_vlan,
+    .ndo_set_vf_rate    = igb_ndo_set_vf_bw,
+    .ndo_set_vf_spoofchk    = igb_ndo_set_vf_spoofchk,
+    .ndo_get_vf_config  = igb_ndo_get_vf_config,
+#ifdef CONFIG_NET_POLL_CONTROLLER
+    .ndo_poll_controller    = igb_netpoll,
+#endif
+    .ndo_fix_features   = igb_fix_features,
+    .ndo_set_features   = igb_set_features,
+};
+
+</code></pre>
+<p>3 软中断的处理函数<code>net_rx_action()</code> 中, 调用驱动程序注册的<code>poll函数</code>.</p>
+<p>驱动程序的<code>poll函数</code>是注册在<code>softnet_data</code>数据结构的<code>poll_list</code>里的</p>
+<p><code>igb_open</code> ---&gt; <code>__igb_open</code> ---&gt; <code>igb_request_irq</code> ---&gt; <code>igb_init_interrupt_scheme</code> ---&gt; <code>igb_alloc_q_vectors</code> ---&gt; <code>igb_alloc_q_vector</code> ---&gt; <code>netif_napi_add</code> ---&gt; <code>netif_napi_ad(adapter-&gt;netdev, &amp;q_vector-&gt;napi,igb_poll, 64);</code> 进行了 igb_poll 函数的注册.</p>
+<p>4 硬中断</p>
+<p>硬中断也是网卡驱动向内核注册的, <code>igb_request_irq()</code> 里面调用内核 API <code>request_irq()</code>函数</p>
+<pre><code>/**
+ *  igb_request_irq - initialize interrupts
+ *  @adapter: board private structure to initialize
+ *
+ *  Attempts to configure interrupts using the best available
+ *  capabilities of the hardware and kernel.
+ **/
+static int igb_request_irq(struct igb_adapter *adapter)
+{
+    struct net_device *netdev = adapter-&gt;netdev;
+    struct pci_dev *pdev = adapter-&gt;pdev;
+    int err = 0;
+
+    if (adapter-&gt;flags &amp; IGB_FLAG_HAS_MSIX) {
+        err = igb_request_msix(adapter);
+        if (!err)
+            goto request_done;
+        /* fall back to MSI */
+        igb_free_all_tx_resources(adapter);
+        igb_free_all_rx_resources(adapter);
+
+        igb_clear_interrupt_scheme(adapter);
+        err = igb_init_interrupt_scheme(adapter, false);
+        if (err)
+            goto request_done;
+
+        igb_setup_all_tx_resources(adapter);
+        igb_setup_all_rx_resources(adapter);
+        igb_configure(adapter);
+    }
+
+    igb_assign_vector(adapter-&gt;q_vector[0], 0);
+
+    if (adapter-&gt;flags &amp; IGB_FLAG_HAS_MSI) {
+        err = request_irq(pdev-&gt;irq, igb_intr_msi, 0,
+                  netdev-&gt;name, adapter);
+        if (!err)
+            goto request_done;
+
+        /* fall back to legacy interrupts */
+        igb_reset_interrupt_capability(adapter);
+        adapter-&gt;flags &amp;= ~IGB_FLAG_HAS_MSI;
+    }
+
+    err = request_irq(pdev-&gt;irq, igb_intr, IRQF_SHARED,
+              netdev-&gt;name, adapter);
+
+    if (err)
+        dev_err(&amp;pdev-&gt;dev, &quot;Error %d getting interrupt\n&quot;,
+            err);
+
+request_done:
+    return err;
+}
+
+
+
+
+</code></pre>
+<p><img alt="png" src="../../img/82D78DDF-F261-48E2-8938-5483F26CAADA.png" /></p>
+<p>5 struct net 网络命名空间</p>
+<p>struct net 结构体表示的内核中的网络命名空间(net_namespace)。在 linux 内核中，每一个网络设备(struct net_device)都有一个所属的网络命名空间</p>
+<p>网络系统在初始化的时候会初始化一个初始网络命名空间，即 init_net 命名空间。后续创建的 net namespace 命名空间会和 init_net 一起通过 list 项组织起来，且每个网络设备都对应一个命名空间，同一命名空间下的网络设备通过 dev_base_head 组织在一起。组织结构如下:</p>
+<p><img alt="png" src="../../img/12FD092E-94F4-444F-98CA-44D0EE9F219A.jpeg" /></p>
+<p>struct net 内的一些重要成员：</p>
+<ul>
+<li><code>struct net_device *loopback_dev;</code></li>
+</ul>
+<p>6 struct net_device 网络设备</p>
+<ul>
+<li><a href="https://blog.csdn.net/viewsky11/article/details/53046787">在 linux 中使用 struct net_device 结构体来描述每一个网络设备。同时这个用来刻画网络设备的 struct net_device 结构体包含的字段非常的多，以至于内核的开发者都觉得在现在的 linux 内核中，这个 struct net_device 是一个大的错误。</a></li>
+<li>
+<ul>
+<li>并且注册 net_device(<code>register_netdev(struct net_device *dev)</code>)是注册到一个链表中</li>
+</ul>
+</li>
+<li>
+<p><a href="https://www.oreilly.com/library/view/linux-device-drivers/0596000081/ch14s03.html"><strong>struct net_device</strong> can be conceptually divided into two parts: visible and invisible.</a> net_device 结构体(有众多成员，总体来说成员)可以分为两个部分： 可见和不可见.</p>
+</li>
+</ul>
+<h3 id="ptype_base-ptype_all">ptype_base 和 ptype_all</h3>
+<ul>
+<li>ptype_base 为一个 hash 表,而 ptype_all 为一个双向链表.每一个里面注册的协议都用一个 struct packet_type 表示. packet_type 数据结构包含协议类型、指向网络设备的指针、指向协议的接收数据处理例程的指针, 如下：</li>
+</ul>
+<pre><code>struct packet_type
+{
+    unsigned short        type;    /*协议类型*/
+    struct net_device     *dev;
+    int            (*func) (struct sk_buff *, struct net_device *,
+                     struct packet_type *);
+    void            *data;    /* Private to the packet type        */
+    struct packet_type    *next;
+};
+
+</code></pre>
+<ul>
+<li>
+<p>func 是该结构体主要成员，指向网络层的一个函数。如果分组的类型适当，就将其传给对应的处理函数，其中 ip 包的处理函数就是<code>ip_recv</code>.</p>
+</li>
+<li>
+<p><code>netif_receive_skb()</code>函数，遍历<code>ptype_all</code>链表，找到合适的<code>packet_type</code>, 然后调用其<code>func</code>指针指向的处理函数(比如<code>ip_recv()</code>)</p>
+</li>
+</ul>
 <h2 id="_6">参考文档</h2>
 <p><a href="https://mp.weixin.qq.com/s/wThfD9th9e_-YGHJJ3HXNQ">一万字，拆解 Linux 网络包发送过程</a></p>
 <p><a href="https://mp.weixin.qq.com/s/GoYDsfy9m0wRoXi_NCfCmg">图解 Linux 网络包接收过程</a></p>
