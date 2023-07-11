@@ -166,7 +166,7 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#sysfs-cpu">理由 sysfs 操作 CPU 上线下线</a>
+    <li class="toctree-l3"><a class="reference internal" href="#sysfs-cpu">利用 sysfs 操作 CPU 上线下线（热插拔）</a>
     </li>
         </ul>
     </li>
@@ -189,6 +189,8 @@
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../7_three_object_of_block_device/">第七篇 块设备三大对象block_device、gendisk、hd_struct数据结构总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_kobjet_kset_ktype/">第八篇 Linux设备模型的基石:kset/kobject/ktype</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
@@ -404,7 +406,7 @@ void mysys_exit(void)
 }
 
 </code></pre>
-<p>首先需要向系统注册目录 test_sysfs，</p>
+<p><a href="https://zhuanlan.zhihu.com/p/620749285">首先需要向系统注册目录 test_sysfs</a>，</p>
 <ul>
 <li>
 <p><code>kobject_create_and_add("test_sysfs", NULL)</code>的第一个参数是目录名称，第二个参数是父目录，<code>NULL</code>为空，那就会在<code>/sys/</code>生成目录，结果为<code>/sys/test_sysfs</code>。</p>
@@ -480,7 +482,7 @@ return count;
 </code></pre>
 <p>通过调用 <code>cat /sys/test_sysfs/test_my_attr/read</code> 可以调用 <code>test_show</code> 函数；</p>
 <p>通过调用 <code>echo 1 &gt; /sys/test_sysfs/test_my_attr/num2</code> 可以调用 <code>test_num2</code> 函数；</p>
-<h3 id="sysfs-cpu">理由 sysfs 操作 CPU 上线下线</h3>
+<h3 id="sysfs-cpu">利用 sysfs 操作 CPU 上线下线（热插拔）</h3>
 <p>（一） 操作 CPU 热插拔</p>
 <p>你无需调用特殊的接口，只需要 echo 就可以在 sysfs 中通过写文件的方式将 CPU 进行热插拔：</p>
 <pre><code>
