@@ -285,6 +285,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模块</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
               <ul>
@@ -374,6 +376,18 @@
 <h3 id="_2">基础知识</h3>
 <ul>
 <li>参考<strong>第十四章 第八篇</strong></li>
+<li>参考<strong>第五章 第八篇</strong></li>
+<li>每个<code>kobject</code>对应<code>sys文件系统</code>下的一个目录,</li>
+<li>
+<ul>
+<li>目录下可以直接是该 kobject 的属性（比如 name 属性, 使用 sysfs_create_files 创建)</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>也可以是多个属性形成的一个 group，group 是一个属性组，表现为该目录下的子目录，属性组内所有的 attr 都是文件，参考下文的 struct attribute_group 数组和 sysfs_create_group</li>
+</ul>
+</li>
 </ul>
 <h3 id="api">关于内核 API 函数</h3>
 <ul>
@@ -406,7 +420,7 @@ void mysys_exit(void)
 }
 
 </code></pre>
-<p><a href="https://zhuanlan.zhihu.com/p/620749285">首先需要向系统注册目录 test_sysfs</a>，</p>
+<p><a href="https://mp.weixin.qq.com/s/P5PiKohwGujHJyxbyHDvLg">首先需要向系统注册目录 test_sysfs</a>，</p>
 <ul>
 <li>
 <p><code>kobject_create_and_add("test_sysfs", NULL)</code>的第一个参数是目录名称，第二个参数是父目录，<code>NULL</code>为空，那就会在<code>/sys/</code>生成目录，结果为<code>/sys/test_sysfs</code>。</p>

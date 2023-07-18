@@ -164,7 +164,7 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#22-kset">2.2 kset</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#23-ktype">2.3 ktype</a>
+    <li class="toctree-l3"><a class="reference internal" href="#23-kobj_type">2.3 kobj_type</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#24-kobject-sys_ops">2.4 kobject 操作函数集, sys_ops</a>
     </li>
@@ -287,6 +287,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模块</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
               <ul>
@@ -370,8 +372,10 @@
 <p>接触<code>kobject/kset/ktype</code>和<code>sys文件系统</code>有一段时间了, 本文进行一个梳理和总结</p>
 </li>
 <li>
-<p>Linux 设备模型的基石是<code>kset/kobject/ktype</code></p>
+<p>Linux 设备模型的基石是<code>kset/kobject/kobj_type</code></p>
 </li>
+<li>辅助对象包含<code>struct sys_ops</code>及其包含的<code>show</code>和<code>shtore</code>函数, <code>struct attribute</code>、</li>
+<li>通讯机制 <code>struct kset_uevent_ops</code></li>
 </ul>
 <h2 id="_2">一 架构图和一些总体规则</h2>
 <ul>
@@ -407,6 +411,7 @@
 <ul>
 <li><code>kobject</code>代表内核对象，结构体本身不单独使用，而是嵌套在其他高层结构中，用于组织成拓扑关系；</li>
 <li><code>sysfs文件系统</code>中一个<code>目录</code>对应一个<code>kobject</code>；</li>
+<li><code>目录</code>下的一个文件对应一个<code>attribute</code></li>
 </ul>
 <p>看看结构体吧：</p>
 <pre><code>struct kobject {
@@ -452,13 +457,16 @@ struct kset {
 } __randomize_layout;
 
 </code></pre>
-<h3 id="23-ktype">2.3 ktype</h3>
+<h3 id="23-kobj_type">2.3 kobj_type</h3>
 <ul>
 <li>
 <p><code>kobj_type</code>用于表征<code>kobject</code>的类型，指定了删除<code>kobject</code>时要调用的函数，<code>kobject</code>结构体中有<code>struct kref</code>字段用于对<code>kobject</code>进行引用计数，当计数值为 0 时，就会调用<code>kobj_type</code>中的<code>release</code>函数对<code>kobject</code>进行释放，这个就有点类似于<code>C++</code>中的智能指针了；</p>
 </li>
 <li>
 <p><code>kobj_type</code>指定了通过<code>sysfs</code>显示或修改有关<code>kobject</code>的信息时要处理的操作，实际是调用<code>show/store</code>函数；</p>
+</li>
+<li>
+<p><code>kobject</code>和<code>kobj_type</code>是 1 对 1 关系</p>
 </li>
 </ul>
 <pre><code>
@@ -727,7 +735,12 @@ endif
 </ul>
 <h3 id="44">4.4 更多例子</h3>
 <ul>
-<li><a href="https://zhuanlan.zhihu.com/p/620749285">Linux 下添加自己的 sysfs 接口</a></li>
+<li>
+<p><a href="https://mp.weixin.qq.com/s/P5PiKohwGujHJyxbyHDvLg">Linux 下添加自己的 sysfs 接口</a></p>
+</li>
+<li>
+<p><a href="https://mp.weixin.qq.com/s/nYKSAcJ_8HjjaxB6hrOnVw">Linux 驱动 | 在驱动中创建 sysfs 接口</a></p>
+</li>
 </ul>
 <h2 id="_5">五 参考文档</h2>
 <ul>

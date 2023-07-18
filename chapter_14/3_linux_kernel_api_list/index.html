@@ -249,6 +249,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模块</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
               <ul>
@@ -636,8 +638,8 @@ int register_filesystem(struct file_system_type * fs)
 <h2 id="_4">五 各种常用的宏</h2>
 <h3 id="1-current">1 current 宏</h3>
 <p>内核代码中，current 总是指向当前的进程的 task_struct</p>
-<h3 id="2-container_of">2 container_of 宏</h3>
-<p>是一个在 Linux 内核中常用的宏，用于获取某个数据结构的指针。</p>
+<h3 id="2-container_of">2 <a href="https://mp.weixin.qq.com/s/YVH5Va00XK_7xcr8nb15Xg">container_of</a> 宏</h3>
+<p>是一个在 Linux 内核中常用的宏，通过结构体的某个<strong>成员变量地址</strong>找到<strong>该结构体的首地址</strong></p>
 <p>例如下面通过 inode 结构体获取对应的 cdev 结构体, 然后将 file 结构体的 private_data 成员赋值给它, 是一个典型的 open 操作的实现方法.</p>
 <pre><code>cd   = container_of(inode-&gt;i_cdev,struct   mycdev,cdev);
     file-&gt;private_data =   cd;
