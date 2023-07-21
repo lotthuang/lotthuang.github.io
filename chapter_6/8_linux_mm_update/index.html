@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第九篇 Linux架构整体介绍 - Lott's Blog</title>
+    <title>第八篇 Linux内存管理总结升级 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u4e5d\u7bc7 Linux\u67b6\u6784\u6574\u4f53\u4ecb\u7ecd";
-        var mkdocs_page_input_path = "chapter_1/9_linux_arch_overall_introduction.md";
+        var mkdocs_page_name = "\u7b2c\u516b\u7bc7 Linux\u5185\u5b58\u7ba1\u7406\u603b\u7ed3\u5347\u7ea7";
+        var mkdocs_page_input_path = "chapter_6/8_linux_mm_update.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -45,24 +45,20 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">第一章 各种杂项基础</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../3_linux_kernel_basic/">第三篇 Linux内核基础</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/3_linux_kernel_basic/">第三篇 Linux内核基础</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第九篇 Linux架构整体介绍</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#1">1 架构图</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../10_virtual_machine_on_mac_m1_chip/">第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/10_virtual_machine_on_mac_m1_chip/">第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -162,22 +158,34 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/1_linux_buddy/">第一篇 伙伴系统介绍</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_linux_buddy/">第一篇 伙伴系统介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/2_slab/">第二篇 Slab层介绍</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_slab/">第二篇 Slab层介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理原理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_linux_mem_theory/">第四篇 Linux内存管理原理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/6_alloc_mem_apis/">第六篇 Linux内核内存分配API函数分类</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_alloc_mem_apis/">第六篇 Linux内核内存分配API函数分类</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理总结升级</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第八篇 Linux内存管理总结升级</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">内核数据结构</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">关于虚拟内存空间的权限</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_4">定义虚拟内存区域的访问权限和行为规范</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">参考</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -324,8 +332,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>第一章 各种杂项基础 &raquo;</li>
-      <li>第九篇 Linux架构整体介绍</li>
+          <li>第六章 Linux Mem子系统 &raquo;</li>
+      <li>第八篇 Linux内存管理总结升级</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -335,40 +343,75 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="_1">概述</h1>
+<h2 id="_2">内核数据结构</h2>
+<p><img alt="png" src="../../img/CA40303F-8EEA-42B8-93F9-C339142C4DCA.png" /></p>
+<h2 id="_3">关于虚拟内存空间的权限</h2>
+<p><img alt="png" src="../../img/WechatIMG352.jpg" /></p>
+<h3 id="_4">定义虚拟内存区域的访问权限和行为规范</h3>
+<p>vm_page_prot 和 vm_flags 都是用来标记 vm_area_struct 结构表示的这块虚拟内存区域的访问权限和行为规范。</p>
+<p>上边小节中我们也提到，内核会将整块物理内存划分为一页一页大小的区域，以页为单位来管理这些物理内存，每页大小默认 4K 。而虚拟内存最终也是要和物理内存一一映射起来的，所以在虚拟内存空间中也有虚拟页的概念与之对应，虚拟内存中的虚拟页映射到物理内存中的物理页。无论是在虚拟内存空间中还是在物理内存中，内核管理内存的最小单位都是页。</p>
+<p><strong>vm_page_prot 偏向于定义底层内存管理架构中页这一级别的访问控制权限，它可以直接应用在底层页表中，它是一个具体的概念。</strong></p>
+<p>虚拟内存区域 VMA 由许多的虚拟页 (page) 组成，每个虚拟页需要经过页表的转换才能找到对应的物理页面。页表中关于内存页的访问权限就是由 vm_page_prot 决定的。</p>
+<p><strong>vm_flags 则偏向于定于整个虚拟内存区域的访问权限以及行为规范。</strong> 描述的是虚拟内存区域中的整体信息，而不是虚拟内存区域中具体的某个独立页面。它是一个抽象的概念。可以通过 <code>vma-&gt;vm_page_prot = vm_get_page_prot(vma-&gt;vm_flags)</code> 实现到具体页面访问权限 vm_page_prot 的转换</p>
+<p>下面笔者列举一些常用到的 vm_flags 方便大家有一个直观的感受：</p>
+<table>
+<thead>
+<tr>
+<th>vm_flags</th>
+<th>访问权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VM_READ</td>
+<td>可读</td>
+</tr>
+<tr>
+<td>VM_WRITE</td>
+<td>可写</td>
+</tr>
+<tr>
+<td>VM_EXEC</td>
+<td>可执行</td>
+</tr>
+<tr>
+<td>VM_SHARD</td>
+<td>可多进程之间共享</td>
+</tr>
+<tr>
+<td>VM_IO</td>
+<td>可映射至设备 IO 空间</td>
+</tr>
+<tr>
+<td>VM_RESERVED</td>
+<td>内存区域不可被换出</td>
+</tr>
+<tr>
+<td>VM_SEQ_READ</td>
+<td>内存区域可能被顺序访问</td>
+</tr>
+<tr>
+<td>VM_RAND_READ</td>
+<td>内存区域可能被随机访问</td>
+</tr>
+<tr>
+<td>VM_READ，VM_WRITE，VM_EXEC</td>
+<td>定义了虚拟内存区域是否可以被读取，写入，执行等权限。</td>
+</tr>
+</tbody>
+</table>
+<p>比如<strong>代码段这块内存区域的权限是可读，可执行，但是不可写</strong>。<strong>数据段具有可读可写的权限但是不可执行</strong>。堆则具有可读可写，可执行的权限（Java 中的字节码存储在堆中，所以需要可执行权限），栈一般是可读可写的权限，一般很少有可执行权限。而文件映射与匿名映射区存放了共享链接库，所以也需要可执行的权限。</p>
+<h2 id="_5">参考</h2>
 <ul>
-<li>本篇介绍 Linux 内核总体概览</li>
-</ul>
-<h2 id="1">1 架构图</h2>
-<p><img alt="png" src="../../img/1280X128020230215.png" /></p>
-<ul>
-<li>如上图所示, 总体分为 4 层:</li>
-<li>
-<ul>
-<li>1 系统调用接口层</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>2 系统能力层</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>3 工具层</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>4 驱动管理层</li>
-</ul>
-</li>
+<li><a href="https://mp.weixin.qq.com/s/uWadcBxEgctnrgyu32T8sQ">一步一图带你深入理解 Linux 虚拟内存管理</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Cn-oX0W5DrI2PivaWLDpPw">一步一图带你深入理解 Linux 物理内存管理</a></li>
 </ul>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../5_how_kernel_call_bios/" class="btn btn-neutral float-left" title="第五篇 Linux内核调用BIOS案例"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../10_virtual_machine_on_mac_m1_chip/" class="btn btn-neutral float-right" title="第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../7_physical_memory/" class="btn btn-neutral float-left" title="第七篇 关于物理内存管理"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_7/1_sync_file/" class="btn btn-neutral float-right" title="第一篇 不同主机之间的文件传输">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -391,10 +434,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../5_how_kernel_call_bios/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../7_physical_memory/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../10_virtual_machine_on_mac_m1_chip/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../chapter_7/1_sync_file/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

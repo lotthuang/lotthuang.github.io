@@ -173,6 +173,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理总结升级</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
               <ul>
@@ -283,7 +285,7 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第三篇 Linux内核API汇总和各类风格总结</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#api">一 各种 API</a>
+    <li class="toctree-l2"><a class="reference internal" href="#api">一 各种知名 API</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1-register_chrdev">1 register_chrdev()</a>
     </li>
@@ -299,7 +301,13 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#struct">二 各种 struct</a>
+    <li class="toctree-l2"><a class="reference internal" href="#struct">二 各种知名 struct</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-3">1 3 种类型的设备</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-struct-address_space-vm_area_struct">2 struct address_space 和 vm_area_struct 之间的关系</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_2">三 各类风格</a>
         <ul>
@@ -310,6 +318,16 @@
     <li class="toctree-l4"><a class="reference internal" href="#21">2.1 屏蔽底层细节</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#22">2.2 元素外包装, 方便扩展</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4">4 链表和数组的区别</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#5">5 描述符纵向使用链表关联横向使用指针关联</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#51-mm_struct-vm_area_struct">5.1 mm_struct 和 vm_area_struct</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#52-files_struct-struct-file">5.2 files_struct 和 struct file</a>
     </li>
         </ul>
     </li>
@@ -332,6 +350,8 @@
     <li class="toctree-l3"><a class="reference internal" href="#2-container_of">2 container_of 宏</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#3-init_list_head">3 INIT_LIST_HEAD 用于在运行时初始化一个链表</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-pfn-struct-page">4 PFN 和物理页结构体 struct page 之间的相互转换的宏</a>
     </li>
         </ul>
     </li>
@@ -386,7 +406,7 @@
 <ul>
 <li>本篇梳理 Linux 内核 API</li>
 </ul>
-<h2 id="api">一 各种 API</h2>
+<h2 id="api">一 各种知名 API</h2>
 <h3 id="1-register_chrdev">1 register_chrdev()</h3>
 <ul>
 <li>
@@ -478,7 +498,8 @@ void local_irq_enable(void);
 </li>
 </ul>
 <p>没有方法全局禁用整个系统的所有中断。 <a href="https://blog.csdn.net/u012247418/article/details/104180225">内核开发者认为关闭所有中断的代价太高，因此没有必要提供这个能力。</a></p>
-<h2 id="struct">二 各种 struct</h2>
+<h2 id="struct">二 各种知名 struct</h2>
+<h3 id="1-3">1 3 种类型的设备</h3>
 <ul>
 <li>字符设备 <code>struct cdev</code></li>
 <li>块设备 <code>struct block_device</code></li>
@@ -489,6 +510,19 @@ void local_irq_enable(void);
 <p>描述块设备的数据结构有两个，一个是<code>struct block_device</code>,用来描述一个块设备或者块设备的一个分区；</p>
 <p>另一个是<code>struct gendisk</code>，用来描述整个块设备的特性。</p>
 <p><strong>对于一个包含多个分区的块设备，struct block_device 结构有多个,每个分区一个 block_device, 整个设备也对应一个 block_device,而 struct gendisk 结构永远只有一个。</strong></p>
+<h3 id="2-struct-address_space-vm_area_struct">2 struct address_space 和 vm_area_struct 之间的关系</h3>
+<ul>
+<li>一个文件只能有 一个 address_space 数据结构, 表示 Page Cache 的一个实例。（假设 Page Cache 是有多个实例组成, 分两层看，上层的单个实例就是一个 address_space 实例，底层的单个实例就是一个一个 struct page)</li>
+<li>
+<ul>
+<li>struct address_space 里有一个 page_tree 成员，是所有 page 组合成的一个树, 如下图右下角</li>
+</ul>
+</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG355.jpg" /></p>
+<ul>
+<li>一个文件可能有多个 vm_area_struct</li>
+</ul>
 <h2 id="_2">三 各类风格</h2>
 <h3 id="1-operations">1 描述符 + operations 风格</h3>
 <ul>
@@ -564,6 +598,33 @@ void local_irq_enable(void);
 <ul>
 <li>Linux 内核不同子系统之间总是留有一层扩展性，比如 <code>wait_queue</code>等待队列里的元素是<code>wait_queue_t</code> ,代表等待实体, 但其实大部分场景下等待实体都是进程<code>task_struct</code>. 比如调度器调度的也是调度实体，其实大部分场景调度实体都是<code>task_struct</code>.</li>
 </ul>
+<h3 id="4">4 链表和数组的区别</h3>
+<ul>
+<li>链表中每个元素可以分散在物理内存空间中，不一定要连续</li>
+<li>数组中所有的元素都说紧挨着的、连续的。当数组大的时候，就不一定要那么多连续的物理内存。</li>
+</ul>
+<h3 id="5">5 描述符纵向使用链表关联横向使用指针关联</h3>
+<h4 id="51-mm_struct-vm_area_struct">5.1 mm_struct 和 vm_area_struct</h4>
+<ul>
+<li>比如 mm_struct 关联到 vm_area_struct，vm_area_struct 是有一个双向链表的，然后 mm_struct 中只要有一个指针指向链表头元素即可。</li>
+</ul>
+<p>内核中其实是通过一个 struct vm_area_struct 结构的双向链表将虚拟内存空间中的这些虚拟内存区域 VMA 串联起来的。</p>
+<p>vm_area_struct 结构中的 vm_next ，vm_prev 指针分别指向 VMA 节点所在双向链表中的后继节点和前驱节点，内核中的这个 VMA 双向链表是有顺序的，所有 VMA 节点按照低地址到高地址的增长方向排序。</p>
+<p>双向链表中的最后一个 VMA 节点的 vm_next 指针指向 NULL，双向链表的头指针存储在内存描述符 struct mm_struct 结构中的 mmap 中，正是这个 mmap 串联起了整个虚拟内存空间中的虚拟内存区域。</p>
+<pre><code>
+struct mm_struct {
+    struct vm_area_struct *mmap;  /* list of VMAs, 只是指向链表中的一个元素  */
+}
+
+</code></pre>
+<p>在每个虚拟内存区域 VMA 中又通过 struct vm_area_struct 中的 vm_mm 指针指向了所属的虚拟内存空间 mm_struct。</p>
+<p><img alt="png" src="../../img/WechatIMG353.jpg" /></p>
+<h4 id="52-files_struct-struct-file">5.2 files_struct 和 struct file</h4>
+<ul>
+<li>files_struct 中有指针指向一个 file 数组, 如下图所示</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG354.jpg" /></p>
+<p><img alt="png" src="../../img/WechatIMG355.jpg" /></p>
 <h2 id="_3">四 各种注册技能</h2>
 <h3 id="1">1 软中断注册到一个数组</h3>
 <ul>
@@ -649,6 +710,8 @@ int register_filesystem(struct file_system_type * fs)
 <ul>
 <li>INIT_LIST_HEAD(ptr) 这个宏通常用于在运行时初始化一个链表</li>
 </ul>
+<h3 id="4-pfn-struct-page">4 PFN 和物理页结构体 struct page 之间的相互转换的宏</h3>
+<p>内核提供了两个宏来完成 PFN 与 物理页结构体 struct page 之间的相互转换。它们分别是 page_to_pfn 与 pfn_to_page</p>
               
             </div>
           </div><footer>
