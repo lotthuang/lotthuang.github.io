@@ -279,7 +279,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模块</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -436,7 +436,7 @@ typedef struct zone_struct {
 <p><img alt="png" src="../../img/WechatIMG268.png" /></p>
 <p><img alt="png" src="../../img/WechatIMG38.png" /></p>
 <ul>
-<li>每个 Node 下面, 有多个 Zone, 每个 Zone 在内核中使用<code>struct zone_t</code>表示.</li>
+<li>每个 Node 下面, 有多个 Zone, 每个 Zone 在内核中使用<code>struct zone_t</code>表示. <strong>每个 Node 下所有的物理 Page 是一个数组.</strong></li>
 <li>每个<code>struct zone_t</code>下有一个<code>free_area</code>数组, 该数组中有 11 个元素. 每个元素是一个<code>struct free_area_t</code>, 每个<code>free_area_t</code>用链表关联了多个<code>struct page</code>, 并且符合 free_area[i] 管理 2i 个内存页面大小的内存块列表.</li>
 <li>每个<code>struct page</code>是代表 4KB 大小的内存页(页框), 几个<code>page</code>可以成为一个<code>内存块</code>, 内核分配物理内存时, 必须是<code>内存块</code>, 而且必须以 2 的几次方个 page 分配<code>内存块</code>, 因此最小是分配 2 的 0 次方个 page 的<code>内存块</code>, 大小为 4KB.</li>
 <li>总结: (4 层架构: Node、Zone、free_area、Page)</li>

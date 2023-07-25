@@ -285,7 +285,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模块</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -503,6 +503,7 @@ dd if=/dev/zero of=flash1.img bs=1m count=64
    -device usb-kbd \
    -device usb-tablet \
    -drive if=virtio,format=qcow2,file=debian.qcow2 \
+   -nic vmnet-bridged,ifname=en0 \
    -cdrom /Users/bytedance/Downloads/debian-12.0.0-arm64-netinst.iso
 </code></pre>
 <p>Once you run the command above, if everything goes well, you should be seeing a screen similar to this:</p>
@@ -527,11 +528,13 @@ dd if=/dev/zero of=flash1.img bs=1m count=64
    -device qemu-xhci \
    -device usb-kbd \
    -device usb-tablet \
+   -nic vmnet-bridged,ifname=en0 \
    -drive if=virtio,format=qcow2,file=debian.qcow2
 
 </code></pre>
 <h2 id="_4">参考文章</h2>
-<p><a href="https://theboreddev.com/run-ubuntu-on-mac-using-qemu/">Run Ubuntu on Mac using QEMU</a></p>
+<p><a href="https://theboreddev.com/run-ubuntu-on-mac-using-qemu/">Run Ubuntu on Mac using QEMU</a>
+<a href="https://www.sobyte.net/post/2022-10/mac-qemu-bridge/">Creating a qemu bridge network on macos</a></p>
               
             </div>
           </div><footer>

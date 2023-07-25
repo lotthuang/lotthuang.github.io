@@ -175,15 +175,27 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第八篇 Linux内存管理总结升级</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#_2">内核数据结构</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_3">关于虚拟内存空间的权限</a>
+    <li class="toctree-l2"><a class="reference internal" href="#linux">一 Linux 如何对用户空间的虚拟内存进行管理</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_4">定义虚拟内存区域的访问权限和行为规范</a>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 数据结构</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2">2 关于虚拟内存空间的权限</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3">3 定义虚拟内存区域的访问权限和行为规范</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_5">参考</a>
+    <li class="toctree-l2"><a class="reference internal" href="#linux_1">二 Linux 如何对内核空间的虚拟内存进行管理</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-32-64-linux">1 32 和 64 位 Linux 虚拟空间的整体布局</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-zone">2 各个 zone 的用途和水位的作用</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#linux_2">三 Linux 如何对物理内存进行管理</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">参考</a>
     </li>
     </ul>
                   </li>
@@ -263,7 +275,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模块</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -343,11 +355,12 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="_1">概述</h1>
-<h2 id="_2">内核数据结构</h2>
+<h2 id="linux">一 Linux 如何对用户空间的虚拟内存进行管理</h2>
+<h3 id="1">1 数据结构</h3>
 <p><img alt="png" src="../../img/CA40303F-8EEA-42B8-93F9-C339142C4DCA.png" /></p>
-<h2 id="_3">关于虚拟内存空间的权限</h2>
+<h3 id="2">2 关于虚拟内存空间的权限</h3>
 <p><img alt="png" src="../../img/WechatIMG352.jpg" /></p>
-<h3 id="_4">定义虚拟内存区域的访问权限和行为规范</h3>
+<h3 id="3">3 定义虚拟内存区域的访问权限和行为规范</h3>
 <p>vm_page_prot 和 vm_flags 都是用来标记 vm_area_struct 结构表示的这块虚拟内存区域的访问权限和行为规范。</p>
 <p>上边小节中我们也提到，内核会将整块物理内存划分为一页一页大小的区域，以页为单位来管理这些物理内存，每页大小默认 4K 。而虚拟内存最终也是要和物理内存一一映射起来的，所以在虚拟内存空间中也有虚拟页的概念与之对应，虚拟内存中的虚拟页映射到物理内存中的物理页。无论是在虚拟内存空间中还是在物理内存中，内核管理内存的最小单位都是页。</p>
 <p><strong>vm_page_prot 偏向于定义底层内存管理架构中页这一级别的访问控制权限，它可以直接应用在底层页表中，它是一个具体的概念。</strong></p>
@@ -401,7 +414,35 @@
 </tbody>
 </table>
 <p>比如<strong>代码段这块内存区域的权限是可读，可执行，但是不可写</strong>。<strong>数据段具有可读可写的权限但是不可执行</strong>。堆则具有可读可写，可执行的权限（Java 中的字节码存储在堆中，所以需要可执行权限），栈一般是可读可写的权限，一般很少有可执行权限。而文件映射与匿名映射区存放了共享链接库，所以也需要可执行的权限。</p>
-<h2 id="_5">参考</h2>
+<h2 id="linux_1">二 Linux 如何对内核空间的虚拟内存进行管理</h2>
+<h3 id="1-32-64-linux">1 32 和 64 位 Linux 虚拟空间的整体布局</h3>
+<p><img alt="png" src="../../img/WechatIMG358.jpg" /></p>
+<p><img alt="png" src="../../img/WechatIMG359.jpg" /></p>
+<h3 id="2-zone">2 各个 zone 的用途和水位的作用</h3>
+<ul>
+<li>zone_dma</li>
+<li>zone_normal</li>
+<li>
+<p>zone_high</p>
+</li>
+<li>
+<p><strong>注意, 这里的 zone_dma 和 zone_normal 是直接映射区域, 和物理内存区域是一一对应的</strong></p>
+</li>
+<li><strong>其他各类 zone, 比如 zone_high 就和物理内存区域不是一一对应的. 64 位 Linux 上也是如此, 有直接映射区域和非直接映射区域</strong></li>
+</ul>
+<h2 id="linux_2">三 Linux 如何对物理内存进行管理</h2>
+<ul>
+<li>
+<p>首先上来三种物理内存模型, 平坦模型、非连续内存模型、稀疏内存模型</p>
+</li>
+<li>
+<p>再次是两种内存架构, UMA 和 NUMA.</p>
+</li>
+<li>
+<p>然后是《第六章 第一篇》提到的<strong>Node、Zone、free_area、Page 之间的关系</strong></p>
+</li>
+</ul>
+<h2 id="_2">参考</h2>
 <ul>
 <li><a href="https://mp.weixin.qq.com/s/uWadcBxEgctnrgyu32T8sQ">一步一图带你深入理解 Linux 虚拟内存管理</a></li>
 <li><a href="https://mp.weixin.qq.com/s/Cn-oX0W5DrI2PivaWLDpPw">一步一图带你深入理解 Linux 物理内存管理</a></li>

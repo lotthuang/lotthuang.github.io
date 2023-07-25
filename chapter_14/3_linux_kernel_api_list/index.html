@@ -251,7 +251,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模块</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -328,6 +328,8 @@
     <li class="toctree-l4"><a class="reference internal" href="#51-mm_struct-vm_area_struct">5.1 mm_struct 和 vm_area_struct</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#52-files_struct-struct-file">5.2 files_struct 和 struct file</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#53">5.3 指针指向链表和数组时，都只需要指向其头一个元素</a>
     </li>
         </ul>
     </li>
@@ -606,7 +608,7 @@ void local_irq_enable(void);
 <h3 id="5">5 描述符纵向使用链表关联横向使用指针关联</h3>
 <h4 id="51-mm_struct-vm_area_struct">5.1 mm_struct 和 vm_area_struct</h4>
 <ul>
-<li>比如 mm_struct 关联到 vm_area_struct，vm_area_struct 是有一个双向链表的，然后 mm_struct 中只要有一个指针指向链表头元素即可。</li>
+<li>比如 mm_struct 关联到 vm_area_struct，vm_area_struct 是有一个双向链表的，然后 mm_struct 中<strong>只要有一个指针指向链表头元素即可。</strong></li>
 </ul>
 <p>内核中其实是通过一个 struct vm_area_struct 结构的双向链表将虚拟内存空间中的这些虚拟内存区域 VMA 串联起来的。</p>
 <p>vm_area_struct 结构中的 vm_next ，vm_prev 指针分别指向 VMA 节点所在双向链表中的后继节点和前驱节点，内核中的这个 VMA 双向链表是有顺序的，所有 VMA 节点按照低地址到高地址的增长方向排序。</p>
@@ -625,6 +627,18 @@ struct mm_struct {
 </ul>
 <p><img alt="png" src="../../img/WechatIMG354.jpg" /></p>
 <p><img alt="png" src="../../img/WechatIMG355.jpg" /></p>
+<h4 id="53">5.3 指针指向链表和数组时，都只需要指向其头一个元素</h4>
+<ul>
+<li>
+<p>这就是为什么结构体和结构体互相关联的时候, 都只需要加一个指针，该指针是其他数据结构指针. 指过去之后自然能够找到其他数据结构组成的链表或者数组</p>
+</li>
+<li>
+<p>举例子来说, 上面提到的内存描述符 mm_struct, 需要找到所有 vm_area_struct 链表时，它的做法是 mm_struct 内有一个成员指向该链表，这个成员实际实现时是指向 vm_area_struct 链表的头元素.</p>
+</li>
+<li>
+<p>还有底层的物理页帧是用数组管理的(因为在同一个 NUMA Node 节点内的所有物理内存都是连续的), 在内核数据结构表示时 node 节点内有一个指针指向其所有 page 组成的数组, 实际实现时也是指向该数组的头元素.</p>
+</li>
+</ul>
 <h2 id="_3">四 各种注册技能</h2>
 <h3 id="1">1 软中断注册到一个数组</h3>
 <ul>
