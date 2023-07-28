@@ -644,14 +644,14 @@ ssize_t value_store(struct test_kobj *obj, struct test_kobj_attribute *attr, con
 
 //定义属性，最终注册进sysfs系统
 struct test_kobj_attribute name_attribute = __ATTR(name, 0664, name_show, NULL);
-struct test_kobj_attribute value_attribute = __ATTR(value, 0664, value_show, value_store);
+struct test_kobj_attribute value_attribute = __ATTR(value, 0664, value_show, value_store); //使用__ATTR宏,定义一个属性(对应sysfs下的一个文件)、权限、读函数、写函数
 struct attribute *test_kobj_attrs[] = {
     &amp;name_attribute.attr,
     &amp;value_attribute.attr,
     NULL,
 };
 
-//定义组
+//定义组. 我们知道每个kobject对应/sys目录下的一个子目录, 该子目录下的目录可以继续是kobject(如果是kobject那必然是一个子目录), 也可以是单纯的子目录(没有kobject与之对应), 那么就可以采用attribute_group来实现
 struct attribute_group test_kobj_group = {
     .name = &quot;test_kobj_group&quot;,
     .attrs = test_kobj_attrs,
@@ -662,6 +662,7 @@ static int __init test_kobj_init(void)
 {
     int retval;
     printk(KERN_INFO &quot;test_kobj_init\n&quot;);
+    printk(&quot;%s %s line %d test_kobj_init\n&quot;, __FILE__, __FUNCTION__, __LINE__);
     obj = kmalloc(sizeof(struct test_kobj), GFP_KERNEL);
     if (!obj) {
         return -ENOMEM;
@@ -693,6 +694,7 @@ static int __init test_kobj_init(void)
 static void __exit test_kobj_exit(void)
 {
     printk(KERN_INFO &quot;test_kobj_exit\n&quot;);
+    printk(&quot;%s %s line %d test_kobj_exit\n&quot;, __FILE__, __FUNCTION__, __LINE__);
 
     kobject_del(&amp;obj-&gt;kobj);
     kobject_put(&amp;obj-&gt;kobj);
