@@ -60,6 +60,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/10_virtual_machine_on_mac_m1_chip/">第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/11_nftables/">第十一篇 Debian 11以及往后版本nftables防火墙配置</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -218,13 +220,23 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_12">其他扩展阅读</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#linux-tcp">Linux 内核层面 TCP 对象</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-inet_connection_sock">1 inet_connection_sock</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../8_io_multiplexing/">第八篇 IO多路复用总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../9_linux_send_msg/">第九篇 Linux Net子系统实现原理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_linux_net/">第十篇 Linux Net子系统总结、收发包流程再次梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../11_igb/">第十一篇 igb网卡驱动梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_rss_rps_rfs_xps/">第十二篇 Linux网卡rss和rps和rfs和xps</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
@@ -254,6 +266,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/13_interrupt_handler_examples/">第十三篇 中断处理程序的例子</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/14_linux_kernel_tracing/">第十四篇 理解内核追踪机制</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/15_task_struct/">第十五篇 task_struct结构体总结</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
@@ -862,7 +876,7 @@ option should not be used in code intended to be portable.</p>
 <li>坏处是，tcpdump 时，看到的数据包会变少.</li>
 <li>
 <ul>
-<li>为什么会变少, 原理: <code>netif_receve_skb(相关类似函数) —&gt; tcpdump工作 —&gt; deliver_skb —&gt; ip_recv</code></li>
+<li>为什么会变少, 原理是因为内核收包路径: <code>netif_receve_skb(相关类似函数) —&gt; tcpdump工作 —&gt; deliver_skb —&gt; ip_rcv --&gt; netfilter/iptables --&gt; tcp_v4_rcv</code></li>
 </ul>
 </li>
 </ul>
@@ -914,6 +928,35 @@ sk.setsockopt(SOL_SOCKET,SO_KEEPALIVE,1122)
 <ul>
 <li><a href="https://mp.weixin.qq.com/s/B8319TeD3dHAgE8nnoKYwg?locale=zh-CN">最多能建立多少个 TCP 连接</a>.</li>
 <li><a href="https://mp.weixin.qq.com/s/qq0VX_X8NcrkhgyobyBkjA?locale=zh-CN">一台 Linux 服务器最多能支撑多少个 TCP 连接</a>.</li>
+</ul>
+<h2 id="linux-tcp">Linux 内核层面 TCP 对象</h2>
+<h3 id="1-inet_connection_sock">1 inet_connection_sock</h3>
+<p><img alt="png" src="../../img/WechatIMG407.jpg" /></p>
+<ul>
+<li><code>struct inet_connection_sock</code>代表一个 inet socket, 其<code>isck_accept_queue</code>成员用于管理该 socket 的<strong>全连接队列</strong>和<strong>半连接队列</strong></li>
+<li>
+<ul>
+<li><code>isck_accept_queue</code>成员的具体实现是<code>struct request_sock_queue</code>, 其中</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li><code>struct request_sock</code>对象组成的<strong>链表</strong>即<strong>全连接队列</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li><code>struct lisen_sock</code>对象即<strong>半连接队列</strong></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
               
             </div>

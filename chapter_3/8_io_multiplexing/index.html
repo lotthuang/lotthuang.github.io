@@ -60,6 +60,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/10_virtual_machine_on_mac_m1_chip/">第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/11_nftables/">第十一篇 Debian 11以及往后版本nftables防火墙配置</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -106,9 +108,61 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第八篇 IO多路复用总结</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 服务端网络编程模型的演变过程</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#fork-worker">（一） 第一阶段 用户空间调用 fork,生成多 worker 进程</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#io-select">（二） 第二阶段 IO 多路复用之 Select</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_3">一些细节</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#select">整个 select 的流程</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#poll">Poll</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#epoll">（三） 第三阶段 Epoll</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#epoll-epoll">第一步，创建一个 epoll 句柄(创建 Epoll 对象)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_4">第二步，向内核添加、修改或删除要监控的文件描述符。</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#select_2">第三步，类似发起了 select() 调用</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_5">阻塞和唤醒进程</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#io">异步 IO 事件通知机制</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_7">二 总结</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#epoll_1">三 epoll 机制核心数据结构</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-struct-eventpoll">1 struct eventpoll</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-struct-epitem">2 struct epitem</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-struct-epoll_event">3 struct epoll_event 代表文件描述符的各种诸如可读可写事件</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-struct-epoll_filefd">4 struct epoll_filefd</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#5-struct-ep_pqueue">5 struct ep_pqueue</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#6-struct-poll_table">6 struct poll_table</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../9_linux_send_msg/">第九篇 Linux Net子系统实现原理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_linux_net/">第十篇 Linux Net子系统总结、收发包流程再次梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../11_igb/">第十一篇 igb网卡驱动梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_rss_rps_rfs_xps/">第十二篇 Linux网卡rss和rps和rfs和xps</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
@@ -138,6 +192,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/13_interrupt_handler_examples/">第十三篇 中断处理程序的例子</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/14_linux_kernel_tracing/">第十四篇 理解内核追踪机制</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/15_task_struct/">第十五篇 task_struct结构体总结</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
@@ -334,61 +390,40 @@
               
                 <h1 id="_1">概述</h1>
 <ul>
-<li>IO多路复用技术，本质上是要解决单进程如何高效的监听多个socket这个问题.</li>
-<li>IO multiplexing就是我们说的select，poll，epoll，有些地方也称这种IO方式为event driven IO。select/epoll的好处就在于单个process就可以同时处理多个网络连接的IO。它的基本原理就是select，poll，epoll这个function会不断的轮询所负责的所有socket，当某个socket有数据到达了，就通知用户进程。( process blocks in call to select, waiting for one of possibly many sockets to become readable)</li>
+<li>IO 多路复用技术，本质上是要解决单进程如何高效的监听多个 socket 这个问题.</li>
+<li>IO multiplexing 就是我们说的 select，poll，epoll，有些地方也称这种 IO 方式为 event driven IO。select/epoll 的好处就在于单个 process 就可以同时处理多个网络连接的 IO。它的基本原理就是 select，poll，epoll 这个 function 会不断的轮询所负责的所有 socket，当某个 socket 有数据到达了，就通知用户进程。( process blocks in call to select, waiting for one of possibly many sockets to become readable)</li>
 <li><code>多路</code>是指？多个业务方（句柄）并发下来的 IO</li>
-<li><code>复用</code>是指？复用这一个后台处理程序,也就是单线程. <code>IO 多路复用</code>就是 <a href="https://mp.weixin.qq.com/s/LGMNEsWuXjDM7V9HlnxSuQ">1 个线程处理 多个 fd 的模式</a>。我们的要求是：这个 “1” 就要尽可能的快，避免一切无效工作，要把所有的时间都用在处理句柄的 IO 上，不能有任何空转或sleep 的时间浪费。</li>
+<li><code>复用</code>是指？复用这一个后台处理程序,也就是单线程. <code>IO 多路复用</code>就是 <a href="https://mp.weixin.qq.com/s/LGMNEsWuXjDM7V9HlnxSuQ">1 个线程处理 多个 fd 的模式</a>。我们的要求是：这个 “1” 就要尽可能的快，避免一切无效工作，要把所有的时间都用在处理句柄的 IO 上，不能有任何空转或 sleep 的时间浪费。</li>
 </ul>
-<h1 id="_2">服务端网络编程模型的演变过程</h1>
+<h2 id="_2">一 服务端网络编程模型的演变过程</h2>
 <p><img alt="png" src="../../img/FC00DB58-C885-4B38-916D-04F22F3E968C.png" /></p>
-<h2 id="forkworker">第一阶段 用户空间调用fork,生成多worker进程</h2>
+<h3 id="fork-worker">（一） 第一阶段 用户空间调用 fork,生成多 worker 进程</h3>
 <p>每次都创建一个新的进程或线程，去调用 read 函数，并做业务处理。</p>
-<p><code>while(1) {
-  connfd = accept(listenfd);  // 阻塞建立连接
-  pthread_create（doWork);  // 创建一个新的线程
-}
-void doWork() {
-  int n = read(connfd, buf);  // 阻塞读数据
-  doSomeThing(buf);  // 利用读到的数据做些什么
-  close(connfd);     // 关闭连接，循环等待下一个连接
-}</code></p>
+<p><code>while(1) { connfd = accept(listenfd); // 阻塞建立连接 pthread_create（doWork); // 创建一个新的线程 } void doWork() { int n = read(connfd, buf); // 阻塞读数据 doSomeThing(buf); // 利用读到的数据做些什么 close(connfd); // 关闭连接，循环等待下一个连接 }</code></p>
 <p>问题点: 为每个客户端创建一个线程，服务器端的线程资源很容易被耗光。</p>
-<h2 id="ioselect">第二阶段 IO多路复用之Select</h2>
+<h3 id="io-select">（二） 第二阶段 IO 多路复用之 Select</h3>
 <ul>
 <li>
 <p>select 是操作系统提供的系统调用函数，通过它，我们可以把一个文件描述符的数组发给操作系统， 让操作系统去遍历，确定哪个文件描述符可以读写， 然后告诉我们去处理.</p>
 </li>
 <li>
-<p>select系统调用的函数定义如下。</p>
+<p>select 系统调用的函数定义如下。</p>
 </li>
 </ul>
-<p><code>int select(
-    int nfds,
-    fd_set *readfds,
-    fd_set *writefds,
-    fd_set *exceptfds,
-    struct timeval *timeout);
-// nfds:监控的文件描述符集里最大文件描述符加1
-// readfds：监控有读数据到达文件描述符集合，传入传出参数
-// writefds：监控写数据到达文件描述符集合，传入传出参数
-// exceptfds：监控异常发生达文件描述符集合, 传入传出参数
-// timeout：定时阻塞监控时间，3种情况
-//  1.NULL，永远等下去
-//  2.设置timeval，等待固定时间
-//  3.设置timeval里时间均为0，检查描述字后立即返回，轮询</code></p>
-<h3 id="_3">一些细节</h3>
+<p><code>int select( int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout); // nfds:监控的文件描述符集里最大文件描述符加1 // readfds：监控有读数据到达文件描述符集合，传入传出参数 // writefds：监控写数据到达文件描述符集合，传入传出参数 // exceptfds：监控异常发生达文件描述符集合, 传入传出参数 // timeout：定时阻塞监控时间，3种情况 // 1.NULL，永远等下去 // 2.设置timeval，等待固定时间 // 3.设置timeval里时间均为0，检查描述字后立即返回，轮询</code></p>
+<h4 id="_3">一些细节</h4>
 <ol>
 <li>select 调用需要传入 fd 数组，需要拷贝一份到内核，高并发场景下这样的拷贝消耗的资源是惊人的。（<code>可优化为不复制</code>）</li>
 <li>select 在内核层仍然是通过遍历的方式检查文件描述符的就绪状态，是个同步过程，只不过无系统调用切换上下文的开销。（<code>内核层可优化为异步事件通知</code>）</li>
 <li>select 仅仅返回可读文件描述符的个数，具体哪个可读还是要用户自己遍历。（<code>可优化为只返回给用户就绪的文件描述符，无需用户做无效的遍历</code>）</li>
 </ol>
-<h3 id="select">整个 select的流程</h3>
+<h4 id="select">整个 select 的流程</h4>
 <p>流程图如下</p>
 <p><img alt="png" src="../../img/WechatIMG209.jpeg" /></p>
 <ul>
 <li>可以看到，这种方式，既做到了一个线程处理多个客户端连接（文件描述符），又减少了系统调用的开销（<code>多个文件描述符只有一次 select 的系统调用 + n 次就绪状态的文件描述符的 read 系统调用</code>）</li>
 </ul>
-<h4 id="select_1">select 低效的原因</h4>
+<h5 id="select_1">select 低效的原因</h5>
 <ul>
 <li>Select 低效的原因之一是将“维护等待队列”和“阻塞进程”两个步骤合二为一。</li>
 </ul>
@@ -405,9 +440,9 @@ void doWork() {
 </ul>
 </li>
 </ul>
-<h3 id="poll">Poll</h3>
+<h4 id="poll">Poll</h4>
 <p><img alt="png" src="../../img/1619E74C-B4AC-4C50-8EBF-E931CDFB3057.png" /></p>
-<h2 id="epoll">第三阶段 Epoll</h2>
+<h3 id="epoll">（三） 第三阶段 Epoll</h3>
 <p>epoll 是最终的大 boss，它解决了 select 和 poll 的一些问题。</p>
 <p>还记得上面说的 select 的三个细节么？</p>
 <ol>
@@ -422,46 +457,44 @@ void doWork() {
 <li>内核仅会将有 IO 事件的文件描述符返回给用户，用户也无需遍历整个文件描述符集合。</li>
 </ol>
 <p>具体，操作系统提供了这三个函数。</p>
-<h3 id="epoll-epoll">第一步，创建一个 epoll 句柄(创建Epoll对象)</h3>
+<h4 id="epoll-epoll">第一步，创建一个 epoll 句柄(创建 Epoll 对象)</h4>
 <p><code>int epoll_create(int size);</code></p>
 <p>如下图所示，当某个进程调用 epoll_create 方法时，内核会创建一个 <code>eventpoll 对象</code>（也就是程序中 Epfd 所代表的对象）。</p>
 <p><img alt="png" src="../../img/C2A937F0-880A-475C-AF1F-3B82A8CFB9B6.jpg" /></p>
 <p><code>eventpoll 对象</code>也是文件系统中的一员，和 <code>Socket</code> 一样，它也会有等待队列。</p>
 <p>创建一个代表该 Epoll 的 eventpoll 对象是必须的，因为内核要维护<code>就绪列表</code>等数据，<code>就绪列表</code>可以作为 eventpoll 的成员。</p>
-<h3 id="_4">第二步，向内核添加、修改或删除要监控的文件描述符。</h3>
-<p><code>int epoll_ctl(
-  int epfd, int op, int fd, struct epoll_event *event);</code></p>
+<h4 id="_4">第二步，向内核添加、修改或删除要监控的文件描述符。</h4>
+<p><code>int epoll_ctl( int epfd, int op, int fd, struct epoll_event *event);</code></p>
 <p>创建 <code>Epoll 对象</code>后，可以用 epoll_ctl 添加或删除所要监听的 Socket。以添加 Socket 为例。</p>
 <p>添加所要监听的 Socket</p>
 <p><img alt="png" src="../../img/4C3E1613-F7C5-4C7D-83BE-36E779DD98FB.jpg" /></p>
 <p>如上图，如果通过 epoll_ctl 添加 Sock1、Sock2 和 Sock3 的监视，内核会将 <code>eventpoll对象</code>（也就是程序中 Epfd 所代表的对象）, 添加到这三个 Socket 的等待队列中。</p>
 <p><code>当 Socket 收到数据后，中断程序会操作 eventpoll 对象，而不是直接操作进程</code>。</p>
-<h3 id="select_2">第三步，类似发起了 select() 调用</h3>
-<p><code>int epoll_wait(
-  int epfd, struct epoll_event *events, int max events, int timeout);</code></p>
+<h4 id="select_2">第三步，类似发起了 select() 调用</h4>
+<p><code>int epoll_wait( int epfd, struct epoll_event *events, int max events, int timeout);</code></p>
 <p>当 Socket 收到数据后，中断程序会给 <code>eventpoll对象</code>（也就是程序中 Epfd 所代表的对象） 的<code>就绪列表</code>添加 Socket 引用。</p>
 <p><img alt="png" src="../../img/9FFF8D69-61B1-4EB0-8194-EE2C92127026.jpg" /></p>
 <p>如上图展示的是 Sock2 和 Sock3 收到数据后，<code>中断程序</code>让 <code>Rdlist</code> 引用这两个 Socket。</p>
 <p><code>eventpoll 对象</code>相当于 <code>Socket</code> 和<code>进程</code>之间的中介，<code>Socket</code> 的数据接收并不直接影响进程，而是通过改变 <code>eventpoll对象</code> 的<code>就绪列表</code>来改变进程状态。</p>
-<p>当程序执行到 <code>epoll_wait</code> 时，如果 <code>Rdlist</code> 已经引用了 <code>Socket</code>，那么 <code>epoll_wait</code> 直接返回(并告知就绪的Socket对象是哪些,也就是对应的FD,比如FD 3号和4号是Ready了,进程可以直接Read数据了)，如果 <code>Rdlist</code> 为空，阻塞进程。</p>
-<h3 id="_5">阻塞和唤醒进程</h3>
+<p>当程序执行到 <code>epoll_wait</code> 时，如果 <code>Rdlist</code> 已经引用了 <code>Socket</code>，那么 <code>epoll_wait</code> 直接返回(并告知就绪的 Socket 对象是哪些,也就是对应的 FD,比如 FD 3 号和 4 号是 Ready 了,进程可以直接 Read 数据了)，如果 <code>Rdlist</code> 为空，阻塞进程。</p>
+<h4 id="_5">阻塞和唤醒进程</h4>
 <p>假设计算机中正在运行进程 A 和进程 B，在某时刻进程 A 运行到了 <code>epoll_wait</code> 语句, <code>epoll_wait</code>会阻塞进程.</p>
 <p><img alt="png" src="../../img/7110CC3C-57B4-4273-AAF6-0A5E3D0A55C5.jpg" /></p>
 <p>如上图所示，内核会将进程 A 放入 <code>eventpoll对象的等待队列</code>中，阻塞进程。</p>
 <p>当 Socket 接收到数据，中断程序(主要是软中断处理程序)一方面修改 <code>Rdlist</code>，另一方面唤醒 <code>eventpoll 等待队列</code>中的进程，进程 A 再次进入运行状态（如下图）。</p>
 <p><img alt="png" src="../../img/2D8BE578-BD82-4EF9-94FC-4219241F4601.jpg" /></p>
 <p>也因为 <code>Rdlist</code> 的存在，进程 A 可以知道哪些 Socket 发生了变化。</p>
-<h4 id="_6">整体流程图</h4>
+<h5 id="_6">整体流程图</h5>
 <p><img alt="png" src="../../img/0922DB16-2968-4D7C-B3CD-E058A61B9B40.jpg" /></p>
-<h3 id="io">异步 IO 事件通知机制</h3>
-<p>怎么才能保证数据准备好之后，立马感知呢？ </p>
+<h4 id="io">异步 IO 事件通知机制</h4>
+<p>怎么才能保证数据准备好之后，立马感知呢？</p>
 <ul>
-<li>要求对应的file结构体，必须要有poll方法.</li>
-<li>假设某个socket有可读写的数据了, 软中断处理程序这边，会唤醒该<strong>socket的<code>等待队列</code></strong>里面的<code>对象</code>,  这个对象可以是<code>进程</code>，也可以是<code>eventpoll对象</code></li>
-<li>在 <code>epoll_ctl</code>的内部实现中，一个核心步骤就是设置 poll 回调, 给<code>eventpoll对象</code>设置好poll回调.</li>
-<li>当然epoll池可以管理的对象并不只是socket fd，其他类型的fd也可以. </li>
+<li>要求对应的 file 结构体，必须要有 poll 方法.</li>
+<li>假设某个 socket 有可读写的数据了, 软中断处理程序这边，会唤醒该<strong>socket 的<code>等待队列</code></strong>里面的<code>对象</code>, 这个对象可以是<code>进程</code>，也可以是<code>eventpoll对象</code></li>
+<li>在 <code>epoll_ctl</code>的内部实现中，一个核心步骤就是设置 poll 回调, 给<code>eventpoll对象</code>设置好 poll 回调.</li>
+<li>当然 epoll 池可以管理的对象并不只是 socket fd，其他类型的 fd 也可以.</li>
 </ul>
-<h4 id="poll_1">思考来了：poll 回调是什么？怎么设置？</h4>
+<h5 id="poll_1">思考来了：poll 回调是什么？怎么设置？</h5>
 <p>先说说 <code>file_operations-&gt;poll</code> 是什么？</p>
 <p>在 文件描述符 fd 究竟是什么 说过，Linux 设计成一切皆是文件的架构，这个不是说说而已，而是随处可见。实现一个文件系统的时候，就要实现这个文件调用，这个结构体用<code>struct file_operations</code>来表示。这个结构体有非常多的函数，精简了一些，如下：</p>
 <pre><code>struct file_operations {
@@ -479,23 +512,260 @@ void doWork() {
 <p>举个例子：网卡收发包其实走的异步流程，操作系统把数据丢到一个指定地点，网卡不断的从这个指定地点掏数据处理。请求响应通过中断回调来处理，中断一般拆分成两部分：硬中断和软中断。poll 函数就是把这个软中断回来的路上再加点料，只要读写事件触发的时候，就会立马通知到上层，采用这种事件通知的形式就能把浪费的时间窗就完全消失了。</p>
 <p><strong>划重点：这个 poll 事件回调机制则是 epoll 池高效最核心原理。</strong></p>
 <p><strong> 划重点：<code>epoll 池</code>管理的<code>句柄</code>只能是支持了 file_operations-&gt;poll 的文件 fd。换句话说，如果一个“文件”所在的文件系统没有实现 poll 接口，那么就用不了 epoll 机制。</strong></p>
-<h3 id="_7">总结</h3>
+<h2 id="_7">二 总结</h2>
 <ol>
 <li>IO 多路复用的原始实现很简单，就是一个 1 对多的服务模式，一个 loop 对应处理多个 fd ；</li>
 <li>IO 多路复用想要做到真正的高效，必须要内核机制提供。因为 IO 的处理和完成是在内核，如果内核不帮忙，用户态的程序根本无法精确的抓到处理时机；</li>
 <li>fd 记得要设置成非阻塞的哦，切记；</li>
 <li>epoll 池通过高效的内部管理结构，并且结合操作系统提供的 poll 事件注册机制，实现了高效的 fd 事件管理，为高并发的 IO 处理提供了前提条件；</li>
 <li>epoll 全名 eventpoll，在 Linux 内核下以一个文件系统模块的形式实现，所以有人常说 epoll 其实本身就是文件系统也是对的；
-<img alt="png" src="../../img/WechatIMG343.jpeg" /></li>
-<li>socketfd，eventfd，timerfd 这三种”文件“fd 实现了 poll 接口，所以网络 fd，事件fd，定时器fd 都可以使用 epoll_ctl 注册到池子里。我们最常见的就是网络fd的多路复用；
-ext2，ext4，xfs 这种真正意义的文件系统反倒没有提供 poll 接口实现，所以不能用 epoll 池来管理其句柄。那文件就无法使用 epoll 机制了吗？不是的，有一个库叫做 libaio ，通过这个库我们可以间接的让文件使用 epoll 通知事件，</li>
+   <img alt="png" src="../../img/WechatIMG343.jpeg" /></li>
+<li>socketfd，eventfd，timerfd 这三种”文件“fd 实现了 poll 接口，所以网络 fd，事件 fd，定时器 fd 都可以使用 epoll_ctl 注册到池子里。我们最常见的就是网络 fd 的多路复用；
+   ext2，ext4，xfs 这种真正意义的文件系统反倒没有提供 poll 接口实现，所以不能用 epoll 池来管理其句柄。那文件就无法使用 epoll 机制了吗？不是的，有一个库叫做 libaio ，通过这个库我们可以间接的让文件使用 epoll 通知事件，</li>
 </ol>
+<h2 id="epoll_1">三 epoll 机制核心数据结构</h2>
+<h3 id="1-struct-eventpoll">1 struct eventpoll</h3>
+<pre><code>
+/*
+ * This structure is stored inside the &quot;private_data&quot; member of the file
+ * structure and represents the main data structure for the eventpoll
+ * interface.
+ */
+struct eventpoll {
+    /* Protect the access to this structure */
+    spinlock_t lock;
+
+    /*
+     * This mutex is used to ensure that files are not removed
+     * while epoll is using them. This is held during the event
+     * collection loop, the file cleanup path, the epoll file exit
+     * code and the ctl operations.
+     */
+    struct mutex mtx;
+
+    /* Wait queue used by sys_epoll_wait() */
+    wait_queue_head_t wq;
+
+    /* Wait queue used by file-&gt;poll() */
+    wait_queue_head_t poll_wait;
+
+    /* List of ready file descriptors */
+    struct list_head rdllist;
+
+    /* RB tree root used to store monitored fd structs */
+    struct rb_root rbr;
+
+    /*
+     * This is a single linked list that chains all the &quot;struct epitem&quot; that
+     * happened while transferring ready events to userspace w/out
+     * holding -&gt;lock.
+     */
+    struct epitem *ovflist;
+
+    /* wakeup_source used when ep_scan_ready_list is running */
+    struct wakeup_source *ws;
+
+    /* The user that created the eventpoll descriptor */
+    struct user_struct *user;
+
+    struct file *file;
+
+    /* used to optimize loop detection check */
+    int visited;
+    struct list_head visited_list_link;
+};
+</code></pre>
+<ul>
+<li><img alt="png" src="../../img/0346b12dedae505772b7efda083e01b8.png" /></li>
+</ul>
+<h3 id="2-struct-epitem">2 struct epitem</h3>
+<pre><code>/*
+ * Each file descriptor added to the eventpoll interface will
+ * have an entry of this type linked to the &quot;rbr&quot; RB tree.
+ * Avoid increasing the size of this struct, there can be many thousands
+ * of these on a server and we do not want this to take another cache line.
+ */
+struct epitem {
+    union {
+        /* RB tree node links this structure to the eventpoll RB tree */
+        struct rb_node rbn;
+        /* Used to free the struct epitem */
+        struct rcu_head rcu;
+    };
+
+    /* List header used to link this structure to the eventpoll ready list */
+    struct list_head rdllink;
+
+    /*
+     * Works together &quot;struct eventpoll&quot;-&gt;ovflist in keeping the
+     * single linked chain of items.
+     */
+    struct epitem *next;
+
+    /* The file descriptor information this item refers to */
+    struct epoll_filefd ffd;
+
+    /* Number of active wait queue attached to poll operations */
+    int nwait;
+
+    /* List containing poll wait queues */
+    struct list_head pwqlist;
+
+    /* The &quot;container&quot; of this item */
+    struct eventpoll *ep;
+
+    /* List header used to link this item to the &quot;struct file&quot; items list */
+    struct list_head fllink;
+
+    /* wakeup_source used when EPOLLWAKEUP is set */
+    struct wakeup_source __rcu *ws;
+
+    /* The structure that describe the interested events and the source fd */
+    struct epoll_event event;
+};
+</code></pre>
+<ul>
+<li><img alt="png" src="../../img/epoll-data-structure.png" /></li>
+</ul>
+<h3 id="3-struct-epoll_event">3 struct epoll_event 代表文件描述符的各种诸如可读可写事件</h3>
+<ul>
+<li>首先了解一下<strong>epoll_ctl</strong>函数: <code>int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);</code></li>
+<li>
+<ul>
+<li>该函数是 epoll 的事件注册函数，它不同与 select()是在监听事件时告诉内核要监听什么类型的事件，而是在这里先注册要监听的事件类型。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>第一个参数是 epoll_create()的返回值</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>第二个参数表示动作，用三个宏来表示：</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>EPOLL_CTL_ADD：注册新的 fd 到 epfd 中；</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>EPOLL_CTL_MOD：修改已经注册的 fd 的监听事件；</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>EPOLL_CTL_DEL：从 epfd 中删除一个 fd；</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>第三个参数是需要监听的 fd，第四个参数是告诉内核需要监听什么事，struct epoll_event 结构如下：</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code> typedef union epoll_data {
+      void *ptr;
+      int fd;
+      __uint32_t u32;
+      __uint64_t u64;
+  } epoll_data_t;
+
+  struct epoll_event {
+      __uint32_t events; /* Epoll events */
+      epoll_data_t data; /* User data variable */
+ };
+
+</code></pre>
+<p>events 可以是以下几个宏的集合：</p>
+<ul>
+<li>EPOLLIN ：表示对应的文件描述符可以读（包括对端 SOCKET 正常关闭）；</li>
+<li>EPOLLOUT：表示对应的文件描述符可以写；</li>
+<li>EPOLLPRI：表示对应的文件描述符有紧急的数据可读（这里应该表示有带外数据到来）；</li>
+<li>EPOLLERR：表示对应的文件描述符发生错误；</li>
+<li>EPOLLHUP：表示对应的文件描述符被挂断；</li>
+<li>EPOLLET： 将 EPOLL 设为边缘触发(Edge Triggered)模式，这是相对于水平触发(Level Triggered)来说的。</li>
+<li>EPOLLONESHOT：只监听一次事件，当监听完这次事件之后，如果还需要继续监听这个 socket 的话，需要再次把这个 socket 加入到 EPOLL 队列里</li>
+</ul>
+<h3 id="4-struct-epoll_filefd">4 struct epoll_filefd</h3>
+<pre><code>struct epoll_filefd {
+    struct file *file;
+    int fd;
+} __packed;
+
+</code></pre>
+<h3 id="5-struct-ep_pqueue">5 struct ep_pqueue</h3>
+<pre><code>
+/* Wrapper struct used by poll queueing */
+struct ep_pqueue {
+    poll_table pt;
+    struct epitem *epi;
+};
+
+</code></pre>
+<h3 id="6-struct-poll_table">6 struct poll_table</h3>
+<pre><code>
+struct poll_table_struct;
+
+/*
+ * structures and helpers for f_op-&gt;poll implementations
+ */
+typedef void (*poll_queue_proc)(struct file *, wait_queue_head_t *, struct poll_table_struct *);
+
+/*
+ * Do not touch the structure directly, use the access functions
+ * poll_does_not_wait() and poll_requested_events() instead.
+ */
+typedef struct poll_table_struct {
+    poll_queue_proc _qproc;
+    unsigned long _key;
+} poll_table;
+
+</code></pre>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../7_udp/" class="btn btn-neutral float-left" title="第七篇 UDP协议总结以及TCP和UDP的区别"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../9_linux_send_msg/" class="btn btn-neutral float-right" title="第九篇 Linux Net子系统实现原理">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../10_linux_net/" class="btn btn-neutral float-right" title="第十篇 Linux Net子系统总结、收发包流程再次梳理">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -521,7 +791,7 @@ ext2，ext4，xfs 这种真正意义的文件系统反倒没有提供 poll 接�
       <span><a href="../7_udp/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../9_linux_send_msg/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../10_linux_net/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
