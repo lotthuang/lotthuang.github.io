@@ -62,6 +62,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/11_nftables/">第十一篇 Debian 11以及往后版本nftables防火墙配置</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -877,12 +879,38 @@ struct sk_buff_head
 <p><img alt="png" src="../../img/2F8E69F6-03A6-4704-A9F4-7692DE382258.png" /></p>
 <p>其中代表一条连接的 socket 内核对象更为具体一点的结构图如下。</p>
 <p><img alt="png" src="../../img/661EF808-6EFF-4483-85D9-5C65C76B33AF.png" /></p>
-<p>从上面这个图得到如下结论:</p>
+<p>Linux 内核网络层实现时, 总是分为三层:</p>
 <ul>
-<li>内核中不同的协议是使用<code>struct proto</code>结构体表示的, 比如 tcp 协议是使用<code>struct proto tcp_prot</code>表示.</li>
 <li>
 <ul>
-<li>按照经典的<strong>描述符</strong>+<strong>ops</strong>思想, 对应协议的操作能力是用结构体<code>struct proto_ops</code>表示, 比如 tcp 协议的一些操作是用<code>struct proto_ops inet_stream_ops</code>结构体表示.</li>
+<li>
+<ul>
+<li><strong>BSD socket 对象</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li><strong>inet 协议族</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li><strong>具体协议,比如 tcp</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>按照经典的<strong>描述符</strong>+<strong>ops</strong>思想, 对应<strong>inet socket</strong>的操作能力是用结构体<code>struct proto_ops</code>表示, 比如 inet 层一些操作是用<code>struct proto_ops inet_stream_ops</code>结构体表示, 具体<strong>协议层 sock</strong>的操作能力是用结构体<code>struct proto</code>表示, 比如 tcp 层一些操作是用<code>struct proto tcp_prot</code>结构体表示.</li>
 </ul>
 </li>
 <li>

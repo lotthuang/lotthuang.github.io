@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第二篇 工作能力评价体系 - Lott's Blog</title>
+    <title>第十二篇 Ansible简单使用笔记 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u4e8c\u7bc7 \u5de5\u4f5c\u80fd\u529b\u8bc4\u4ef7\u4f53\u7cfb";
-        var mkdocs_page_input_path = "chapter_8/2_bangzhuqitatongxue.md";
+        var mkdocs_page_name = "\u7b2c\u5341\u4e8c\u7bc7 Ansible\u7b80\u5355\u4f7f\u7528\u7b14\u8bb0";
+        var mkdocs_page_input_path = "chapter_1/12_ansible_basic_use.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -45,24 +45,36 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">第一章 各种杂项基础</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/3_linux_kernel_basic/">第三篇 Linux内核基础</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_linux_kernel_basic/">第三篇 Linux内核基础</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/10_virtual_machine_on_mac_m1_chip/">第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_virtual_machine_on_mac_m1_chip/">第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/11_nftables/">第十一篇 Debian 11以及往后版本nftables防火墙配置</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../11_nftables/">第十一篇 Debian 11以及往后版本nftables防火墙配置</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第十二篇 Ansible简单使用笔记</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 安装</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#hosts">二 hosts 文件</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#playbook">三 PlayBook</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">实例 1</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -210,56 +222,26 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第八章 职场通用经验</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../1_xuexixinde/">第一篇 学习心得和工作箴言</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/1_xuexixinde/">第一篇 学习心得和工作箴言</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第二篇 工作能力评价体系</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#_2">一 如何帮助同学提升技术能力(专业能力)</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_3">严格就是大爱</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_4">二 具体岗位胜任力评价体系</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#1">1、沟通表达能力</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#2">2、业务能力</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#3">3、向上管理能力</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_5">三 大厂对于员工的分类</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#smart">四 关于目标制定的 SMART 原则</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_6">五 工作能力提升路径</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#1-">角度 1 - 面试</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#2-leader">角度 2 - 往技术 Leader 方向</a>
-    </li>
-        </ul>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/2_bangzhuqitatongxue/">第二篇 工作能力评价体系</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../3_yewuliuchengshuyu/">第三篇 项目管理总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/3_yewuliuchengshuyu/">第三篇 项目管理总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../4_jishunenglimoxing/">第四篇 技术能力模型总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/4_jishunenglimoxing/">第四篇 技术能力模型总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_chanpingsiwei_1/">第五篇 产品思维总结和梳理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/5_chanpingsiwei_1/">第五篇 产品思维总结和梳理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../6_jixiaobaogao/">第六篇 如何写绩效报告</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/6_jixiaobaogao/">第六篇 如何写绩效报告</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../7_xiangshangguanli/">第七篇 如何向上管理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/7_xiangshangguanli/">第七篇 如何向上管理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../9_speaking_skills/">第九篇 沟通能力和演讲技巧</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/9_speaking_skills/">第九篇 沟通能力和演讲技巧</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../10_jixiaofangtan/">第十篇 绩效访谈总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/10_jixiaofangtan/">第十篇 绩效访谈总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../11_classic_technical_thinking/">第十一篇 经典技术思维汇总</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/11_classic_technical_thinking/">第十一篇 经典技术思维汇总</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第九章 编程经验</span></p>
@@ -360,8 +342,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>第八章 职场通用经验 &raquo;</li>
-      <li>第二篇 工作能力评价体系</li>
+          <li>第一章 各种杂项基础 &raquo;</li>
+      <li>第十二篇 Ansible简单使用笔记</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -371,92 +353,75 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="_1">概述</h1>
-<h2 id="_2">一 如何帮助同学提升技术能力(专业能力)</h2>
 <ul>
-<li>梳理每位同学的长处</li>
-<li>把一些难点的任务交给他们去做,过程中提供相应帮助,交付后一定要检查效果</li>
+<li>本篇总结一些 Ansible 的基本使用</li>
 </ul>
-<h3 id="_3">严格就是大爱</h3>
-<p><img alt="png" src="../../img/1600255540148.jpg" /></p>
-<h2 id="_4">二 具体岗位胜任力评价体系</h2>
-<p>评价的几个方面:</p>
-<p><img alt="png" src="../../img/WechatIMG105.png" /></p>
-<p>招聘时考核的能力:</p>
-<p><img alt="png" src="../../img/WechatIMG106.jpeg" /></p>
-<p>入职后比专业能力更加重要的三个能力:</p>
-<h3 id="1">1、沟通表达能力</h3>
-<p>沟通能力有以下两层境界：</p>
-<p>第一，有条理有逻辑。</p>
-<p>说一件事时要有条理，有逻辑，能用清晰的语言表达出来。可是很多程序员习惯用技术语言去跟其他领域的人沟通，暂且不谈语言条理和逻辑，这种沟通就是无效的，因为鸡同鸭讲。</p>
-<p>第二，要学会抽象和归纳。</p>
-<p>在跟他人沟通时，不要东一榔头西一棒槌，一会描述细节，一会又概括描述。怎么做呢？要把技术概念抽象出来，并且概括提炼你要说的内容，这样对方就能快速理解你要表达的意思，如果涉及到细节，再展开来讲。</p>
-<h3 id="2">2、业务能力</h3>
-<p>几乎所有的公司都是业务为王，所以熟悉业务非常重要，我认为出色的业务能力至少要熟悉自己负责的项目核心业务流程以及了解上下游系统，再者不熟悉业务，想写出可复用、可扩展的代码那都是天方夜谭。
-另外，你可以看看公司架构师/总监/CTO，都是业务高手～</p>
-<h3 id="3">3、向上管理能力</h3>
-<p>过来人都知道，向上管理比技术能力重要得多，正应了那就话——埋头苦干不抬头看天是肯定不行的！
-那么如何做好向上管理呢？简单来说就是以下三步法：</p>
+<h2 id="_2">一 安装</h2>
+<pre><code>apt-get install ansible
+</code></pre>
+<h2 id="hosts">二 hosts 文件</h2>
 <ul>
-<li>做事前和领导统一目标和技术方案</li>
-<li>做事中和领导汇报进度</li>
-<li>做事后做好个人复盘总结并汇报。</li>
+<li>默认配置文件为<code>/etc/ansible/hosts</code></li>
 </ul>
-<h2 id="_5">三 大厂对于员工的分类</h2>
-<p><img alt="png" src="../../img/WechatIMG107.png" /></p>
-<h2 id="smart">四 关于目标制定的 SMART 原则</h2>
-<p>SMART（聪明）原则将目标一共分为五个维度，即:</p>
-<p><img alt="png" src="../../img/WechatIMG108.jpeg" /></p>
+<pre><code>[webserver]
+127.0.0.1 ansible_ssh_port=32200  ansible_ssh_user=&quot;hero&quot; ansible_ssh_common_args='-o StrictHostKeyChecking=no -o ConnectTimeout=2 -o ServerAliveInterval=30 -o ServerAliveCountMax=60' ansible_become_pass=&quot;your_pass&quot;
+10.0.1.8 ansible_ssh_port=32200  ansible_ssh_user=&quot;hero&quot; ansible_ssh_common_args='-o StrictHostKeyChecking=no -o ConnectTimeout=2 -o ServerAliveInterval=30 -o ServerAliveCountMax=60' ansible_become_pass=&quot;your_pass&quot;
+</code></pre>
+<h2 id="playbook">三 PlayBook</h2>
+<h3 id="1">实例 1</h3>
+<pre><code>cat test_playbook.yaml
+
+---
+# for video and image
+- hosts: all
+  gather_facts: no
+  become: yes
+  become_user: root
+  become_method: su
+  vars:
+    space: dh-test
+
+
+    fvideo: XXXXXX_2222.mp4  # normal video file
+    fvideol: YYYYY_2222.mp4 # large video file
+
+
+  tasks:
+    - name: start stress testing
+      ansible.builtin.shell: 'rm -fr ~/{{fvideo}}; mkdir ~/{{fvideo}}'
+    - name: copy videos&amp;programs
+      ansible.builtin.copy:
+        src: ./upt
+        dest: ~/
+        force: yes
+    - name: make vt executable
+      ansible.builtin.file:
+        path: ~/upt/vt
+        mode: '0755'
+
+</code></pre>
+<ul>
+<li>执行 PlayBook</li>
+</ul>
+<pre><code>
+ansible-playbook test_playbook.yaml
+</code></pre>
 <ul>
 <li>
-<ol>
-<li>目标必须是<strong>具体的</strong>（Specific）, 为了实现目标，你的行动计划是否清晰？要有明确的路径.</li>
-</ol>
+<p>效果图</p>
 </li>
 <li>
-<ol>
-<li>目标必须是<strong>可以衡量的</strong>（Measurable）, 目标一定是可量化的</li>
-</ol>
-</li>
-<li>
-<ol>
-<li>目标必须是<strong>可以达到的</strong>（Attainable）, 目标实现的可行性有多大?</li>
-</ol>
-</li>
-<li>
-<ol>
-<li>目标必须和其他目标具<strong>有相关性</strong>（Relevant）, 该目标是否和你上级的目标具有关联?</li>
-</ol>
-</li>
-<li>
-<ol>
-<li>目标必须具<strong>有明确的截止期限</strong>（Time-based）, 有了实现目标的路径,还需要有关键时间节点, 有一个明确的时间轴</li>
-</ol>
-</li>
-</ul>
-<h2 id="_6">五 工作能力提升路径</h2>
 <ul>
-<li>怎么样才算是一个人才</li>
+<li><img alt="png" src="../../img/B31B4CC6-6CA1-4472-9F0E-7EC39417C643.png" /></li>
 </ul>
-<h3 id="1-">角度 1 - 面试</h3>
-<ul>
-<li>1 技术很厉害, 超过现有团队平均水平</li>
-<li>2 项目经历很高大上</li>
-<li>3 通人性、会说话(说话说到人心坎里)</li>
-<li>4 对领导忠诚</li>
-</ul>
-<h3 id="2-leader">角度 2 - 往技术 Leader 方向</h3>
-<ul>
-<li>1 一套管理能力、带团队方法论</li>
-<li>2 与时俱进的硬核技术能力, 精通当下主流技术(比如 Linux 内核、云原生)</li>
-<li>3 SRE 稳定性理论（做稳定性的心法, 也可以理解为做该岗位的心法)</li>
-<li>4 项目管理能力、逻辑思维强</li>
+</li>
 </ul>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../1_xuexixinde/" class="btn btn-neutral float-left" title="第一篇 学习心得和工作箴言"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../3_yewuliuchengshuyu/" class="btn btn-neutral float-right" title="第三篇 项目管理总结">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../11_nftables/" class="btn btn-neutral float-left" title="第十一篇 Debian 11以及往后版本nftables防火墙配置"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_2/yunweijiazhi/" class="btn btn-neutral float-right" title="第一篇 运维的价值和目标">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -479,10 +444,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../1_xuexixinde/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../11_nftables/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../3_yewuliuchengshuyu/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../chapter_2/yunweijiazhi/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
