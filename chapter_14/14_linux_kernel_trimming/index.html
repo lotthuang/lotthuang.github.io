@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第一篇 驱动程序的Hello World - Lott's Blog</title>
+    <title>第十四篇 Linux内核裁剪总结 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u4e00\u7bc7 \u9a71\u52a8\u7a0b\u5e8f\u7684Hello World";
-        var mkdocs_page_input_path = "chapter_14/1_demo_of_led_driver.md";
+        var mkdocs_page_name = "\u7b2c\u5341\u56db\u7bc7 Linux\u5185\u6838\u88c1\u526a\u603b\u7ed3";
+        var mkdocs_page_input_path = "chapter_14/14_linux_kernel_trimming.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -289,25 +289,7 @@
               </ul>
               <p class="caption"><span class="caption-text">第十四章 Linux驱动方向总结</span></p>
               <ul class="current">
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第一篇 驱动程序的Hello World</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#1-hello-world">1 如何编译一个内核模块(Hello World 驱动教程)</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#2">2 相关联想</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#3">3 驱动程序从入门到精通路径</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#4-hello_drv">4 一个完整的 hello_drv</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#a-hello_drvc">A hello_drv.c</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#b-hello_drv_testc">B hello_drv_test.c</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#5-devnull-devfull">5 关于/dev/null 和 /dev/full 等字符设备</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../1_demo_of_led_driver/">第一篇 驱动程序的Hello World</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../2_qianrushidev/">第二篇 嵌入式开发基础</a>
                   </li>
@@ -333,7 +315,27 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../14_linux_kernel_trimming/">第十四篇 Linux内核裁剪总结</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第十四篇 Linux内核裁剪总结</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">是什么</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">为什么</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">怎么办</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_5">其一 裁剪步骤</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">其二 如何选择不需要的代码模块</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_7">其三 注意事项</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_8">参考</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_9">手写一个简单可用的文件系统加入内核</a>
+    </li>
+    </ul>
                   </li>
               </ul>
       </div>
@@ -351,7 +353,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>第十四章 Linux驱动方向总结 &raquo;</li>
-      <li>第一篇 驱动程序的Hello World</li>
+      <li>第十四篇 Linux内核裁剪总结</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -361,242 +363,73 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="_1">概述</h1>
-<ol>
-<li>这一章主要讲述 Linux 驱动程序开发方向的总结. <strong>Linux 驱动 = 软件框架 + 硬件操作</strong></li>
-<li>本篇描述驱动程序方向的 Hello World 程序</li>
-</ol>
-<h2 id="1-hello-world">1 如何编译一个内核模块(Hello World 驱动教程)</h2>
-<p><a href="https://zhuanlan.zhihu.com/p/506702094">内核模块 Hello World 教程</a></p>
-<h2 id="2">2 相关联想</h2>
-<ol>
-<li>Linux 的 file 结构体, 本身就有一个 private_data 成员, 是一个空指针</li>
-</ol>
-<p><img alt="png" src="../../img/WechatIMG1428EF878F0-F5D6-4583-BC27-EB7A13C7D33B.png" /></p>
-<ol>
-<li>在驱动程序中, 通过传入 file 结构体, 然后通过它的 private_data 成员拿到具体的设备结构体</li>
-</ol>
-<p><img alt="png" src="../../img/WechatIMG1433FBA2A9F-FCC3-4FBA-9A2D-1211748BD9BC.png" /></p>
-<h2 id="3">3 驱动程序从入门到精通路径</h2>
 <ul>
-<li>1 HelloWorld 教程</li>
-<li>2 理解 module_init, module_exit, file_operation</li>
-<li>
-<ul>
-<li>写好驱动程序后, 出现/dev/yourdevfile, 应用层可以 open, read, write, ioctl, 然后驱动程序就真正的和硬件交互(读写指令、数据)</li>
+<li>本篇总结 Linux 内核裁剪相关过程和技巧</li>
+<li>以及手写一个最简单的文件系统并且导入内核</li>
 </ul>
-</li>
-<li>3 各自项目实践, 实际和理论相结合</li>
-</ul>
-<h2 id="4-hello_drv">4 一个完整的 hello_drv</h2>
-<ul>
-<li>什么是完整? 包括创建了/dev/hello 文件, 有实现对应 open, close, read, write 操作</li>
-</ul>
-<h3 id="a-hello_drvc">A hello_drv.c</h3>
-<pre><code>#include &lt;linux/module.h&gt;
-
-#include &lt;linux/fs.h&gt;
-#include &lt;linux/errno.h&gt;
-#include &lt;linux/miscdevice.h&gt;
-#include &lt;linux/kernel.h&gt;
-#include &lt;linux/major.h&gt;
-#include &lt;linux/mutex.h&gt;
-#include &lt;linux/proc_fs.h&gt;
-#include &lt;linux/seq_file.h&gt;
-#include &lt;linux/stat.h&gt;
-#include &lt;linux/init.h&gt;
-#include &lt;linux/device.h&gt;
-#include &lt;linux/tty.h&gt;
-#include &lt;linux/kmod.h&gt;
-#include &lt;linux/gfp.h&gt;
-
-/* 1. 确定主设备号                                                                 */
-static int major = 0;
-static char kernel_buf[1024];
-static struct class *hello_class;
-
-
-#define MIN(a, b) (a &lt; b ? a : b)
-
-/* 3. 实现对应的open/read/write等函数，填入file_operations结构体                   */
-static ssize_t hello_drv_read (struct file *file, char __user *buf, size_t size, loff_t *offset)
-{
-    int err;
-    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
-    err = copy_to_user(buf, kernel_buf, MIN(1024, size));
-    return MIN(1024, size);
-}
-
-static ssize_t hello_drv_write (struct file *file, const char __user *buf, size_t size, loff_t *offset)
-{
-    int err;
-    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
-    err = copy_from_user(kernel_buf, buf, MIN(1024, size));
-    return MIN(1024, size);
-}
-
-static int hello_drv_open (struct inode *node, struct file *file)
-{
-    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
-    return 0;
-}
-
-static int hello_drv_close (struct inode *node, struct file *file)
-{
-    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
-    return 0;
-}
-
-/* 2. 定义自己的file_operations结构体                                              */
-static struct file_operations hello_drv = {
-    .owner   = THIS_MODULE,
-    .open    = hello_drv_open,
-    .read    = hello_drv_read,
-    .write   = hello_drv_write,
-    .release = hello_drv_close,
-};
-
-/* 4. 把file_operations结构体告诉内核：注册驱动程序                                */
-/* 5. 谁来注册驱动程序啊？得有一个入口函数：安装驱动程序时，就会去调用这个入口函数 */
-static int __init hello_init(void) // __init表示只在初始化阶段使用, 模块装载后就扔掉, 释放内存
-{
-    int err;
-
-    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
-    major = register_chrdev(0, &quot;hello&quot;, &amp;hello_drv);  /* /dev/hello */
-
-
-    hello_class = class_create(THIS_MODULE, &quot;hello_class&quot;);
-    err = PTR_ERR(hello_class);
-    if (IS_ERR(hello_class)) {
-        printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
-        unregister_chrdev(major, &quot;hello&quot;);
-        return -1;
-    }
-
-    device_create(hello_class, NULL, MKDEV(major, 0), NULL, &quot;hello&quot;); /* /dev/hello */
-
-    return 0;
-}
-
-/* 6. 有入口函数就应该有出口函数：卸载驱动程序时，就会去调用这个出口函数           */
-static void __exit hello_exit(void)
-{
-    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
-    device_destroy(hello_class, MKDEV(major, 0));
-    class_destroy(hello_class);
-    unregister_chrdev(major, &quot;hello&quot;);
-}
-
-
-/* 7. 其他完善：提供设备信息，自动创建设备节点                                     */
-
-module_init(hello_init);
-module_exit(hello_exit);
-
-MODULE_LICENSE(&quot;GPL&quot;);
-
-
-
-
-</code></pre>
-<h3 id="b-hello_drv_testc">B hello_drv_test.c</h3>
-<ul>
-<li>这个是用户空间的测试程序, 对/dev/hello 文件进行写和读</li>
-</ul>
-<pre><code>
-
-#include &lt;sys/types.h&gt;
-#include &lt;sys/stat.h&gt;
-#include &lt;fcntl.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;stdio.h&gt;
-#include &lt;string.h&gt;
-
-/*
- * ./hello_drv_test -w abc
- * ./hello_drv_test -r
- */
-int main(int argc, char **argv)
-{
-    int fd;
-    char buf[1024];
-    int len;
-
-    /* 1. 判断参数 */
-    if (argc &lt; 2)
-    {
-        printf(&quot;Usage: %s -w &lt;string&gt;\n&quot;, argv[0]);
-        printf(&quot;       %s -r\n&quot;, argv[0]);
-        return -1;
-    }
-
-    /* 2. 打开文件 */
-    fd = open(&quot;/dev/hello&quot;, O_RDWR);
-    if (fd == -1)
-    {
-        printf(&quot;can not open file /dev/hello\n&quot;);
-        return -1;
-    }
-
-    /* 3. 写文件或读文件 */
-    if ((0 == strcmp(argv[1], &quot;-w&quot;)) &amp;&amp; (argc == 3))
-    {
-        len = strlen(argv[2]) + 1;
-        len = len &lt; 1024 ? len : 1024;
-        write(fd, argv[2], len);
-    }
-    else
-    {
-        len = read(fd, buf, 1024);
-        buf[1023] = '\0';
-        printf(&quot;APP read : %s\n&quot;, buf);
-    }
-
-    close(fd);
-
-    return 0;
-}
-
-
-
-
-</code></pre>
-<h2 id="5-devnull-devfull">5 关于/dev/null 和 /dev/full 等字符设备</h2>
-<ul>
-<li>基于上面的理解, <code>/dev/null</code>设备的实现就很好实现</li>
-<li>
-<ul>
-<li>从空设备读取时什么也不返回, 代码如下:</li>
-</ul>
-</li>
-</ul>
-<pre><code>
-static ssize_t read_null (struct file *file, const char __user *buf, size_t size, loff_t *offset)
-{
-    return 0;
-}
-
-</code></pre>
+<h2 id="_2">是什么</h2>
+<p>近年来，Linux 操作系统在复杂性和规模上都在增长。然而，一个应用程序通常只需要一部分 OS 功能，众多的应用需求导致了 Linux 内核的膨胀。操作系统的内核膨胀同样导致了安全性隐患、启动时间变长和内存使用的增加。</p>
+<p>随着服务化和微服务的流行，进一步提出了对内核裁剪的需求。在这些场景中，虚拟机运行小型应用程序，每个应用程序往往是“微型”的，内核占用较小，一些虚拟化技术要为目标应用程序提供最简单的 Linux 内核。</p>
+<blockquote>
+<p>Linux 内核裁剪指的是，根据实际需求去掉或者保留部分内核模块或者函数，以达到优化系统性能、减小内存占用、提高安全性等目的的过程。通过裁剪可以使得内核更加轻量级，更适合特定场景下的使用。</p>
+</blockquote>
+<h2 id="_3">为什么</h2>
+<p>1.节省空间：在嵌入式设备中，往往只有几十 MB 或者几百 MB 的存储空间，在这种情况下，精简版的内核可以节省大量的空间。</p>
+<p>2.提高性能：只保留必要模块可以减少内存占用和 CPU 负载，在一些资源有限的场景下可以提高系统性能。</p>
+<p>3.提高安全性：裁剪掉不必要的模块可以减少系统的攻击面，提高系统的安全性。</p>
+<h2 id="_4">怎么办</h2>
+<h3 id="_5">其一 裁剪步骤</h3>
+<p>裁剪内核的过程一般如下：</p>
 <ul>
 <li>
-<ul>
-<li>无论用户空间怎么写都写不满, 代码如下:</li>
-</ul>
+<p>定义内核配置：通过使用「make config」或「make menuconfig」命令确定你需要编译哪些代码。</p>
+</li>
+<li>
+<p>删除不必要的代码：把不需要的代码从内核源代码中删除。</p>
+</li>
+<li>
+<p>编译内核：使用「make」命令编译内核，这个过程可能需要几分钟到几个小时不等。</p>
 </li>
 </ul>
-<pre><code>
-static ssize_t write_null (struct file *file, const char __user *buf, size_t size, loff_t *offset)
-{
-    return count;
-}
-
-</code></pre>
+<p>1.了解当前内核配置：运行命令“make menuconfig”可以打开内核配置界面，查看当前内核的所有配置和模块信息。</p>
+<p>2.根据需求裁剪：根据实际需求选择需要保留或者去掉的内核模块，注意保留必要的驱动程序和文件系统。</p>
+<p>3.编译内核：完成配置后，使用“make”命令编译内核。</p>
+<p>4.安装新内核：使用“make install”命令安装新内核并更新引导程序。</p>
+<p>5.测试新内核：重启系统并测试新内核是否正常工作。</p>
+<h3 id="_6">其二 如何选择不需要的代码模块</h3>
+<p>1.去掉不必要的硬件支持：根据实际硬件设备情况，去掉对应的硬件支持模块，比如没有 USB 接口就可以去掉 USB 支持。</p>
+<p>2.去掉不必要的文件系统支持：根据实际使用情况，去掉不需要的文件系统支持模块，比如没有使用 NFS 就可以去掉 NFS 支持。</p>
+<p>3.去掉不必要的网络协议支持：根据实际网络环境，去掉不需要的网络协议支持模块红帽子 linux 下载，比如没有使用 IPv6 就可以去掉 IPv6 支持。</p>
+<h3 id="_7">其三 注意事项</h3>
+<ol>
+<li>
+<p>裁剪内核需要一定的技巧和经验，因为删除的代码可能会导致内核不稳定或出现其他问题。建议在裁剪内核前充分了解 Linux 内核的架构和实现。</p>
+</li>
+<li>
+<p>裁剪后的内核也可能不完全支持所有的硬件和软件，因此需要谨慎操作。</p>
+</li>
+<li>
+<p>保留必要的驱动程序：一些硬件设备可能需要对应的驱动程序才能正常工作，所以在裁剪时要保留必要的驱动程序。</p>
+</li>
+<li>
+<p>谨慎裁剪：裁剪掉不必要的模块可以减小内核体积，但是过度裁剪可能会导致系统不稳定或者不能正常工作。</p>
+</li>
+<li>
+<p>注意版本兼容性：内核版本不同 linux 内核裁剪，配置和编译方式也可能存在差异。</p>
+</li>
+</ol>
+<h2 id="_8">参考</h2>
+<ul>
+<li><a href="https://blog.csdn.net/iriczhao/article/details/123611660">【linux kernel】记一次 linux 内核裁剪总结</a></li>
+<li><a href="https://juejin.cn/s/linux%E5%86%85%E6%A0%B8%E8%A3%81%E5%89%AA%E5%8F%8A%E7%BC%96%E8%AF%91">linux 内核裁剪及编译</a></li>
+<li><a href="https://www.linuxjiaocheng.com/1185.html">掌握 Linux 内核裁剪技巧，轻松优化系统</a></li>
+</ul>
+<h2 id="_9">手写一个简单可用的文件系统加入内核</h2>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../../chapter_13/1_about_riscv/" class="btn btn-neutral float-left" title="第一篇 RISC-V 简介"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../2_qianrushidev/" class="btn btn-neutral float-right" title="第二篇 嵌入式开发基础">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../13_embedded_development_direction/" class="btn btn-neutral float-left" title="第十三篇 嵌入式开发方向和分类"><span class="icon icon-circle-arrow-left"></span> Previous</a>
     </div>
 
   <hr/>
@@ -619,10 +452,8 @@ static ssize_t write_null (struct file *file, const char __user *buf, size_t siz
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../../chapter_13/1_about_riscv/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../13_embedded_development_direction/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
-    
-      <span><a href="../2_qianrushidev/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
