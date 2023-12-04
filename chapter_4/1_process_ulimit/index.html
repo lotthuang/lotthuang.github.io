@@ -64,6 +64,12 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY和控制台(Console)区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/15_bosun/">第十五篇 Bosun使用</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -177,7 +183,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理原理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理基础篇</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
                   </li>
@@ -185,7 +191,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理总结升级</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理升级篇</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -264,6 +270,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -344,66 +352,72 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="max-open-files">一个进程Max open files的来源</h1>
+                <h1 id="max-open-files">一个进程 Max open files 的来源</h1>
 <ul>
-<li>默认情况下他的ulimit相关设置继承自他的父进程，所以他的Max open files也继承自父进程</li>
+<li>默认情况下他的 ulimit 相关设置继承自他的父进程，所以他的 Max open files 也继承自父进程</li>
 </ul>
 <p><img alt="请在这里输入图片描述" src="../../img/20191104120622.png" /></p>
 <ul>
-<li>触发过PAM机制(使用了pam_limits.so)而产生的进程，以及他们的子进程，（比如su,sudo,login等等程序产生的子进程）还会受到/etc/security/limits.* 下相关的设置，这个大家都懂</li>
+<li>触发过 PAM 机制(使用了 pam_limits.so)而产生的进程，以及他们的子进程，（比如 su,sudo,login 等等程序产生的子进程）还会受到/etc/security/limits.* 下相关的设置，这个大家都懂</li>
 </ul>
-<h1 id="initinitrlimits">重点来了，所有进程都是init进程的后代，那么init进程的RLIMITS是在哪里定义的呢？</h1>
-<p>继续以Max open files为例子，进行探索</p>
-<h2 id="relimits">一 内核源码中RELIMITS的默认设置</h2>
+<h1 id="init-init-rlimits">重点来了，所有进程都是 init 进程的后代，那么 init 进程的 RLIMITS 是在哪里定义的呢？</h1>
+<p>继续以 Max open files 为例子，进行探索</p>
+<h2 id="relimits">一 内核源码中 RELIMITS 的默认设置</h2>
 <pre><code>./linux-3.16.51/include/asm-generic/resource.h
 </code></pre>
 <p><img alt="请在这里输入图片描述" src="../../img/20191104120551.png" /></p>
-<p>左边的是soft limit，右边的是hard limit，
+<p>左边的是 soft limit，右边的是 hard limit，
 其中</p>
 <pre><code>[RLIMIT_NOFILE]     = {   INR_OPEN_CUR,   INR_OPEN_MAX },
 </code></pre>
-<p>INT_OPEN_CUR,INT_OPEN_MAX定义在哪里呢？</p>
+<p>INT_OPEN_CUR,INT_OPEN_MAX 定义在哪里呢？</p>
 <pre><code>./linux-3.16.51/include/uapi/linux/fs.h
 </code></pre>
 <p><img alt="请在这里输入图片描述" src="../../img/20191104095941.png" /></p>
-<p>所以init进程一开始的默认值，就是1024和4096。</p>
+<p>所以 init 进程一开始的默认值，就是 1024 和 4096。</p>
 <h1 id="_1">验证</h1>
-<h2 id="26centos6">一 使用2.6系列内核的centos6</h2>
+<h2 id="26-centos6">一 使用 2.6 系列内核的 centos6</h2>
 <p><img alt="请在这里输入图片描述" src="../../img/20191104100638.png" /></p>
-<h2 id="316debian8">二 使用3.16内核的debian8</h2>
+<h2 id="316-debian8">二 使用 3.16 内核的 debian8</h2>
 <p><img alt="请在这里输入图片描述" src="../../img/20191104100835.png" /></p>
-<h2 id="systemd10244096">三 使用systemd的系统上，却不是1024和4096</h2>
+<h2 id="systemd-1024-4096">三 使用 systemd 的系统上，却不是 1024 和 4096</h2>
 <p><img alt="请在这里输入图片描述" src="../../img/20191104114056.png" /></p>
-<p>另外，<span style="color:#FF0000">每个进程可以通过系统调用setrlimit设置自己的RLIMTS，也可以通过getrlimit系统调用查看自己的RLIMITS.其中root用户可以调大自己的RLIMITS，非root用户只能调小。systemd进程的用户是root，可以通过setrlimit调用，提高自己的RLIMITS。</span></p>
-<p>猜想： 应该是systemd进程自己进行了setrlimit调用。于是查看systemd的源代码：</p>
-<p>1 在src/core/main.c 1162行，设置自己的最大fd
+<p>另外，<span style="color:#FF0000">每个进程可以通过系统调用 setrlimit 设置自己的 RLIMTS，也可以通过 getrlimit 系统调用查看自己的 RLIMITS.其中 root 用户可以调大自己的 RLIMITS，非 root 用户只能调小。systemd 进程的用户是 root，可以通过 setrlimit 调用，提高自己的 RLIMITS。</span></p>
+<p>猜想： 应该是 systemd 进程自己进行了 setrlimit 调用。于是查看 systemd 的源代码：</p>
+<p>1 在 src/core/main.c 1162 行，设置自己的最大 fd
 <img alt="请在这里输入图片描述" src="../../img/20191104113054.png" /></p>
-<p>2 再看下read_nr_open函数的定义：
-在 src/basic/fd-util.c 956行</p>
+<p>2 再看下 read_nr_open 函数的定义：
+在 src/basic/fd-util.c 956 行</p>
 <p><img alt="请在这里输入图片描述" src="../../img/20191104113223.png" /></p>
-<p>读取kernel允许的单进程最大的fd，如果读取失败，默认返回1024*1024</p>
+<p>读取 kernel 允许的单进程最大的 fd，如果读取失败，默认返回 1024*1024</p>
 <pre><code>r = read_one_line_file(&quot;/proc/sys/fs/nr_open&quot;, &amp;nr_open);
 </code></pre>
-<p>我们都知道，linux上单进程能打开的最大文件数取决于/proc/sys/fs/nr_open的设置。</p>
-<h1 id="systemdrlimitsetcsystemdsystemconf">当然，systemd生成的子进程，它默认的RLIMITS也不是继承自己的设置，而是读取配置文件/etc/systemd/system.conf里相关设置</h1>
+<p>我们都知道，linux 上单进程能打开的最大文件数取决于/proc/sys/fs/nr_open 的设置。</p>
+<h1 id="systemd-rlimits-etcsystemdsystemconf">当然，systemd 生成的子进程，它默认的 RLIMITS 也不是继承自己的设置，而是读取配置文件/etc/systemd/system.conf 里相关设置</h1>
 <p><img alt="请在这里输入图片描述" src="../../img/20191104114336.png" /></p>
 <h1 id="_2">总结</h1>
+<h2 id="1">1 关于默认值</h2>
 <ul>
-<li>一个进程的Max open files默认继承自他的父进程</li>
-<li>使用了pam_limits.so而产生的子进程，会受到/etc/security/limits.*配置的影响. 
- <span style="color:#FF0000">而我们线上的sshd服务，默认是忽略PAM设置的，可以查看配置文件</span>
- <img alt="请在这里输入图片描述" src="../../img/20191111191810.png" />
-导致由sshd产生的子进程，默认都继承了sshd进程的ulimit设置</li>
-<li>进程可以通过setrlimit系统调用进行调整、通过getrlimit进行查看自己的RLIMITS。shell的ulimit命令，其实底层也是调用setrlimit和getrlimit</li>
-<li>老版本的init进程（SysVinit和Upstart），是采取kernel默认给的RLIMITS设置</li>
-<li>新版本的init进程，也就是systemd，是自己读取了/proc/sys/fs/nr_open的设置</li>
+<li>一个进程的 Max open files 默认继承自他的父进程</li>
+<li>使用了 pam_limits.so 而产生的子进程，会受到/etc/security/limits.*配置的影响.
+  <span style="color:#FF0000">而我们线上的 sshd 服务，默认是忽略 PAM 设置的，可以查看配置文件</span>
+  <img alt="请在这里输入图片描述" src="../../img/20191111191810.png" />
+  导致由 sshd 产生的子进程，默认都继承了 sshd 进程的 ulimit 设置</li>
+<li>进程可以通过 setrlimit 系统调用进行调整、通过 getrlimit 进行查看自己的 RLIMITS。shell 的 ulimit 命令，其实底层也是调用 setrlimit 和 getrlimit</li>
+<li>老版本的 init 进程（SysVinit 和 Upstart），是采取 kernel 默认给的 RLIMITS 设置</li>
+<li>新版本的 init 进程，也就是 systemd，是自己读取了/proc/sys/fs/nr_open 的设置</li>
 </ul>
-<h1 id="rlimit">补充，如何在线修改线上服务的rlimit（不重启应用）</h1>
-<p>本质能力： root用户+prlimit()系统调用
-其中，prlimit是一个用户空间工具，可以使用prilimit()系统调用</p>
-<h2 id="prlimit">一 使用prlimit工具</h2>
+<h2 id="2">2 关于限制</h2>
+<p>a. 所有进程打开的文件描述符数不能超过/proc/sys/fs/file-max (<strong>操作系统范围内的限制, debian12 默认已经是 9223372036854775807, 是一个超级大的数字</strong>)</p>
+<p>b. 单个进程打开的文件描述符数不能超过 user limit 中 nofile 的 soft limit</p>
+<p>c. nofile 的 soft limit 不能超过其 hard limit</p>
+<p>d. nofile 的 hard limit 不能超过<code>/proc/sys/fs/nr_open</code>，<code>/proc/sys/fs/nr_open</code>是内核层面，给<strong>hard limit</strong>的最大值设置的一个限定。也就是说单个进程不能打开超过<code>/proc/sysc/fs/nr_open</code>所设定的文件数, 默认是 1048576</p>
+<h1 id="rlimit">补充，如何在线修改线上服务的 rlimit（不重启应用）</h1>
+<p>本质能力： root 用户+prlimit()系统调用
+其中，prlimit 是一个用户空间工具，可以使用 prilimit()系统调用</p>
+<h2 id="prlimit">一 使用 prlimit 工具</h2>
 <pre><code>#使用prlimit命令修改core文件大小限制
-root@VM-131-5-ubuntu:/etc/security# prlimit -p 6034 --core=unlimited: 
+root@VM-131-5-ubuntu:/etc/security# prlimit -p 6034 --core=unlimited:
 
 #再次查看该nginx进程的core文件大小限制
 root@VM-131-5-ubuntu:/etc/security# cat /proc/6034/limits  |grep core
@@ -412,20 +426,20 @@ Max core file size        unlimited            unlimited            bytes
 
 prlimit -p 26281  --nofile=1000000
 </code></pre>
-<h2 id="python-resource">二 python + resource模块</h2>
+<h2 id="python-resource">二 python + resource 模块</h2>
 <pre><code>#利用python3 resource模块修改core文件大小限制
 root@VM-131-5-ubuntu:/etc/security# python3
-Python 3.4.3 (default, Nov 12 2018, 22:25:49) 
+Python 3.4.3 (default, Nov 12 2018, 22:25:49)
 [GCC 4.8.4] on linux
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; import resource
-&gt;&gt;&gt; resource.prlimit(16436,resource.RLIMIT_CORE,(-1,-1))   
+&gt;&gt;&gt; resource.prlimit(16436,resource.RLIMIT_CORE,(-1,-1))
 (0, -1)
 &gt;&gt;&gt; exit()
 
 #再次查看该nginx进程的core文件大小限制
 root@VM-131-5-ubuntu:/etc/security# cat /proc/16436/limits  |grep core
-Max core file size        unlimited            unlimited            bytes 
+Max core file size        unlimited            unlimited            bytes
 </code></pre>
               
             </div>

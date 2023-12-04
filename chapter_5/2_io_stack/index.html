@@ -64,6 +64,12 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY和控制台(Console)区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/15_bosun/">第十五篇 Bosun使用</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -154,41 +160,41 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第二篇 Linux IO栈总结</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#io">IO栈总体认知</a>
+    <li class="toctree-l2"><a class="reference internal" href="#io">IO 栈总体认知</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#_2">用户空间</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#vfs">VFS层</a>
+    <li class="toctree-l3"><a class="reference internal" href="#vfs">VFS 层</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#_3">文件系统层</a>
         <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#ext4">ext4文件系统完整的挂载参数</a>
+    <li class="toctree-l4"><a class="reference internal" href="#ext4">ext4 文件系统完整的挂载参数</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#ext4_1">ext4文件系统的日志模式</a>
+    <li class="toctree-l4"><a class="reference internal" href="#ext4_1">ext4 文件系统的日志模式</a>
     </li>
         </ul>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#page-cache">Page Cache</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#writeback4">内核writeback线程的4个主要内核参数</a>
+    <li class="toctree-l3"><a class="reference internal" href="#writeback-4">内核 writeback 线程的 4 个主要内核参数</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#io_1">IO操作的三种模式</a>
+    <li class="toctree-l2"><a class="reference internal" href="#io_1">IO 操作的三种模式</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#_4">再来看一张详细的图</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#bio">BIO层的优化</a>
+    <li class="toctree-l2"><a class="reference internal" href="#bio">BIO 层的优化</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#request">Request层的优化</a>
+    <li class="toctree-l2"><a class="reference internal" href="#request">Request 层的优化</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#io_2">关于IO调度算法的单队列和多队列</a>
+    <li class="toctree-l3"><a class="reference internal" href="#io_2">关于 IO 调度算法的单队列和多队列</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#devsda-io">查看当前设备,比如/dev/sda 的IO调度算法查看</a>
+    <li class="toctree-l3"><a class="reference internal" href="#devsda-io">查看当前设备,比如/dev/sda 的 IO 调度算法查看</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#request-queue">适当加大request queue的长度</a>
+    <li class="toctree-l3"><a class="reference internal" href="#request-queue">适当加大 request queue 的长度</a>
     </li>
         </ul>
     </li>
@@ -196,7 +202,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_6">参考文章</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#ioio_uring">经典IO模式和io_uring</a>
+    <li class="toctree-l2"><a class="reference internal" href="#io-io_uring">经典 IO 模式和 io_uring</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1-unix-io">1 五种 Unix I/O 模式</a>
         <ul>
@@ -231,7 +237,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理原理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理基础篇</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
                   </li>
@@ -239,7 +245,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理总结升级</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理升级篇</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -318,6 +324,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -400,33 +408,37 @@
               
                 <h1 id="_1">概述</h1>
 <ul>
-<li>本篇文档梳理Linux IO栈</li>
+<li>本篇文档梳理 Linux IO 栈</li>
 </ul>
-<h2 id="io">IO栈总体认知</h2>
+<h2 id="io">IO 栈总体认知</h2>
 <p><img alt="png" src="../../img/DD92F3B2-B981-47A5-B756-F7050066B775.png" /></p>
+<p><img alt="png" src="../../img/3ae062c0-04e9-4ead-871c-1bff21e19d4a.svg" /></p>
+<ul>
+<li>上述两个图具体差异是 PageCache 的具体位置，个人更加倾向于第二幅图.</li>
+</ul>
 <h3 id="_2">用户空间</h3>
 <ul>
-<li>库函数缓存, 把多次open或者write调用合并为一次, 例如c语言的stdio库，以减少真正的System Call次数为目的</li>
+<li>库函数缓存, 把多次 open 或者 write 调用合并为一次, 例如 c 语言的 stdio 库，以减少真正的 System Call 次数为目的</li>
 </ul>
-<h3 id="vfs">VFS层</h3>
+<h3 id="vfs">VFS 层</h3>
 <ul>
-<li>VFS层的作用: VFS是一个抽象层,其向上提供了统一的文件访问接口,而向下则兼容了各种不同的文件系统。不仅仅是诸如Ext2、Ext4、XFS和Btrfs等常规意义上的文件系统,还包括伪文件系统和设备等等内容.</li>
+<li>VFS 层的作用: VFS 是一个抽象层,其向上提供了统一的文件访问接口,而向下则兼容了各种不同的文件系统。不仅仅是诸如 Ext2、Ext4、XFS 和 Btrfs 等常规意义上的文件系统,还包括伪文件系统和设备等等内容.</li>
 </ul>
 <h3 id="_3">文件系统层</h3>
 <ul>
 <li>
-<p>文件系统层的优化包括2块:</p>
-<ul>
-<li>1 格式化时根据业务场景选择block大小和inode数量</li>
-<li>2 使用不同的mount option(挂载参数)和合理的日志记录, 来贴合业务场景.<ul>
+<p>文件系统层的优化包括 2 块:</p>
+</li>
+<li>
+<p>1 格式化时根据业务场景选择 block 大小和 inode 数量</p>
+</li>
+<li>2 使用不同的 mount option(挂载参数)和合理的日志记录, 来贴合业务场景.<ul>
 <li>如果业务要求高性能, 那么尽可能多利用缓存.</li>
 <li>如果业务要求数据高安全, 那么尽可能把数据落地到块设备.</li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
-<h4 id="ext4">ext4文件系统完整的挂载参数</h4>
+<h4 id="ext4">ext4 文件系统完整的挂载参数</h4>
 <ul>
 <li>
 <p><a href="https://manpages.debian.org/unstable/e2fsprogs/ext4.5.en.html">参考</a></p>
@@ -445,10 +457,10 @@
 </ul>
 </li>
 </ul>
-<h4 id="ext4_1">ext4文件系统的日志模式</h4>
+<h4 id="ext4_1">ext4 文件系统的日志模式</h4>
 <ul>
 <li>
-<p>ext4有3种日志模式，分别是ordered，writeback，journal。他们的差别网上有很多资料，我简单介绍下：</p>
+<p>ext4 有 3 种日志模式，分别是 ordered，writeback，journal。他们的差别网上有很多资料，我简单介绍下：</p>
 </li>
 <li>
 <ul>
@@ -462,21 +474,21 @@
 </li>
 <li>
 <ul>
-<li>ordered：与writeback相似，但会保证数据先落盘，再是元数据。折中性能以保证足够的安全，这是大多数PC上推荐的默认的模式</li>
+<li>ordered：与 writeback 相似，但会保证数据先落盘，再是元数据。折中性能以保证足够的安全，这是大多数 PC 上推荐的默认的模式</li>
 </ul>
 </li>
 </ul>
 <h3 id="page-cache">Page Cache</h3>
 <ul>
 <li>
-<p>页缓存在FS与通用块层之间, 为了提高IO性能，减少真实的从磁盘读写的次数，Linux内核设计了一层内存缓存，把磁盘数据缓存到内存中。由于内存以4K大小的 <code>页</code> 为单位管理，磁盘数据也以页为单位缓存，因此也称为<code>页缓存</code>。在每个缓存<code>页</code>中，都包含了部分磁盘信息的副本。</p>
+<p><strong>页缓存在 VFS 与具体文件系统之间</strong>, 为了提高 IO 性能，减少真实的从磁盘读写的次数，Linux 内核设计了一层内存缓存，把磁盘数据缓存到内存中。由于内存以 4K 大小的 <code>页</code> 为单位管理，磁盘数据也以页为单位缓存，因此也称为<code>页缓存</code>。在每个缓存<code>页</code>中，都包含了部分磁盘信息的副本。</p>
 </li>
 <li>
 <p>对于读操作, 如果因为之前读过或者被预读加载进来，而本次要读取数据刚好在缓存中命中，就可以直接从缓存中读取，不需要深入到磁盘。</p>
 </li>
-<li>对于写操作, 不管是<code>同步写</code>还是<code>异步写</code>，都会把数据copy到缓存，差别在于异步写只是copy且把页标识脏后直接返回，而同步写还会调用类似fsync()的操作等待回写. <code>异步写</code>产生的<code>脏数据</code>会在<strong>合适</strong>的时候被内核工作队列<code>writeback</code>进程回刷。</li>
+<li>对于写操作, 不管是<code>同步写</code>还是<code>异步写</code>，都会把数据 copy 到缓存，差别在于异步写只是 copy 且把页标识脏后直接返回，而同步写还会调用类似 fsync()的操作等待回写. <code>异步写</code>产生的<code>脏数据</code>会在<strong>合适</strong>的时候被内核工作队列<code>writeback</code>进程回刷。</li>
 </ul>
-<h3 id="writeback4">内核writeback线程的4个主要内核参数</h3>
+<h3 id="writeback-4">内核 writeback 线程的 4 个主要内核参数</h3>
 <table>
 <thead>
 <tr>
@@ -490,26 +502,26 @@
 <tr>
 <td>/proc/sys/vm/dirty_writeback_centisecs</td>
 <td>500</td>
-<td>1/100秒</td>
-<td>定期唤醒writeback内核线程，回写脏页</td>
+<td>1/100 秒</td>
+<td>定期唤醒 writeback 内核线程，回写脏页</td>
 </tr>
 <tr>
 <td>/proc/sys/vm/dirty_expire_centisecs</td>
 <td>300</td>
-<td>1/100秒</td>
-<td>writeback线程被唤醒后，并不是写回所有脏页，而是只写变脏超过dirty_expire_centisecs时间的页.</td>
+<td>1/100 秒</td>
+<td>writeback 线程被唤醒后，并不是写回所有脏页，而是只写变脏超过 dirty_expire_centisecs 时间的页.</td>
 </tr>
 <tr>
 <td>/proc/sys/vm/dirty_background_ratio</td>
 <td>10</td>
-<td>比例，默认为10%，当脏页比例超过系统所有page数量的10%时</td>
-<td>当脏页占系统内存的比例超过/proc/sys/vm/dirty_background_ratio 的时候，write系统调用会唤醒pdflush回写dirty page,直到脏页比例低于/proc/sys/vm/dirty_background_ratio，但write系统调用不会被阻塞，立即返回。</td>
+<td>比例，默认为 10%，当脏页比例超过系统所有 page 数量的 10%时</td>
+<td>当脏页占系统内存的比例超过/proc/sys/vm/dirty_background_ratio 的时候，write 系统调用会唤醒 pdflush 回写 dirty page,直到脏页比例低于/proc/sys/vm/dirty_background_ratio，但 write 系统调用不会被阻塞，立即返回。</td>
 </tr>
 <tr>
 <td>/proc/sys/vm/dirty_ratio</td>
 <td>20</td>
-<td>比例，默认为20%，当脏页数量占系统所有页数量比例超过20%时</td>
-<td>write系统调用会被阻塞，writeback线程会工作，直到脏页占比低于/proc/sys/vm/dirty_ratio</td>
+<td>比例，默认为 20%，当脏页数量占系统所有页数量比例超过 20%时</td>
+<td>write 系统调用会被阻塞，writeback 线程会工作，直到脏页占比低于/proc/sys/vm/dirty_ratio</td>
 </tr>
 </tbody>
 </table>
@@ -517,32 +529,44 @@
 <li><a href="https://www.cnblogs.com/gmpy/p/12657801.html">更多参考</a></li>
 <li><a href="https://www.kernel.org/doc/Documentation/sysctl/vm.txt">内核官方文档</a></li>
 </ul>
-<h2 id="io_1">IO操作的三种模式</h2>
-<p>从系统调用的接口再往下，Linux下的IO栈致大致有三个层次：</p>
+<h2 id="io_1">IO 操作的三种模式</h2>
+<p>从系统调用的接口再往下，Linux 下的 IO 栈致大致有三个层次：</p>
 <ol>
-<li>文件系统层，以 write 为例，内核拷贝了write参数指定的用户态数据到文件系统Cache中，并适时向下层同步</li>
-<li>块层，管理块设备的IO队列，对IO请求进行合并、排序（还记得操作系统课程学习过的IO调度算法吗？）</li>
-<li>设备层，通过DMA与内存直接交互，完成数据和具体设备之间的交互
-结合这个图，想想Linux系统编程里用到的Buffered IO、mmap、Direct IO，这些机制怎么和Linux IO栈联系起来呢？上面的图有点复杂，我画一幅简图，把这些机制所在的位置添加进去：</li>
+<li>文件系统层，以 write 为例，内核拷贝了 write 参数指定的用户态数据到文件系统 Cache 中，并适时向下层同步</li>
+<li>块层，管理块设备的 IO 队列，对 IO 请求进行合并、排序（还记得操作系统课程学习过的 IO 调度算法吗？）</li>
+<li>设备层，通过 DMA 与内存直接交互，完成数据和具体设备之间的交互
+   结合这个图，想想 Linux 系统编程里用到的 Buffered IO、mmap、Direct IO，这些机制怎么和 Linux IO 栈联系起来呢？上面的图有点复杂，我画一幅简图，把这些机制所在的位置添加进去：</li>
 </ol>
 <p><img alt="png" src="../../img/WX20210912-223055.png" /></p>
-<p>介绍一下三种IO模式:</p>
+<p>介绍一下三种 IO 模式:</p>
 <ul>
 <li>
-<p>Buffered IO: 传统的Buffered IO使用read读取文件的过程： 从磁盘到Page Cache算第一次的话，从Page Cache到用户态buffer就是第二次了. 写操作的话, 是写到Page Cahce就返回, 然后等待writeback内核线程刷回去.</p>
+<p>Buffered IO: 传统的 Buffered IO 使用 read 读取文件的过程： 从磁盘到 Page Cache 算第一次的话（<strong>把磁盘里的内容读取到属于内核空间的 Struct Page 中</strong>），从 Page Cache 到用户态 buffer(<strong>把内核空间中 Struct Page 的内容读取到用户进程空间的 Struct Page 中</strong>) 就是第二次了. 写操作的话, 是写到 Page Cahce 就返回, 然后等待 writeback 内核线程刷回去.</p>
 </li>
 <li>
-<p>MMAP: 直接把Page Cache映射到了用户态的地址空间里了，所以mmap的方式读文件是没有第二次拷贝过程的.</p>
+<p>MMAP: 直接把 Page Cache 映射到了用户态的地址空间里了，所以 mmap 的方式读文件是没有第二次拷贝过程的.</p>
+</li>
+<li>
 <ul>
-<li>如何开启MMAP: 使用mmap系统调用.</li>
+<li>如何开启 MMAP: 使用 mmap 系统调用.</li>
 </ul>
 </li>
 <li>
-<p>Direct IO: 这个机制更狠，直接让用户态和块IO层对接，直接放弃Page Cache，从磁盘直接和用户态拷贝数据. </p>
+<p>Direct IO: 这个机制更狠，直接让用户态和块 IO 层对接，直接放弃 Page Cache，从磁盘直接和用户态拷贝数据.</p>
+</li>
+<li>
 <ul>
-<li>好处:  写操作可以直接写到块IO层. </li>
-<li>坏处: 读操作默认情况下，不如Buffered IO，除非你在用户态自己模拟Buffered IO，做缓存.</li>
-<li>如何开启Direct IO: An application invokes direct I/O by opening a file with the O_DIRECT flag.</li>
+<li>好处: 写操作可以直接写到块 IO 层.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>坏处: 读操作默认情况下，不如 Buffered IO，除非你在用户态自己模拟 Buffered IO，做缓存.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>如何开启 Direct IO: An application invokes direct I/O by opening a file with the O_DIRECT flag.</li>
 </ul>
 </li>
 </ul>
@@ -550,34 +574,34 @@
 <p><img alt="png" src="../../img/WX20210912-223549.png" /></p>
 <ul>
 <li>用户层最多到达<code>通用块层</code>, <code>通用块层</code>以下必须由内核自行控制了.</li>
-<li>用户层在wirte系统调用时, 使用<code>O_DIRECT</code>标记, 会开启Direct IO, 但光有Direct IO, 仍然只是写到<code>通用块层</code>, 如果需要数据绝不丢失, 那么还要加上<code>O_SYNC</code>标记</li>
+<li>用户层在 wirte 系统调用时, 使用<code>O_DIRECT</code>标记, 会开启 Direct IO, 但光有 Direct IO, 仍然只是写到<code>通用块层</code>, 如果需要数据绝不丢失, 那么还要加上<code>O_SYNC</code>标记</li>
 </ul>
-<h2 id="bio">BIO层的优化</h2>
+<h2 id="bio">BIO 层的优化</h2>
 <ul>
-<li>为不同进程指定不同的IO优先级.  Linux  supports I/O scheduling priorities and classes since 2.6.13 with the CFQ I/O scheduler.</li>
-<li>常用的IO classess包括: <code>Idle</code>、<code>Best-effort</code>、<code>Realtime</code>.</li>
+<li>为不同进程指定不同的 IO 优先级. Linux supports I/O scheduling priorities and classes since 2.6.13 with the CFQ I/O scheduler.</li>
+<li>常用的 IO classess 包括: <code>Idle</code>、<code>Best-effort</code>、<code>Realtime</code>.</li>
 </ul>
-<h2 id="request">Request层的优化</h2>
+<h2 id="request">Request 层的优化</h2>
 <ul>
 <li>电梯调度算法</li>
-<li>Request队列个数、预读数据大小</li>
+<li>Request 队列个数、预读数据大小</li>
 </ul>
-<h3 id="io_2">关于IO调度算法的单队列和多队列</h3>
-<p>网上检索<code>IO调度算法</code>，大量的资料都在描述<code>Deadline</code>，<code>CFQ</code>，<code>NOOP</code>这3种调度算法，却没有备注这只是<code>单队列</code>上适用的调度算法。在最新的代码上（我分析的代码版本为 5.7.0），已经完全切换到<code>multi-queue</code>的新架构上了，支持的IO调度算法就成了<code>mq-deadline</code>，<code>BFQ</code>，<code>Kyber</code>，<code>none</code>。</p>
+<h3 id="io_2">关于 IO 调度算法的单队列和多队列</h3>
+<p>网上检索<code>IO调度算法</code>，大量的资料都在描述<code>Deadline</code>，<code>CFQ</code>，<code>NOOP</code>这 3 种调度算法，却没有备注这只是<code>单队列</code>上适用的调度算法。在最新的代码上（我分析的代码版本为 5.7.0），已经完全切换到<code>multi-queue</code>的新架构上了，支持的 IO 调度算法就成了<code>mq-deadline</code>，<code>BFQ</code>，<code>Kyber</code>，<code>none</code>。</p>
 <p>在《Linux-storage-stack-diagram_v4.10》 对 Block Layer 的描述可以形象阐述单队列与多队列的差异。</p>
 <p><img alt="png" src="../../img/WechatIMG284.jpeg" /></p>
-<p>单队列的架构，一个块设备只有一个全局队列，所有请求都要往这个队列里面塞，这在多核高并发的情况下，尤其像服务器动则32个核的情况下，为了保证互斥而加的锁就导致了非常大的开销。此外，如果磁盘支持多队列并行处理，单队列的模型不能充分发挥其优越的性能。</p>
-<p>多队列的架构下，创建了<code>Software queues</code>和<code>Hardware dispatch queues</code>两级队列。Software queues是每个CPU core一个队列，且在其中实现IO调度。由于<strong>每个CPU一个单独队列，因此不存在锁竞争问题</strong>。Hardware Dispatch Queues的数量跟硬件情况有关，每个磁盘一个队列，如果磁盘支持并行N个队列，则也会创建N个队列。在IO请求从Software queues提交到Hardware Dispatch Queues的过程中是需要加锁的。理论上，多队列的架构的效率最差也只是跟单队列架构持平。</p>
-<h3 id="devsda-io">查看当前设备,比如/dev/sda 的IO调度算法查看</h3>
+<p>单队列的架构，一个块设备只有一个全局队列，所有请求都要往这个队列里面塞，这在多核高并发的情况下，尤其像服务器动则 32 个核的情况下，为了保证互斥而加的锁就导致了非常大的开销。此外，如果磁盘支持多队列并行处理，单队列的模型不能充分发挥其优越的性能。</p>
+<p>多队列的架构下，创建了<code>Software queues</code>和<code>Hardware dispatch queues</code>两级队列。Software queues 是每个 CPU core 一个队列，且在其中实现 IO 调度。由于<strong>每个 CPU 一个单独队列，因此不存在锁竞争问题</strong>。Hardware Dispatch Queues 的数量跟硬件情况有关，每个磁盘一个队列，如果磁盘支持并行 N 个队列，则也会创建 N 个队列。在 IO 请求从 Software queues 提交到 Hardware Dispatch Queues 的过程中是需要加锁的。理论上，多队列的架构的效率最差也只是跟单队列架构持平。</p>
+<h3 id="devsda-io">查看当前设备,比如/dev/sda 的 IO 调度算法查看</h3>
 <p><code>cat /sys/block/sda/queue/scheduler</code></p>
 <p>debian 10 虚拟机</p>
 <p><img alt="png" src="../../img/2C9E1A8D-7CCD-40DC-8FBE-9CB14B465F58.png" /></p>
 <p>Debian 10 物理机</p>
 <p><img alt="png" src="../../img/DC22ACEF-9991-4D7F-AD60-ABC34314CF92.png" /></p>
-<h3 id="request-queue">适当加大request queue的长度</h3>
+<h3 id="request-queue">适当加大 request queue 的长度</h3>
 <ul>
 <li>
-<p>/sys/block/sda/queue/nr_requests (块层最大可以申请的request数量)</p>
+<p>/sys/block/sda/queue/nr_requests (块层最大可以申请的 request 数量)</p>
 </li>
 <li>
 <p>/sys/block/sda/queue/read_ahead_kb (预读最大的数据量)</p>
@@ -585,15 +609,15 @@
 </ul>
 <h2 id="_5">块设备的优化</h2>
 <ul>
-<li>如果服务器几乎没有掉电风险，那么建议开启Raid卡的缓存、硬盘本身的缓存. 涉及到命令工具不少, 例如服务器厂商提供的Raid卡操作工具.</li>
+<li>如果服务器几乎没有掉电风险，那么建议开启 Raid 卡的缓存、硬盘本身的缓存. 涉及到命令工具不少, 例如服务器厂商提供的 Raid 卡操作工具.</li>
 </ul>
 <h2 id="_6">参考文章</h2>
 <ul>
-<li><a href="https://mp.weixin.qq.com/s/cX1ciAsYZ0WZm6baFDl-NA">文章1</a></li>
-<li><a href="https://mp.weixin.qq.com/s/ThTTjG20YSpKESwZHi8N5Q">文章2</a></li>
+<li><a href="https://mp.weixin.qq.com/s/cX1ciAsYZ0WZm6baFDl-NA">文章 1</a></li>
+<li><a href="https://mp.weixin.qq.com/s/ThTTjG20YSpKESwZHi8N5Q">文章 2</a></li>
 <li><a href="https://mp.weixin.qq.com/s/7MyGpP8awUp5QURJb_2KGA">Linux 块层 IO 子系统｜最核心的逻辑是什么</a></li>
 </ul>
-<h2 id="ioio_uring">经典IO模式和io_uring</h2>
+<h2 id="io-io_uring">经典 IO 模式和 io_uring</h2>
 <h3 id="1-unix-io">1 五种 Unix I/O 模式</h3>
 <p>在常见的 unix io 语义下，我们的一次 I/O 需要经过两个阶段(phase)：</p>
 <ul>
@@ -641,7 +665,7 @@
 <li>阻塞 &amp; 同步：执行某个操作时，我们必须等待资源就绪（函数返回），这个过程中我们做不了其他操作；</li>
 <li>非阻塞：执行这个操作时，资源还没就绪的状态下我们不需要等待（函数立即返回），但是我们需要主动检查资源是否就绪（主动轮询 or etc.）；</li>
 <li>异步：执行操作时我们不需要等待（函数立即返回），操作被后台 worker 执行，成功后我们获得提醒（回调函数 or etc.）。
-可以参考 https://stackoverflow.com/questions/2625493/asynchronous-and-non-blocking-calls-also-between-blocking-and-synchronous。</li>
+  可以参考 https://stackoverflow.com/questions/2625493/asynchronous-and-non-blocking-calls-also-between-blocking-and-synchronous。</li>
 </ul>
 <p>可以看到，上面的前几种 I/O 模型里面都对等待阶段作出了各种各样的优化，而其中 epoll 也成为了近 10 年 Linux I/O 的最佳选择。实际上，在数据复制阶段，最近 20 年内核也进行了多个层次的优化，核心目的是为了尽可能做到零拷贝——让数据直达用户态。其中涉及到的多种技术和手段不是本次分享的重点，按下不表，感兴趣的可以搜索关键词 Zero-copy，DMA，RDMA 等等。</p>
 <h3 id="2-io_uring">2 io_uring 咋工作的</h3>

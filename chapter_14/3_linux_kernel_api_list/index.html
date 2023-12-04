@@ -64,6 +64,12 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY和控制台(Console)区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/15_bosun/">第十五篇 Bosun使用</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -175,7 +181,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理原理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理基础篇</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
                   </li>
@@ -183,7 +189,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理总结升级</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理升级篇</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -262,6 +268,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -620,7 +628,12 @@ void local_irq_enable(void);
 <h3 id="5">5 描述符纵向使用链表关联横向使用指针关联</h3>
 <h4 id="51-mm_struct-vm_area_struct">5.1 mm_struct 和 vm_area_struct</h4>
 <ul>
-<li>比如 mm_struct 关联到 vm_area_struct，vm_area_struct 是有一个双向链表的，然后 mm_struct 中<strong>只要有一个指针指向链表头元素即可。</strong></li>
+<li>
+<p><a href="https://xie.infoq.cn/article/e0b32551131bcde22190d89e6">每个 vm_area_struct 是一个连续的虚拟地址范围</a>，这些区域不会互相重叠。 mm_struct 里面有一个单链表 <code>mmap</code>，用于将 所有 vm_area_struct 串联起来； 另外还有一颗红黑树 mm_rb ，vm_area_struct 根据起始地址挂在这颗树上。<strong>使用红黑树可以根据地址，快速查找一个内存区域。</strong></p>
+</li>
+<li>
+<p>比如 mm_struct 关联到 vm_area_struct，vm_area_struct 是有一个双向链表的，然后 mm_struct 中<strong>只要有一个指针指向链表头元素即可。</strong></p>
+</li>
 </ul>
 <p>内核中其实是通过一个 struct vm_area_struct 结构的双向链表将虚拟内存空间中的这些虚拟内存区域 VMA 串联起来的。</p>
 <p>vm_area_struct 结构中的 vm_next ，vm_prev 指针分别指向 VMA 节点所在双向链表中的后继节点和前驱节点，内核中的这个 VMA 双向链表是有顺序的，所有 VMA 节点按照低地址到高地址的增长方向排序。</p>

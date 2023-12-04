@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第四篇 Linux内存管理原理 - Lott's Blog</title>
+    <title>第四篇 Linux内存管理基础篇 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u56db\u7bc7 Linux\u5185\u5b58\u7ba1\u7406\u539f\u7406";
+        var mkdocs_page_name = "\u7b2c\u56db\u7bc7 Linux\u5185\u5b58\u7ba1\u7406\u57fa\u7840\u7bc7";
         var mkdocs_page_input_path = "chapter_6/4_linux_mem_theory.md";
         var mkdocs_page_url = null;
       </script>
@@ -63,6 +63,12 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/11_nftables/">第十一篇 Debian 11以及往后版本nftables防火墙配置</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY和控制台(Console)区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/15_bosun/">第十五篇 Bosun使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -175,7 +181,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第四篇 Linux内存管理原理</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第四篇 Linux内存管理基础篇</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#_2">虚拟内存的由来</a>
         <ul>
@@ -233,7 +239,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../8_linux_mm_update/">第八篇 Linux内存管理总结升级</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_linux_mm_update/">第八篇 Linux内存管理升级篇</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -313,6 +319,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
               <ul>
@@ -383,7 +391,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>第六章 Linux Mem子系统 &raquo;</li>
-      <li>第四篇 Linux内存管理原理</li>
+      <li>第四篇 Linux内存管理基础篇</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>

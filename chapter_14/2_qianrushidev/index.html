@@ -64,6 +64,12 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY和控制台(Console)区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/15_bosun/">第十五篇 Bosun使用</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -175,7 +181,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理原理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理基础篇</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
                   </li>
@@ -183,7 +189,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理总结升级</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理升级篇</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -263,6 +269,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
               <ul>
@@ -341,6 +349,14 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#10-mcu-mpu">10 MCU 和 MPU</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#101">10.1 是什么</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#102">10.2 区别</a>
+    </li>
+        </ul>
+    </li>
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_3">二 待解决的问题</a>
@@ -381,9 +397,11 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#bsp">四 如何成为一名优秀嵌入式 BSP 工程师</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#bsp_1">BSP工程师招聘要求</a>
+    <li class="toctree-l3"><a class="reference internal" href="#bsp_1">BSP 工程师招聘要求</a>
     </li>
         </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#soc">五 SoC 启动流程</a>
     </li>
     </ul>
                   </li>
@@ -630,6 +648,97 @@ $ dtc -I dtb -O dts .dtb &gt; .dts
 </li>
 <li>
 <p>FPGA 本质上是无指令、无需共享内存的体系结构。</p>
+</li>
+</ul>
+<h3 id="10-mcu-mpu">10 MCU 和 MPU</h3>
+<h4 id="101">10.1 是什么</h4>
+<ul>
+<li>MCU（Microcontroller Unit）和 MPU（Microprocessor Unit）是两种不同类型的嵌入式处理器</li>
+<li>一个是微控制器、一个微处理器</li>
+</ul>
+<p><img alt="png" src="../../img/94BD212D-8764-41FF-87E8-699F5919F174.jpg" /></p>
+<h4 id="102">10.2 区别</h4>
+<ul>
+<li>
+<p>1 用途</p>
+</li>
+<li>
+<ul>
+<li>MCU：MCU 通常用于嵌入式系统中，这些系统需要执行特定的控制任务，如传感器数据采集、自动控制、嵌入式设备控制等。它们专注于实时控制和低功耗操作。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>MPU：MPU 更类似于通用计算机处理器，通常用于执行更复杂的通用计算任务，运行操作系统以及支持各种应用程序，如智能手机、个人电脑、服务器等。</li>
+</ul>
+</li>
+<li>
+<p>2 处理器核心</p>
+</li>
+<li>
+<ul>
+<li>MCU：MCU 通常使用较简单的处理器核心，如基于 RISC（精简指令集计算机）架构的核心。这些核心专注于执行嵌入式控制任务，通常性能较低。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>MPU：MPU 使用更强大的通用处理器核心，具有更高的性能和更复杂的指令集，适用于通用计算任务。</li>
+</ul>
+</li>
+<li>
+<p>3 内存和存储</p>
+</li>
+<li>
+<ul>
+<li>MCU：MCU 通常具有较小的内存和存储容量，足以支持嵌入式控制任务，但不适用于运行大型应用程序或操作系统。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>MPU：MPU 通常具有更大的内存和存储容量，以支持运行复杂的应用程序和操作系统。</li>
+</ul>
+</li>
+<li>
+<p>4 外设和接口</p>
+</li>
+<li>
+<ul>
+<li>MCU：MCU 通常集成了特定于嵌入式控制任务的外设和接口，如模拟/数字转换器（ADC）、串口通信（UART）、定时器等。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>MPU：MPU 具有更丰富的外设和接口选项，包括 USB、以太网、高级图形接口等，以支持多种外部设备和连接。</li>
+</ul>
+</li>
+<li>
+<p>5 功耗</p>
+</li>
+<li>
+<ul>
+<li>MCU：MCU 通常具有较低的功耗，因为它们经常用于电池供电的设备和需要长时间运行的嵌入式系统。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>MPU：MPU 通常具有较高的功耗，因为它们设计用于高性能计算和多任务处理。</li>
+</ul>
+</li>
+<li>
+<p>6 成本</p>
+</li>
+<li>
+<ul>
+<li>MCU：MCU 通常价格较低，适用于大规模生产和成本敏感的应用。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>MPU：MPU 价格通常较高，适用于更复杂和高性能的应用。</li>
+</ul>
+</li>
+<li>
+<p><a href="https://mp.weixin.qq.com/s/qIqv3AWNozZAvfvkPt1ZTw">选择 MCU 或 MPU 取决于您的项目需求</a>，包括性能、功耗、成本和功能等因素。如果您需要执行嵌入式控制任务，MCU 可能是更合适的选择。如果您需要运行复杂的应用程序和操作系统，MPU 可能更适合您的需求。</p>
 </li>
 </ul>
 <h2 id="_3">二 待解决的问题</h2>
@@ -1036,7 +1145,15 @@ https://space.bilibili.com/661326452</p>
 <ul>
 <li><a href="https://mp.weixin.qq.com/s/Qu1F78rZIIIzs5xIf17Cdg">如何成为一名优秀嵌入式 BSP 工程师</a></li>
 </ul>
-<h3 id="bsp_1">BSP工程师招聘要求</h3>
+<h3 id="bsp_1">BSP 工程师招聘要求</h3>
+<h2 id="soc">五 SoC 启动流程</h2>
+<p><a href="https://mp.weixin.qq.com/s/ZoutoUq8d5mYRXw92U-DWA">SOC (System on a Chip) bring-up 是一个复杂的过程</a>，涉及到硬件、固件和软件的集成和验证，以下是一个基于 BROM，SPL，UBOOT 和 Linux 的启动流程的概述：</p>
+<ol>
+<li>BROM (Boot Read-Only Memory)启动：启动的最初阶段，在这个阶段，系统会执行芯片 ROM 里面的代码，这部分代码主要用来检查启动模式，包括 NOR、Nand、Emmc 等，然后从对应的存储介质中加载 SPL(Secondary Program Loader)代码。</li>
+<li>SPL (Secondary Program Loader)启动：SPL 属于 Uboot 的一部分，它的主要作用就是：<strong>初始化硬件并加载完整的 U-boot</strong>，主要体现在初始化时钟、看门狗、DDR、GPIO 以及存储外设，最后将 U-boot 代码加载到 DDR 中执行。</li>
+<li>U-Boot 启动：U-boot 的主要作用是：引导加载 Kernel 和 DTS。U-boot 在启动之后，同样初始化 Soc 硬件资源，然后会计时等待，并执行默认的启动命令，将 Kernel 和 DTS 信息从存储介质中读取出来并加载到内存中执行。</li>
+<li>Kernel 启动：在 U-Boot 加载了内核映像和设备树之后，系统会启动 Linux。在这个阶段，系统会初始化各种硬件设备，加载驱动程序并启动用户空间应用程序。</li>
+</ol>
               
             </div>
           </div><footer>

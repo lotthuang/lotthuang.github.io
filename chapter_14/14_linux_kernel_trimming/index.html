@@ -64,6 +64,12 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY和控制台(Console)区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/15_bosun/">第十五篇 Bosun使用</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -175,7 +181,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理原理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理基础篇</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
                   </li>
@@ -183,7 +189,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理总结升级</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理升级篇</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -263,6 +269,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
               <ul>
@@ -334,6 +342,8 @@
     <li class="toctree-l2"><a class="reference internal" href="#_8">参考</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_9">手写一个简单可用的文件系统加入内核</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#linux">Linux 内核调试</a>
     </li>
     </ul>
                   </li>
@@ -425,6 +435,18 @@
 <li><a href="https://www.linuxjiaocheng.com/1185.html">掌握 Linux 内核裁剪技巧，轻松优化系统</a></li>
 </ul>
 <h2 id="_9">手写一个简单可用的文件系统加入内核</h2>
+<h2 id="linux">Linux 内核调试</h2>
+<p><a href="https://bbs.huaweicloud.com/blogs/348654">利用 QEMU+GDB 搭建 Linux 内核调试环境</a></p>
+<p><code>qemu-system-x86_64 -kernel ./arch/x86/boot/bzImage -initrd ../initramfs.cpio.gz -append "nokaslr console=ttyS0" -s -S -nographic</code></p>
+<ul>
+<li>-kernel ./arch/x86/boot/bzImage：指定启用的内核镜像；</li>
+<li>-initrd ../initramfs.cpio.gz：指定启动的内存文件系统；</li>
+<li>-append "nokaslr console=ttyS0" ：附加参数，其中 nokaslr 参数必须添加进来，防止内核起始地址随机化，这样会导致 gdb 断点不能命中；</li>
+<li>-s ：监听在 gdb 1234 端口；</li>
+<li>-S ：表示启动后就挂起，等待 gdb 连接；</li>
+<li>-nographic：不启动图形界面，调试信息输出到终端与参数 console=ttyS0 组合使用；</li>
+</ul>
+<p>启动之后在另一个窗口中，输入 gdb，即可开启调试。</p>
               
             </div>
           </div><footer>

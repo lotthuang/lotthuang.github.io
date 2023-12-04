@@ -64,6 +64,12 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY和控制台(Console)区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/15_bosun/">第十五篇 Bosun使用</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -203,7 +209,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../4_linux_mem_theory/">第四篇 Linux内存管理原理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_linux_mem_theory/">第四篇 Linux内存管理基础篇</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
                   </li>
@@ -211,7 +217,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../8_linux_mm_update/">第八篇 Linux内存管理总结升级</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_linux_mm_update/">第八篇 Linux内存管理升级篇</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -290,6 +296,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -424,7 +432,7 @@ typedef struct zone_struct {
 <li>在新版本内核中, 才使用<code>typdef ... free_area_t</code>形式</li>
 </ul>
 <p><code>free_area</code> 是伙伴系统算法的核心，可以看到<code>zone_t</code>的 <code>free_area</code>属性 有 10 个元素。每个元素都是一个类型为 free_area_t 的结构体，free_area_t 结构的 free_list 字段用于连接有相同页面个数的内存块。map 字段是一个位图，用于记录伙伴内存块的使用情况。</p>
-<p>Linux 内核使用 free_area[i] 管理 2i 个内存页面大小的内存块列表，例如 free_area[0] 就是管理 1 个内存页面大小的内存块(20 等于 1)；而 free_area[1] 则管理 2 个内存页面大小的内存块(21 等于 2)。如下图所示：</p>
+<p>Linux 内核使用 free_area[i] 管理 2i 个内存页面大小的内存块列表，例如 free_area[0] 就是管理 1 个内存页面大小的内存块(2的0次方 等于 1)；而 free_area[1] 则管理 2 个内存页面大小的内存块(2的1次方 等于 2)。如下图所示：</p>
 <p><img alt="png" src="../../img/WechatIMG263.png" /></p>
 <p>管理物理内存页的 struct page 结构中有个 list 的字段，内核就是通过这个字段把有着相同个数页面的内存块连成一个链表的：</p>
 <pre><code>typedef struct page {
