@@ -64,11 +64,15 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY和控制台(Console)区别</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY、PTY和控制台(Console)区别</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/15_bosun/">第十五篇 Bosun使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/16_assembler/">第十六篇 汇编语言使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/17_makefile/">第十七篇 Makefile使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -309,45 +313,21 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第六篇 从阅读硬件手册开始设备驱动程序编写</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#_2">一些基础知识</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#1">1 基础知识</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#2-imx6ull-gpio">2 基于 I.MX6ULL 的 GPIO 配置流程</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#3-imx6ull-io">3 I.MX6ULL 的寄存器和对应 IO 口的命名</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#gpio">问题一 怎么找到对应 GPIO 的物理地址?</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#imx6ull-">问题二 更多 I.MX6ULL 硬件知识 ---- 更多寄存器</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_3">各个寄存器含义</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_4">问题三 外设时钟使能</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#gpio1_io03-io">问题四 配置 GPIO1_IO03 的 IO 属性</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#imx6ull-rom">问题五 I.MX6ULL ROM 程序启动之后, 其执行地址</a>
-    </li>
     <li class="toctree-l2"><a class="reference internal" href="#linux">Linux 内核层面字符设备框架</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#1_1">1 字符设备架构是如何实现的？</a>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 字符设备架构是如何实现的？</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#2-api">2 字符驱动相关内核 API</a>
         <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#_5">概要版本</a>
+    <li class="toctree-l4"><a class="reference internal" href="#_2">概要版本</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#_6">详细</a>
+    <li class="toctree-l4"><a class="reference internal" href="#_3">详细</a>
     </li>
         </ul>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#3">3 如何编写字符设备驱动</a>
         <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#1_2">1. 实现模块加载和卸载入口函数</a>
+    <li class="toctree-l4"><a class="reference internal" href="#1_1">1. 实现模块加载和卸载入口函数</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#2">2. 申请主设备号</a>
     </li>
@@ -382,6 +362,13 @@
                   <li class="toctree-l1"><a class="reference internal" href="../13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../14_linux_kernel_trimming/">第十四篇 Linux内核裁剪总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../15_imx6ull/">第十五篇 IMX6UL实验记录</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十五章 AI+嵌入式结合方向汇总</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/1_demo_of_ai/">第一篇 AI程序 Hello World</a>
                   </li>
               </ul>
       </div>
@@ -421,157 +408,8 @@
 </ul>
 </li>
 </ul>
-<h2 id="_2">一些基础知识</h2>
-<h3 id="1">1 基础知识</h3>
-<ul>
-<li>首先, <code>IMX6ULL</code>有对应的手册, 分为<strong>参考手册</strong>和<strong>数据手册</strong></li>
-<li>
-<p>i.MX6ULL 有多种点灯方式：</p>
-</li>
-<li>
-<ul>
-<li>1 <strong>裸机系统</strong>：汇编操作寄存器点灯、C 语言操作寄存器点灯</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>2 <strong>跑 Linux 系统</strong>：字符驱动 LED 点灯、设备树驱动 LED 点灯</li>
-</ul>
-</li>
-</ul>
-<p>究其本质，最终都是要操作 i.MX6ULL 的寄存器。比如，在控制 GPIO 引脚实现 LED 亮灭时，会进行类似如下的寄存器配置：</p>
-<pre><code>/* 寄存器物理地址 */
-#define CCM_CCGR1_BASE              (0X020C406C)
-#define SW_MUX_SNVS_TAMPER3_BASE    (0X02290014)
-#define SW_PAD_SNVS_TAMPER3_BASE    (0X02290058)
-#define GPIO5_DR_BASE               (0X020AC000)
-#define GPIO5_GDIR_BASE             (0X020AC004)
-
-</code></pre>
-<ul>
-<li>I.MX6U 的 GPIO 一共有 5 组:GPIO1、GPIO2、GPIO3、GPIO4 和 GPIO5, 其中每个组最多 32 个 IO 口.</li>
-<li>
-<ul>
-<li>其中 GPIO1 有 32 个 IO，GPIO2 有 22 个 IO，GPIO3 有 29 个 IO、GPIO4 有 29 个 IO，GPIO5 最少，只有 12 个 IO，这样一共有 124 个 GPIO。</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>其中第一组 GPIO 的不同 IO 口命名方式为 GPIO1_IO00, GPIO1_IO01, GPIO1_IO02 以此类推.</li>
-</ul>
-</li>
-</ul>
-<h3 id="2-imx6ull-gpio">2 基于 I.MX6ULL 的 GPIO 配置流程</h3>
-<ol>
-<li>使能 GPIO 对应的时钟。</li>
-<li>设置寄存器 IOMUXC_SW_MUX_CTL_PAD_XX_XX，设置 IO 的复用功能，使其改为 GPIO 功能。（比如 <code>IOMUXC_SW_MUX_CTL_PAD_JTAG_TRST_B</code> 这个 IO 口一共是 32 位，其中最低 4 位设置为 0101 即可将这个, 如果设置为其他值,则有其他不同的功能.)</li>
-<li>设置寄存器 IOMUXC_SW_PAD_CTL_PAD_XX_XX，设置 IO 的上下拉、速度设置、驱动能力设置、压摆率设置等等。</li>
-<li>第 2 步已经将 IO 改为了 GPIO 功能，所以需要配置 GPIO，设置输入/输出、是否使用中断、默认输出电平等。</li>
-</ol>
-<h3 id="3-imx6ull-io">3 I.MX6ULL 的寄存器和对应 IO 口的命名</h3>
-<table>
-<thead>
-<tr>
-<th>寄存器名称</th>
-<th>IO 口名称</th>
-<th>备注</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>SW_PAD_CTL_PAD_GPIO1_IO00 PAD Control Register</code></td>
-<td><code>IOMUXC_SW_PAD_CTL_PAD_GPIO1_IO00</code></td>
-<td></td>
-</tr>
-<tr>
-<td><code>SW_MUX_CTL_PAD_GPIO1_IO00 SW MUX Control Register</code></td>
-<td><code>IOMUXC_SW_MUX_CTL_PAD_GPIO1_IO00</code></td>
-<td></td>
-</tr>
-<tr>
-<td><code>SW_MUX_CTL_PAD_UART1_TX_DATA SW MUX Control Register</code></td>
-<td><code>IOMUXC_SW_MUX_CTL_PAD_UART1_TX_DATA</code></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<p><img alt="png" src="../../img/WX20230515-094400222.png" /></p>
-<ul>
-<li>多个寄存器控制和配置<code>IO口</code>作用, 一个<code>IO口</code>对应一个<code>引脚</code>, 每个<code>引脚</code>可以连接一个<code>外设</code></li>
-</ul>
-<h2 id="gpio">问题一 怎么找到对应 GPIO 的物理地址?</h2>
-<blockquote>
-<p>查看对应的数据手册里对应端口的介绍, 其中有 Address, 如下图:</p>
-</blockquote>
-<p><img alt="png" src="../../img/WechatIMG226.jpeg" /></p>
-<ul>
-<li>
-<p>I.MX6ULL 的 IO 分为两类:SNVS 域的和通用的 ----&gt; 为什么要这样分类?</p>
-</li>
-<li>
-<p>更多 I.MX6ULL 硬件知识</p>
-</li>
-</ul>
-<h2 id="imx6ull-">问题二 更多 I.MX6ULL 硬件知识 ---- 更多寄存器</h2>
-<ul>
-<li>
-<p><code>SW_MUX_CTL_PAD**</code> 和 <code>SW_PAD_CTL_PAD**</code>两种寄存器用来设置 IO 的复用功能和 IO 属性 配置, 也就是我们通过设置上面这两种寄存器的不同值之后, 终于将某个 IO 口设置为了 GPIO 功能. 现在我们要接着来配置 GPIO 特有的寄存器了.</p>
-</li>
-<li>
-<p>当 IO 用作 GPIO 的时候需要设置的寄存器，一共有八个: DR、GDIR、PSR、ICR1、ICR2、EDGE_SEL、IMR 和 ISR。前面我们说了 I.MX6U 一共有 GPIO1~GPIO5 共五组 GPIO，每组 GPIO 都有这 8 个寄存器。</p>
-</li>
-<li>
-<ul>
-<li>比如第一组 GPIO 的寄存器命名方式为 GPIO1.DR, 第二组 GPIO 的寄存器命名方式为 GPIO2.DR</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>由于每组 GPIO 最多 32 个 IO 口, 因此相应寄存器对应的位数也为 32 位, 每一位控制对应的 IO 口. 比如 GPIO2.DR 是 32 位寄存器、GPIO1.PSR 寄存器也是 32 位</li>
-</ul>
-</li>
-</ul>
-<h3 id="_3">各个寄存器含义</h3>
-<ul>
-<li>DR: 数据寄存器.</li>
-<li>
-<ul>
-<li>比如方向寄存器设置为输出, 那么此时向数据寄存器输出 1 即可向对应 IO 口输出高电平, 输出 0 即可向对应 IO 口输出低电平.(其实就比较好控制 LED 灯这种简单设备的开或者关)</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>比如方向寄存器设置为输入, 那么此时就是通过读取寄存器的值获取对应 IO 口对应的电平值(是高电平还是低电平)</li>
-</ul>
-</li>
-<li>GDIR: 方向寄存器, 设置某个 IO 口为输出电平或者输入电平.</li>
-<li>PSR: 状态寄存器. 用于获取对应 IO 口的当前状态(当前是高电平或者低电平)</li>
-<li>ICR1 和 ICR2: 这两个寄存器，都是中断控制寄存器，ICR1 用于配置低 16 个 IO, ICR2 用于配置高 16 个 IO, 也就是每 2 位配置一个 IO. 比如某个外设（比如键盘）可以上升沿触发中断.</li>
-<li>IMR: 是中断屏蔽寄存器. IMR 寄存器也是一个 IO 对应一个位，IMR 寄存器用来设置 IO 的中断禁止和使能，如果使能某个 IO 的中断，那么设置相应的位为 1 即可，反之，如果要禁止中断，那么就设 置相应的位为 0 即可。例如，要使能 GPIO1_IO00 的中断，那么就可以设置 GPIO1.MIR=1 即 可。</li>
-<li>ISR: 中断状态寄存器.</li>
-<li>EDGE_SEL: 是边沿选择寄存器. EDGE_SEL 寄存器用来设置边沿中断，这个寄存器会覆盖 ICR1 和 ICR2 的设置，同样是一个 IO 对应一个位。如果相应的位被置 1，那么就相当与设置了对应的 IO 是上升沿和下降 沿(双边沿)触发。例如，我们设置 GPIO1.EDGE_SEL=1，那么就表示 GPIO1_IO01 是双边沿触 发中断，无论 GFPIO1_ICR1 的设置为多少，都是双边沿触发。</li>
-</ul>
-<h2 id="_4">问题三 外设时钟使能</h2>
-<ul>
-<li>I.MX6U 每个外设的时钟都可以独立的使能或禁止，这样可以关闭掉不使用的外设时钟，起到 省电的目的。</li>
-<li>
-<p>CCM 有 CCM_CCGR0~CCM_CCGR6 这 7 个寄存器，这 7 个寄存器控制着 I.MX6U 的所有外设时钟开关</p>
-</li>
-<li>
-<p>根据 CCM_CCGR0 寄存器的使用说明, 我们发现如果我们要打开 GPIO2 的外设时钟，那么只需要设置
-  CCM_CCGR0 的 bit31 和 bit30 都为 1 即可，也就是 CCM_CCGR0=3 &lt;&lt; 30。反之，如果要关闭 GPIO2 的外设时钟，那就设置 CCM_CCGR0 的 bit31 和 bit30 都为 0 即可。</p>
-</li>
-</ul>
-<h2 id="gpio1_io03-io">问题四 配置 GPIO1_IO03 的 IO 属性</h2>
-<ul>
-<li>这么多<code>IO属性</code>是干嘛的?</li>
-</ul>
-<h2 id="imx6ull-rom">问题五 I.MX6ULL ROM 程序启动之后, 其执行地址</h2>
-<ul>
-<li>目前根据文档<strong>8.4.15</strong>来看, 启动之后 ROM 程序就会执行<code>0X87800000</code>这个地址的代码.</li>
-</ul>
 <h2 id="linux">Linux <a href="https://mp.weixin.qq.com/s/oIYQJbnVpiFqixNXWc_KMg">内核层面字符设备框架</a></h2>
-<h3 id="1_1">1 字符设备架构是如何实现的？</h3>
+<h3 id="1">1 字符设备架构是如何实现的？</h3>
 <p>在 Linux 的世界里面一切皆文件，所有的硬件设备操作到应用层都会被抽象成文件的操作。我们知道如果应用层要访问硬件设备，它必定要调用到硬件对应的驱动程序。Linux 内核中有那么多驱动程序，应用层怎么才能精确的调用到底层的驱动程序呢？</p>
 <p>在这里我们字符设备为例，来看一下应用程序是如何和底层驱动程序关联起来的。必须知道的基础知识：</p>
 <p>1.在 Linux 文件系统中，每个文件都用一个<code>struct inode</code>结构体来描述，这个结构体里面记录了这个文件的所有信息，例如：文件类型，访问权限等。</p>
@@ -599,7 +437,7 @@
 <p>3.找到 struct cdev 结构体后，Linux 内核就会将 struct cdev 结构体所在的内存空间首地记录在 struct inode 结构体的 i_cdev 成员中。将 struct cdev 结构体的中记录的函数操作接口地址记录在 struct file 结构体的 f_op 成员中。</p>
 <p>4.任务完成，VFS 层会给应用层返回一个文件描述符（fd)。这个 fd 是和 struct file 结构体对应的。接下来上层的应用程序就可以通过 fd 来找到 strut file,然后在由 struct file 找到操作字符设备的函数接口了。</p>
 <h3 id="2-api">2 字符驱动相关内核 API</h3>
-<h4 id="_5">概要版本</h4>
+<h4 id="_2">概要版本</h4>
 <ul>
 <li>申请设备号: <code>alloc_chrdev_region()</code> </li>
 <li>
@@ -618,7 +456,7 @@
 <li>register_chrdev_region是静态注册设备号, 也就是说先人工定义设备号然后用register_chrdev_region去注册. 可能出现失败的情况. 加个判断，出现失败的时候就调用alloc_chrdev_region动态申请设备号.</li>
 <li>register_chrdev内部也会初始化cdev,并进行cdev_add, 然后会调用__register_chrdev_region静态注册设备号. 并且register_chrdev是相对比较老的版本的内核的做法, 理论上现在更加推荐走的新的做法.</li>
 </ul>
-<h4 id="_6">详细</h4>
+<h4 id="_3">详细</h4>
 <ul>
 <li><code>cdev_init()</code></li>
 </ul>
@@ -745,7 +583,7 @@ static inline void unregister_chrdev(unsigned int major, const char *name)
 <blockquote>
 <p>参考上图，编写字符设备驱动步骤如下：</p>
 </blockquote>
-<h4 id="1_2">1. 实现模块加载和卸载入口函数</h4>
+<h4 id="1_1">1. 实现模块加载和卸载入口函数</h4>
 <pre><code>
 module_init (hello_init);
 module_exit (hello_exit);

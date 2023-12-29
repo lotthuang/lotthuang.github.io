@@ -64,11 +64,15 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY和控制台(Console)区别</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY、PTY和控制台(Console)区别</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/15_bosun/">第十五篇 Bosun使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/16_assembler/">第十六篇 汇编语言使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/17_makefile/">第十七篇 Makefile使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -311,6 +315,14 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#b-hello_drv_testc">B hello_drv_test.c</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#c-makefile">C Makefile</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#d">D 实验记录</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#e-kfifo">E 内核队列 kfifo 使用</a>
+    </li>
+        </ul>
+    </li>
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#5-devnull-devfull">5 关于/dev/null 和 /dev/full 等字符设备</a>
@@ -342,6 +354,13 @@
                   <li class="toctree-l1"><a class="reference internal" href="../13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../14_linux_kernel_trimming/">第十四篇 Linux内核裁剪总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../15_imx6ull/">第十五篇 IMX6UL实验记录</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十五章 AI+嵌入式结合方向汇总</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/1_demo_of_ai/">第一篇 AI程序 Hello World</a>
                   </li>
               </ul>
       </div>
@@ -567,6 +586,194 @@ int main(int argc, char **argv)
 
 
 
+
+</code></pre>
+<h3 id="c-makefile">C Makefile</h3>
+<pre><code>
+ifneq ($(KERNELRELEASE),)
+obj-m :=hello_drv.o
+else
+KDIR :=/lib/modules/$(shell uname -r)/build
+all:
+    make -C $(KDIR) M=$(PWD) modules
+clean:
+    rm -f *.ko *.o *.mod.o *.mod.c *.symvers *.order
+endif
+</code></pre>
+<h4 id="d">D 实验记录</h4>
+<ul>
+<li>
+<p>编译内核模块</p>
+</li>
+<li>
+<ul>
+<li><code>make</code></li>
+</ul>
+</li>
+<li>
+<p><img alt="png" src="../../img/WX20231228-230927%402x.png" /></p>
+</li>
+<li>
+<p>安装 hello_drv.ko</p>
+</li>
+<li>
+<ul>
+<li><code>insmod hello_drv.ko</code></li>
+</ul>
+</li>
+<li>
+<p>测试</p>
+</li>
+<li>
+<p><img alt="png" src="../../img/WX20231228-231429%402x.png" /></p>
+</li>
+<li>
+<p>卸载模块</p>
+</li>
+<li>
+<ul>
+<li><code>rmmod hello_drv.ko</code></li>
+</ul>
+</li>
+<li>
+<p>查看内核打印日志</p>
+</li>
+<li>
+<ul>
+<li><code># tail -n 10 /var/log/messages</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="e-kfifo">E 内核队列 kfifo 使用</h4>
+<pre><code>
+#include &lt;linux/module.h&gt;
+
+#include &lt;linux/fs.h&gt;
+#include &lt;linux/errno.h&gt;
+#include &lt;linux/miscdevice.h&gt;
+#include &lt;linux/kernel.h&gt;
+#include &lt;linux/major.h&gt;
+#include &lt;linux/mutex.h&gt;
+#include &lt;linux/proc_fs.h&gt;
+#include &lt;linux/seq_file.h&gt;
+#include &lt;linux/stat.h&gt;
+#include &lt;linux/init.h&gt;
+#include &lt;linux/device.h&gt;
+#include &lt;linux/tty.h&gt;
+#include &lt;linux/kmod.h&gt;
+#include &lt;linux/gfp.h&gt;
+#include &lt;linux/kfifo.h&gt;
+
+/* 1. 确定主设备号                                                                 */
+static int major = 0;
+static char kernel_buf[1024];
+static struct class *hello_class;
+struct kfifo test_fifo;
+
+
+#define MIN(a, b) (a &lt; b ? a : b)
+
+/* 3. 实现对应的open/read/write等函数，填入file_operations结构体                   */
+static ssize_t hello_drv_read (struct file *file, char __user *buf, size_t size, loff_t *offset)
+{
+    int err;
+    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
+    err = copy_to_user(buf, kernel_buf, MIN(1024, size));
+    int ret;
+    ret = kfifo_alloc(&amp;test_fifo,PAGE_SIZE,GFP_KERNEL); //初始化队列，使用kfifo_alloc
+    if (ret)
+        return 1;
+    int i;
+    for (i=0;i&lt;32;i++)
+        kfifo_in(&amp;test_fifo, &amp;i, sizeof(i)); //写队列，使用kfifo_in
+    int val;
+    ret = kfifo_out_peek(&amp;test_fifo,&amp;val,sizeof(val)); //读队列但是不真正取数据，用kfifo_out_peek， 真正取数据用kfifo_out
+    if (ret != sizeof(val))
+        return -EINVAL;
+
+    printk(&quot;%s %s line %d val is %u\n&quot;, __FILE__, __FUNCTION__, __LINE__,val);
+    while (kfifo_avail(&amp;test_fifo)) //探测队列中是否还有数据
+    {
+        int val2;
+        int ret2;
+        ret2 = kfifo_out(&amp;test_fifo,&amp;val2,sizeof(val2));
+        if (ret2 != sizeof(val2))
+            return -EINVAL;
+        printk(&quot;%s %s line %d val2 is %u\n&quot;, __FILE__, __FUNCTION__, __LINE__,val2);
+
+    }
+    kfifo_free(&amp;test_fifo);
+    return MIN(1024, size);
+}
+
+static ssize_t hello_drv_write (struct file *file, const char __user *buf, size_t size, loff_t *offset)
+{
+    int err;
+    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
+    err = copy_from_user(kernel_buf, buf, MIN(1024, size));
+    return MIN(1024, size);
+}
+
+static int hello_drv_open (struct inode *node, struct file *file)
+{
+    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
+    return 0;
+}
+
+static int hello_drv_close (struct inode *node, struct file *file)
+{
+    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
+    return 0;
+}
+
+/* 2. 定义自己的file_operations结构体                                              */
+static struct file_operations hello_drv = {
+    .owner   = THIS_MODULE,
+    .open    = hello_drv_open,
+    .read    = hello_drv_read,
+    .write   = hello_drv_write,
+    .release = hello_drv_close,
+};
+
+/* 4. 把file_operations结构体告诉内核：注册驱动程序                                */
+/* 5. 谁来注册驱动程序啊？得有一个入口函数：安装驱动程序时，就会去调用这个入口函数 */
+static int __init hello_init(void) // __init表示只在初始化阶段使用, 模块装载后就扔掉, 释放内存
+{
+    int err;
+
+    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
+    major = register_chrdev(0, &quot;hello&quot;, &amp;hello_drv);  /* /dev/hello */
+
+
+    hello_class = class_create(THIS_MODULE, &quot;hello_class&quot;);
+    err = PTR_ERR(hello_class);
+    if (IS_ERR(hello_class)) {
+        printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
+        unregister_chrdev(major, &quot;hello&quot;);
+        return -1;
+    }
+
+    device_create(hello_class, NULL, MKDEV(major, 0), NULL, &quot;hello&quot;); /* /dev/hello */
+
+    return 0;
+}
+
+/* 6. 有入口函数就应该有出口函数：卸载驱动程序时，就会去调用这个出口函数           */
+static void __exit hello_exit(void)
+{
+    printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);
+    device_destroy(hello_class, MKDEV(major, 0));
+    class_destroy(hello_class);
+    unregister_chrdev(major, &quot;hello&quot;);
+}
+
+
+/* 7. 其他完善：提供设备信息，自动创建设备节点                                     */
+
+module_init(hello_init);
+module_exit(hello_exit);
+
+MODULE_LICENSE(&quot;GPL&quot;);
 
 </code></pre>
 <h2 id="5-devnull-devfull">5 关于/dev/null 和 /dev/full 等字符设备</h2>

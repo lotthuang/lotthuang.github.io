@@ -64,11 +64,15 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY和控制台(Console)区别</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY、PTY和控制台(Console)区别</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/15_bosun/">第十五篇 Bosun使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/16_assembler/">第十六篇 汇编语言使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/17_makefile/">第十七篇 Makefile使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -477,6 +481,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/14_linux_kernel_trimming/">第十四篇 Linux内核裁剪总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/15_imx6ull/">第十五篇 IMX6UL实验记录</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十五章 AI+嵌入式结合方向汇总</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/1_demo_of_ai/">第一篇 AI程序 Hello World</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -734,7 +745,7 @@ struct napi_struct {
      */
     struct list_head    poll_list;
 
-    unsigned long       state;
+    unsigned long       state; // state 可以是 NAPI_STATE_SCHED 或 NAPI_STATE_DISABLE，前者表示设备将在内核的下一次循环时被轮询，后者表示轮询己经结束且没有更多的分组等待处理，但设备尚未从轮询表移除。
     int         weight;
     unsigned int        gro_count;
     int         (*poll)(struct napi_struct *, int); //核心成员, 特定于硬件的poll函数
@@ -755,7 +766,8 @@ struct napi_struct {
 <pre><code>&lt;netdevice.h&gt;
 struct napi_struct {
     struct list_head poll_list;
-    unsigned long state; int weight;
+    unsigned long state;
+    int weight;
     int (*poll) (struct napi_struct *, int)
 };
 </code></pre>
@@ -1603,12 +1615,53 @@ struct request_sock {
 <p>poll_list 是一个双向链表，每一个节点是一个 napi_struct 结构，而 napi_struct 又是 net_device 的成员，所以这个链表也可以理解为一个 net_device 链表，这些 net_device 都带有输入帧等着被处理。This is a bidirectional list of devices with input frames waiting to be processed. More details can be found in the section "Processing the NET_RX_SOFTIRQ: net_rx_action" in Chapter 10.</p>
 </li>
 <li>
-<p>input_pkt_queue 是设备驱动将数据从物理介质接收后封装成 skb 后存放的缓存队列，所有<strong>非 NAPI 设备</strong>共有这一个输入缓存队列，而 NAPI 设备有自己的私有队列用于存放输入包。 This queue, initialized in `net_dev_init``, is where incoming frames are stored before being processed by the driver. It is used by non-NAPI drivers; those that have been upgraded to NAPI use their own private queues.</p>
+<p>input_pkt_queue 是设备驱动将数据从物理介质接收后封装成 skb 后存放的缓存队列，所有<strong>非 NAPI 设备</strong>共有这一个输入缓存队列，而 NAPI 设备有自己的私有队列用于存放输入包。 This queue, initialized in <code>net_dev_init</code>, is where incoming frames are stored before being processed by the driver. It is used by non-NAPI drivers; those that have been upgraded to NAPI use their own private queues.</p>
 </li>
 <li>
 <p><a href="http://www.embeddedlinux.org.cn/linux_net/0596002556/understandlni-CHP-9-SECT-4.html">softnet_data Structure</a></p>
 </li>
 </ol>
+<blockquote>
+<p>以下基于 3.16.51 源代码</p>
+</blockquote>
+<pre><code>
+/*
+ * Incoming packets are placed on per-cpu queues
+ */
+struct softnet_data {
+    struct Qdisc        *output_queue;
+    struct Qdisc        **output_queue_tailp;
+    struct list_head    poll_list; //这里每一个元素是一个struct napi_struct, 而每个napi_struct其实是struct igb_q_vector子元素.
+    struct sk_buff      *completion_queue;
+    struct sk_buff_head process_queue;
+
+    /* stats */
+    unsigned int        processed;
+    unsigned int        time_squeeze;
+    unsigned int        cpu_collision;
+    unsigned int        received_rps;
+
+#ifdef CONFIG_RPS
+    struct softnet_data *rps_ipi_list;
+
+    /* Elements below can be accessed between CPUs for RPS */
+    struct call_single_data csd ____cacheline_aligned_in_smp;
+    struct softnet_data *rps_ipi_next;
+    unsigned int        cpu;
+    unsigned int        input_queue_head;
+    unsigned int        input_queue_tail;
+#endif
+    unsigned int        dropped;
+    struct sk_buff_head input_pkt_queue;
+    struct napi_struct  backlog;
+
+#ifdef CONFIG_NET_FLOW_LIMIT
+    struct sd_flow_limit __rcu *flow_limit;
+#endif
+};
+
+
+</code></pre>
 <h5 id="_4">一些重要成员</h5>
 <ul>
 <li>缓冲队列(发送、接收)</li>

@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第十三篇 终端(Terminal)、TTY和控制台(Console)区别 - Lott's Blog</title>
+    <title>第十三篇 终端(Terminal)、TTY、PTY和控制台(Console)区别 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u5341\u4e09\u7bc7 \u7ec8\u7aef(Terminal)\u3001TTY\u548c\u63a7\u5236\u53f0(Console)\u533a\u522b";
+        var mkdocs_page_name = "\u7b2c\u5341\u4e09\u7bc7 \u7ec8\u7aef(Terminal)\u3001TTY\u3001PTY\u548c\u63a7\u5236\u53f0(Console)\u533a\u522b";
         var mkdocs_page_input_path = "chapter_1/13_tty_terminal_console.md";
         var mkdocs_page_url = null;
       </script>
@@ -64,23 +64,35 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第十三篇 终端(Terminal)、TTY和控制台(Console)区别</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第十三篇 终端(Terminal)、TTY、PTY和控制台(Console)区别</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#_2">一 基本概念</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1">1 终端</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2">2 控制台</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-pty">3 PTY(伪终端 )</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-ptmpts">4 PTM/PTS</a>
+    </li>
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_3">二 历史</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_4">三 参考</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">三 互相之间的关系</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">四 参考</a>
     </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../15_bosun/">第十五篇 Bosun使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../16_assembler/">第十六篇 汇编语言使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../17_makefile/">第十七篇 Makefile使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -337,6 +349,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/14_linux_kernel_trimming/">第十四篇 Linux内核裁剪总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/15_imx6ull/">第十五篇 IMX6UL实验记录</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十五章 AI+嵌入式结合方向汇总</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/1_demo_of_ai/">第一篇 AI程序 Hello World</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -353,7 +372,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>第一章 各种杂项基础 &raquo;</li>
-      <li>第十三篇 终端(Terminal)、TTY和控制台(Console)区别</li>
+      <li>第十三篇 终端(Terminal)、TTY、PTY和控制台(Console)区别</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -377,7 +396,12 @@
 </li>
 <li>
 <ul>
-<li>Terminal 最终的目标是要和操作系统的 User Process 通信, 势必先经过 Kernel</li>
+<li>Terminal 最终的目标是要和操作系统的 User Process 通信, 势必先经过 Kernel。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>1970 年代所谓终端，其实就是一个物理设备，也就是计算机的输入输出设备。</li>
 </ul>
 </li>
 <li>
@@ -391,23 +415,83 @@
 </ul>
 </li>
 </ul>
+<h3 id="2">2 控制台</h3>
+<ul>
+<li><strong>控制台</strong>是一种特殊的<strong>终端</strong></li>
+<li>
+<ul>
+<li>当计算机出现异常时，其他通过远程线连接终端都不可用了，但是计算机会把错误信息显示在控制台上</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>当计算机在单用户模式时, 信息也只能通过<strong>控制台</strong>显示</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-pty">3 PTY(伪终端 )</h3>
+<ul>
+<li>
+<p>pseudo terminal，有时也被称为 pty</p>
+</li>
+<li>
+<p>如果我们远程 telnet 到主机或使用 xterm 时不也需要一个终端交互么？是的，这就是虚拟终端 pty(pseudo-tty)</p>
+</li>
+</ul>
+<h3 id="4-ptmpts">4 PTM/PTS</h3>
+<ul>
+<li>
+<p>pts(pseudo-terminal slave)是 pty 的实现方法，与 ptmx(pseudo-terminal master)配合使用实现 pty。</p>
+</li>
+<li>
+<p>伪终端分为两部分，如上图所示，包括 master 和 slave 两部分。其中 master 实现了对不同接入方式的适配，它实现对来自不同设备或者软件消息的解析，将结果传输给 slave；而 slave 端其实就是一个虚拟终端</p>
+</li>
+<li>
+<p><img alt="png" src="../../img/WechatIMG487.jpg" /></p>
+</li>
+<li>
+<p><img alt="png" src="../../img/WechatIMG488.jpg" /></p>
+</li>
+</ul>
 <h2 id="_3">二 历史</h2>
 <ul>
 <li>早期都是物理的终端设备, 比如<strong>VT102 物理终端</strong></li>
+<li>后来都改成了软件模拟终端，比如 gnome-terminal, iTerm2 等</li>
 <li>
-<p>后来都改成了软件模拟终端，比如 gnome-terminal, iTerm2 等</p>
+<ul>
+<li>确切的说后来 gnome 用来模拟 Xterm 的，而 Xterm 本身也是一个终端模拟器，它模拟了 VT102 物理终端</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>Linux 操作系统起来的时候默认是有 7 个虚拟终端的。这些虚拟终端并非前面所说的在桌面中打开的虚拟终端，而是通过显示器直接显示的。我们可以通过快捷键在这些终端之间进行切换，比如 Ctrl+Alt+ F1 可以切换到第一个终端，而 Ctrl+Alt+ F2 可以切换到第二个终端，以此类推 Ctrl+Alt+F7 可以切换到第七个终端。通常情况下对于图形界面来说，第七个是图形终端，其它是文字终端。</li>
+</ul>
 </li>
 <li>
 <p><img alt="png" src="../../img/B97A7D9C-8225-4AC3-897D-86ABCE3E08AE.jpg" /></p>
 </li>
 <li>
+<ul>
+<li>图中 UART 其实是一种通信协议，类似 USB</li>
+</ul>
+</li>
+<li>
 <p><img alt="png" src="../../img/17553F8C-35C1-4B7D-83B2-89946F2B85CF.jpg" /></p>
 </li>
+<li>
+<p><img alt="png" src="../../img/WechatIMG486.jpg" /></p>
+</li>
 </ul>
-<h2 id="_4">三 参考</h2>
+<h2 id="_4">三 互相之间的关系</h2>
+<ul>
+<li>一个 SessionID 和一个 TTY 是绑定的,session id 和 tty 是一对一关系</li>
+<li>同一个 session 内，可以有多个后台进程组，但只能有一个前台进程组，session id 和 tty 一一对应，但是 tty 的输入，只有该 session 的前台组可以操作。也就说说，多个后台进程组，都可以调用该 tty 的输出，但是只有一个进程组可以控制它的输入。</li>
+</ul>
+<h2 id="_5">四 参考</h2>
 <ul>
 <li><a href="https://www.zhihu.com/question/21711307">终端、Shell、tty 和控制台（console）有什么区别？</a></li>
 <li><a href="https://mp.weixin.qq.com/s/kulAeJKaWU4FSl_hfEZAkA">用了这么多年 Linux，你清楚控制台、终端与 shell 及它们的关系吗？</a></li>
+<li><a href="https://www.jianshu.com/p/ad2a5e582c61">Linux 中 tty、pty、pts 的概念区别</a></li>
 </ul>
               
             </div>

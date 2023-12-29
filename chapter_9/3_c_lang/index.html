@@ -64,11 +64,15 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY和控制台(Console)区别</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY、PTY和控制台(Console)区别</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/15_bosun/">第十五篇 Bosun使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/16_assembler/">第十六篇 汇编语言使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/17_makefile/">第十七篇 Makefile使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -248,6 +252,10 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#c-ifndef-define-endif">其一 c 语言头文件为什么要加#ifndef #define #endif</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#c-">C 语言结构体之点运算符( . )和箭头运算符( -＞ )的区别</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">链表基本操作</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../4_symbol_table/">第四篇 符号表总结</a>
@@ -329,6 +337,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/14_linux_kernel_trimming/">第十四篇 Linux内核裁剪总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/15_imx6ull/">第十五篇 IMX6UL实验记录</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十五章 AI+嵌入式结合方向汇总</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/1_demo_of_ai/">第一篇 AI程序 Hello World</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -374,6 +389,42 @@
 </code></pre>
 <p>这样一个工程文件里同时包含两个<code>test.h</code>时，就不会出现重定义的错误了。</p>
 <p>分析：当第一次包含<code>test.h</code>时，由于没有定义<code>_TEST_H</code>，条件为真，这样就会包含（执行）<code>#ifndef _TEST_H</code>和 <code>#endif</code>之间的代码，当第二次包含<code>test.h</code>时前面一次已经定义了<code>_TEST_H</code>，条件为假，<code>#ifndef _TEST_H</code>和<code>#endif</code>之间的代码也就不会再次被包含，这样就避免了重定义了。</p>
+<h2 id="c-">C 语言结构体之点运算符( . )和箭头运算符( -＞ )的区别</h2>
+<ul>
+<li>相同点：两者都是二元操作符，而且右边的<strong>操作数</strong>都是成员的名称。</li>
+<li>不同点：</li>
+<li>
+<ul>
+<li><strong>点运算符</strong>( . )的左边操作数是一个结果为结构的表达式；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>箭头运算符</strong>( -&gt; )的左边的操作数是一个指向结构体的指针。</li>
+</ul>
+</li>
+</ul>
+<pre><code>
+typedef struct          // 定义一个结构体类型：DATA
+{
+    char key[10];       // 结构体成员：key
+    char name[20];      // 结构体成员：name
+    int age;            // 结构体成员：age
+}DATA;
+
+DATA data;              // 声明一个结构体变量
+DATA *pdata;            // 声明一个指向结构体的指针
+
+// 访问数据操作如下：
+data.age = 24;          // 结构体变量通过点运算符( . )访问
+pdata-&gt;age = 24;        // 指向结构体的指针通过箭头运算符( -&gt; )访问
+
+</code></pre>
+<h2 id="_2">链表基本操作</h2>
+<ul>
+<li><a href="https://developer.aliyun.com/article/1206981">一文搞懂 Linux 内核链表（深度分析）</a></li>
+<li><a href="https://www.cnblogs.com/yangguang-it/p/11667772.html">Linux 内核链表——看这一篇文章就够了</a></li>
+</ul>
               
             </div>
           </div><footer>

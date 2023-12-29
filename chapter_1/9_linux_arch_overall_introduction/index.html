@@ -120,11 +120,15 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY和控制台(Console)区别</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY、PTY和控制台(Console)区别</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../15_bosun/">第十五篇 Bosun使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../16_assembler/">第十六篇 汇编语言使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../17_makefile/">第十七篇 Makefile使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -381,6 +385,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/14_linux_kernel_trimming/">第十四篇 Linux内核裁剪总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/15_imx6ull/">第十五篇 IMX6UL实验记录</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十五章 AI+嵌入式结合方向汇总</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/1_demo_of_ai/">第一篇 AI程序 Hello World</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -452,6 +463,11 @@
     - struct igb_adapter, struct igb_tx/rx_buffer, struct igb_q_vector, struct igb_ring, struct net_device_ops
 </code></pre>
 <h4 id="_4">收包路径</h4>
+<ul>
+<li>网卡驱动注册阶段， struct pci_driver igb_driver{ .probe = igb_probe}, igb_probe 函数里注册了 netdev,netdev-&gt;net_device_ops = igb_netdev_ops, igb_netdev_ops -&gt; igb_open 会在网卡启动阶段调用。</li>
+<li>网卡启动阶段 igb_open ---&gt; 一路调用 ，调用到 igb_alloc_q_vector， igb_alloc_q_vector 里面注册 igb_q_vector-&gt;napi-&gt;poll 函数为 igb_poll</li>
+<li>软中断阶段调用 sd-&gt;napi-&gt;poll, 其实就是调用驱动程序的 igb_poll 函数</li>
+</ul>
 <h3 id="_5">内存</h3>
 <h4 id="_6">整体架构图：</h4>
 <pre><code>- 从下往上 ： 物理内存（struct page） --&gt; 伙伴系统（struct free_area）---》Slab层---&gt; vmalloc
