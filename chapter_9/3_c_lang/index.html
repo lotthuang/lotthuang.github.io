@@ -255,6 +255,14 @@
     <li class="toctree-l2"><a class="reference internal" href="#c-">C 语言结构体之点运算符( . )和箭头运算符( -＞ )的区别</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_2">链表基本操作</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_3">常用操作</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#struct-list_head">内核结构体中使用 struct list_head</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#hlist_head">内核双向链表之二 hlist_head</a>
     </li>
     </ul>
                   </li>
@@ -422,9 +430,151 @@ pdata-&gt;age = 24;        // 指向结构体的指针通过箭头运算符( -&g
 </code></pre>
 <h2 id="_2">链表基本操作</h2>
 <ul>
-<li><a href="https://developer.aliyun.com/article/1206981">一文搞懂 Linux 内核链表（深度分析）</a></li>
-<li><a href="https://www.cnblogs.com/yangguang-it/p/11667772.html">Linux 内核链表——看这一篇文章就够了</a></li>
+<li>
+<p><img alt="png" src="../../img/gvds44uflhvwi_f538263653514823ba89c0b4fae730a0.png" /></p>
+</li>
+<li>
+<p><a href="https://developer.aliyun.com/article/1206981">一文搞懂 Linux 内核链表（深度分析）</a></p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/yangguang-it/p/11667772.html">Linux 内核链表——看这一篇文章就够了</a></p>
+</li>
+<li>
+<p>核心模型: <code>struct list_head</code> 和 对应<strong>宿主结构</strong></p>
+</li>
 </ul>
+<h3 id="_3">常用操作</h3>
+<ul>
+<li>LIST_HEAD 入参数是一个字符串，效果是生成一个新的 struct list_head ，它封装了一层 LIST_HEAD_INIT, 然后是把该 list_head 的前驱和后继都指向自己、并返回</li>
+<li>LIST_HEAD_INIT 入参数是一个 struct list_head 结构，效果是把该 list_head 的前驱和后继都指向自己、并返回</li>
+<li>
+<p>INIT_LIST_HEAD 传入 struct list_head 指针，然后把该 list_head 的前驱和后继都指向自己</p>
+</li>
+<li>
+<p>已有字符串，生成一个新的 struct list_head，并且前驱和后继都指向自己，则使用 LIST_HEAD</p>
+</li>
+<li>已有 struct list_head，但是还没有初始化前驱和后继，想要把前驱和后继都指向自己，则使用 LIST_HEAD_INIT</li>
+<li>已有 struct list_head 指针，但是还没有初始化前驱和后继，想要把前驱和后继都指向自己，则使用 INIT_LIST_HEAD</li>
+</ul>
+<h3 id="struct-list_head">内核结构体中使用 struct list_head</h3>
+<p>有两种用法</p>
+<ul>
+<li>1 表示宿主结构自己的链表，将所有宿主结构自己串联在一个链表中。比如:</li>
+</ul>
+<pre><code>struct super_block {
+    struct list_head    s_list; //这个s_list代表的链表就是把所有super_block结构给串联起来
+    ...省略...
+}
+
+
+</code></pre>
+<ul>
+<li>
+<ul>
+<li>1.1 当然把自己串联起来成为链表还有其他做法，比如包含本身结构的 next 和 prev 指针</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>比如 vm_area_struct</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>
+struct vm_area_struct {
+    /* The first cache line has the info for VMA tree walking. */
+    unsigned long vm_start;     /* Our start address within vm_mm. */
+    unsigned long vm_end;       /* The first byte after our end address within vm_mm. */
+
+    /* linked list of VM areas per task, sorted by address */
+    struct vm_area_struct *vm_next, *vm_prev;
+    ...省略...
+}
+</code></pre>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>比如 sk_buff</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>
+struct sk_buff {
+    /* These two members must be first. */
+    struct sk_buff      *next;
+    struct sk_buff      *prev;
+    ...省略...
+
+}
+</code></pre>
+<ul>
+<li>2 某个结构中包含的 struct list_head 可能只是指向某个链表的链表头，而这个链表本身对应的宿主结构可能是多种多样的，并不一定是本结构</li>
+</ul>
+<pre><code>
+struct napi_struct {
+    struct list_head poll_list; //这个poll_list代表的链表就是把所有napi_struct结构给串联起来
+    ...省略...
+}
+
+struct softnet_data {
+    ...省略...
+    struct list_head    poll_list; //这个poll_list代表的链表就是指的是把所有napi_struct结构给串联起来的链表，和宿主结构softnet_data是不同的
+    ...省略...
+}
+
+</code></pre>
+<h2 id="hlist_head">内核双向链表之二 hlist_head</h2>
+<ul>
+<li>
+<p><a href="https://linux.laoqinren.net/kernel/hlist/">内核基础设施——hlist_head/hlist_node 结构解析</a></p>
+</li>
+<li>
+<p><a href="https://blog.csdn.net/shenwanjiang111/article/details/105355016">Linux 内核 10-list_head 和 hlist_head 的理解</a></p>
+</li>
+<li>
+<p><img alt="png" src="../../img/WechatIMG517.jpg" /></p>
+</li>
+</ul>
+<p>对于数据的管理，提供了 2 种类型的双向链表：一种是使用<code>list_head</code>结构体构成的环形双向链表；另一种是使用<code>hlist_head</code>和<code>hlist_node2</code>个结构体构成的具有表头的链型双向链表。</p>
+<p>list_head 的结构体如下所示：</p>
+<pre><code>struct list_head {
+    struct list_head *next, *prev;
+};
+</code></pre>
+<p>hlist_head 和 hlist_node 的结构体如下所示：</p>
+<pre><code>struct hlist_head {
+    struct hlist_node *first;
+};
+struct hlist_node {
+    struct hlist_node *next, **pprev;
+};
+
+</code></pre>
+<p>它们组成的链表结构如图所示：</p>
+<ul>
+<li><img alt="png" src="../../img/WechatIMG518.jpg" /></li>
+</ul>
+<blockquote>
+<p>注意图上的箭头指向，在（a）图中，next 指向下一个 list_head 结构的地址，prev 指向前一个 list_head 结构的地址。而在（b）图中，next 类似，指向下一个 hlist_node 结构的地址，而 pprev 指向前一个 hlist_node 的 next 指针。</p>
+</blockquote>
+<ul>
+<li>
+<p>如果说 struct list_head 是常规用法，那么 hlist_head 和 hlist_node 则主要用于散列表中. 从目前认知来看，散列表就是数组. 如下图所示:</p>
+</li>
+<li>
+<p><img alt="png" src="../../img/WechatIMG519.jpg" /></p>
+</li>
+</ul>
+<p>hash_table 为散列表（数组），其中的元素类型为 struct hlist_head。以 hlist_head 为链表头的链表，其中的节点 hash 值是相同的（也叫冲突）。first 指针指向链表中的节点 ①，然后节点 ① 的 pprev 指针指向 hlist_head 中的 first，节点 ① 的 next 指针指向节点 ②。以此类推。</p>
+<p>hash_table 的列表头仅存放一个指针,也就是 first 指针,指向的是对应链表的头结点,没有 tail 指针,也就是指向链表尾节点的指针,这样的考虑是为了节省空间——尤其在 hash bucket(数组 size)很大的情况下可以节省一半的指针空间。</p>
               
             </div>
           </div><footer>

@@ -327,7 +327,9 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#struct">二 各种知名 struct</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#1-3">1 3 种类型的设备</a>
+    <li class="toctree-l3"><a class="reference internal" href="#1-3">1 内核层 3 种实际设备</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2_1">2 其他虚拟设备</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#2-struct-address_space-vm_area_struct">2 struct address_space 和 vm_area_struct 之间的关系</a>
     </li>
@@ -337,7 +339,7 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1-operations">1 描述符 + operations 风格</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#2_1">2 框架风格 方便扩展、屏蔽底层细节</a>
+    <li class="toctree-l3"><a class="reference internal" href="#2_2">2 框架风格 方便扩展、屏蔽底层细节</a>
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#21">2.1 屏蔽底层细节</a>
     </li>
@@ -553,7 +555,7 @@ void local_irq_enable(void);
 
 </code></pre>
 <h2 id="struct">二 各种知名 struct</h2>
-<h3 id="1-3">1 3 种类型的设备</h3>
+<h3 id="1-3">1 内核层 3 种实际设备</h3>
 <ul>
 <li>字符设备 <code>struct cdev</code></li>
 <li>块设备 <code>struct block_device</code></li>
@@ -564,6 +566,15 @@ void local_irq_enable(void);
 <p>描述块设备的数据结构有两个，一个是<code>struct block_device</code>,用来描述一个块设备或者块设备的一个分区；</p>
 <p>另一个是<code>struct gendisk</code>，用来描述整个块设备的特性。</p>
 <p><strong>对于一个包含多个分区的块设备，struct block_device 结构有多个,每个分区一个 block_device, 整个设备也对应一个 block_device,而 struct gendisk 结构永远只有一个。</strong></p>
+<h3 id="2_1">2 其他虚拟设备</h3>
+<ul>
+<li>内核驱动框架: <strong>总线</strong><code>struct bus_type</code>、<strong>设备</strong><code>struct device</code>、<strong>驱动</strong><code>struct device_driver</code></li>
+<li>
+<ul>
+<li>引发出各种虚拟设备<code>struct platform_device</code>、<code>struct pci_device</code>、<code>struct phy_device</code></li>
+</ul>
+</li>
+</ul>
 <h3 id="2-struct-address_space-vm_area_struct">2 struct address_space 和 vm_area_struct 之间的关系</h3>
 <ul>
 <li>一个文件只能有 一个 address_space 数据结构, 表示 Page Cache 的一个实例。（假设 Page Cache 是有多个实例组成, 分两层看，上层的单个实例就是一个 address_space 实例，底层的单个实例就是一个一个 struct page)</li>
@@ -602,7 +613,7 @@ void local_irq_enable(void);
 </ul>
 </li>
 </ul>
-<h3 id="2_1">2 框架风格 方便扩展、屏蔽底层细节</h3>
+<h3 id="2_2">2 框架风格 方便扩展、屏蔽底层细节</h3>
 <h4 id="21">2.1 屏蔽底层细节</h4>
 <ul>
 <li>Linux 内核总是使用汇编语言来抽象不同 CPU 平台细节，然后真正的<strong>主逻辑/主框架</strong>使用 C 语言实现。然后后续新的平台出现时就必须/只要遵守 C 语言实现的这个主框架，即可加入对 Linux 的支持, 方便扩展.</li>

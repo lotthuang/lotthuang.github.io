@@ -549,7 +549,7 @@ static int __init net_dev_init(void){
         skb_queue_head_init(&amp;sd-&gt;input_pkt_queue);
         skb_queue_head_init(&amp;sd-&gt;process_queue);
         sd-&gt;completion_queue = NULL;
-        INIT_LIST_HEAD(&amp;sd-&gt;poll_list);
+        INIT_LIST_HEAD(&amp;sd-&gt;poll_list); /*将poll_list成员（该成员是一个struct list_head）的前驱和后置都指向自己*/
         ......
     }
     ......
@@ -564,7 +564,26 @@ subsys_initcall(net_dev_init);
 <p>在这个函数里，会为<strong>每个 CPU 都申请一个 softnet_data 数据结构</strong>，在这个数据结构里的<code>poll_list</code>是等待驱动程序将其 poll 函数注册进来，稍后网卡驱动初始化的时候我们可以看到这一过程。</p>
 <p>核心成员:</p>
 <ul>
-<li>poll_list. 是什么原理呢, 这里就是一个 poll 函数链表. 每次网卡有数据来时, 硬中断把自己的 poll 函数放到这个链表里来.</li>
+<li>poll_list.</li>
+<li>
+<ul>
+<li>是什么原理呢, 这里就是一个 poll 函数链表. 每次网卡有数据来时, 硬中断把自己的 poll 函数放到这个链表里来.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>是一个链表，后续将 struct napi_struct 加入 softnet_data 结构中 poll_list 链表里来，就可以通过 softnet_data 的 poll_list 链表遍历所有的 napi_struct 实例，每个 napi_struct 实例其实包含了特定于<strong>网卡</strong>的 poll 函数，后续调用 napi_struct 的 poll 函数其实就是调用<strong>网卡</strong>的 poll 函数.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>并且这里说的<strong>网卡</strong>, 比如是 igb 网卡，那么其实指的是 struct igb_q_vector 结构，该结构表示 igb 网卡的一个队列,每个 igb 网卡可以有 8 个队列，每个队列对应一个真实的硬中断号.</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <pre><code>list_add_tail(&amp;napi-&gt;poll_list, &amp;sd-&gt;poll_list);
 也就是说待会儿内核跑软中断时,要执行我的poll函数(这里我就是一张网卡)

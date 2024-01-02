@@ -317,9 +317,17 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第八篇 Linux驱动框架和SoC驱动框架</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#_2">组成</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 初识内核驱动框架</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1.数据结构</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#linux-sysfs">Linux 设备驱动模型和 sysfs 文件系统</a>
+    <li class="toctree-l3"><a class="reference internal" href="#2api">2.API</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#platform_device-platform_driver">二 platform_device 和 platform_driver 架构图</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#linux-sysfs">三 基础层: Linux 设备驱动模型和 sysfs 文件系统</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#platform">platform 总线的注册</a>
     </li>
@@ -396,7 +404,151 @@
 <p>为了统一驱动架构抽象，所以 Linux 从 2.6 版本开始引入了 <code>platform bus</code> 这个虚拟的总线模型。</p>
 </li>
 </ul>
-<h2 id="_2">组成</h2>
+<h2 id="_2">一 初识<a href="http://ee.mweda.com/ask/242813.html">内核驱动框架</a></h2>
+<h3 id="1">1.数据结构</h3>
+<p>这个框架涉及到 3 个比较重要的数据结构：</p>
+<ul>
+<li><code>struct bus_type</code> 用来描述总线</li>
+<li><code>struct device</code> 用来描述设备</li>
+<li><code>struct device_driver</code> 用来描述设备驱动</li>
+</ul>
+<p>有如下拓扑图</p>
+<ul>
+<li>
+<p><img alt="png" src="../../img/MTK-3721rd.com-100968wyykdnxe1si.jpg" /></p>
+</li>
+<li>
+<p>内核中可以有很多的总线<strong>bus_type</strong></p>
+</li>
+<li>总线<strong>bus_type</strong>上可以有很多的设备<strong>device</strong></li>
+<li>每个设备<strong>device</strong>都有它所对应的驱动<strong>device_driver</strong></li>
+</ul>
+<pre><code>struct bus_type {    //…..省略一些成员
+    const char      * name;
+    struct kset     drivers;
+    struct kset     devices;
+    int     (*match)(struct device * dev, struct device_driver * drv);
+    int     (*uevent)(struct device *dev, struct kobj_uevent_env *env);
+    int     (*probe)(struct device * dev);
+    int     (*remove)(struct device * dev);
+    void    (*shutdown)(struct device * dev);
+    int (*suspend)(struct device * dev, pm_message_t state);
+    int (*suspend_late)(struct device * dev, pm_message_t state);
+    int (*resume_early)(struct device * dev);
+    int (*resume)(struct device * dev);
+    unsigned int drivers_autoprobe:1;
+};
+struct device {        //…..省略一些成员
+    struct klist        klist_children;
+    struct klist_node   knode_parent;       /* node in sibling list */
+    struct klist_node   knode_driver;
+    struct klist_node   knode_bus;
+    struct device       *parent;
+    char    bus_id[BUS_ID_SIZE;         /* position on parent bus */
+    struct bus_type * bus;              /* type of bus device is on */
+    struct device_driver *driver;    /* which driver has allocated this device */
+    void        *driver_data;               /* data private to the driver */
+    void        *platform_data;            /* Platform specific data, device core doesn't touch it */
+};
+struct device_driver {    //…..省略一些成员
+    const char         * name;
+    struct bus_type     * bus;
+    int (*probe)    (struct device * dev);
+    int (*remove)   (struct device * dev);
+    void(*shutdown) (struct device * dev);
+    int (*suspend)  (struct device * dev, pm_message_t state);
+    int (*resume)   (struct device * dev);
+};
+
+</code></pre>
+<ul>
+<li>
+<p><img alt="png" src="../../img/MTK-3721rd.com-100969wlrjwkpfdn3.jpg" /></p>
+</li>
+<li>
+<p>按照面向对象的思想，</p>
+</li>
+<li>
+<ul>
+<li><strong>bus_type</strong>虚基类，子类包括 platform_bus_type,mdio_bus_type,I2C_bus_type,pci_bus_type 等</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>device</strong>是虚基类，子类包括 platform_device, phy_device, i2c_CLIent, pci_device 等</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>device_driver</strong>虚基类，子类有 platform_driver, phy_driver,i2c_driver, pci_driver 等</li>
+</ul>
+</li>
+</ul>
+<h3 id="2api">2.API</h3>
+<ul>
+<li>
+<p>框架有几个关键 API：</p>
+</li>
+<li>
+<ul>
+<li><strong>bus_register</strong>(stuct bus_type* bus) 用来注册一条总线 bus</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>device_register</strong>(struct device *dev) 把 dev 加到 bus 的设备列表中去</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>driver_register</strong>(stuct device_driver *drv)</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>1 遍历 bus 上所有的 dev，调用 <code>bus-&gt;match(dev,drv)</code> 对 drv 与 dev 进行比对, 本质上是比对 drv.name 和 dev.name 是否一致</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>2 比对成功后调用<code>drv-&gt;probe(dev)</code>, 比如 igb 网卡的 igb_probe 函数执行时,会设置好对应的 netdevice_ops 结构体,里面包含 open,read,write 等通用操作，这些通用操作都是指针，指向具体驱动的函数比如 open 指针指向 igb_open 函数.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>3 把驱动 drv 加入到 bus 的驱动列表中去</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>4 绑定 drv 和 dev</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>为了便于使用，内核针对不同总线，对上述 API 进行了包装，衍生出了另外一批 API：</p>
+<ul>
+<li>platform_driver_register</li>
+<li>platform_device_register</li>
+<li>phy_driver_register</li>
+<li>mdiobus_register</li>
+</ul>
+<h2 id="platform_device-platform_driver">二 platform_device 和 platform_driver 架构图</h2>
 <ul>
 <li>
 <p>platform 平台设备驱动是基于设备总线驱动模型的，机制本身并不复杂，由两部分组成： <code>platform_device</code>和 <code>platfrom_driver</code></p>
@@ -413,7 +565,7 @@
 </li>
 </ul>
 <p><img alt="png" src="../../img/WechatIMG237.jpeg" /></p>
-<h2 id="linux-sysfs">Linux 设备驱动模型和 sysfs 文件系统</h2>
+<h2 id="linux-sysfs">三 基础层: Linux 设备驱动模型和 sysfs 文件系统</h2>
 <p>Linux 内核在 2.6 版本中引入设备驱动模型，简化了驱动程序的编写。Linux 设备驱动模型包含<strong>设备(device)</strong>、<strong>总线(bus)</strong>、<strong>类(class)</strong>和<strong>驱动(driver)</strong>，它们之间相互关联。其中<strong>设备(device)</strong>和<strong>驱动(driver)</strong>通过<strong>总线(bus)</strong>绑定在一起。</p>
 <p>Linux 内核中，分别用 <code>bus_type</code>、<code>device_driver</code> 和 <code>device</code> 结构来描述<code>总线</code>、<code>驱动</code>和<code>设备</code>，结构体定义详见 <code>include/linux/device.h</code>。设备和对应的驱动必须依附于同一种总线，因此 <code>device_driver</code> 和 <code>device</code> 结构中都包含 <code>struct bus_type</code> 指针。</p>
 <p><strong>Linux sysfs</strong> 是一个虚拟的文件系统，它把连接在系统上的设备和总线组织成为一个分级的文件，可以由用户空间存取，向用户空间导出内核数据结构以及它们的属性。</p>

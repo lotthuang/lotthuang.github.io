@@ -349,6 +349,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#linux">Linux 内核调试</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#kconfig-makefile">Kconfig 和 Makefile</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../15_imx6ull/">第十五篇 IMX6UL实验记录</a>
@@ -458,6 +460,9 @@
 <li>-nographic：不启动图形界面，调试信息输出到终端与参数 console=ttyS0 组合使用；</li>
 </ul>
 <p>启动之后在另一个窗口中，输入 gdb，即可开启调试。</p>
+<h2 id="kconfig-makefile">Kconfig 和 Makefile</h2>
+<p>Linux 内核源码树的每个目录下都有两个文档 Kconfig 和 Makefile。分布到各目录的 Kconfig 构成了<strong>一个分布式的内核配置数据库</strong>，每个 Kconfig 分别描述了所属目录源文档相关的内核配置菜单。在执行内核配置 make menuconfig 时，从 Kconfig 中读出菜单，用户选择后保存到.config 的内核配置文档中。在内核编译时，主 Makefile 调用这个.config，就知道了用户的选择。这个内容说明了，Kconfig 就是对应着内核的每级配置菜单。</p>
+<p>假如要想添加新的驱动到内核的源码中，要修改 Kconfig,这样就能够选择这个驱动，假如想使这个驱动被编译，则要修改 Makefile。添加新的驱动时需要修改的文档有两种（如果添加的只是文件，则只需修改当前层 Kconfig 和 Makefile 文件；如果添加的是目录，则需修改当前层和目录下的共一对 Kconfig 和 Makefile）Kconfig 和 Makefile。要想知道怎么修改这两种文档，就要知道两种文档的语法结构。</p>
               
             </div>
           </div><footer>
