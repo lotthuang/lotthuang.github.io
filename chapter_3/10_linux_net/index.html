@@ -1063,10 +1063,10 @@ struct net_device {
 </code></pre>
 <ul>
 <li>
-<p>func 是该结构体主要成员，指向网络层的一个函数。如果分组的类型适当，就将其传给对应的处理函数，其中 ip 包的处理函数就是<code>ip_recv</code>.</p>
+<p>func 是该结构体主要成员，指向网络层的一个函数。如果分组的类型适当，就将其传给对应的处理函数，其中 ip 包的处理函数就是<code>ip_rcv</code>.</p>
 </li>
 <li>
-<p><code>netif_receive_skb()</code>函数，遍历<code>ptype_all</code>链表，找到合适的<code>packet_type</code>, 然后调用其<code>func</code>指针指向的处理函数(比如<code>ip_recv()</code>)</p>
+<p><code>netif_receive_skb()</code>函数，遍历<code>ptype_all</code>链表，找到合适的<code>packet_type</code>, 然后调用其<code>func</code>指针指向的处理函数(比如<code>ip_rcv()</code>)</p>
 </li>
 </ul>
 <h4 id="42-struct-in_device-ip">4.2 struct in_device （IP 配置块）</h4>
@@ -3475,7 +3475,7 @@ return local_softirq_pending();
 <h3 id="3-tcpdump">3 tcpdump 是在哪个环节执行的?</h3>
 <h4 id="31">3.1 收包方向</h4>
 <ul>
-<li><code>ip_recv —&gt; netfilter: raw_prerouting —&gt; conntrack —&gt; 路由(routing decision)</code></li>
+<li><code>ip_rcv —&gt; netfilter: raw_prerouting —&gt; conntrack —&gt; 路由(routing decision)</code></li>
 <li>其中 tcpdump （如果）运行的话，是在 ip_rcv 之前 .</li>
 </ul>
 <p>tcpdump 是如何工作的?
