@@ -176,6 +176,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/8_kobjet_kset_ktype/">第八篇 Linux设备模型的基石:kset/kobject/ktype</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/9_io_uring/">第八篇 io_uring研究和总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
               <ul>
@@ -516,7 +518,12 @@ struct sk_buff {
 }
 </code></pre>
 <ul>
-<li>2 某个结构中包含的 struct list_head 可能只是指向某个链表的链表头，而这个链表本身对应的宿主结构可能是多种多样的，并不一定是本结构</li>
+<li>2 某个结构中包含的 struct list_head 可能只是指向某个链表的链表头，而这个链表本身对应的宿主结构可能是多种多样的，并不一定是本结构。</li>
+<li>
+<ul>
+<li>比如sock宿主结构里，存在一个成员，指向由task_struct组成的链表，则sock 宿主结构里包含struct list_head    task_list成员，task_struct宿主结构也包含struct list_head    task_list成员</li>
+</ul>
+</li>
 </ul>
 <pre><code>
 struct napi_struct {
