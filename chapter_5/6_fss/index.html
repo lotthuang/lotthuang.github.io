@@ -168,8 +168,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../4_io_scheduler_layer/">第四篇 I/O调度层总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_fs_only_in_kernel/">第五篇 仅在内核空间可见的文件系统梳理</a>
-                  </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第六篇 各类文件系统梳理</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#sys">一 sys</a>
@@ -204,7 +202,47 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_3">其他文件系统</a>
+    <li class="toctree-l2"><a class="reference internal" href="#bdevfs">三 bdevfs</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_3">仅存于内核空间的伪文件系统</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#bdevfs_1">bdevfs</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#anon_inodefs-inode">四 anon_inodefs 匿名 inode 文件系统</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_4">是什么</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_5">为什么</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">怎么办</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-anon_inodefs">1 anon_inodefs 的初始化</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-anon_inodefs">2 anon_inodefs 对外提供的接口</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-dentry-anon_inodedentry_name">3 dentry 名字为啥叫“anon_inode:${dentry_name}” ?</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-inode">4 谁用到了匿名 inode</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#5-linux-dentry">5 Linux 目录树和内核 dentry 树</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#timerfd">timerfd</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#timerfd_1">timerfd 是什么</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#timerfd_2">timerfd 基本使用</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#socketfs">五 socketfs</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_7">其他文件系统</a>
     </li>
     </ul>
                   </li>
@@ -599,7 +637,266 @@ cpu0  cpu1  cpu2  cpu3  cpuidle  isolated  kernel_max  microcode  modalias  nohz
 <li>一个是进程名，<code>nginx</code></li>
 <li>一个是完整命令行： <code>nginx: master process /usr/sbin/nginx -g daemon on; master_process on;</code></li>
 </ul>
-<h2 id="_3">其他文件系统</h2>
+<h2 id="bdevfs">三 bdevfs</h2>
+<h3 id="_3">仅存于内核空间的伪文件系统</h3>
+<p>文件系统的精髓所在是让用户可以通过文件描述符来对指定的 inode 进行一系列的操作。</p>
+<p>伪文件系统和普通文件系统的区别在于，其 inode 对用户不可访问，即仅在内核态可见，从用户层的视角来看该文件系统并不存在。</p>
+<p>伪文件系统的作用是对一些操作系统中的元素进行封装，和普通的文件统一接口，如块设备<code>bdevfs</code>，管道文件<code>pipefs</code>，套接字<code>socketfs</code>等。</p>
+<p>通过这种方式的统一封装，才实现了 Linux 一切皆文件的思想。</p>
+<p><a href="https://ty-chen.github.io/linux-kernel-block-device/">参考</a></p>
+<h3 id="bdevfs_1">bdevfs</h3>
+<p><code>bdevfs</code>对应的超级块名为<code>blockdev_superblock</code>，初始化工作在系统初始化时调用<code>bdev_cache_init()</code>完成。所有表示块设备的 <code>inode</code> 都保存在伪文件系统 <code>bdevfs</code> 中以方便块设备的管理。Linux 将块设备的 <code>block_device</code> 和 <code>bdev 文件系统</code>的块设备的 inode 通过 <code>struct bdev_inode</code> 进行关联。</p>
+<pre><code>
+struct super_block *blockdev_superblock __read_mostly;
+
+static struct file_system_type bd_type = {
+    .name = &quot;bdev&quot;,
+    .mount = bd_mount,
+    .kill_sb = kill_anon_super,
+};
+
+void __init bdev_cache_init(void)
+{
+    int err;
+    static struct vfsmount *bd_mnt;
+    bdev_cachep = kmem_cache_create(&quot;bdev_cache&quot;, sizeof(struct bdev_inode),
+            0, (SLAB_HWCACHE_ALIGN|SLAB_RECLAIM_ACCOUNT|
+                SLAB_MEM_SPREAD|SLAB_ACCOUNT|SLAB_PANIC),
+            init_once);
+    err = register_filesystem(&amp;bd_type);
+    if (err)
+        panic(&quot;Cannot register bdev pseudo-fs&quot;);
+    bd_mnt = kern_mount(&amp;bd_type);
+    if (IS_ERR(bd_mnt))
+        panic(&quot;Cannot create bdev pseudo-fs&quot;);
+    blockdev_superblock = bd_mnt-&gt;mnt_sb;   /* For writeback */
+}
+
+struct bdev_inode {
+    struct block_device bdev;
+    struct inode vfs_inode;
+};
+
+
+</code></pre>
+<p><a href="https://ty-chen.github.io/linux-kernel-block-device/">Linux 操作系统学习笔记（十四）块设备</a></p>
+<p><a href="http://blog.chinaunix.net/uid-28449808-id-5820139.html">块设备剖析之关键数据结构分析 - block_device/gendisk/hd_struct</a></p>
+<h2 id="anon_inodefs-inode">四 anon_inodefs 匿名 inode 文件系统</h2>
+<h3 id="_4">是什么</h3>
+<ul>
+<li>什么是匿名 inode</li>
+</ul>
+<p>在 Linux 里一切皆文件，你理解的常见“文件”有什么特性？是路径，也就是 path ，匿名的意思说的就是没有路径（ <strong>在内核里面说的就是没有有效的 dentry</strong> ）</p>
+<ul>
+<li>来看看长什么样</li>
+</ul>
+<p>我们经常在 /proc/${pid}/fd/ 下面能看到 anon_inode : 前缀的句柄，如下：</p>
+<pre><code>root@ubuntu:~/temp# ll /proc/5398/fd
+
+lr-x------ 1 root root 64 Aug 24 09:39 11 -&gt; anon_inode:inotify
+lrwx------ 1 root root 64 Aug 24 09:39 4 -&gt; anon_inode:[eventpoll]
+lrwx------ 1 root root 64 Aug 24 09:39 5 -&gt; anon_inode:[signalfd]
+lrwx------ 1 root root 64 Aug 24 09:39 7 -&gt; anon_inode:[timerfd]
+lrwx------ 1 root root 64 Aug 24 09:39 9 -&gt; anon_inode:[eventpoll]
+
+</code></pre>
+<p>如果是正常的文件句柄，一般显式的是一个路径：</p>
+<pre><code>
+ls -l /proc/2824114/fd
+
+lrwx------ 1 root root 64 Jan  5 09:47 4 -&gt; /tmp/.1.txt.swp
+</code></pre>
+<p>当然 path 只是一个浅层次的感官，因为对于 socket 句柄来说也不算有 path ，所以这个匿名其实<strong>匿的是 inode</strong> 。</p>
+<h3 id="_5">为什么</h3>
+<p>在 Linux 的文件体系中，一个文件句柄，对应一个 file 结构体，关联一个 inode 。 <strong>file/dentry/inode 这三驾马车是一定要配齐的</strong>，就算是匿名的（无 path，无效 dentry），对于 file 结构体来说，一定要绑定 inode 和 dentry ，<strong>哪怕是伪造的、不完整的 inode</strong>。</p>
+<p>anon_inodefs 就应运而生了，内核就帮你搞出来一个公共的 inode ，这就节省了所有有这样需求的内核模块，避免了内存的浪费，省了冗余重复的 inode 初始化代码。</p>
+<p>匿名 fd 背后的是一个叫做 anon_inodefs 的内核文件系统（ 位于 <code>fs/anon_inodes.c</code> ），这个文件系统极其简单，整个文件系统只有一个 inode ，这个 inode 是文件系统初始化的时候创建好的。之后，所有需要一个匿名 inode 的句柄都直接跟这个 inode 关联即可。</p>
+<h3 id="_6">怎么办</h3>
+<h4 id="1-anon_inodefs">1 anon_inodefs 的初始化</h4>
+<p>上面提到了，匿名 inode 是一个公共需求，我们不需要一个完整功能的 inode，而只是需要一个 inode 而已，绑定到 dentry ，file 等结构体。</p>
+<p>anon_inodes.c 用来创建一个绑定匿名 inode 的 file 结构体。</p>
+<p>整个 anon_inodefs 就只有一个文件，操作系统初始化的时候会调用初始化函数 fs_initcall(anon_inode_init) ，其中 anon_inode_init 只做两件事：</p>
+<ol>
+<li>创建出一个 vfsmount 实例，创建出来之后赋值给全局变量 anon_inode_mnt ；</li>
+<li>创建出一个 inode 实例，创建出来之后赋值给全局变量 anon_inode_inode ；</li>
+</ol>
+<p>这两个变量就是 anon_inodefs 这个文件系统的全部家当了。</p>
+<ul>
+<li>源码如下: <code>fs/anod_inodes.c</code>:</li>
+</ul>
+<pre><code>
+static int __init anon_inode_init(void)
+{
+    anon_inode_mnt = kern_mount(&amp;anon_inode_fs_type);
+    if (IS_ERR(anon_inode_mnt))
+        panic(&quot;anon_inode_init() kernel mount failed (%ld)\n&quot;, PTR_ERR(anon_inode_mnt));
+
+    anon_inode_inode = alloc_anon_inode(anon_inode_mnt-&gt;mnt_sb);
+    if (IS_ERR(anon_inode_inode))
+        panic(&quot;anon_inode_init() inode allocation failed (%ld)\n&quot;, PTR_ERR(anon_inode_inode));
+
+    return 0;
+}
+
+fs_initcall(anon_inode_init);
+
+</code></pre>
+<h4 id="2-anon_inodefs">2 anon_inodefs 对外提供的接口</h4>
+<p>anon_inodefs 只提供了 2 个实用函数，一个获取到一个绑定匿名 inode 的 file 实例，另一个更多一些封装，返回的是 fd 句柄（整数）。如下：</p>
+<h5 id="21-anon_inode_getfile">2.1 anon_inode_getfile</h5>
+<p>这个函数非常简单，只做两件事：</p>
+<ul>
+<li>获取一个 inode （ 获取全局的 inode 变量 anon_inode_inode ，当然也可以通过一个参数控制来创建新的 inode ）；</li>
+<li>创建一个 file 结构体实例，并且把这个 inode 关联起来；</li>
+</ul>
+<p>返回 struct file 实例</p>
+<h5 id="22-anon_inode_getfd">2.2 anon_inode_getfd</h5>
+<p>这个函数非常简单，只做两件事情：</p>
+<ul>
+<li>创建一个新的 fd 句柄，返回的是一个非负整数；</li>
+<li>创建一个 file 实例（ 调用的是 anon_inode_getfile 来获取 ），然后把这个 fd 和 file 关联起来；</li>
+</ul>
+<p>返回 struct file 实例对应到当前 task_struct 的文件句柄（一个正整数）</p>
+<p>这两个函数就是 anon_inodefs 提供的两个对外的函数接口。获取到一个 file 实例，这个实例绑定到 anon_inodefs 公共的 inode 实例。</p>
+<p>关于 anon_inodefs 的功能，其实在函数的注释中也提到了，太直白了，如下：</p>
+<pre><code>
+// anon_inode_getfile 和 anon_inode_getfd 的注释明确提到了 anon_inodefs 的两个目的：
+// - 节省内存
+// - 封装公共的冗余代码
+ * Creates a new file by hooking it on a single inode. This is
+ * useful for files that do not need to have a full-fledged inode in
+ * order to operate correctly.  All the files created with
+ * anon_inode_getfd() will use the same singleton inode, reducing
+ * memory use and avoiding code duplication for the file/inode/dentry
+ * setup.  Returns a newly created file descriptor or an error code.
+
+</code></pre>
+<h4 id="3-dentry-anon_inodedentry_name">3 dentry 名字为啥叫“anon_inode:${dentry_name}” ?</h4>
+<p>还是得看源码</p>
+<p>为什么常见的匿名 fd 都有以 “anon_inode:” 这样开头？</p>
+<p>其实这种看得到的字符串都是 path ，这个是和 dentry 对应起来的，对于这种匿名 inode 的 dentry ，有着统一的名字：</p>
+<pre><code>
+
+// dentry 的操作表
+static const struct dentry_operations anon_inodefs_dentry_operations = {
+    .d_dname    = anon_inodefs_dname,
+};
+
+// 操作表 .d_dname 方法的定制实现
+static char *anon_inodefs_dname(struct dentry *dentry, char *buffer, int buflen)
+{
+    return dynamic_dname(dentry, buffer, buflen, &quot;anon_inode:%s&quot;, dentry-&gt;d_name.name);
+}
+
+</code></pre>
+<p>那么 dentry-&gt;d_name.name 又是怎么赋值的呢？我以 epoll fd 来举个例子：</p>
+<pre><code>
+// epoll_create 函数入口 ( fs/eventpoll.c )
+static int do_epoll_create(int flags)
+{
+    // 创建匿名句柄 ...
+    file = anon_inode_getfile(&quot;[eventpoll]&quot;, &amp;eventpoll_fops, ep, O_RDWR | (flags &amp; O_CLOEXEC));
+}
+
+</code></pre>
+<p>传入的 name 是"[eventpoll]",所以"anon_inode:%s"最终组合起来就是"anon_inode:[eventpoll]"</p>
+<ul>
+<li>参考<a href="https://www.qiyacloud.cn/2021/09/2021-09-24/">Linux fd 系列 | 匿名 fd 是什么？</a></li>
+</ul>
+<h4 id="4-inode">4 谁用到了匿名 inode</h4>
+<ul>
+<li>随便列举一些 eventfd，eventpoll，timerfd，signalfd，inotifyfd，io_uring fd 等等，还有很多</li>
+</ul>
+<h4 id="5-linux-dentry">5 Linux 目录树和内核 dentry 树</h4>
+<p>在 Linux 中是一个倒挂树的设计，从根目录（ / ）开始，叶子结点为文件或者目录，从根节点到叶子结点这一段就称为 path 路径，在内存里面这颗倒挂的树就体现为 dentry 树，节点就是 dentry 结构体。</p>
+<p>这里就有个重要的知识点：</p>
+<p>划重点：一个 inode 上可以挂多个 dentry ，一个 dentry 只能属于一个 inode 。</p>
+<p><img alt="png" src="../../img/WechatIMG537.jpg" /></p>
+<p>可以看到/etc/a.txt 和 /etc/b.txt 互为硬链接</p>
+<p>每个文件或者目录都会在这棵树上有自己的位置，内核用 struct path 结构体来表示唯一的位置。</p>
+<pre><code>struct path {
+    struct vfsmount *mnt;   // 标识在哪个具体的文件系统实例
+    struct dentry *dentry;  // 内存目录树节点
+};
+
+</code></pre>
+<p>这里顺便再说另一个重要知识点：为什么内核之中，需要用 struct path 这个复合结构体来标识唯一的一个目录树位置呢？</p>
+<p>其实所谓的<strong>挂载</strong>是把文件系统实例和目录树上的一个 dentry 关联起来，形成一个 vfsmount 结构体实例。而一个 dentry 是可以绑定多个文件系统实例的。</p>
+<ul>
+<li>文件系统实例是指 super_block 吗？应该不对，应该是一个 vfsmount 实例</li>
+</ul>
+<pre><code>struct vfsmount {
+    struct dentry *mnt_root;    /* root of the mounted tree */ //指向挂载文件系统根目录项dentry实例
+    struct super_block *mnt_sb; /* pointer to superblock */ //指向文件系统超级块实例
+    int mnt_flags; //内核内部使用的挂载标记
+    struct user_namespace *mnt_userns;
+};
+</code></pre>
+<ul>
+<li>mount 源码是怎样的，参考<a href="https://zhuanlan.zhihu.com/p/606596107">Linux 内核—文件系统 mount 过程</a></li>
+</ul>
+<p>换句话说：对于一个目录树路径其实是可以挂载多个文件系统实例。比如 /mnt/path 这么一个路径，其实是可以挂载多个文件系统的，不会报错，后面的挂载直接覆盖前面的。</p>
+<p><img alt="png" src="../../img/WechatIMG538.jpg" /></p>
+<h2 id="timerfd">timerfd</h2>
+<h3 id="timerfd_1">timerfd 是什么</h3>
+<ul>
+<li>timerfd 是一个时间相关的 fd，当 timerfd 初始化时，可以设置一个超时时间，超时之后，该句柄可读，读出来的是超时的次数。</li>
+</ul>
+<h3 id="timerfd_2">timerfd 基本使用</h3>
+<p>timerfd 相关的系统调用有 3 个：</p>
+<pre><code>// 创建一个 timerfd 句柄
+int timerfd_create(int clockid, int flags);
+// 启动或关闭 timerfd 对应的定时器
+int timerfd_settime(int fd, int flags, const struct itimerspec *new_value, struct itimerspec *old_value);
+// 获取指定 timerfd 距离下一次超时还剩的时间
+int timerfd_gettime(int fd, struct itimerspec *curr_value);
+
+</code></pre>
+<pre><code>
+timerfd 常与 epoll 系统调用结合使用：
+
+// 创建一个 timerfd 句柄
+int fdTimer = timerfd_create(CLOCK_MONOTONIC, 0 /*flags*/);
+
+itimerspec timespec {
+    // 设置超时间隔
+    .it_interval = {
+        .tv_sec = 5,
+        .tv_nsec = 0,
+    },
+    //第一次超时时间
+    .it_value = {
+        .tv_sec = 5,
+        .tv_nsec = 0,
+    },
+};
+
+//启动定时器
+int timeRes = timerfd_settime(fdTimer, 0 /*flags*/, &amp;timespec, nullptr);
+
+// epoll 监听 timerfd
+epoll_ctl(mEpollFd, EPOLL_CTL_Add, fdTimer, &amp;eventItem);
+
+
+while (true)
+{
+    // 进入休眠状态
+    epoll_wait(mEpollFd, eventItems, EPOLL_MAX_EVENTS, timeoutMillis);
+    if (count &lt; 0)
+    {
+        perror(&quot;epoll failed&quot;);
+        break;
+    }
+    for (int i=0;i &lt; count;i++)
+    {
+        //处理计时器到达事件
+    }
+}
+
+</code></pre>
+<h2 id="socketfs">五 socketfs</h2>
+<p><a href="https://mp.weixin.qq.com/s/Mknn2bVuVwwkgA0rbCqQFA">Linux 内核-网络部分之 sockfs</a></p>
+<h2 id="_7">其他文件系统</h2>
 <p>tmpfs</p>
 <p>devtmpfs</p>
 <ul>
@@ -618,7 +915,7 @@ cpu0  cpu1  cpu2  cpu3  cpuidle  isolated  kernel_max  microcode  modalias  nohz
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../5_fs_only_in_kernel/" class="btn btn-neutral float-left" title="第五篇 仅在内核空间可见的文件系统梳理"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../4_io_scheduler_layer/" class="btn btn-neutral float-left" title="第四篇 I/O调度层总结"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../7_three_object_of_block_device/" class="btn btn-neutral float-right" title="第七篇 块设备三大对象block_device、gendisk、hd_struct数据结构总结">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -642,7 +939,7 @@ cpu0  cpu1  cpu2  cpu3  cpuidle  isolated  kernel_max  microcode  modalias  nohz
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../5_fs_only_in_kernel/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../4_io_scheduler_layer/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../7_three_object_of_block_device/" style="color: #fcfcfc">Next &raquo;</a></span>
