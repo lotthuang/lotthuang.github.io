@@ -167,7 +167,7 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#3_1">3 简化版原理</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#4">4 调度</a>
+    <li class="toctree-l3"><a class="reference internal" href="#4">4 简化版调度过程</a>
     </li>
         </ul>
     </li>
@@ -178,6 +178,30 @@
     <li class="toctree-l3"><a class="reference internal" href="#2_1">2 调度域</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#3-task">3 task 迁移时机</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">六 详细版调度过程</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-rq">1 核心数据结构 rq</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2_2">2 调度器类是什么</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-scheduler_tick">3 周期性调度器函数（scheduler_tick 函数）</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-schedule">4 调度器入口函数（schedule()函数）</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#41-__schedule">4.1 主调度函数（__schedule()函数）</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#5">5 上下文切换</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#51">5.1 切哪些内容</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#52-switch_to">5.2 深入理解 switch_to 函数</a>
+    </li>
+        </ul>
     </li>
         </ul>
     </li>
@@ -194,6 +218,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../14_linux_kernel_tracing/">第十四篇 理解内核追踪机制</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../15_task_struct/">第十五篇 task_struct结构体总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../16_init_call/">第十六篇 Linux各类initcall总结</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
@@ -580,7 +606,7 @@ void schedule(void) {
 </li>
 </ul>
 <p>由此可知，虚拟时钟和真实时间的换算是根据进程的权重（也就是优先级）来的。</p>
-<h3 id="4">4 调度</h3>
+<h3 id="4">4 简化版调度过程</h3>
 <ul>
 <li>
 <p>内核依赖两种方式驱动进程的被动调度：</p>
@@ -615,6 +641,211 @@ void schedule(void) {
 <li>CPU 进入 idle 前迁移：pull</li>
 <li>CPU 周期性 load_balance：pull，在软中断进行。</li>
 </ol>
+<h2 id="_5">六 详细版调度过程</h2>
+<h3 id="1-rq">1 核心数据结构 rq</h3>
+<p>内核为每个 cpu 维护一个运行队列，称为 per-cpu runqueue 或 per-cpu rq，数据结构的主要成员如下所示：</p>
+<pre><code>
+// kernel/sched/sched.h -- rq
+struct rq {
+  raw_spinlock_t    __lock;
+
+  unsigned int    nr_running;
+
+  struct cfs_rq   cfs;
+  struct rt_rq    rt;
+  struct dl_rq    dl;
+
+  struct task_struct __rcu  *curr;
+  struct task_struct  *idle;
+  struct task_struct  *stop;
+};
+
+
+
+__lock：队列锁。如果想要锁定多个per-cpu rq(如负载平衡或线程迁移部分的代码)，锁获取操作必须按per-cpu rq编号升序排序，以防止死锁。
+
+nr_running：rq上可运行的进程的数目；
+
+cfs、rt、dl：嵌入的子就绪队列，分别属于公平调度类、实时调度类和截止时间调度类；
+
+curr：指向当前运行进程的task_struct实例；
+
+idle：指向idle进程的task_struct实例；
+
+stop：指向stop进程的task_struct实例；
+
+</code></pre>
+<ul>
+<li>系统中的所有就绪队列都保存在<strong>runqueue 数组</strong>中，该数组的每个元素对应一个<strong>cpu</strong></li>
+<li>
+<ul>
+<li>比如，如下代码从当前 cpu 的<strong>runqueue 数组</strong>中获取 rq</li>
+</ul>
+</li>
+</ul>
+<pre><code>DECLARE_PER_CPU(struct rq, runqueues);
+
+#define cpu_rq(cpu)     (&amp;per_cpu(runqueues, (cpu)))
+int cpu = smp_processor_id();
+struct rq *rq = cpu_rq(cpu);
+</code></pre>
+<h3 id="2_2">2 调度器类是什么</h3>
+<ul>
+<li>
+<p>for_each_class 宏按照 stop_sched_class、dl_sched_class、rt_sched_class、fair_sched_class、idle_sched_class 的顺序遍历调度类的 pick_next_task 函数，直到取出优先级最高进程的进程描述符。</p>
+</li>
+<li>
+<p>说明至少有以下几个调度器类: <code>stop_sched_class、dl_sched_class、rt_sched_class、fair_sched_class、idle_sched_class</code></p>
+</li>
+<li>
+<ul>
+<li>并且普通进程最常用的是 fair_sched_class, idle 进程用的是 idle_sched_class</li>
+</ul>
+</li>
+<li>
+<p>以 fair_sched_class 为核心模型，总结一下它有哪些属性:</p>
+</li>
+<li>
+<ul>
+<li>相应调度器类的方法使该进程停止活动(sched_class-&gt;dequeue_task)</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>pick_next_task 函数, 挑选下个进程：<code>p = class-&gt;pick_next_task(rq)</code></li>
+</ul>
+</li>
+<li>
+<ul>
+<li>调度器类周期性调度方法
+    比如当前进程的调度类的周期性调度方法</li>
+</ul>
+</li>
+</ul>
+<pre><code>
+// kernel/sched/core.c -- scheduler_tick()
+  curr-&gt;sched_class-&gt;task_tick(rq, curr, 0);
+</code></pre>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>并且进程是属于某一个调度器类的, 在 task_struct 结构体中有对应的成员:
+      <code>const struct sched_class *sched_class</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>公平调度类的 pick_next_task_fair 挑选新进程，<code>p = pick_next_task_fair(rq, prev, rf);</code></li>
+</ul>
+</li>
+<li>
+<ul>
+<li>idle 调度类的选进程的函数: <code>p = pick_next_task_idle(rq);</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="3-scheduler_tick">3 周期性调度器函数（scheduler_tick 函数）</h3>
+<ul>
+<li>
+<p>按照频率 HZ 周期性自动触发该函数，在触发时关中断。主要涉及以下操作：</p>
+</li>
+<li>
+<p>更新调度相关的统计量，包括更新计数器、负载量、热量等信息；</p>
+</li>
+<li>
+<p>激活负责当前进程的调度类的周期性调度方法。</p>
+</li>
+<li>
+<p>变量初始化如下：</p>
+</li>
+</ul>
+<pre><code>
+
+// kernel/sched/core.c -- scheduler_tick()
+void scheduler_tick(void)
+{
+  int cpu = smp_processor_id();
+  struct rq *rq = cpu_rq(cpu);
+  struct task_struct *curr = rq-&gt;curr;
+  struct rq_flags rf;
+  unsigned long thermal_pressure;
+  u64 resched_latency;
+
+</code></pre>
+<h3 id="4-schedule">4 调度器入口函数（schedule()函数）</h3>
+<h4 id="41-__schedule">4.1 主调度函数（<code>__schedule()</code>函数）</h4>
+<h3 id="5">5 上下文切换</h3>
+<h4 id="51">5.1 切哪些内容</h4>
+<ul>
+<li>默认不同进程间，需要切换：</li>
+<li>
+<ul>
+<li>切换 mm(struct mm_struct)</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>切换寄存器（struct thread_info 部分）和内核栈</li>
+</ul>
+</li>
+</ul>
+<p>在切换寄存器状态和内核栈时，调用 switch_to 进行切换即可。</p>
+<pre><code>// kernel/sched/core.c -- context_switch
+  /* 交换寄存器状态和内核栈 */
+  switch_to(prev, next, prev);
+  barrier();
+
+  return finish_task_switch(prev);
+}
+
+</code></pre>
+<ul>
+<li>
+<p>switch_to 宏传入了三个函数，其中两个是 prev，这是一个很有意思的实现，我们在 3.2 节详细讨论；</p>
+</li>
+<li>
+<p>finish_task_switch(prev)宏用于完成清理工作，使得能够正确地释放锁；</p>
+</li>
+<li>
+<p><strong>barrier 为内存屏障</strong>，用于确保 switch_to 在 finish_task_switch 开始前执行完，而不会被编译器或乱序发射干扰顺序。在 3.2 节中我们会看到这一约束是非常重要的。</p>
+</li>
+</ul>
+<h4 id="52-switch_to">5.2 深入理解 switch_to 函数</h4>
+<ul>
+<li>
+<p><code>switch_to</code>与体系结构相关，定义于<code>/arch/xxx/include/asm/switch_to.h</code>，其中<code>xxx</code>表示体系结构名称。由于其实现与体系结构和汇编语言相关，这里不介绍具体的实现，而是说明<strong>为什么 switch_to 宏需要传入三个参数</strong>。</p>
+</li>
+<li>
+<p>在 3.1 节中，值得注意的是，进程在调用<code>switch_to(prev, next, prev);</code>后都会停止执行，切换为另一个进程执行。因此，每一个经历过 switch_to 的进程，在下次被调度时都会从<code>return finish_task_switch(prev);</code>处开始执行，然后从<strong><code>__schedule()</code>代码段 return 回自己的代码段</strong>。</p>
+</li>
+<li>
+<ul>
+<li>也就是说 switch_to 之后就真正进入下一个进程开始执行了, 前面那个进程恢复之后是从<code>return finish_task_switch(prev);</code>处开始执行的</li>
+</ul>
+</li>
+</ul>
+<p>这就可能出现下面这样的场景：</p>
+<p><img alt="png" src="../../img/WechatIMG551.jpg" /></p>
+<ul>
+<li>按照<code>进程A-&gt;进程C-&gt;进程C-&gt;进程A</code>的顺序的进行进程切换，在 A 恢复执行，即从<code>return finish_task_switch(prev);</code>处开始执行时，有 prev=A、next=B（注意这里并没有再发生从进程 A 切换到其他进程的动作，只是恢复了进程 A 在切换前的参数）。这时就执行了<code>finish_task_switch(A)</code>。但很显然，需要执行的是<code>finish_task_switch(C)</code>。</li>
+</ul>
+<p>因此，为正确地执行<code>finish_task_switch</code>，需要在每个<code>`switch_to</code>返回时更新<code>prev</code>。<code>switch_to(prev, next, prev)</code>函数提供了这一功能。在这里，(针对进程 A 来说),三个参数分别表示：</p>
+<ul>
+<li>
+<p>第一个 prev：切换前的旧进程；</p>
+</li>
+<li>
+<p>next：切换前的新进程；</p>
+</li>
+<li>
+<p>第二个 prev：切换后的旧进程；</p>
+</li>
+</ul>
+<p>根据这一巧妙的设计，可以在进程 A 重新被调度时的将 prev 更新为 C，使得<code>finish_task_switch(C)</code>被正确地调用 。</p>
               
             </div>
           </div><footer>

@@ -157,6 +157,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/15_task_struct/">第十五篇 task_struct结构体总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/16_init_call/">第十六篇 Linux各类initcall总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
               <ul>
@@ -380,6 +382,16 @@
     <li class="toctree-l3"><a class="reference internal" href="#3-init_list_head">3 INIT_LIST_HEAD 用于在运行时初始化一个链表</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#4-pfn-struct-page">4 PFN 和物理页结构体 struct page 之间的相互转换的宏</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">六 各类有意思问题</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_1">1 为什么内核代码中很多返回值都都要加个负号</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#a">A 如何理解函数返回指针</a>
+    </li>
+        </ul>
     </li>
         </ul>
     </li>
@@ -794,6 +806,44 @@ int register_filesystem(struct file_system_type * fs)
 </ul>
 <h3 id="4-pfn-struct-page">4 PFN 和物理页结构体 struct page 之间的相互转换的宏</h3>
 <p>内核提供了两个宏来完成 PFN 与 物理页结构体 struct page 之间的相互转换。它们分别是 page_to_pfn 与 pfn_to_page</p>
+<h2 id="_5">六 各类有意思问题</h2>
+<h3 id="1_1">1 为什么内核代码中很多返回值都都要加个负号</h3>
+<p>比如</p>
+<pre><code>page = __get_free_pages(GFP_KERNEL,3);
+if (!page){
+        /*没有足够的内存：你必须处理这种错误！*/
+        return -ENOMEM;
+}
+
+
+static int fs_name(unsigned int index, char __user * buf)
+{
+    struct file_system_type * tmp;
+    int len, res;
+
+    read_lock(&amp;file_systems_lock);
+    for (tmp = file_systems; tmp; tmp = tmp-&gt;next, index--)
+        if (index &lt;= 0 &amp;&amp; try_module_get(tmp-&gt;owner))
+            break;
+    read_unlock(&amp;file_systems_lock);
+    if (!tmp)
+        return -EINVAL;
+
+    /* OK, we got the reference, so we can safely block */
+    len = strlen(tmp-&gt;name) + 1;
+    res = copy_to_user(buf, tmp-&gt;name, len) ? -EFAULT : 0;
+    put_filesystem(tmp);
+    return res;
+}
+</code></pre>
+<h4 id="a">A 如何理解函数返回指针</h4>
+<p>内核中的函数通常以返回指针的形式来传递调用函数后执行的结果，返回值指针有三种结果：</p>
+<ul>
+<li>（1）调用成功则返回一个有效指针</li>
+<li>（2）调用失败返回 NULL，例如 malloc、kmalloc、vmalloc</li>
+<li>（3）调用失败返回错误信息指针（无效指针）</li>
+</ul>
+<p>我们就是通过这个错误指针来传递有关错误的信息。</p>
               
             </div>
           </div><footer>

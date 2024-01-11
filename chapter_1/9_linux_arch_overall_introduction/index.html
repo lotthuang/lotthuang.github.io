@@ -215,6 +215,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/15_task_struct/">第十五篇 task_struct结构体总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/16_init_call/">第十六篇 Linux各类initcall总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
               <ul>
@@ -472,13 +474,31 @@
 </ul>
 <h3 id="_5">内存</h3>
 <h4 id="_6">整体架构图：</h4>
-<pre><code>- 从下往上 ： 物理内存（struct page） --&gt; 伙伴系统（struct free_area）---》Slab层---&gt; vmalloc
-- 核心数据结构： struct pg_data_t，struct zone， struct free_area, struct page
-  - 主机上所有的内存条，组成struct  pg_data_t链表
-  - 单个struct pg_data_t下有多个zone
-  - 每个zone对应1个 伙伴系统(一个伙伴系统，具体一个伙伴系统是一个数组（frea_area数组），数组里有11个元素)
-  - free_area 按内存块大小组织物理地址连续的struct page，大小具体是什么大小？（2的次方个页面大小，比如2的1次方，2的2次方，2的10次方。比如2的3次方=8，说明这个元素里的链表上每个内存块大小是8个页面，那么每个页面具体是多少KB呢？其实都是4KB，说明这里的内存块大小都是32KB）
-</code></pre>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/Ki1z8na9-oVw1tk7PcdVrg">深入解析 Linux 内存管理：探索三大分配器</a></li>
+<li>从下往上 ： 物理内存（struct page） --&gt; 伙伴系统（struct free_area）---》Slab 层---&gt; vmalloc</li>
+<li>核心数据结构： struct pg_data_t，struct zone， struct free_area, struct page</li>
+<li>
+<ul>
+<li>主机上所有的内存条，组成 struct pg_data_t 链表</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>单个 struct pg_data_t 下有多个 zone</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>每个 zone 对应 1 个 伙伴系统(一个伙伴系统，具体一个伙伴系统是一个数组（frea_area 数组），数组里有 11 个元素)</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>free_area 按内存块大小组织物理地址连续的 struct page，大小具体是什么大小？（2 的次方个页面大小，比如 2 的 1 次方，2 的 2 次方，2 的 10 次方。比如 2 的 3 次方=8，说明这个元素里的链表上每个内存块大小是 8 个页面，那么每个页面具体是多少 KB 呢？其实都是 4KB，说明这里的内存块大小都是 32KB）</li>
+</ul>
+</li>
+</ul>
 <h4 id="_7">进程虚拟内存管理</h4>
 <ul>
 <li><code>struct mm_struct</code> 对应多个 <code>struct vm_area_struct</code></li>

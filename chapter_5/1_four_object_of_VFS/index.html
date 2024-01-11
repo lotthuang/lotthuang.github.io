@@ -157,6 +157,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/15_task_struct/">第十五篇 task_struct结构体总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/16_init_call/">第十六篇 Linux各类initcall总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
               <ul class="current">
@@ -186,7 +188,7 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#2-task_struct">2 task_struct 中和文件系统相关的成员和结构体</a>
         <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#a-file_struct">A file_struct</a>
+    <li class="toctree-l4"><a class="reference internal" href="#a-files_struct">A files_struct</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#b-fs_struct">B fs_struct</a>
     </li>
@@ -762,10 +764,43 @@ static struct file_system_type dev_fs_type = {
 <li><code>unregister_filesystem(&amp;dev_fs_type);</code> // 取消注册</li>
 </ul>
 <h3 id="2-task_struct">2 task_struct 中和文件系统相关的成员和结构体</h3>
-<h4 id="a-file_struct">A file_struct</h4>
+<h4 id="a-files_struct">A files_struct</h4>
 <ul>
-<li>task_struct 中的 files 成员指向 file_struct, 代表一个 task_struct 打开的文件</li>
+<li>task_struct 中的 files 成员指向 files_struct, 代表一个 task_struct 打开的文件</li>
 </ul>
+<pre><code>struct task_struct {
+    ...
+    /* filesystem information */
+    struct fs_struct *fs;
+    /* open file information */
+    struct files_struct *files;
+    /* namespaces */
+    struct nsproxy *nsproxy;
+    ...
+}
+
+</code></pre>
+<p><code>include/linux/fdtable.h:</code></p>
+<pre><code>/*
+ * Open file table structure
+ */
+struct files_struct {
+  /*
+   * read mostly part
+   */
+    atomic_t count;
+    struct fdtable __rcu *fdt;
+    struct fdtable fdtab;
+  /*
+   * written part on a separate cache line in SMP
+   */
+    spinlock_t file_lock ____cacheline_aligned_in_smp;
+    int next_fd;
+    unsigned long close_on_exec_init[1];
+    unsigned long open_fds_init[1];
+    struct file __rcu * fd_array[NR_OPEN_DEFAULT];
+};
+</code></pre>
 <h4 id="b-fs_struct">B fs_struct</h4>
 <ul>
 <li>task_struct 中的 fs 成员指向 fs_struct, 代表进程所在的工作目录和根目录</li>
@@ -779,7 +814,7 @@ static struct file_system_type dev_fs_type = {
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../../chapter_4/15_task_struct/" class="btn btn-neutral float-left" title="第十五篇 task_struct结构体总结"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_4/16_init_call/" class="btn btn-neutral float-left" title="第十六篇 Linux各类initcall总结"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../2_io_stack/" class="btn btn-neutral float-right" title="第二篇 Linux IO栈总结">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -803,7 +838,7 @@ static struct file_system_type dev_fs_type = {
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../../chapter_4/15_task_struct/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../../chapter_4/16_init_call/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../2_io_stack/" style="color: #fcfcfc">Next &raquo;</a></span>

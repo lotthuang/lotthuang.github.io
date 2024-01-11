@@ -157,6 +157,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/15_task_struct/">第十五篇 task_struct结构体总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/16_init_call/">第十六篇 Linux各类initcall总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
               <ul class="current">
@@ -241,8 +243,22 @@
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#socketfs">五 socketfs</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_2">1 初始化</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_7">其他文件系统</a>
+    <li class="toctree-l3"><a class="reference internal" href="#2-fs_type-sock_fs_type-mount">2 fs_type: sock_fs_type 和 mount</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-sock_fs_typemount">3 何时调用 sock_fs_type.mount 呢?</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-dentry_operations">4 dentry_operations</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#5-super_operations">5 super_operations</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_7">注册文件系统</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_8">其他文件系统</a>
     </li>
     </ul>
                   </li>
@@ -896,7 +912,327 @@ while (true)
 </code></pre>
 <h2 id="socketfs">五 socketfs</h2>
 <p><a href="https://mp.weixin.qq.com/s/Mknn2bVuVwwkgA0rbCqQFA">Linux 内核-网络部分之 sockfs</a></p>
-<h2 id="_7">其他文件系统</h2>
+<h3 id="1_2">1 初始化</h3>
+<pre><code>
+static int __init sock_init(void)
+{
+    int err;
+    /*
+     *      Initialize the network sysctl infrastructure.
+     */
+    err = net_sysctl_init();
+    if (err)
+        goto out;
+
+    /*
+     *      Initialize skbuff SLAB cache
+     */
+    skb_init();
+
+    /*
+     *      Initialize the protocols module.
+     */
+
+    init_inodecache();
+
+    err = register_filesystem(&amp;sock_fs_type);
+    if (err)
+        goto out_fs;
+    sock_mnt = kern_mount(&amp;sock_fs_type);
+    if (IS_ERR(sock_mnt)) {
+        err = PTR_ERR(sock_mnt);
+        goto out_mount;
+    }
+
+    /* The real protocol initialization is performed in later initcalls.
+     */
+
+#ifdef CONFIG_NETFILTER
+    err = netfilter_init();
+    if (err)
+        goto out;
+#endif
+
+    ptp_classifier_init();
+
+out:
+    return err;
+
+out_mount:
+    unregister_filesystem(&amp;sock_fs_type);
+out_fs:
+    goto out;
+}
+
+core_initcall(sock_init);   /* early initcall */
+</code></pre>
+<ul>
+<li>对比 anon_inode_init, <code>fs/anon_inodes.c</code></li>
+</ul>
+<pre><code>
+static int __init anon_inode_init(void)
+{
+    anon_inode_mnt = kern_mount(&amp;anon_inode_fs_type);
+    if (IS_ERR(anon_inode_mnt))
+        panic(&quot;anon_inode_init() kernel mount failed (%ld)\n&quot;, PTR_ERR(anon_inode_mnt));
+
+    anon_inode_inode = alloc_anon_inode(anon_inode_mnt-&gt;mnt_sb);
+    if (IS_ERR(anon_inode_inode))
+        panic(&quot;anon_inode_init() inode allocation failed (%ld)\n&quot;, PTR_ERR(anon_inode_inode));
+
+    return 0;
+}
+
+fs_initcall(anon_inode_init);
+</code></pre>
+<ul>
+<li>对比 ext4 初始化</li>
+</ul>
+<pre><code>static int __init ext4_init_fs(void)
+{
+    int i, err;
+
+    ext4_li_info = NULL;
+    mutex_init(&amp;ext4_li_mtx);
+
+    /* Build-time check for flags consistency */
+    ext4_check_flag_values();
+
+    for (i = 0; i &lt; EXT4_WQ_HASH_SZ; i++) {
+        mutex_init(&amp;ext4__aio_mutex[i]);
+        init_waitqueue_head(&amp;ext4__ioend_wq[i]);
+    }
+
+    err = ext4_init_es();
+    if (err)
+        return err;
+
+    err = ext4_init_pageio();
+    if (err)
+        goto out7;
+
+    err = ext4_init_system_zone();
+    if (err)
+        goto out6;
+    ext4_kset = kset_create_and_add(&quot;ext4&quot;, NULL, fs_kobj);
+    if (!ext4_kset) {
+        err = -ENOMEM;
+        goto out5;
+    }
+    ext4_proc_root = proc_mkdir(&quot;fs/ext4&quot;, NULL);
+
+    err = ext4_init_feat_adverts();
+    if (err)
+        goto out4;
+
+    err = ext4_init_mballoc();
+    if (err)
+        goto out2;
+    else
+        ext4_mballoc_ready = 1;
+    err = init_inodecache();
+    if (err)
+        goto out1;
+    register_as_ext3();
+    register_as_ext2();
+    err = register_filesystem(&amp;ext4_fs_type);
+    if (err)
+        goto out;
+
+    return 0;
+out:
+    unregister_as_ext2();
+    unregister_as_ext3();
+    destroy_inodecache();
+out1:
+    ext4_mballoc_ready = 0;
+    ext4_exit_mballoc();
+out2:
+    ext4_exit_feat_adverts();
+out4:
+    if (ext4_proc_root)
+        remove_proc_entry(&quot;fs/ext4&quot;, NULL);
+    kset_unregister(ext4_kset);
+out5:
+    ext4_exit_system_zone();
+out6:
+    ext4_exit_pageio();
+out7:
+    ext4_exit_es();
+
+    return err;
+}
+
+module_init(ext4_init_fs)
+
+</code></pre>
+<h3 id="2-fs_type-sock_fs_type-mount">2 fs_type: sock_fs_type 和 mount</h3>
+<pre><code>static struct file_system_type sock_fs_type = {
+    .name =     &quot;sockfs&quot;,
+    .mount =    sockfs_mount,
+    .kill_sb =  kill_anon_super,
+    .get_sb = sockfs_get_sb,
+};
+
+static struct dentry *sockfs_mount(struct file_system_type *fs_type,
+             int flags, const char *dev_name, void *data)
+{
+    return mount_pseudo(fs_type, &quot;socket:&quot;, &amp;sockfs_ops,
+        &amp;sockfs_dentry_operations, SOCKFS_MAGIC);
+}
+
+</code></pre>
+<ul>
+<li>对比 anon_inode_fs_type, <code>fs/anon_inodes.c</code></li>
+</ul>
+<pre><code>
+static struct file_system_type anon_inode_fs_type = {
+    .name       = &quot;anon_inodefs&quot;,
+    .mount      = anon_inodefs_mount,
+    .kill_sb    = kill_anon_super,
+};
+
+static struct dentry *anon_inodefs_mount(struct file_system_type *fs_type,
+                int flags, const char *dev_name, void *data)
+{
+    return mount_pseudo(fs_type, &quot;anon_inode:&quot;, NULL,
+            &amp;anon_inodefs_dentry_operations, ANON_INODE_FS_MAGIC);
+}
+
+</code></pre>
+<ul>
+<li>对比 ext4 <code>fs/ext4/super.c</code></li>
+</ul>
+<pre><code>static struct file_system_type ext4_fs_type = {
+    .owner      = THIS_MODULE,
+    .name       = &quot;ext4&quot;,
+    .mount      = ext4_mount,
+    .kill_sb    = kill_block_super,
+    .fs_flags   = FS_REQUIRES_DEV,
+};
+
+static struct dentry *ext4_mount(struct file_system_type *fs_type, int flags,
+               const char *dev_name, void *data)
+{
+    return mount_bdev(fs_type, flags, dev_name, data, ext4_fill_super);
+}
+
+</code></pre>
+<h3 id="3-sock_fs_typemount">3 何时调用 sock_fs_type.mount 呢?</h3>
+<h3 id="4-dentry_operations">4 dentry_operations</h3>
+<pre><code>/*
+ * sockfs_dname() is called from d_path().
+ */
+static char *sockfs_dname(struct dentry *dentry, char *buffer, int buflen)
+{
+    return dynamic_dname(dentry, buffer, buflen, &quot;socket:[%lu]&quot;,
+                dentry-&gt;d_inode-&gt;i_ino);
+}
+
+static const struct dentry_operations sockfs_dentry_operations = {
+    .d_dname  = sockfs_dname,
+};
+</code></pre>
+<ul>
+<li>对比 anon_fs</li>
+</ul>
+<pre><code>/*
+ * anon_inodefs_dname() is called from d_path().
+ */
+static char *anon_inodefs_dname(struct dentry *dentry, char *buffer, int buflen)
+{
+    return dynamic_dname(dentry, buffer, buflen, &quot;anon_inode:%s&quot;,
+                dentry-&gt;d_name.name);
+}
+
+static const struct dentry_operations anon_inodefs_dentry_operations = {
+    .d_dname    = anon_inodefs_dname,
+};
+</code></pre>
+<ul>
+<li>对比 ext4</li>
+</ul>
+<pre><code>
+
+
+</code></pre>
+<h3 id="5-super_operations">5 super_operations</h3>
+<pre><code>static const struct super_operations sockfs_ops = {
+    .alloc_inode    = sock_alloc_inode,
+    .destroy_inode  = sock_destroy_inode,
+    .statfs     = simple_statfs,
+};
+
+</code></pre>
+<ul>
+<li>对比 ext4</li>
+</ul>
+<pre><code>static const struct super_operations ext4_sops = {
+    .alloc_inode    = ext4_alloc_inode,
+    .destroy_inode  = ext4_destroy_inode,
+    .write_inode    = ext4_write_inode,
+    .dirty_inode    = ext4_dirty_inode,
+    .drop_inode = ext4_drop_inode,
+    .evict_inode    = ext4_evict_inode,
+    .put_super  = ext4_put_super,
+    .sync_fs    = ext4_sync_fs,
+    .freeze_fs  = ext4_freeze,
+    .unfreeze_fs    = ext4_unfreeze,
+    .statfs     = ext4_statfs,
+    .remount_fs = ext4_remount,
+    .show_options   = ext4_show_options,
+#ifdef CONFIG_QUOTA
+    .quota_read = ext4_quota_read,
+    .quota_write    = ext4_quota_write,
+#endif
+    .bdev_try_to_free_page = bdev_try_to_free_page,
+};
+</code></pre>
+<h2 id="_7">注册文件系统</h2>
+<pre><code>/**
+ *  register_filesystem - register a new filesystem
+ *  @fs: the file system structure
+ *
+ *  Adds the file system passed to the list of file systems the kernel
+ *  is aware of for mount and other syscalls. Returns 0 on success,
+ *  or a negative errno code on an error.
+ *
+ *  The &amp;struct file_system_type that is passed is linked into the kernel
+ *  structures and must not be freed until the file system has been
+ *  unregistered.
+ */
+
+int register_filesystem(struct file_system_type * fs)
+{
+    int res = 0;
+    struct file_system_type ** p;
+
+    BUG_ON(strchr(fs-&gt;name, '.'));
+    if (fs-&gt;next)
+        return -EBUSY;
+    write_lock(&amp;file_systems_lock);
+    p = find_filesystem(fs-&gt;name, strlen(fs-&gt;name));
+    if (*p)
+        res = -EBUSY;
+    else
+        *p = fs;
+    write_unlock(&amp;file_systems_lock);
+    return res;
+}
+
+EXPORT_SYMBOL(register_filesystem);
+
+
+</code></pre>
+<ul>
+<li>1 检查文件系统名称中是否包含点号，如果包含，则引发 BUG（内核错误）。</li>
+<li>2 检查文件系统类型是否已经注册，如果已经注册，则返回 -EBUSY 表示繁忙。</li>
+<li>3 初始化文件系统超级块链表。</li>
+<li>4 使用写锁锁定 file_systems_lock，以确保在多线程环境下对文件系统列表的并发安全。</li>
+<li>5 查找文件系统类型是否已经存在，如果存在，则返回 -EBUSY，否则将文件系统类型添加到文件系统列表中。</li>
+<li>6 释放写锁，完成注册。</li>
+</ul>
+<h2 id="_8">其他文件系统</h2>
 <p>tmpfs</p>
 <p>devtmpfs</p>
 <ul>

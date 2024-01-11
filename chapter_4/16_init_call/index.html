@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>概述 - Lott's Blog</title>
+    <title>第十六篇 Linux各类initcall总结 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u6982\u8ff0";
-        var mkdocs_page_input_path = "chapter_3/9_linux_send_msg.md";
+        var mkdocs_page_name = "\u7b2c\u5341\u516d\u7bc7 Linux\u5404\u7c7binitcall\u603b\u7ed3";
+        var mkdocs_page_input_path = "chapter_4/16_init_call.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -104,60 +104,78 @@
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_conntrack/">第五篇 conntrack的常见应用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/5_conntrack/">第五篇 conntrack的常见应用</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../6_tcp/">第六篇 TCP协议总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/6_tcp/">第六篇 TCP协议总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../10_linux_net/">第十篇 Linux Net子系统总结、收发包流程再次梳理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/10_linux_net/">第十篇 Linux Net子系统总结、收发包流程再次梳理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../11_igb/">第十一篇 igb网卡驱动梳理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/11_igb/">第十一篇 igb网卡驱动梳理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../12_rss_rps_rfs_xps/">第十二篇 Linux网卡rss和rps和rfs和xps</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/12_rss_rps_rfs_xps/">第十二篇 Linux网卡rss和rps和rfs和xps</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_process_ulimit/">第一篇 进程Max open files的设置</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_pid_max/">第二篇 kernel源码中pid的最大值</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/3_interrupt_one/">第三篇 硬中断</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_interrupt_one/">第三篇 硬中断</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/5_soft_irq/">第四篇 软中断</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../5_soft_irq/">第四篇 软中断</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/6_cpu_famous_register/">第六篇 CPU中的著名寄存器梳理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_cpu_famous_register/">第六篇 CPU中的著名寄存器梳理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/7_linux_signal/">第七篇 Linux信号机制</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_linux_signal/">第七篇 Linux信号机制</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/8_linux_scheduler/">第八篇 Linux进程调度</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_linux_scheduler/">第八篇 Linux进程调度</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/10_linux_context_switch/">第十篇 低视角看context switch</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_linux_context_switch/">第十篇 低视角看context switch</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/11_linux_cpu_usage/">第十一篇 CPU利用率统计</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../11_linux_cpu_usage/">第十一篇 CPU利用率统计</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/12_linux_preemption/">第十二篇 内核抢占基础篇</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_linux_preemption/">第十二篇 内核抢占基础篇</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/13_interrupt_handler_examples/">第十三篇 中断处理程序的例子</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_interrupt_handler_examples/">第十三篇 中断处理程序的例子</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/14_linux_kernel_tracing/">第十四篇 理解内核追踪机制</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../14_linux_kernel_tracing/">第十四篇 理解内核追踪机制</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/15_task_struct/">第十五篇 task_struct结构体总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../15_task_struct/">第十五篇 task_struct结构体总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/16_init_call/">第十六篇 Linux各类initcall总结</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第十六篇 Linux各类initcall总结</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">举例子</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-core_initcall">1 core_initcall</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-fs_initcall">2 fs_initcall</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-early_initcall">3 early_initcall</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-subsys_initcall">4 subsys_initcall</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#1-initcall">问题 1 各种 initcall 之间的顺序</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">参考</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
@@ -353,7 +371,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-      <li>概述</li>
+          <li>第四章 Linux CPU子系统 &raquo;</li>
+      <li>第十六篇 Linux各类initcall总结</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -363,361 +382,203 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="_1">概述</h1>
-<h2 id="_2">一 网络子系统核心描述符</h2>
 <ul>
-<li>struct msghdr</li>
-<li>struct socket VFS 层面的 socket 描述符, 有对应的 struct socket_file_ops, 用于存放对应的 read,write,poll 操作</li>
-<li>struct sock 协议层面的 socket 描述符</li>
-<li>struct proto 协议, 比如 tcp 协议. 有对应的 struct proto_ops, 可以用于存放协议对应的 accept,poll,sendmsg,recvmsg 函数</li>
-</ul>
-<h3 id="1-sk_buff">1 sk_buff 结构体</h3>
-<p>sk_buff 是 Linux 网络中最核心的结构体，它用来管理和控制接收或发送数据包的信息。
-各层协议都依赖于 sk_buff 而存在。
-<strong>内核中 sk_buff 结构体在各层协议之间传输不是用拷贝 sk_buff 结构体，而是通过增加协议头和移动指针来操作的。</strong>如果是从 L4 传输到 L2，则是通过往 sk_buff 结构体中增加该层协议头来操作；如果是从 L4 到 L2，则是通过移动 sk_buff 结构体中的 data 指针来实现，不会删除各层协议头。这样做是为了提高 CPU 的工作效率。</p>
-<h4 id="_3">详细代码</h4>
-<ul>
-<li><code>include/linux/skbuff.h</code>(sk_buff 结构定义和 sk_buff 宏)</li>
-</ul>
-<pre><code>struct sk_buff {
-    /* These two members must be first. */
-    struct sk_buff      *next;
-    struct sk_buff      *prev;
-
-    struct sock     *sk;
-    struct skb_timeval  tstamp;
-    struct net_device   *dev;
-    struct net_device   *input_dev;
-
-    union {
-        struct tcphdr   *th;
-        struct udphdr   *uh;
-        struct icmphdr  *icmph;
-        struct igmphdr  *igmph;
-        struct iphdr    *ipiph;
-        struct ipv6hdr  *ipv6h;
-        unsigned char   *raw;
-    } h;
-
-    union {
-        struct iphdr    *iph;
-        struct ipv6hdr  *ipv6h;
-        struct arphdr   *arph;
-        unsigned char   *raw;
-    } nh;
-
-    union {
-        unsigned char   *raw;
-    } mac;
-
-    struct  dst_entry   *dst;
-    struct  sec_path    *sp;
-
-    ....// 更多成员
-}
-</code></pre>
-<h3 id="2-struct-proto-tcp_prot">2 struct proto tcp_prot</h3>
-<p>在发送数据之前，我们往往还需要一个已经建立好连接的 socket。</p>
-<p>我们就以开篇服务器缩微源代码中提到的 accept 为例，当 accept 之后，进程会创建一个新的 socket 出来，然后把它放到当前进程的打开文件列表中，专门用于和对应的客户端通信。</p>
-<p>假设服务器进程通过 accept 和客户端建立了两条连接，我们来简单看一下这两条连接和进程的关联关系。</p>
-<p><img alt="png" src="../../img/2F8E69F6-03A6-4704-A9F4-7692DE382258.png" /></p>
-<p>其中代表一条连接的 socket 内核对象更为具体一点的结构图如下。</p>
-<p><img alt="png" src="../../img/661EF808-6EFF-4483-85D9-5C65C76B33AF.png" /></p>
-<p>从上面这个图得到如下结论:</p>
-<ul>
-<li>内核中不同的协议是使用<code>struct proto</code>结构体表示的, 比如 tcp 协议是使用<code>struct proto tcp_prot</code>表示.</li>
 <li>
-<ul>
-<li>按照经典的<strong>描述符</strong>+<strong>ops</strong>思想, 对应协议的操作能力是用结构体<code>struct proto_ops</code>表示, 比如 tcp 协议的一些操作是用<code>struct proto_ops inet_stream_ops</code>结构体表示.</li>
-</ul>
+<p>linux 以及嵌入式一些代码，我们看到 core_initcall、device_initcall、fs_initcall 等等需要链接器分配各个 section，并且在启动该模块时候执行。下面我们详细追溯一下执行过程。</p>
 </li>
 <li>
-<ul>
-<li><code>struct proto udp_prot = {</code> 定义在 <code>net/ipv4/udp.c:2650</code></li>
-</ul>
+<p>问题点 各种 initcall 的先后顺序是怎么样的？</p>
 </li>
-<li>
-<ul>
-<li><code>struct proto tcp_prot = {</code> 定义在 <code>net/ipv4/tcp_ipv4.c:2447</code></li>
+<li>问题点 内核是怎么实现的?</li>
 </ul>
-</li>
-<li>
-<ul>
-<li><code>struct proto {</code> 定义在 <code>include/net/sock.h:1048</code></li>
-</ul>
-</li>
-</ul>
-<h3 id="3-tcp">3 用户的 tcp 发送队列是一个链表</h3>
-<p>skb 是 struct sk_buff 对象的简称，用户的发送队列就是该对象组成的一个链表。</p>
-<p><img alt="png" src="../../img/9EA77EDB-4091-41DC-8A8A-902CA205D6C2.png" /></p>
-<h3 id="4-struct-sock">4 struct sock 讲解</h3>
-<ul>
-<li>struct socket 是在虚拟文件系统上被创建出来的，可以把它看成一个文件。</li>
-<li>struct sock 是网络层对于 socket 的表示，结构体比较庞大.</li>
-</ul>
-<h4 id="socket-sock">socket 和 sock 是同一事物的两个侧面，<a href="https://abcdxyzk.github.io/blog/2015/06/12/kernel-net-sock-socket/">为什么不把两个数据结构合并成一个呢?</a></h4>
-<ul>
-<li>这是因为 socket 是 inode 结构中的一部分，即把 inode 结 构内部的一个 union 用作 socket 结构。由于插口操作的特殊性，这个数据结构中需要有大量的结构成分，如果把这些成分全部放到 socket 结构中，则 inode 结构中的这个 union 就会变得很大，从而 inode 结构也会变得很大，而对于其他文件系统这个 union 是不需要这么大的， 所以会造成巨大浪费，系统中使用 inode 结构的数量要远远超过使用 socket 的数量，故解决的办法就是把插口分成两部分，把与文件系 统关系密切的放在 socket 结构中，把与通信关系密切的放在另一个单独结构 sock 中；</li>
-</ul>
-<pre><code>struct inode {
-    .....................
-    union {
-        struct ext2_inode_info ext2_i;
-        struct ext3_inode_info ext3_i;
-        struct socket socket_i;
-        .....................
-    } u;
-};
-
-</code></pre>
-<pre><code>struct socket
+<h2 id="_2">举例子</h2>
+<h3 id="1-core_initcall">1 core_initcall</h3>
+<p>在<code>net/socket.c</code>下</p>
+<pre><code>static int __init sock_init(void)
 {
-    socket_state state;      // 该state用来表明该socket的当前状态
-    typedef enum {
-        SS_FREE = 0,         /* not allocated */
-        SS_UNCONNECTED,      /* unconnected to any socket */
-        SS_CONNECTING,       /* in process of connecting */
-        SS_CONNECTED,        /* connected to socket */
-        SS_DISCONNECTING     /* in process of disconnecting */
-    } socket_state;
-    unsigned long flags;     //该成员可能的值如下，该标志用来设置socket是否正在忙碌
-    #define SOCK_ASYNC_NOSPACE 0
-    #define SOCK_ASYNC_WAITDATA 1
-    #define SOCK_NOSPACE 2
-    struct proto_ops *ops;   //依据协议邦定到该socket上的特定的协议族的操作函数指针，例如IPv4 TCP就是inet_stream_ops
-    struct inode *inode;     //表明该socket所属的inode
-    struct fasync_struct *fasync_list; //异步唤醒队列
-    struct file *file;       //file回指指针
-    struct sock *sk;         //sock指针
-    wait_queue_head_t wait;  //sock的等待队列，在TCP需要等待时就sleep在这个队列上
-    short type;              //表示该socket在特定协议族下的类型例如SOCK_STREAM,
-    unsigned char passcred;  //在TCP分析中无须考虑
-};
-
-</code></pre>
-<h3 id="5-linux-softnet_data">5 linux 实现软中断的重要数据结构 softnet_data</h3>
-<ul>
-<li>是用于实现软中断的重要数据结构,softnet_data 是每个 CPU 都拥有的一个数据结构.</li>
-</ul>
-<blockquote>
-<p>以下是基于 2.6.32 的源码</p>
-</blockquote>
-<pre><code>struct softnet_data
-
-{
-
-    struct Qdisc        *output_queue;  //发送帧队列
-
-    struct sk_buff_head input_pkt_queue;  //接收帧队列（入口队列）
-
-    struct list_head    poll_list; //这是一个双向链表
-
-    struct sk_buff      *completion_queue;
-
-
-
-    struct napi_struct  backlog;
-
-};
-
-</code></pre>
-<p><a href="https://developer.aliyun.com/article/11018">说明</a>：</p>
-<ol>
-<li>
-<p>可以看到发送帧队列并不是 skb 的链表，而是 Qdisc 的链表，这是因为发送一般需要 Qos 流控，所以发送帧会存入相应 dev 关联的 Qdisc 中（Qdisc 中有 skb 的队列），详见“后面链路层数据包发送”分析。</p>
-</li>
-<li>
-<p>poll_list 是一个双向链表，每一个节点是一个 napi_struct 结构，而 napi_struct 又是 net_device 的成员，所以这个链表也可以理解为一个 net_device 链表，这些 net_device 都带有输入帧等着被处理。</p>
-</li>
-<li>
-<p>input_pkt_queue 是设备驱动将数据从物理介质接收后封装成 skb 后存放的缓存队列，所有非 NAPI 设备共有这一个输入缓存队列，而 NAPI 设备有自己的私有队列用于存放输入包。</p>
-</li>
-</ol>
-<h4 id="_4">一些重要成员</h4>
-<ul>
-<li>缓冲队列(发送、接收)</li>
-</ul>
-<h2 id="_5">网卡硬中断流程</h2>
-<table>
-<thead>
-<tr>
-<th>步骤</th>
-<th>函数</th>
-<th>是否开启硬中断</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>do_IRQ()</td>
-<td>3</td>
-</tr>
-<tr>
-<td>2</td>
-<td>handle_IRQ_event()</td>
-<td>3</td>
-</tr>
-<tr>
-<td>3</td>
-<td>驱动程序提供的 rtc_interrupt</td>
-<td>3</td>
-</tr>
-<tr>
-<td>4</td>
-<td>do_softirq</td>
-<td>3</td>
-</tr>
-<tr>
-<td>5</td>
-<td>net_rx_action</td>
-<td>3</td>
-</tr>
-</tbody>
-</table>
-<h2 id="linux-net">Linux Net 子系统核心组成</h2>
-<p>1 分层模型</p>
-<p><img alt="png" src="../../img/7467AD50-A529-4B0E-88CB-0B685860CFEE.png" /></p>
-<p>2 net_device_ops 核心描述符内包含了驱动程序填充的各类函数, 包括发送、接收数据包</p>
-<p>以 <code>net/ethernet/intel/igb/igb_main.c</code>(igb 网卡驱动) 为例子, 包含了<code>open</code>,<code>close</code>,<code>xmit</code>,<code>ioctl</code> 等各种实现</p>
-<pre><code>static const struct net_device_ops igb_netdev_ops = {
-    .ndo_open       = igb_open,
-    .ndo_stop       = igb_close,
-    .ndo_start_xmit     = igb_xmit_frame,
-    .ndo_get_stats64    = igb_get_stats64,
-    .ndo_set_rx_mode    = igb_set_rx_mode,
-    .ndo_set_mac_address    = igb_set_mac,
-    .ndo_change_mtu     = igb_change_mtu,
-    .ndo_do_ioctl       = igb_ioctl,
-    .ndo_tx_timeout     = igb_tx_timeout,
-    .ndo_validate_addr  = eth_validate_addr,
-    .ndo_vlan_rx_add_vid    = igb_vlan_rx_add_vid,
-    .ndo_vlan_rx_kill_vid   = igb_vlan_rx_kill_vid,
-    .ndo_set_vf_mac     = igb_ndo_set_vf_mac,
-    .ndo_set_vf_vlan    = igb_ndo_set_vf_vlan,
-    .ndo_set_vf_rate    = igb_ndo_set_vf_bw,
-    .ndo_set_vf_spoofchk    = igb_ndo_set_vf_spoofchk,
-    .ndo_get_vf_config  = igb_ndo_get_vf_config,
-#ifdef CONFIG_NET_POLL_CONTROLLER
-    .ndo_poll_controller    = igb_netpoll,
-#endif
-    .ndo_fix_features   = igb_fix_features,
-    .ndo_set_features   = igb_set_features,
-};
-
-</code></pre>
-<p>3 软中断的处理函数<code>net_rx_action()</code> 中, 调用驱动程序注册的<code>poll函数</code>.</p>
-<p>驱动程序的<code>poll函数</code>是注册在<code>softnet_data</code>数据结构的<code>poll_list</code>里的</p>
-<p><code>igb_open</code> ---&gt; <code>__igb_open</code> ---&gt; <code>igb_request_irq</code> ---&gt; <code>igb_init_interrupt_scheme</code> ---&gt; <code>igb_alloc_q_vectors</code> ---&gt; <code>igb_alloc_q_vector</code> ---&gt; <code>netif_napi_add</code> ---&gt; <code>netif_napi_ad(adapter-&gt;netdev, &amp;q_vector-&gt;napi,igb_poll, 64);</code> 进行了 igb_poll 函数的注册.</p>
-<p>4 硬中断</p>
-<p>硬中断也是网卡驱动向内核注册的, <code>igb_request_irq()</code> 里面调用内核 API <code>request_irq()</code>函数</p>
-<pre><code>/**
- *  igb_request_irq - initialize interrupts
- *  @adapter: board private structure to initialize
- *
- *  Attempts to configure interrupts using the best available
- *  capabilities of the hardware and kernel.
- **/
-static int igb_request_irq(struct igb_adapter *adapter)
-{
-    struct net_device *netdev = adapter-&gt;netdev;
-    struct pci_dev *pdev = adapter-&gt;pdev;
-    int err = 0;
-
-    if (adapter-&gt;flags &amp; IGB_FLAG_HAS_MSIX) {
-        err = igb_request_msix(adapter);
-        if (!err)
-            goto request_done;
-        /* fall back to MSI */
-        igb_free_all_tx_resources(adapter);
-        igb_free_all_rx_resources(adapter);
-
-        igb_clear_interrupt_scheme(adapter);
-        err = igb_init_interrupt_scheme(adapter, false);
-        if (err)
-            goto request_done;
-
-        igb_setup_all_tx_resources(adapter);
-        igb_setup_all_rx_resources(adapter);
-        igb_configure(adapter);
-    }
-
-    igb_assign_vector(adapter-&gt;q_vector[0], 0);
-
-    if (adapter-&gt;flags &amp; IGB_FLAG_HAS_MSI) {
-        err = request_irq(pdev-&gt;irq, igb_intr_msi, 0,
-                  netdev-&gt;name, adapter);
-        if (!err)
-            goto request_done;
-
-        /* fall back to legacy interrupts */
-        igb_reset_interrupt_capability(adapter);
-        adapter-&gt;flags &amp;= ~IGB_FLAG_HAS_MSI;
-    }
-
-    err = request_irq(pdev-&gt;irq, igb_intr, IRQF_SHARED,
-              netdev-&gt;name, adapter);
-
+    int err;
+    /*
+     *      Initialize the network sysctl infrastructure.
+     */
+    err = net_sysctl_init();
     if (err)
-        dev_err(&amp;pdev-&gt;dev, &quot;Error %d getting interrupt\n&quot;,
-            err);
+        goto out;
 
-request_done:
+    /*
+     *      Initialize skbuff SLAB cache
+     */
+    skb_init();
+
+    /*
+     *      Initialize the protocols module.
+     */
+
+    init_inodecache();
+
+    err = register_filesystem(&amp;sock_fs_type);
+    if (err)
+        goto out_fs;
+    sock_mnt = kern_mount(&amp;sock_fs_type);
+    if (IS_ERR(sock_mnt)) {
+        err = PTR_ERR(sock_mnt);
+        goto out_mount;
+    }
+
+    /* The real protocol initialization is performed in later initcalls.
+     */
+
+#ifdef CONFIG_NETFILTER
+    err = netfilter_init();
+    if (err)
+        goto out;
+#endif
+
+    ptp_classifier_init();
+
+out:
     return err;
+
+out_mount:
+    unregister_filesystem(&amp;sock_fs_type);
+out_fs:
+    goto out;
 }
 
-
-
+core_initcall(sock_init);   /* early initcall */
 
 </code></pre>
-<p><img alt="png" src="../../img/82D78DDF-F261-48E2-8938-5483F26CAADA.png" /></p>
-<p>5 struct net 网络命名空间</p>
-<p>struct net 结构体表示的内核中的网络命名空间(net_namespace)。在 linux 内核中，每一个网络设备(struct net_device)都有一个所属的网络命名空间</p>
-<p>网络系统在初始化的时候会初始化一个初始网络命名空间，即 init_net 命名空间。后续创建的 net namespace 命名空间会和 init_net 一起通过 list 项组织起来，且每个网络设备都对应一个命名空间，同一命名空间下的网络设备通过 dev_base_head 组织在一起。组织结构如下:</p>
-<p><img alt="png" src="../../img/12FD092E-94F4-444F-98CA-44D0EE9F219A.jpeg" /></p>
-<p>struct net 内的一些重要成员：</p>
+<h3 id="2-fs_initcall">2 fs_initcall</h3>
 <ul>
-<li><code>struct net_device *loopback_dev;</code></li>
+<li>在 <code>/linux-3.16.51/fs/anon_inodes.c</code>下</li>
 </ul>
-<p>6 struct net_device 网络设备</p>
-<ul>
-<li><a href="https://blog.csdn.net/viewsky11/article/details/53046787">在 linux 中使用 struct net_device 结构体来描述每一个网络设备。同时这个用来刻画网络设备的 struct net_device 结构体包含的字段非常的多，以至于内核的开发者都觉得在现在的 linux 内核中，这个 struct net_device 是一个大的错误。</a></li>
-<li>
-<ul>
-<li>并且注册 net_device(<code>register_netdev(struct net_device *dev)</code>)是注册到一个链表中</li>
-</ul>
-</li>
-<li>
-<p><a href="https://www.oreilly.com/library/view/linux-device-drivers/0596000081/ch14s03.html"><strong>struct net_device</strong> can be conceptually divided into two parts: visible and invisible.</a> net_device 结构体(有众多成员，总体来说成员)可以分为两个部分： 可见和不可见.</p>
-</li>
-</ul>
-<h3 id="ptype_base-ptype_all">ptype_base 和 ptype_all</h3>
-<ul>
-<li>ptype_base 为一个 hash 表,而 ptype_all 为一个双向链表.每一个里面注册的协议都用一个 struct packet_type 表示. packet_type 数据结构包含协议类型、指向网络设备的指针、指向协议的接收数据处理例程的指针, 如下：</li>
-</ul>
-<pre><code>struct packet_type
+<pre><code>
+static int __init anon_inode_init(void)
 {
-    unsigned short        type;    /*协议类型*/
-    struct net_device     *dev;
-    int            (*func) (struct sk_buff *, struct net_device *,
-                     struct packet_type *);
-    void            *data;    /* Private to the packet type        */
-    struct packet_type    *next;
-};
+    anon_inode_mnt = kern_mount(&amp;anon_inode_fs_type);
+    if (IS_ERR(anon_inode_mnt))
+        panic(&quot;anon_inode_init() kernel mount failed (%ld)\n&quot;, PTR_ERR(anon_inode_mnt));
+
+    anon_inode_inode = alloc_anon_inode(anon_inode_mnt-&gt;mnt_sb);
+    if (IS_ERR(anon_inode_inode))
+        panic(&quot;anon_inode_init() inode allocation failed (%ld)\n&quot;, PTR_ERR(anon_inode_inode));
+
+    return 0;
+}
+
+fs_initcall(anon_inode_init);
 
 </code></pre>
+<h3 id="3-early_initcall">3 early_initcall</h3>
+<pre><code>//file: kernel/softirq.c
+
+static struct smp_hotplug_thread softirq_threads = {
+
+    .store          = &amp;ksoftirqd,
+    .thread_should_run  = ksoftirqd_should_run,
+    .thread_fn      = run_ksoftirqd,
+    .thread_comm        = &quot;ksoftirqd/%u&quot;,};
+static __init int spawn_ksoftirqd(void){
+    register_cpu_notifier(&amp;cpu_nfb);
+
+    BUG_ON(smpboot_register_percpu_thread(&amp;softirq_threads));
+    return 0;
+
+}
+
+early_initcall(spawn_ksoftirqd);
+
+</code></pre>
+<h3 id="4-subsys_initcall">4 subsys_initcall</h3>
+<pre><code>//file: net/core/dev.c
+
+static int __init net_dev_init(void){
+
+    ......
+
+    for_each_possible_cpu(i) {
+        struct softnet_data *sd = &amp;per_cpu(softnet_data, i);
+
+        memset(sd, 0, sizeof(*sd));
+        skb_queue_head_init(&amp;sd-&gt;input_pkt_queue);
+        skb_queue_head_init(&amp;sd-&gt;process_queue);
+        sd-&gt;completion_queue = NULL;
+        INIT_LIST_HEAD(&amp;sd-&gt;poll_list);
+        ......
+    }
+    ......
+    open_softirq(NET_TX_SOFTIRQ, net_tx_action);
+    open_softirq(NET_RX_SOFTIRQ, net_rx_action);
+
+}
+
+subsys_initcall(net_dev_init);
+
+</code></pre>
+<h2 id="1-initcall">问题 1 各种 initcall 之间的顺序</h2>
 <ul>
-<li>
-<p>func 是该结构体主要成员，指向网络层的一个函数。如果分组的类型适当，就将其传给对应的处理函数，其中 ip 包的处理函数就是<code>ip_recv</code>.</p>
-</li>
-<li>
-<p><code>netif_receive_skb()</code>函数，遍历<code>ptype_all</code>链表，找到合适的<code>packet_type</code>, 然后调用其<code>func</code>指针指向的处理函数(比如<code>ip_recv()</code>)</p>
-</li>
+<li>源码路径: <code>include/linux/init.h</code></li>
 </ul>
-<h2 id="_6">参考文档</h2>
-<p><a href="https://mp.weixin.qq.com/s/wThfD9th9e_-YGHJJ3HXNQ">一万字，拆解 Linux 网络包发送过程</a></p>
-<p><a href="https://mp.weixin.qq.com/s/GoYDsfy9m0wRoXi_NCfCmg">图解 Linux 网络包接收过程</a></p>
+<pre><code>
+/* initcalls are now grouped by functionality into separate
+ * subsections. Ordering inside the subsections is determined
+ * by link order.
+ * For backwards compatibility, initcall() puts the call in
+ * the device init subsection.
+ *
+ * The `id' arg to __define_initcall() is needed so that multiple initcalls
+ * can point at the same handler without causing duplicate-symbol build errors.
+ */
+
+#define __define_initcall(fn, id) \
+    static initcall_t __initcall_##fn##id __used \
+    __attribute__((__section__(&quot;.initcall&quot; #id &quot;.init&quot;))) = fn; \
+    LTO_REFERENCE_INITCALL(__initcall_##fn##id)
+
+/*
+ * Early initcalls run before initializing SMP.
+ *
+ * Only for built-in code, not modules.
+ */
+#define early_initcall(fn)      __define_initcall(fn, early)
+
+/*
+ * A &quot;pure&quot; initcall has no dependencies on anything else, and purely
+ * initializes variables that couldn't be statically initialized.
+ *
+ * This only exists for built-in code, not for modules.
+ * Keep main.c:initcall_level_names[] in sync.
+ */
+#define pure_initcall(fn)       __define_initcall(fn, 0)
+
+#define core_initcall(fn)       __define_initcall(fn, 1)
+#define core_initcall_sync(fn)      __define_initcall(fn, 1s)
+#define postcore_initcall(fn)       __define_initcall(fn, 2)
+#define postcore_initcall_sync(fn)  __define_initcall(fn, 2s)
+#define arch_initcall(fn)       __define_initcall(fn, 3)
+#define arch_initcall_sync(fn)      __define_initcall(fn, 3s)
+#define subsys_initcall(fn)     __define_initcall(fn, 4)
+#define subsys_initcall_sync(fn)    __define_initcall(fn, 4s)
+#define fs_initcall(fn)         __define_initcall(fn, 5)
+#define fs_initcall_sync(fn)        __define_initcall(fn, 5s)
+#define rootfs_initcall(fn)     __define_initcall(fn, rootfs)
+#define device_initcall(fn)     __define_initcall(fn, 6)
+#define device_initcall_sync(fn)    __define_initcall(fn, 6s)
+#define late_initcall(fn)       __define_initcall(fn, 7)
+#define late_initcall_sync(fn)      __define_initcall(fn, 7s)
+
+</code></pre>
+<p>虽然不完全懂，但是大致上明白先后顺序: <code>early_initcall &gt; pure_initcall &gt; core_initcall &gt; fs_initcall &gt; device_initcall</code></p>
+<h2 id="_3">参考</h2>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/tzfSSO70mQYaOVWYRVvMnQ">linux 内核 initcall 放置在各个 section 中函数执行流程</a></li>
+</ul>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../15_task_struct/" class="btn btn-neutral float-left" title="第十五篇 task_struct结构体总结"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_5/1_four_object_of_VFS/" class="btn btn-neutral float-right" title="第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -739,6 +600,10 @@ request_done:
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
+      <span><a href="../15_task_struct/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../../chapter_5/1_four_object_of_VFS/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
