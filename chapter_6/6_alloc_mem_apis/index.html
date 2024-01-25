@@ -168,7 +168,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 I/O调度层总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 Block IO Layer总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
                   </li>
@@ -188,8 +188,6 @@
                   <li class="toctree-l1"><a class="reference internal" href="../3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../4_linux_mem_theory/">第四篇 Linux内存管理基础篇</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第六篇 Linux内核内存分配API函数分类</a>
     <ul class="current">
@@ -212,6 +210,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../8_linux_mm_update/">第八篇 Linux内存管理升级篇</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_page_cache_and_buffer_cache/">第九篇 PageCache和BufferCache演进过程</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -412,7 +412,7 @@
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../5_buffers_cached/" class="btn btn-neutral float-left" title="第五篇 Free命令中buffers和cached区别"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../4_linux_mem_theory/" class="btn btn-neutral float-left" title="第四篇 Linux内存管理基础篇"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../7_physical_memory/" class="btn btn-neutral float-right" title="第七篇 关于物理内存管理">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -436,7 +436,7 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../5_buffers_cached/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../4_linux_mem_theory/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../7_physical_memory/" style="color: #fcfcfc">Next &raquo;</a></span>

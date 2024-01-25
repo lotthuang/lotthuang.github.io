@@ -183,19 +183,21 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_5">六 详细版调度过程</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#1-rq">1 核心数据结构 rq</a>
+    <li class="toctree-l3"><a class="reference internal" href="#1_2">1 核心数据结构</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#11-rq">1.1 rq</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#12">1.2 调度器类</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#2_2">2 调度器类是什么</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#3-scheduler_tick">3 周期性调度器函数（scheduler_tick 函数）</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#4-schedule">4 调度器入口函数（schedule()函数）</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#41-__schedule">4.1 主调度函数（__schedule()函数）</a>
+    <li class="toctree-l3"><a class="reference internal" href="#4-__schedule">4 主调度函数（__schedule()函数）</a>
     </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#5">5 上下文切换</a>
+    <li class="toctree-l3"><a class="reference internal" href="#5-context-switch">5 上下文切换（context switch）</a>
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#51">5.1 切哪些内容</a>
     </li>
@@ -230,7 +232,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 I/O调度层总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 Block IO Layer总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
                   </li>
@@ -251,13 +253,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理基础篇</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/6_alloc_mem_apis/">第六篇 Linux内核内存分配API函数分类</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理升级篇</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/9_page_cache_and_buffer_cache/">第九篇 PageCache和BufferCache演进过程</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -642,7 +644,11 @@ void schedule(void) {
 <li>CPU 周期性 load_balance：pull，在软中断进行。</li>
 </ol>
 <h2 id="_5">六 详细版调度过程</h2>
-<h3 id="1-rq">1 核心数据结构 rq</h3>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/UwwYNfq6-_cA20xGTGuYHw">Linux 进程调度：调度过程</a></li>
+</ul>
+<h3 id="1_2">1 核心数据结构</h3>
+<h4 id="11-rq">1.1 rq</h4>
 <p>内核为每个 cpu 维护一个运行队列，称为 per-cpu runqueue 或 per-cpu rq，数据结构的主要成员如下所示：</p>
 <pre><code>
 // kernel/sched/sched.h -- rq
@@ -689,6 +695,10 @@ stop：指向stop进程的task_struct实例；
 int cpu = smp_processor_id();
 struct rq *rq = cpu_rq(cpu);
 </code></pre>
+<ul>
+<li><img alt="png" src="../../img/WechatIMG588.jpg" /></li>
+</ul>
+<h4 id="12">1.2 调度器类</h4>
 <h3 id="2_2">2 调度器类是什么</h3>
 <ul>
 <li>
@@ -776,9 +786,8 @@ void scheduler_tick(void)
   u64 resched_latency;
 
 </code></pre>
-<h3 id="4-schedule">4 调度器入口函数（schedule()函数）</h3>
-<h4 id="41-__schedule">4.1 主调度函数（<code>__schedule()</code>函数）</h4>
-<h3 id="5">5 上下文切换</h3>
+<h3 id="4-__schedule">4 主调度函数（<code>__schedule()</code>函数）</h3>
+<h3 id="5-context-switch">5 上下文切换（context switch）</h3>
 <h4 id="51">5.1 切哪些内容</h4>
 <ul>
 <li>默认不同进程间，需要切换：</li>

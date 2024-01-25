@@ -168,7 +168,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 I/O调度层总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 Block IO Layer总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
                   </li>
@@ -189,13 +189,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理基础篇</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/6_alloc_mem_apis/">第六篇 Linux内核内存分配API函数分类</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理升级篇</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/9_page_cache_and_buffer_cache/">第九篇 PageCache和BufferCache演进过程</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -613,11 +613,12 @@
 </ul>
 <p><img alt="png" src="../../img/WX20230515-094400222.png" /></p>
 <ul>
-<li>通过<strong>多个寄存器</strong>来<strong>调节一个<code>IO口</code>作用</strong>, 一个<code>IO口</code>对应一个<code>引脚</code>, 每个<code>引脚</code>可以连接一个<code>外设</code>。I.MX6U 最多 124 个 IO 口.</li>
+<li>通过<strong>多个寄存器</strong>来<strong>调节一个<code>IO口</code>作用</strong>, 一个<code>IO口</code>对应一个<code>引脚</code>, 每个<code>引脚</code>可以连接一个<code>外设</code>。I.MX6U 最多 124 个 IO 口（这里 I.MX6U 包含 I.MX6UL 和 I.MX6ULL）.</li>
 </ul>
 <p><img alt="png" src="../../img/9FA4E058-820D-4A7F-A5B6-0D2222FF1569.png" /></p>
 <ul>
-<li>上面这张图应该理解为 <code>IO 结构图</code>，而非<code>GPIO结构图</code></li>
+<li>上面这张图应该理解为 <code>IO 结构图</code>，而非<code>GPIO结构图</code>
+  <img alt="png" src="../../img/558EA842-5184-490D-B78F-B0E49AC53C30.png" /></li>
 <li>并且从上图可知，一个<strong>IO 口</strong>作为核心模型, 一个<strong>IO 口</strong>的配置分为多个部分，至少包含<strong>IOMUXC</strong>部分（可以理解为 IOMUX Config）和<strong>GPIO</strong>部分</li>
 </ul>
 <h4 id="2-gpio">2 怎么找到对应 GPIO 的物理地址?</h4>
@@ -636,7 +637,7 @@
 <h4 id="3-imx6ull-">3 更多 I.MX6ULL 硬件知识 ---- 更多寄存器</h4>
 <ul>
 <li>
-<p><code>SW_MUX_CTL_PAD**</code> 和 <code>SW_PAD_CTL_PAD**</code>两种寄存器用来设置 IO 的复用功能和 IO 属性 配置, 也就是我们通过设置上面这两种寄存器的不同值之后, 终于将某个 IO 口设置为了 GPIO 功能. 现在我们要接着来配置 GPIO 特有的寄存器了.</p>
+<p><code>IOMUXC_SW_MUX_CTL_PAD**</code> 和 <code>IOMUXC_SW_PAD_CTL_PAD**</code>两种寄存器用来设置 IO 的复用功能和 IO 属性 配置, 也就是我们通过设置上面这两种寄存器的不同值之后, 终于将某个 IO 口设置为了 GPIO 功能. 现在我们要接着来配置 GPIO 特有的寄存器了.</p>
 </li>
 <li>
 <p>当 IO 用作 GPIO 的时候需要设置的寄存器，一共有八个: DR、GDIR、PSR、ICR1、ICR2、EDGE_SEL、IMR 和 ISR。前面我们说了 I.MX6U 一共有 GPIO1~GPIO5 共五组 GPIO，每组 GPIO 都有这 8 个寄存器。</p>

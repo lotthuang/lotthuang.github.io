@@ -70,13 +70,37 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#nftables">nftables 的表管理</a>
+    <li class="toctree-l2"><a class="reference internal" href="#nftables">三 nftables 的表管理</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#nftables-chain">nftables chain 支持钩子的类型</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_4">二 参考文档</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">四 参考文档</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iptables">五 Iptables 回顾</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 架构图</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#11-4-5">1.1 核心模型 4 表 5 链</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#1-packet">1 Packet 流转架构图</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-iptables">2 基础 iptables 规则应用</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#21-iptables-80-8080">2.1 配置 iptables,把 80 端口转到 8080</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#22-limit">2.2 limit 状态</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-ipset">3 ipset</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-raw">4 raw 表</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -186,7 +210,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 I/O调度层总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 Block IO Layer总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
                   </li>
@@ -207,13 +231,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理基础篇</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/6_alloc_mem_apis/">第六篇 Linux内核内存分配API函数分类</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理升级篇</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/9_page_cache_and_buffer_cache/">第九篇 PageCache和BufferCache演进过程</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -384,7 +408,12 @@
                 <h1 id="_1">概述</h1>
 <ul>
 <li>本篇总结 nftables 的使用</li>
+<li><strong>nftables</strong>相比<strong>iptables</strong>有哪些优势?</li>
 </ul>
+<pre><code>nftables 拥有一些高级的类似编程语言的能力，例如：定义变量和包含外部文件，即拥有使用额外脚本的能力。nftables 也可以用于多种地址簇的过滤和处理。
+
+不同于 iptables, nftables 并不包含任何的内置表，需要哪些表并在这些表中添加什么处理规则一切由管理员决定。
+</code></pre>
 <h2 id="_2">一 启动和停止</h2>
 <ul>
 <li>使用 systemctl 进行管理</li>
@@ -429,10 +458,9 @@ table inet filter {
         type filter hook input priority 0;
                 tcp dport { 32200,80,443 } accept #放行22 80 443端口
                 iifname lo accept #允许本地环回
-                icmp type echo-request counter accept #禁ping ipv4
-                icmpv6 type echo-request accept #禁ping ipv6
-                icmpv6 type { nd-neighbor-solicit,nd-neighbor-advert,nd-router-solicit,nd-router-advert } accept # 放行ipv6邻居发现等 (对于不开启nftables能正常ping通外部网络 而当开启了nftables则无法使用ipv6时 这很重要！)
-
+                icmp type echo-request counter accept #允许ping ipv4
+                icmpv6 type echo-request accept #允许ping ipv6
+                icmpv6 type { nd-neighbor-solicit,nd-neighbor-advert,nd-router-solicit,nd-router-advert } accept # 放行ipv6邻居发现等
                 ct state related,established accept # 放行已建立的或相关的连接
                 counter drop # 拒绝上述规则以外的入站请求
     }
@@ -445,7 +473,7 @@ table inet filter {
 }
 
 </code></pre>
-<h2 id="nftables">nftables 的表管理</h2>
+<h2 id="nftables">三 nftables 的表管理</h2>
 <p>与 iptables 中的表不同，nftables 中没有内置表。表的数量和名称由用户决定。但是，每个表只有一个地址簇，并且只适用于该簇的数据包。nftables 表可以指定为以下五个簇中的一个：</p>
 <table>
 <thead>
@@ -619,12 +647,84 @@ table inet filter {
 </ul>
 </li>
 </ul>
-<h2 id="_4">二 参考文档</h2>
+<h2 id="_4">四 参考文档</h2>
 <ul>
 <li><a href="https://cimen.club/614.html">Debian 11 上的 nftables 防火墙 简单配置</a></li>
 <li><a href="https://sys-blog.net/nftables/">防火墙软件 iptables 后继软件 nftables 的基本操作</a></li>
 <li><a href="https://www.hi-linux.com/posts/29206.html">nftables 简明教程</a></li>
 </ul>
+<h2 id="iptables">五 Iptables 回顾</h2>
+<ul>
+<li>
+<p>Iptables is used to set up, maintain, and inspect the tables of IPv4 packet filter rules in the Linux kernel. Several different tables may be defined. Each table contains a number of built-in chains and may also contain user-defined chains.</p>
+</li>
+<li>
+<p>Each chain is a list of rules which can match a set of packets. Each rule specifies what to do with a packet that matches. This is called a `target', which may be a jump to a user-defined chain in the same table.</p>
+</li>
+<li>
+<p>官方文档： http://ipset.netfilter.org/iptables.man.html#index</p>
+</li>
+</ul>
+<h3 id="1">1 架构图</h3>
+<p><img alt="png" src="../../img/WechatIMG597.jpg" /></p>
+<p><img alt="png" src="../../img/WechatIMG598.jpg" /></p>
+<h4 id="11-4-5">1.1 核心模型 4 表 5 链</h4>
+<ul>
+<li>
+<p>4 表：具体是 Filter 表、NAT 表、Managle 表、Raw 表</p>
+</li>
+<li>
+<p>5 链（chain）： INPUT、OUTPUT、FORWARD、PREROUTING、POSTROUTING</p>
+</li>
+</ul>
+<h3 id="1-packet">1 Packet 流转架构图</h3>
+<p><img alt="png" src="../../img/WechatIMG594.jpg" /></p>
+<p><img alt="png" src="../../img/WechatIMG595.jpg" />
+<img alt="png" src="../../img/WechatIMG596.jpg" /></p>
+<h3 id="2-iptables">2 基础 iptables 规则应用</h3>
+<h4 id="21-iptables-80-8080">2.1 配置 iptables,把 80 端口转到 8080</h4>
+<pre><code>iptables -t nat -A PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
+
+</code></pre>
+<h4 id="22-limit">2.2 limit 状态</h4>
+<pre><code># Firewall configuration written by system-config-firewall
+# Manual customization of this file is not recommended.
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:limit - [0:0] ###新增一条链，默认规则是-
+# base rules
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m state --state NEW -j DROP #新增一条防护措施
+# for ssh
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 34020 -j ACCEPT
+-A INPUT -j limit ##除了上面这条,ssh端口开放之外，其他端口一律到limit里面去，
+###
+-A limit -m state --state NEW -m tcp -p tcp --dport 8000 -j RETURN
+###
+#base end rules
+-A limit -j DROP ##limit链路最后的一条规则是DROP,也就是一个数据包在limit链路中一条一条规则匹配，直到最后会被DROP，中间可以RETURN
+-A INPUT -j ACCEPT ##RETURN回来之后，会被ACCEPT
+
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+COMMIT
+</code></pre>
+<h3 id="3-ipset">3 ipset</h3>
+<p>ipset 是 iptables 里面 ip 集合的概念，在功能不必的情况下节省 iptables 规则数量，避免配置多个规则.</p>
+<h3 id="4-raw">4 raw 表</h3>
+<ul>
+<li><code>-t raw</code> 会加载 iptable_raw 模块（kernel 2.6+ 都有）</li>
+<li>raw 表基本就干一件事: <strong>通过<code>-j NOTRACK</code>给不需要被连接跟踪的包打标记（UNTRACKED 状态），告诉 nf_conntrack 不要跟踪连接</strong></li>
+<li>raw 表的优先级大于 filter，mangle，nat，包含 PREROUTING（针对进入本机的包） 和 OUTPUT（针对从本机出去的包） 链</li>
+<li>举例子</li>
+</ul>
+<pre><code># 不跟踪特定访问量大的端口
+iptables -t raw -A PREROUTING -p tcp -m multiport --dports 80:82,443 -j NOTRACK
+iptables -t raw -A OUTPUT -p tcp -m multiport --sports 80:82,443 -j NOTRACK
+</code></pre>
               
             </div>
           </div><footer>

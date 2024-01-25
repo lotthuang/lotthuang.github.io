@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第五篇 Free命令中buffers和cached区别 - Lott's Blog</title>
+    <title>概述 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u4e94\u7bc7 Free\u547d\u4ee4\u4e2dbuffers\u548ccached\u533a\u522b";
+        var mkdocs_page_name = "\u6982\u8ff0";
         var mkdocs_page_input_path = "chapter_6/5_buffers_cached.md";
         var mkdocs_page_url = null;
       </script>
@@ -168,7 +168,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 I/O调度层总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 Block IO Layer总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
                   </li>
@@ -180,7 +180,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../1_linux_buddy/">第一篇 伙伴系统介绍</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../2_slab/">第二篇 Slab层介绍</a>
@@ -189,15 +189,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../4_linux_mem_theory/">第四篇 Linux内存管理基础篇</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第五篇 Free命令中buffers和cached区别</a>
-    <ul class="current">
-    </ul>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../6_alloc_mem_apis/">第六篇 Linux内核内存分配API函数分类</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../8_linux_mm_update/">第八篇 Linux内存管理升级篇</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_page_cache_and_buffer_cache/">第九篇 PageCache和BufferCache演进过程</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -355,8 +353,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>第六章 Linux Mem子系统 &raquo;</li>
-      <li>第五篇 Free命令中buffers和cached区别</li>
+      <li>概述</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -380,6 +377,8 @@ Swap:      2031612
 <li><code>buffers</code> 表示块设备(block device)所占用的缓存页，包括：直接读写块设备、以及文件系统元数据(metadata)比如SuperBlock所使用的缓存页；</li>
 <li><code>cached</code> 表示普通文件数据所占用的缓存页, 也就是<code>Page Cache</code>.</li>
 </ul>
+<p>这里稍微多说一点buffers 和cached。Linux 2.4.10 内核之前，磁盘的缓存有两种，即 Buffer Cache和 Page Cache。前者缓存管理磁盘文件系统时读取的块，后者存放访问具体文件内容时生成的页。在 2.4.10 之后，Buffer Cache这个概念就不存在了，这些数据被放在Page Cache中（这种 Page 被称为 Buffer Pages）。</p>
+<p>简而言之，现在磁盘的 cache 只有 Page Cache 一种，在Page Cache 中，有一种Page叫Buffer Page ，这种Page都与一个叫buffer_head的数据结构关联，这些页也就在内存统计中用buffers这个指标来单独统计了。</p>
 <h2 id="buffers22">buffers主要有2个用户（2种使用场景）：</h2>
 <ol>
 <li>应用直接访问裸分区 (即使是Direct IO ，仍然绕不开的buffers和块IO层)</li>
@@ -405,10 +404,6 @@ Shmem:              5312 kB
               
             </div>
           </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../4_linux_mem_theory/" class="btn btn-neutral float-left" title="第四篇 Linux内存管理基础篇"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../6_alloc_mem_apis/" class="btn btn-neutral float-right" title="第六篇 Linux内核内存分配API函数分类">Next <span class="icon icon-circle-arrow-right"></span></a>
-    </div>
 
   <hr/>
 
@@ -430,10 +425,6 @@ Shmem:              5312 kB
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../4_linux_mem_theory/" style="color: #fcfcfc">&laquo; Previous</a></span>
-    
-    
-      <span><a href="../6_alloc_mem_apis/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

@@ -168,7 +168,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 I/O调度层总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 Block IO Layer总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
                   </li>
@@ -189,13 +189,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理基础篇</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/5_buffers_cached/">第五篇 Free命令中buffers和cached区别</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/6_alloc_mem_apis/">第六篇 Linux内核内存分配API函数分类</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理升级篇</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/9_page_cache_and_buffer_cache/">第九篇 PageCache和BufferCache演进过程</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
@@ -346,6 +346,8 @@
     <li class="toctree-l4"><a class="reference internal" href="#21">2.1 屏蔽底层细节</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#22">2.2 元素外包装, 方便扩展</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#23-3">2.3 内核的实现经常是分上中下 3 层</a>
     </li>
         </ul>
     </li>
@@ -674,6 +676,10 @@ void local_irq_enable(void);
 <h4 id="22">2.2 元素外包装, 方便扩展</h4>
 <ul>
 <li>Linux 内核不同子系统之间总是留有一层扩展性，比如 <code>wait_queue</code>等待队列里的元素是<code>wait_queue_t</code> ,代表等待实体, 但其实大部分场景下等待实体都是进程<code>task_struct</code>. 比如调度器调度的也是调度实体，其实大部分场景调度实体都是<code>task_struct</code>.</li>
+</ul>
+<h4 id="23-3">2.3 内核的实现经常是分上中下 3 层</h4>
+<ul>
+<li>然后给一些数据结构让实现者填充</li>
 </ul>
 <h3 id="4">4 链表和数组的区别</h3>
 <ul>
