@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第二篇 Linux下如何观察完整连接队列的情况 - Lott's Blog</title>
+    <title>第九篇 云原生监控 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u4e8c\u7bc7 Linux\u4e0b\u5982\u4f55\u89c2\u5bdf\u5b8c\u6574\u8fde\u63a5\u961f\u5217\u7684\u60c5\u51b5";
-        var mkdocs_page_input_path = "chapter_3/2_estab_queue_monitoring.md";
+        var mkdocs_page_name = "\u7b2c\u4e5d\u7bc7 \u4e91\u539f\u751f\u76d1\u63a7";
+        var mkdocs_page_input_path = "chapter_10/9_cloudnative_monitor.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -103,36 +103,28 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第二篇 Linux下如何观察完整连接队列的情况</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#listen">(一) LISTEN状态</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#listen_1">(二) 非LISTEN状态</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_1">(三) 总结</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_conntrack/">第五篇 conntrack的常见应用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/5_conntrack/">第五篇 conntrack的常见应用</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../6_tcp/">第六篇 TCP协议总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/6_tcp/">第六篇 TCP协议总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../10_linux_net/">第十篇 Linux Net子系统总结、收发包流程再次梳理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/10_linux_net/">第十篇 Linux Net子系统总结、收发包流程再次梳理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../11_igb/">第十一篇 igb网卡驱动梳理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/11_igb/">第十一篇 igb网卡驱动梳理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../12_rss_rps_rfs_xps/">第十二篇 Linux网卡rss和rps和rfs和xps</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/12_rss_rps_rfs_xps/">第十二篇 Linux网卡rss和rps和rfs和xps</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
@@ -268,24 +260,24 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/2_benefits_of_containerization/">第二篇 容器化好处</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_benefits_of_containerization/">第二篇 容器化好处</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/3_docker_basic_concepts/">第三篇 容器化基础概念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_docker_basic_concepts/">第三篇 容器化基础概念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/5_kubernetes_monitor/">第五篇 Kubernetes监控</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../5_kubernetes_monitor/">第五篇 Kubernetes监控</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/9_cloudnative_monitor/">第九篇 云原生监控</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第九篇 云原生监控</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -363,8 +355,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>第三章 Linux Net子系统 &raquo;</li>
-      <li>第二篇 Linux下如何观察完整连接队列的情况</li>
+          <li>第十章 容器化和Kubernetes &raquo;</li>
+      <li>第九篇 云原生监控</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -373,60 +365,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h2 id="socketestab-queue">一 观察某个socket的完整连接队列(ESTAB Queue)的最大值和当前值</h2>
-<h3 id="listen">(一) LISTEN状态</h3>
-<p>通过ss命令，观察处于listen状态的socket，得知某个具体的socket的完整连接队列的最大长度和当前长度。</p>
-<pre><code>ss -ltnp
-</code></pre>
-<p>LISTEN 状态:
-<font color="#dd0000">Send-Q表示完整连接队列(ESTAB Queue)的最大值，就是之前提到过的min(backlog, somaxconn) 的值。</font><br /></p>
-<p>Recv-Q表示目前该队列中,等待应用层调用accept()连接的数量</p>
-<p><img alt="3_1_rece-q.jpeg" src="../../img/3_1_rece-q.jpeg" /></p>
-<h3 id="listen_1">(二) 非LISTEN状态</h3>
-<pre><code>ss -ntp  -4  state established
-</code></pre>
-<p>Recv-Q 表示网络接收队列: 表示收到的数据已经在本地接收缓冲，但是还有多少没有被进程取走，recv().</p>
-<p>Send-Q 表示网络发送队列: 对方没有收到的数据或者说没有Ack的,还是本地缓冲区.</p>
-<p><img alt="3_2_ss_eastab.jpeg" src="../../img/3_2_ss_eastab.jpeg" /></p>
-<h3 id="_1">(三) 总结</h3>
-<ol>
-<li>通过上述描述，如果一个socket（比如一个python应用监听的socket），它的Recv-Q一直等于Send-Q，那么说明该应用已经处理不过来客户端请求了。</li>
-</ol>
-<blockquote>
-<p>至今没有见到过非LISTEN状态下,Recv-Q和Send-Q非0的情况</p>
-</blockquote>
-<h2 id="linux">二 观察Linux服务器是否丢掉用户请求</h2>
-<h3 id="tcplistenoverflows">(一) TcpListenOverflows</h3>
-<p>当应用程序已经处理不过来，并且相应的ESTAB Queue也已经满时，Linux内存中会进行相应记录，
-可以通过/proc/net/netstat文件获取。</p>
-<p>当ESTAB Queue满时，客户端新的连接不能被建立，服务端通过net.ipv4.tcp_abort_on_overflow 参数的设置，决定
-是否给客户端发送响应:</p>
-<p>当net.ipv4.tcp_abort_on_overflow = 0时，直接丢弃该ACK包，客户端的socket会向应用层返回 read timeout。</p>
-<p>当net.ipv4.tcp_abort_on_overflow = 1时，服务端会发生RST包，客户端的socket会向应用层返回connection reset by peer。</p>
-<h3 id="tcplistendrops">(二) TcpListenDrops</h3>
-<p>包含上面ESTAB Queue满的情况，也就是说当出现ListenOverflows时，它也会增加1；</p>
-<p>除此之外，当内存不够无法为新的连接分配socket相关的数据结构时，也会增加1，当然还有别的异常情况下会增加1。</p>
-<h3 id="_2">(三) 总结</h3>
-<pre><code>cat /proc/net/netstat | awk '/TcpExt/ { print $21,$22 }'
-</code></pre>
-<p><img alt="tcplistenoverflows" src="../../img/tcplistenoverflows.jpeg" /></p>
-<p>通过以上命令,不断观察，如果数值一直增加，说明当前系统已经出现丢弃用户请求的情况了.</p>
-<h4 id="_3">实战技巧</h4>
-<p>通过如下命令观察系统是否有丢弃用户请求的情况</p>
-<pre><code class="language-shell">for h in `seq 1 100`; do cat /proc/net/netstat | awk '/TcpExt/ { print $21,$22 }'  ; sleep 2 ; done
-</code></pre>
-<p><img alt="WX20190820-160910_1.png" src="../../img/WX20190820-160910_1.png" /></p>
-<p>通过如下命令确认是哪些应用层的进程的accept队列有溢出</p>
-<pre><code class="language-shell">ss -lntp  |grep -v 'Recv-Q' |awk '$2 !=0’
-
-</code></pre>
-<p><img alt="WX20190820-160748_2.png" src="../../img/WX20190820-160748_2.png" /></p>
+                
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../1_linux_kernel_net/" class="btn btn-neutral float-left" title="第一篇 Linux数据包接收路径梳理和常用调优技能"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../3_net_ipv4_tcp_syn_retries/" class="btn btn-neutral float-right" title="第三篇 理解net.ipv4.tcp_syn_retries设置">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../8_caclio/" class="btn btn-neutral float-left" title="第八篇 Kubernetes网络插件之Caclio"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_11/1_theory/" class="btn btn-neutral float-right" title="第一篇 稳定性概论">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -449,10 +394,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../1_linux_kernel_net/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../8_caclio/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../3_net_ipv4_tcp_syn_retries/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../chapter_11/1_theory/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

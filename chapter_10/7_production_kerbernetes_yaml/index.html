@@ -263,9 +263,9 @@
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../2_benefits_of_containerization/">第二篇 容器化的好处</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_benefits_of_containerization/">第二篇 容器化好处</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../3_docker_basic_concepts/">第三篇 一些基础概念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_docker_basic_concepts/">第三篇 容器化基础概念</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
                   </li>
@@ -284,10 +284,20 @@
     <li class="toctree-l2"><a class="reference internal" href="#_2">参考文档</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#docker-vke-0-1-app">基于 docker 和 vke 从 0 到 1 部署生产环境 APP</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-docker-image">1 docker image 上传</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-service">2 Service</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-service">3 使用 Service 实现简单的灰度发布和蓝绿发布</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_cloudnative_monitor/">第九篇 云原生监控</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -386,6 +396,47 @@
 <li><a href="https://codefresh.io/learn/software-deployment/kubernetes-deployment-yaml/">Kubernetes Deployment YAML: Learn by Example</a></li>
 </ul>
 <h2 id="docker-vke-0-1-app">基于 docker 和 vke 从 0 到 1 部署生产环境 APP</h2>
+<h3 id="1-docker-image">1 docker image 上传</h3>
+<pre><code>登录 Registry
+1、docker login --username=YOURNAME 远程ip:端口
+
+上传镜像
+1、docker login --username=YOURNAME 远程ip:端口
+2、docker tag [ImageId] 远程ip:端口/${namespace}/helloapp:[镜像版本号]
+3、docker push 远程ip:端口/${namespace}/helloapp:[镜像版本号]
+
+下载镜像
+1、docker pull 远程ip:端口/${namespace}/helloapp:[镜像版本号]
+
+</code></pre>
+<h3 id="2-service">2 Service</h3>
+<ul>
+<li>创建 LoadBalance 类型的 Service，方便公网访问</li>
+</ul>
+<pre><code>
+apiVersion: v1
+kind: Service
+metadata:
+  name: out-81
+  namespace: dingqi
+spec:
+  allocateLoadBalancerNodePorts: true
+  externalTrafficPolicy: Local
+  ports:
+  - name: &quot;81&quot;
+    port: 81
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: helloapp
+  sessionAffinity: None
+  type: LoadBalancer
+
+</code></pre>
+<h3 id="3-service">3 <a href="https://support.huaweicloud.com/intl/zh-cn/bestpractice-cce/cce_bestpractice_10002.html">使用 Service 实现简单的灰度发布和蓝绿发布</a></h3>
+<ul>
+<li>并且一开始进行小流量阶段时, 可以把新版本 Deployment 的 replicas 设置为 1, 这样新版本就只会有一个在线上.</li>
+</ul>
               
             </div>
           </div><footer>

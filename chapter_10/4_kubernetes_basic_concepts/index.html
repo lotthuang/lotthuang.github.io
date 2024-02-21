@@ -263,12 +263,142 @@
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../2_benefits_of_containerization/">第二篇 容器化的好处</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_benefits_of_containerization/">第二篇 容器化好处</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../3_docker_basic_concepts/">第三篇 一些基础概念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_docker_basic_concepts/">第三篇 容器化基础概念</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第四篇 Kubernetes基础概念</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#master-node">一 Master 和 Node 节点</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#pod">二 Pod</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-pod">1 Pod 具有如下特征：</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-init-containers">2 Init Containers</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-container">3 Container</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#31-image">3.1 Image 拉取策略</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#32-container">3.2 Container 生命周期勾子</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#33-termination-message">3.3 关于 termination message</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-pod-and-container">4 Pod and Container 日志</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#node">三 Node</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-pod-node-2">1 Pod 选择 Node 时常用的 2 大类技能</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-node">2 Node 常用操作</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#namespace">四 Namespace（命名空间）</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_1">什么是命名空间，为什么它很重要？</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_2">简而言之</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3">常见的命名空间使用模式（3 种）</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1">1 将命名空间映射到团队或项目上</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2">2 使用命名空间对生命周期环境进行分区</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3_1">3 使用命名空间隔离不同的使用者</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#kubernetes_1">理解预配置的 Kubernetes 命名空间</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#namespace_1">常用 Namespace 操作：</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_3">删除命名空间时，需注意以下几点：</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#service">Service</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#service-lb">Service 相当于集群内部的 LB</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#volume">volume 存储卷</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#persistentvolume-pv">PersistentVolume (PV) 持久化存储卷</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#pv-accessmodes">PV 的访问模式 (accessModes) 有三种:</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#storageclass">StorageClass</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#configmap">ConfigMap 配置中心</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#configmap_1">ConfigMap 最佳实践</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#deployment">Deployment 无状态应用</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_4">常用的操作命令</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#specstrategy">更新策略.spec.strategy</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#deployment-replicaset">Deployment 和 ReplicaSet 两者之间的关系</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#statefulset">StatefulSet 有状态应用</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_5">支持两种更新策略</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#daemonset">DaemonSet 守护进程集</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#node_1">指定 Node 节点</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ingress">Ingress 负载均衡</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#job-cronjob">Job &amp; CronJob 任务和定时任务</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#hpahorizontal-pod-autoscaling">HPA（Horizontal Pod Autoscaling） 水平自动伸缩</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#service-account">Service Account</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">授权</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#secret">Secret 密钥</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#kubernetes_2">Kubernetes 接口机制</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#securitycontext">SecurityContext</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-securitycontext">1 SecurityContext 有什么用?</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#linux-capabilities">关于 Linux Capabilities</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#useraccount-serviceaccount">Useraccount 和 ServiceAccount 介绍</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../5_kubernetes_monitor/">第五篇 Kubernetes监控</a>
@@ -278,6 +408,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_cloudnative_monitor/">第九篇 云原生监控</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -365,7 +497,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h2 id="kubernetes">Kubernetes 的主要功能</h2>
+                <h1 id="kubernetes">Kubernetes 的主要功能</h1>
 <p>主要功能包括:</p>
 <ol>
 <li>基于容器的应用部署、维护和滚动升级</li>
@@ -376,7 +508,7 @@
 <li>广泛的 Volume 支持</li>
 <li>插件机制保证扩展性</li>
 </ol>
-<h2 id="master-node">Master 和 Node 节点</h2>
+<h2 id="master-node">一 Master 和 Node 节点</h2>
 <ul>
 <li>
 <p>Master 负责管理整个集群。 Master 协调集群中的所有活动，例如调度应用、维护应用的所需状态、应用扩容以及推出新的更新。</p>
@@ -385,7 +517,7 @@
 <p>Node 是一个虚拟机或者物理机，它在 Kubernetes 集群中充当工作机器的角色 每个 Node 都有 Kubelet , 它管理 Node 而且是 Node 与 Master 通信的代理。 Node 还应该具有用于处理容器操作的工具，例如 Docker 或 rkt 。处理生产级流量的 Kubernetes 集群至少应具有三个 Node 。</p>
 </li>
 </ul>
-<h2 id="pod">Pod</h2>
+<h2 id="pod">二 Pod</h2>
 <ul>
 <li>
 <p>A Pod is the basic execution unit of a Kubernetes application. Each Pod represents a part of a workload that is running on your cluster.</p>
@@ -397,7 +529,7 @@
 <p>Pod 是一组紧密关联的容器集合，支持多个容器在一个 Pod 中共享网络和文件系统，可以通过进程间通信和文件共享这种简单高效的方式完成服务。Pod 是 Kubernetes 调度的基本单位，Pod 的设计理念是<code>每个 Pod 都有一个唯一的 IP</code>。</p>
 </li>
 </ul>
-<h3 id="pod_1">Pod 具有如下特征：</h3>
+<h3 id="1-pod">1 Pod 具有如下特征：</h3>
 <ul>
 <li>包含多个共享 IPC、Network 和 UTC Namespace 的容器，可直接通过 Localhost 通信</li>
 <li>所有 Pod 内容器都可以访问共享的 Volume，可以访问共享数据</li>
@@ -410,7 +542,7 @@
 <li>Init Container 在所有容器运行之前执行，常用来初始化配置</li>
 <li>容器生命周期钩子函数，用于监听容器生命周期的特定事件，并在事件发生时执行已注册的回调函数，支持两种钩子函数：postStart 和 preStop，前者是在容器启动后执行，后者是在容器停止前执行</li>
 </ul>
-<h3 id="1-init-containers">1 Init Containers</h3>
+<h3 id="2-init-containers">2 Init Containers</h3>
 <p><a href="https://unofficial-kubernetes.readthedocs.io/en/latest/concepts/workloads/pods/init-containers/">Init Containers 介绍</a></p>
 <ul>
 <li>1 一个 Pod 可以由多个 App Container 和一个或者多个 Init Container</li>
@@ -437,8 +569,8 @@
 </ul>
 </li>
 </ul>
-<h3 id="2-container">2 Container</h3>
-<h4 id="21-image">2.1 Image 拉取策略</h4>
+<h3 id="3-container">3 Container</h3>
+<h4 id="31-image">3.1 Image 拉取策略</h4>
 <ul>
 <li>
 <p><strong>IfNotPresent</strong></p>
@@ -468,7 +600,7 @@
 <p><a href="https://kubernetes.io/docs/concepts/containers/images/">Image 拉取策略</a></p>
 </li>
 </ul>
-<h4 id="22-container">2.2 Container 生命周期勾子</h4>
+<h4 id="32-container">3.2 Container 生命周期勾子</h4>
 <ul>
 <li><strong>PostStart</strong></li>
 <li>
@@ -478,7 +610,7 @@
 <p><a href="https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/">Container 生命周期勾子</a></p>
 </li>
 </ul>
-<h4 id="23-termination-message">2.3 关于 termination message</h4>
+<h4 id="33-termination-message">3.3 关于 termination message</h4>
 <p>1 为什么需要 termination message？</p>
 <ul>
 <li>当 Pod 异常退出时, 我们需要加速问题定位. 因此需要专门的 termination message, 直接从 container 这边传递给 Kubectl 命令</li>
@@ -489,13 +621,13 @@
 <li><a href="https://jamesdefabia.github.io/docs/user-guide/production-pods/">参考 2</a></li>
 </ul>
 <p><img alt="png" src="../../img/WechatIMG1453AD340CF-D88E-4EE2-BC6B-2B752B4178A1.png" /></p>
-<h3 id="3-pod-and-container">3 Pod and Container 日志</h3>
+<h3 id="4-pod-and-container">4 Pod and Container 日志</h3>
 <p><a href="https://kubernetes.io/docs/concepts/cluster-administration/logging/#basic-logging-in-kubernetes">Pod and container logs</a></p>
-<h2 id="node">Node</h2>
+<h2 id="node">三 Node</h2>
 <ul>
 <li>Node 是 Pod 运行的载体、可以是物理机 、也可以是虚拟机 . Node 本质上不是 Kubernetes 来创建的， Kubernetes 只是管理 Node 上的资源。为了管理 Pod，每个 Node 节点上至少需要运行 <code>Container Runtime（Docker）</code>、<code>Kubelet</code> 和 <code>Kube-proxy</code> 服务。</li>
 </ul>
-<h3 id="pod-node-2">Pod 选择 Node 时常用的 2 大类技能</h3>
+<h3 id="1-pod-node-2">1 Pod 选择 Node 时常用的 2 大类技能</h3>
 <ul>
 <li>Node Selector(根据宿主机标签,选择合适的宿主机)</li>
 <li>
@@ -510,7 +642,11 @@
 </ul>
 </li>
 </ul>
-<h2 id="namespace">Namespace（命名空间）</h2>
+<h3 id="2-node">2 Node 常用操作</h3>
+<ul>
+<li>获取 Node 标签: <code>kubectl get node --show-labels=true</code></li>
+</ul>
+<h2 id="namespace">四 Namespace（命名空间）</h2>
 <p>Kubernetes 中对一组资源和对象的抽象集合，比如可以用来将系统内部的对象划分为不同的项目组或者用户组。常见的 <code>Pod</code>、<code>Service</code>、<code>ReplicaSet</code> 和 <code>Deployment</code>、<code>ConfigMap</code>、<code>Secret</code>等都是属于某一个 <code>Namespace</code> 的 (默认是 default)，而 <code>Node</code>, <code>PersistentVolumes</code> 等则不属于任何<code>Namespace</code>。</p>
 <h3 id="_1">什么是命名空间，为什么它很重要？</h3>
 <p>命名空间（namespace）是 Kubernetes 提供的组织机制，用于给集群中的任何对象组进行分类、筛选和管理。每一个添加到 Kubernetes 集群的工作负载必须放在一个命名空间中。</p>
@@ -838,11 +974,46 @@ $ kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10</p>
 </ul>
 </li>
 </ul>
+<h2 id="useraccount-serviceaccount">Useraccount 和 ServiceAccount 介绍</h2>
+<ul>
+<li>kubernetes 中账户分为：UserAccounts（用户账户） 和 ServiceAccounts（服务账户） 两种：</li>
+<li>UserAccount 是给 kubernetes 集群外部用户使用的，如 kubectl 访问 k8s 集群要用 Useraccount 用户， kubeadm 安装的 k8s，默认的 useraccount 用户是 kubernetes-admin；</li>
+<li>
+<p>k8s 客户端(一般用:kubectl) 请求 API Server（APIServer 需要对客户端的请求做认证，认证成功才会执行）</p>
+</li>
+<li>
+<p>使用 kubeadm 安装的 K8s，会在用户家目录下创建一个认证配置文件 .kube/config 这里面保存了客户端访问 API Server 的密钥相关信息，这样当用 kubectl 访问 k8s 时，它就会自动读取该配置文件，向 API Server 发起认证，然后完成操作请求。</p>
+</li>
+<li>
+<p>ServiceAccount 是 Pod 使用的账号，Pod 容器的进程需要访问 API Server 时用的就 ServiceAccount 账户；</p>
+</li>
+<li>
+<p>ServiceAccount 仅局限它所在的 namespace，每个 namespace 创建时都会自动创建一个 default service account；创建 Pod 时，如果没有指定 Service Account，Pod 则会使用 default Service Account。</p>
+</li>
+<li>
+<p>一些基础概念：</p>
+</li>
+</ul>
+<pre><code>Rule：规则，一组属于不同 API Group 的操作集合；
+
+Role：角色，用于定义一组对 Kubernetes API 对象操作的一组规则，范围限定在 namespace；
+
+ClusterRole：集群角色，该角色不受 namespace 的限制；
+
+Subject：对象，也就是规则作用的对象；
+
+RoleBinding：将角色和对象进行绑定，范围限定在 namespace；
+
+ClusterRoleBinding：将集群角色和对象进行绑定，不受 namespace 限制
+
+ServiceAccount： 服务账户
+
+</code></pre>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../3_docker_basic_concepts/" class="btn btn-neutral float-left" title="第三篇 一些基础概念"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../3_docker_basic_concepts/" class="btn btn-neutral float-left" title="第三篇 容器化基础概念"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../5_kubernetes_monitor/" class="btn btn-neutral float-right" title="第五篇 Kubernetes监控">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 

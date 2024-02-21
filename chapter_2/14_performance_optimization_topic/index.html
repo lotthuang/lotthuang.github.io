@@ -103,6 +103,20 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#_2">系统级性能优化</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#perf">Perf 工具概念</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">实践</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_4">其一 追踪某个进程在哪个系统调用上消耗时间最多</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_5">其二 生成火焰图</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#negative-dentry">其三 关于 negative dentry</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">其四</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
               </ul>
@@ -267,9 +281,9 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/2_benefits_of_containerization/">第二篇 容器化的好处</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/2_benefits_of_containerization/">第二篇 容器化好处</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/3_docker_basic_concepts/">第三篇 一些基础概念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/3_docker_basic_concepts/">第三篇 容器化基础概念</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
                   </li>
@@ -280,6 +294,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/9_cloudnative_monitor/">第九篇 云原生监控</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -378,6 +394,74 @@
 <ul>
 <li><strong>性能剖析阶段</strong>的目标是寻找性能瓶颈，查找引发性能问题的原因及热点代码。</li>
 <li><strong>代码优化阶段</strong>的目标是针对具体的性能问题而优化代码与编译选项，以改善软件性能。</li>
+</ul>
+<h2 id="perf">Perf 工具概念</h2>
+<ul>
+<li>
+<p>perf 是内置与 Linux 内核源码树中的性能剖析工具。基于事件采样原理，以性能事件为基础，支持针对处理器相关性能指标和操作系统相关性能指标的性能剖析。<strong>可用于性能瓶颈的查找与热点代码的定位。</strong></p>
+</li>
+<li>
+<p>系统级性能优化分为两个阶段：性能剖析和代码优化。</p>
+</li>
+</ul>
+<h2 id="_3">实践</h2>
+<h3 id="_4">其一 追踪某个进程在哪个系统调用上消耗时间最多</h3>
+<ul>
+<li>
+<p>适用于已经怀疑某个进程是造成操作系统瓶颈的基础上</p>
+</li>
+<li>
+<p><a href="https://mp.weixin.qq.com/s/H77vlf4MEVD-BL9spgiMYw">追踪 systemd 进程最耗时的系统调用</a></p>
+</li>
+</ul>
+<p>systemd 有超过 1 秒多的时间消耗在了 inotify_add_watch 的系统调用上。</p>
+<pre><code>strace -f -c -p 1       抓取10秒以后ctrl+c  退出
+</code></pre>
+<p><img alt="png" src="../../img/WechatIMG601.jpg" /></p>
+<h3 id="_5">其二 生成火焰图</h3>
+<ul>
+<li>
+<p>根据 perf 得到的数据生成 CPU 火焰图。</p>
+</li>
+<li>
+<p><code>perf record -F 99 -p 1 -g -- sleep 30</code></p>
+</li>
+<li>
+<ul>
+<li>pid 表示需要采样的进程 id，如果是 Java 进程可以使用 jps 等命令获取进程 id，</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>perf record 表示记录，-F 99 表示每秒 99 次，-g 表示记录调用栈，sleep 30 则是持续 30 秒</li>
+</ul>
+</li>
+<li>
+<p>使用 perf script 工具对 perf.data 进行解析</p>
+</li>
+</ul>
+<pre><code>perf script -i perf.data &amp;&gt; perf.unfold
+</code></pre>
+<ul>
+<li>需要用到一个国外大神 bredangregg 自己写的性能分析工具火焰图，项目地址：https://github.com/brendangregg/FlameGraph</li>
+</ul>
+<pre><code>
+
+
+./stackcollapse-perf.pl perf.unfold &gt; perf.folded //生成折叠后的调用栈
+./flamegraph.pl perf.folded &gt; out.svg //生成火焰图
+
+从火焰图上可以清晰地看出，CPU的主要耗时集中在__fsnotify_update_child_dentry_flags函数上。在最热点的函数里的调用链为inotify_add_watch-&gt;fsnotify_add_mark_locked-&gt;fsnotify-recalc_mast-&gt;__fsnotify_update_child_dentry_flags。最终指向了函数__fsnotify_update_child_dentry_flags
+
+</code></pre>
+<h3 id="negative-dentry">其三 关于 negative dentry</h3>
+<ul>
+<li>如果一个 dentry 没有对应的 inode，那它就是 negative 的。</li>
+</ul>
+<h3 id="_6">其四</h3>
+<ul>
+<li><code>perf top ‐p $pid</code></li>
+<li>该命令利用默认的性能事件”cycles”对[code1]进行热点分析。”cycles”是处理器周期事件。这条命令能够分析出消耗处理器周期最多的代码，在处理器频率稳定的前提下，我们可以认为 perf 给出热点代码的就是消耗时间最多的代码段。</li>
 </ul>
               
             </div>
