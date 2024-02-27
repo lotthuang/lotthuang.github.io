@@ -278,6 +278,24 @@
                   <li class="toctree-l1"><a class="reference internal" href="../8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第九篇 云原生监控</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 基础</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_3">(一) 数据类型</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-counter">1 Counter（计数器）</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-gauge">2 Gauge（仪表盘）</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-histogram">3 Histogram（直方图）</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-summary">4 Summary（摘要）</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -365,7 +383,48 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                
+                <h1 id="_1">概述</h1>
+<ul>
+<li>本篇总结云原生监控的一些基础和最佳实践</li>
+</ul>
+<h2 id="_2">一 基础</h2>
+<ul>
+<li>
+<p><a href="https://prometheus.fuckcloudnative.io/">Prometheus 中文文档</a></p>
+</li>
+<li>
+<p>可以通过 PromQL 内置函数 predict_linear() 基于简单线性回归的方式，对样本数据的变化趋势做出预测。例如，基于 2 小时的样本数据，来预测主机可用磁盘空间在 4 个小时之后的剩余情况：</p>
+</li>
+<li>
+<p><code>predict_linear(node_filesystem_free{job="node"}[2h], 4 * 3600) &lt; 0</code></p>
+</li>
+</ul>
+<h3 id="_3">(一) 数据类型</h3>
+<h4 id="1-counter">1 Counter（计数器）</h4>
+<h4 id="2-gauge">2 Gauge（仪表盘）</h4>
+<h4 id="3-histogram">3 Histogram（直方图）</h4>
+<ul>
+<li>主要用于实时计算对于百分之多少的样本的最大值，举个例子</li>
+</ul>
+<pre><code>histogram_quantile(0.9, rate(employee_age_bucket_bucket[10m]))
+返回
+{instance=&quot;10.0.86.71:8080&quot;,job=&quot;prometheus&quot;} 35.714285714285715
+这表示最近 10 分钟之内 90% 的样本的最大值为 35.714285714285715。
+</code></pre>
+<h4 id="4-summary">4 Summary（摘要）</h4>
+<ul>
+<li>总结一下 Histogram 与 Summary 的异同：</li>
+<li>
+<ul>
+<li>它们都包含了 <code>&lt;basename&gt;_sum</code> 和 <code>&lt;basename&gt;_count</code> 指标, 分别表示桶(Bucket)内样本的总和值和样本数量</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>Histogram 需要通过 <code>&lt;basename&gt;_bucket</code> 来<strong>计算分位数</strong>，而 Summary 则直接<strong>存储了分位数的值</strong>。</li>
+</ul>
+</li>
+</ul>
               
             </div>
           </div><footer>

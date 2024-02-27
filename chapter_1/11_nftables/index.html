@@ -451,19 +451,27 @@
 <h2 id="_3">二 快速应用</h2>
 <h3 id="1-drop">1 简单开放必要的端口其他默认 DROP</h3>
 <pre><code># cat /etc/nftables.conf
+
 #!/usr/sbin/nft -f
 
 flush ruleset
 
 table inet filter {
+    set cfip4 {
+        type ipv4_addr
+        flags interval
+        elements = {36.110.131.1-36.110.131.255,106.38.226.1-106.38.226.255,122.224.123.1-122.224.123.255,124.160.72.1-124.160.72.255,101.126.26.60/32,10.0.0.0/8 } #cf_ipv4
+    }
     chain input {
         type filter hook input priority 0;
-                tcp dport { 32200,80,443 } accept #放行22 80 443端口
+                ct state related,established accept # 放行已建立的或相关的连接
+                ip saddr @cfip4 tcp dport { 22 } accept #给部分源IP放行22端口
+                tcp dport { 80,443 } accept #放行80,443 端口
                 iifname lo accept #允许本地环回
                 icmp type echo-request counter accept #允许ping ipv4
                 icmpv6 type echo-request accept #允许ping ipv6
-                icmpv6 type { nd-neighbor-solicit,nd-neighbor-advert,nd-router-solicit,nd-router-advert } accept # 放行ipv6邻居发现等
-                ct state related,established accept # 放行已建立的或相关的连接
+                icmpv6 type { nd-neighbor-solicit,nd-neighbor-advert,nd-router-solicit,nd-router-advert } accept # 放行ipv6邻居发现等 (对于不开启nftables能正常ping通外部网络 而当开启了nftables则无法使用ipv6时 这很重要！)
+
                 counter drop # 拒绝上述规则以外的入站请求
     }
     chain forward {
