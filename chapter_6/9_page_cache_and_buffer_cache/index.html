@@ -548,7 +548,7 @@ struct buffer_head {
 
 </code></pre>
 <ol>
-<li>buffer_head 是磁盘块的一个抽象,一个 buffer_head 对应一个磁盘块，buffer_head 中保存对应的磁盘号</li>
+<li><strong>buffer_head 是磁盘块的一个抽象,一个 buffer_head 对应一个磁盘块</strong>，buffer_head 中保存对应的磁盘号</li>
 <li>buffer_head 把 page 与磁盘块联系起来，由于 page 和磁盘块的大小可能不一样，所以一个 page 可能管理多个 buffer_head
     这里假设 page 大小 4K，块大小为 1K, buffer_head,page 和磁盘块关系如下：</li>
 </ol>
@@ -601,7 +601,7 @@ struct bio {
 
 
 </code></pre>
-<p>它是一个描述硬盘里面的位置与 page cache 的页对应关系的数据结构，每个 bio 对应的硬盘里面一块连续的位置，每一块硬盘里面连续的位置，可能对应着 page cache 的多页，或者一页，所以它里面会有一个 bio_vec *bi_io_vec 的表。</p>
+<p>它是一个描述硬盘里面的位置与 page cache 的页对应关系的数据结构，<strong>每个 bio 对应的硬盘里面一块连续的位置，每一块硬盘里面连续的位置，可能对应着 page cache 的多页或者一页</strong>，所以它里面会有一个 <code>bio_vec *bi_io_vec</code> 的表(可以理解为一个 bio_vec 数组, 数组是用首元素地址表示的, 所以这里指针指向首元素即可)</p>
 <p>我们现在假设 3 种情况</p>
 <ul>
 <li>第 1 种情况是 page_cache_sync_readahead()要读的 0~16KB 数据，在硬盘里面正好是顺序排列的(是否顺序排列，要查文件系统，如 ext3、ext4)，Linux 会为这一次 4 页的读，分配 1 个 bio 就足够了，并且让这个 bio 里面分配 4 个 bi_io_vec，指向 4 个不同的内存页：</li>

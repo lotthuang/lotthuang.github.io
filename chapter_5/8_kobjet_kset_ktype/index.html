@@ -184,6 +184,8 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#22-kset">2.2 kset</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#22-sysbus">2.2 扩展(/sys/bus)源码</a>
+    </li>
     <li class="toctree-l3"><a class="reference internal" href="#23-kobj_type">2.3 kobj_type</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#24-kobject-sys_ops">2.4 kobject 操作函数集, sys_ops</a>
@@ -492,6 +494,63 @@ struct kset {
     struct kobject kobj;       /* 归属于该kset的所有的kobject的共有parent */
     const struct kset_uevent_ops *uevent_ops;    /* kset的uevent操作函数集，当kset中的kobject有状态变化时，会回调这个函数集，以便kset添加新的环境变量或过滤某些uevent，如果一个kobject不属于任何kset时，是不允许发送uevent的 */
 } __randomize_layout;
+
+</code></pre>
+<h3 id="22-sysbus">2.2 扩展(/sys/bus)源码</h3>
+<ul>
+<li>向系统添加一条 bus_type 总线时，改总线会自动添加到<strong>/sys/bus 目录</strong>下，<strong>bus 目录</strong>是系统自动创建的，这个 bus 目录为<code>static struct kset *bus_kset</code>，定义在<code>drivers/base/bus.c</code>中。创建过程如下所示：</li>
+</ul>
+<pre><code>static struct kset *bus_kset;
+</code></pre>
+<ul>
+<li>
+<p>/sys/bus 目录的建立过程：drivers/base/bus.c</p>
+</li>
+<li>
+<ul>
+<li>--&gt;buses_init</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>--&gt;kset_create_and_add 　　//这行代码建立/sys 下面的 bus 目录，其中 bus_kset 就代表 bus 目录</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>int __init buses_init(void)
+{
+    bus_kset = kset_create_and_add(&quot;bus&quot;, &amp;bus_uevent_ops, NULL); // 第一个参数是bus目录，第二个参数是对应kset_uevent_ops结构, 第三个参数是父kobject
+    if (!bus_kset)
+        return -ENOMEM;
+
+    system_kset = kset_create_and_add(&quot;system&quot;, NULL, &amp;devices_kset-&gt;kobj);
+    if (!system_kset)
+        return -ENOMEM;
+
+    return 0;
+}
+
+/**
+ * kset_create_and_add - 创建一个动态的kset 结构并添加到sysfs中
+
+ *
+ * @name:  kset名称
+ * @uevent_ops: kset的kset_uevent_ops 结构
+ * @parent_kobj: kset的付kobject，如果有的话
+ *
+ * 该方法创建一个动态的kset结构，并注册到sysfs上。用完该结构之后
+
+ * 调用kset_unregister() ，该结构将会被动态的释放，之后该结构将不再
+
+ * 被使用。
+
+ *
+ * 当无法创建kset，将返回NULL
+ */
 
 </code></pre>
 <h3 id="23-kobj_type">2.3 kobj_type</h3>

@@ -721,11 +721,37 @@ err_out:
     /* Write the ITR value calculated from the previous interrupt. */
     igb_write_itr(q_vector);
 
-    napi_schedule(&amp;q_vector-&gt;napi);
+    napi_schedule(&amp;q_vector-&gt;napi); // 这里传入了相应队列实例里的napi成员, 最终其实就是执行了链表添加操作: `list_add_tail(&amp;napi-&gt;poll_list, &amp;sd-&gt;poll_list);`, 把napi实例里的poll_list元素加入到当前CPU的softnet_data实例里的poll_list中.
+    // 而每个q_vector内部的napi的poll_list在初始化的时候初始化为igb_poll, 具体路径为igb_open--&gt; __igb_open--&gt; igb_request_irq---&gt;igb_init_interrupt_scheme--&gt;igb_alloc_q_vectors--&gt;for循环调用igb_alloc_q_vector--&gt;netif_napi_add(adapter-&gt;netdev, &amp;q_vector-&gt;napi,igb_poll, 64);
+    //  到这里q_vector-&gt;napi-&gt;poll 指向了驱动程序igb_poll
 
     return IRQ_HANDLED;
 }
 
+
+</code></pre>
+<pre><code>void netif_napi_add(struct net_device *dev, struct napi_struct *napi,
+            int (*poll)(struct napi_struct *, int), int weight)
+{
+    INIT_LIST_HEAD(&amp;napi-&gt;poll_list);
+    hrtimer_init(&amp;napi-&gt;timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_PINNED);
+    napi-&gt;timer.function = napi_watchdog;
+    napi-&gt;gro_count = 0;
+    napi-&gt;gro_list = NULL;
+    napi-&gt;skb = NULL;
+    napi-&gt;poll = poll;
+    if (weight &gt; NAPI_POLL_WEIGHT)
+        pr_err_once(&quot;netif_napi_add() called with weight %d on device %s\n&quot;,
+                weight, dev-&gt;name);
+    napi-&gt;weight = weight;
+    list_add(&amp;napi-&gt;dev_list, &amp;dev-&gt;napi_list);
+    napi-&gt;dev = dev;
+#ifdef CONFIG_NETPOLL
+    napi-&gt;poll_owner = -1;
+#endif
+    set_bit(NAPI_STATE_SCHED, &amp;napi-&gt;state);
+    napi_hash_add(napi);
+}
 
 </code></pre>
 <h3 id="3-igb_poll">3 igb_poll</h3>
