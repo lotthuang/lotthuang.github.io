@@ -74,6 +74,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/17_makefile/">第十七篇 Makefile使用</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/18_mysql/">第十八篇 MySQL使用</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -168,7 +170,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 Block IO Layer总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 Block IO Layer(块IO层)总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
                   </li>
@@ -258,6 +260,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/7_python/">第七篇 python语言总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul class="current">
@@ -268,8 +272,6 @@
                   <li class="toctree-l1"><a class="reference internal" href="../3_docker_basic_concepts/">第三篇 容器化基础概念</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_kubernetes_monitor/">第五篇 Kubernetes监控</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
@@ -295,7 +297,13 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#kubernetes">二 Kubernetes 本身的监控</a>
+    </li>
     </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_event/">第十篇 彻底搞懂Kubernetes Event</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../11_best_practices/">第十一篇 Kubernetes最佳实践</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -425,12 +433,33 @@
 </ul>
 </li>
 </ul>
+<h2 id="kubernetes">二 Kubernetes 本身的监控</h2>
+<ul>
+<li>
+<p>本篇梳理 Kubernetes 集群监控相关技能, 主要分为 3 块内容</p>
+</li>
+<li>
+<ul>
+<li>1 Pod 的 HPA 和 VPA</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>2 Kubernetes 集群本身组件的监控</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>3 Node 和 Pod 的一些指标, 例如 Cpu\Mem\FS\Net 等</li>
+</ul>
+</li>
+</ul>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../8_caclio/" class="btn btn-neutral float-left" title="第八篇 Kubernetes网络插件之Caclio"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../../chapter_11/1_theory/" class="btn btn-neutral float-right" title="第一篇 稳定性概论">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../10_event/" class="btn btn-neutral float-right" title="第十篇 彻底搞懂Kubernetes Event">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -456,7 +485,7 @@
       <span><a href="../8_caclio/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../../chapter_11/1_theory/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../10_event/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

@@ -74,6 +74,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/17_makefile/">第十七篇 Makefile使用</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/18_mysql/">第十八篇 MySQL使用</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -168,7 +170,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 Block IO Layer总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 Block IO Layer(块IO层)总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
                   </li>
@@ -258,6 +260,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/7_python/">第七篇 python语言总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul class="current">
@@ -268,8 +272,6 @@
                   <li class="toctree-l1"><a class="reference internal" href="../3_docker_basic_concepts/">第三篇 容器化基础概念</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_kubernetes_monitor/">第五篇 Kubernetes监控</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第六篇 生产环境Kubernetes部署最佳实践</a>
     <ul class="current">
@@ -330,6 +332,10 @@
                   <li class="toctree-l1"><a class="reference internal" href="../8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../9_cloudnative_monitor/">第九篇 云原生监控</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_event/">第十篇 彻底搞懂Kubernetes Event</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../11_best_practices/">第十一篇 Kubernetes最佳实践</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -530,6 +536,37 @@ localhost 地址 + 容器端口就可以访问。</p>
 <p>Flannel 实现了对 Kubernetes 网络的支持，但是它引入了多个网络组件，在网络通信时需要转到 flannel0 网络接口，再转到用户态的 flanneld 程序，到对端后还需要走这个过程的反过程，所以也会引入一些网络的时延损耗。另外 Flannel 默认的底层通信协议是 UDP。UDP 本身是非可靠协议，虽然两端的 TCP 实现了可靠传输，但在大流量、高并发应用场景下还需要反复调试，确保不会出现传输质量的问题。特别是对网络依赖重的应用，需要评估对业务的影响。</p>
 <h3 id="4-calico">4 网络插件之 Calico</h3>
 <h2 id="_3">二 存储方案</h2>
+<p><img alt="png" src="../../img/007B0A83-ECC7-4784-BE5B-033D76928DA3.png" /></p>
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>块存储 EBS</th>
+<th>文件存储 NAS</th>
+<th>对象存储 TOS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>使用方式</td>
+<td>像使用传统服务器硬盘一样，用户可以对挂载到 ECS 上的块存储（硬盘）做格式化、创建文件系统等操作。</td>
+<td>符合标准文件协议，用户可以将文件系统挂载给 ECS，像使用本地文件目录一样。</td>
+<td>具备标准 Restful API 接口，用户可以通过编程或第三方工具访问对象存储。</td>
+</tr>
+<tr>
+<td>共享方式</td>
+<td>数据不共享，或特殊的数台服务器共享卷，每台服务器使用独立的块存储（硬盘），多服务器之间数据隔离。</td>
+<td>数据共享，支持多台服务器共享，多台服务器可挂载相同的文件系统，数据可以共享操作和访问。</td>
+<td>数据共享，设备无限制，服务器、嵌入式设备、IoT 设备，所有调用相同路径，均可访问共享的对象存储数据。</td>
+</tr>
+<tr>
+<td>场景对比</td>
+<td>关系数据库、NoSQL 数据库、ELK 分布式日志搜索、企业办公应用、数据仓库、高性能计算等场景。</td>
+<td>企业办公 OA、AI 训练、门户网站、游戏、DevOps、容器微服务、渲染等场景。</td>
+<td>互联网应用、OTT 视频、视频监控、备份/归档、大数据/IoT 等场景。</td>
+</tr>
+</tbody>
+</table>
 <h2 id="_4">三 监控和告警方案</h2>
 <h2 id="_5">四 用户权限管理</h2>
 <h2 id="kubernetes">五 Kubernetes 组件应用实践</h2>
@@ -986,7 +1023,7 @@ status:
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../5_kubernetes_monitor/" class="btn btn-neutral float-left" title="第五篇 Kubernetes监控"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../4_kubernetes_basic_concepts/" class="btn btn-neutral float-left" title="第四篇 Kubernetes基础概念"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../7_production_kerbernetes_yaml/" class="btn btn-neutral float-right" title="第七篇 生产环境Kubernetes YAML模版">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -1010,7 +1047,7 @@ status:
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../5_kubernetes_monitor/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../4_kubernetes_basic_concepts/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../7_production_kerbernetes_yaml/" style="color: #fcfcfc">Next &raquo;</a></span>

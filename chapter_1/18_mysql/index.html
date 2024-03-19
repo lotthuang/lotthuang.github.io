@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第五篇 Kubernetes监控 - Lott's Blog</title>
+    <title>第十八篇 MySQL使用 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u4e94\u7bc7 Kubernetes\u76d1\u63a7";
-        var mkdocs_page_input_path = "chapter_10/5_kubernetes_monitor.md";
+        var mkdocs_page_name = "\u7b2c\u5341\u516b\u7bc7 MySQL\u4f7f\u7528";
+        var mkdocs_page_input_path = "chapter_1/18_mysql.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -45,34 +45,46 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">第一章 各种杂项基础</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/3_linux_kernel_basic/">第三篇 Linux内核基础</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_linux_kernel_basic/">第三篇 Linux内核基础</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/10_virtual_machine_on_mac_m1_chip/">第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_virtual_machine_on_mac_m1_chip/">第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/11_nftables/">第十一篇 Debian 11以及往后版本nftables防火墙配置</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../11_nftables/">第十一篇 Debian 11以及往后版本nftables防火墙配置</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY、PTY和控制台(Console)区别</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY、PTY和控制台(Console)区别</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/15_bosun/">第十五篇 Bosun使用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../15_bosun/">第十五篇 Bosun使用</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/16_assembler/">第十六篇 汇编语言使用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../16_assembler/">第十六篇 汇编语言使用</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/17_makefile/">第十七篇 Makefile使用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../17_makefile/">第十七篇 Makefile使用</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第十八篇 MySQL使用</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 安装</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#sql">二 基本 SQL 语句</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 授权</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -168,7 +180,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 Block IO Layer总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 Block IO Layer(块IO层)总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
                   </li>
@@ -258,28 +270,30 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/7_python/">第七篇 python语言总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../2_benefits_of_containerization/">第二篇 容器化好处</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/2_benefits_of_containerization/">第二篇 容器化好处</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../3_docker_basic_concepts/">第三篇 容器化基础概念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/3_docker_basic_concepts/">第三篇 容器化基础概念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第五篇 Kubernetes监控</a>
-    <ul class="current">
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/9_cloudnative_monitor/">第九篇 云原生监控</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../9_cloudnative_monitor/">第九篇 云原生监控</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/10_event/">第十篇 彻底搞懂Kubernetes Event</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/11_best_practices/">第十一篇 Kubernetes最佳实践</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -357,8 +371,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>第十章 容器化和Kubernetes &raquo;</li>
-      <li>第五篇 Kubernetes监控</li>
+          <li>第一章 各种杂项基础 &raquo;</li>
+      <li>第十八篇 MySQL使用</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -368,32 +382,24 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="_1">概述</h1>
+<ol>
+<li>本篇总结 MySQL 的一些使用, 包括 MariaDB 使用</li>
+</ol>
+<h2 id="_2">一 安装</h2>
 <ul>
-<li>
-<p>本篇梳理Kubernetes集群监控相关技能, 主要分为3块内容</p>
-</li>
-<li>
-<ul>
-<li>1 Pod的 HPA 和 VPA </li>
+<li><a href="https://docs.naivesystems.com/kb/how-to-install-mariadb-on-debian-11">如何在 Debian11 中安装 MariaDB</a></li>
 </ul>
-</li>
-<li>
-<ul>
-<li>2 Kubernetes集群本身组件的监控</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>3 Node和Pod的一些指标, 例如Cpu\Mem\FS\Net等</li>
-</ul>
-</li>
-</ul>
+<h2 id="sql">二 基本 SQL 语句</h2>
+<h3 id="1">1 授权</h3>
+<pre><code>1. GRANT ALL PRIVILEGES ON *.* TO 'myuser'@'%' IDENTIFIED BY 'mypassword' WITH GRANT OPTION;
+2. FLUSH   PRIVILEGES;
+</code></pre>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../4_kubernetes_basic_concepts/" class="btn btn-neutral float-left" title="第四篇 Kubernetes基础概念"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../6_production_kubernetes_best_practice/" class="btn btn-neutral float-right" title="第六篇 生产环境Kubernetes部署最佳实践">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../17_makefile/" class="btn btn-neutral float-left" title="第十七篇 Makefile使用"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_2/yunweijiazhi/" class="btn btn-neutral float-right" title="第一篇 运维的价值和目标">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -416,10 +422,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../4_kubernetes_basic_concepts/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../17_makefile/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../6_production_kubernetes_best_practice/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../chapter_2/yunweijiazhi/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

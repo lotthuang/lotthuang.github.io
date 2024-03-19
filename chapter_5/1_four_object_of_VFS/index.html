@@ -74,6 +74,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/17_makefile/">第十七篇 Makefile使用</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/18_mysql/">第十八篇 MySQL使用</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -204,7 +206,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../4_io_scheduler_layer/">第四篇 Block IO Layer总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_io_scheduler_layer/">第四篇 Block IO Layer(块IO层)总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../6_fss/">第六篇 各类文件系统梳理</a>
                   </li>
@@ -294,6 +296,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/7_python/">第七篇 python语言总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul>
@@ -305,8 +309,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/5_kubernetes_monitor/">第五篇 Kubernetes监控</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
@@ -314,6 +316,10 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/9_cloudnative_monitor/">第九篇 云原生监控</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/10_event/">第十篇 彻底搞懂Kubernetes Event</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/11_best_practices/">第十一篇 Kubernetes最佳实践</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -498,19 +504,19 @@
 2 目录项里有一个 d_inode 成员，指向真正的 inode</p>
 <p>dentry 的源码 ,在 include/linux/dcache.h 89 行</p>
 <pre><code>struct dentry {
-    atomic_t d_count;
+    atomic_t d_count; //目录项对象引用计数器，当有process占用该文件的时候则d_count值加1.在某个进程删除文件的时候会判断该值的大小。
     unsigned int d_flags;       /* protected by d_lock */
     spinlock_t d_lock;      /* per dentry lock */
-    int d_mounted;
+    int d_mounted; /*表示dentry是否是一个挂载点，如果是挂载点，该成员不为0*/
     struct inode *d_inode;      /* Where the name belongs to - NULL is
                      * negative */
     /*
      * The next three fields are touched by __d_lookup.  Place them here
      * so they all fit in a cache line.
      */
-    struct hlist_node d_hash;   /* lookup hash list */
-    struct dentry *d_parent;    /* parent directory */
-    struct qstr d_name;
+    struct hlist_node d_hash;   /* lookup hash list,链接到dentry cache的hash链表 */
+    struct dentry *d_parent;    /* parent directory ,指向父dentry结构的指针*/
+    struct qstr d_name; //文件名
 
     struct list_head d_lru;     /* LRU list */
     /*
@@ -520,7 +526,7 @@
         struct list_head d_child;   /* child of parent list */
         struct rcu_head d_rcu;
     } d_u;
-    struct list_head d_subdirs; /* our children */
+    struct list_head d_subdirs; /* our children , 是子项的链表头，子项可能是目录也可能是文件，所有子项都要链接到这个链表*/
     struct list_head d_alias;   /* inode alias list */
     unsigned long d_time;       /* used by d_revalidate */
     const struct dentry_operations *d_op;
@@ -529,7 +535,59 @@
 
     unsigned char d_iname[DNAME_INLINE_LEN_MIN];    /* small names */
 };
+
 </code></pre>
+<ul>
+<li>
+<p><strong>dentry 结构的主要用途是建立文件名和相关 inode 节点之间的关联，dentry 结构中三个成员用于该目的。</strong></p>
+</li>
+<li>
+<ul>
+<li>d_inode 是指向相关 inode 实例的指针</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>d_name 指定了文件的名称</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>如果文件名只是有少量的字符组成，则保存在 d_iname 中，以方便加速访问，短文件名一般不操作 16 个字符</li>
+</ul>
+</li>
+<li>
+<p>每个目录项对象都有四种状态，分别为：</p>
+</li>
+<li>
+<ul>
+<li>空闲状态：该状态目录项对象不包含有效信息，没有被 VFS 使用</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>未使用状态：当前没有被内核使用，d_count 的值为 0，d_inode 任然指向相关的索引节点</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>正在使用状态：正在被使用，d_count 的值大于 0，d_inode 任然指向相关的索引节点</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>负状态：与目录项关联的索引节点不存在，相应的磁盘索引节点已经被删除。</li>
+</ul>
+</li>
+<li>
+<p>dentry 的作用分析</p>
+</li>
+<li>
+<ul>
+<li>每个文件的 dentry 链接到父目录的 dentry,形成了文件系统的结构树。比如有一个目录/usr，也就是 usr 的 dentry 的 d_child 成员链接到根目录/的 dentry 的 d_subdirs 成员。通过父目录查找目录下的子目录是通过 hash 表查找的。</li>
+</ul>
+</li>
+</ul>
 <h2 id="file">三 file 结构体</h2>
 <ul>
 <li>每当进程打开一个文件,内核返回的是一个 file 结构体，用于管理被打开的文件</li>

@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第四篇 Block IO Layer总结 - Lott's Blog</title>
+    <title>第四篇 Block IO Layer(块IO层)总结 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u56db\u7bc7 Block IO Layer\u603b\u7ed3";
+        var mkdocs_page_name = "\u7b2c\u56db\u7bc7 Block IO Layer(\u5757IO\u5c42)\u603b\u7ed3";
         var mkdocs_page_input_path = "chapter_5/4_io_scheduler_layer.md";
         var mkdocs_page_url = null;
       </script>
@@ -73,6 +73,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/16_assembler/">第十六篇 汇编语言使用</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/17_makefile/">第十七篇 Makefile使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/18_mysql/">第十八篇 MySQL使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -168,11 +170,29 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第四篇 Block IO Layer总结</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第四篇 Block IO Layer(块IO层)总结</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#genral-block-device-layer">一 Genral Block Device Layer</a>
+    <li class="toctree-l2"><a class="reference internal" href="#bio">一 BIO 层</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#generic-block-device-layer">Generic Block Device Layer 基础</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_2">二 电梯</a>
+    <li class="toctree-l3"><a class="reference internal" href="#1-request">1 request 结构体</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#11-request-bio">1.1 request 结构体和 bio 结构体关系</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#12-gendisk-request_quque-request-bio">1.2 gendisk 结构体、request_quque 结构体、request 结构体、bio 结构体</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-bio">2 bio 结构体和写磁盘的整体过程</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-bio-bio_vec">3 bio 结构体和 bio_vec 结构体关系:</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-io-request_queue">4 I/O 请求队列: request_queue</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">二 电梯层</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1">1 核心数据结构</a>
         <ul>
@@ -201,6 +221,16 @@
         </ul>
     </li>
         </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">三 链路</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-vfs-bio">1 从 vfs 到 bio 层核心代码:</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">总结</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">参考</a>
     </li>
     </ul>
                   </li>
@@ -292,6 +322,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/7_python/">第七篇 python语言总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul>
@@ -303,8 +335,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/5_kubernetes_monitor/">第五篇 Kubernetes监控</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
@@ -312,6 +342,10 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/9_cloudnative_monitor/">第九篇 云原生监控</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/10_event/">第十篇 彻底搞懂Kubernetes Event</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/11_best_practices/">第十一篇 Kubernetes最佳实践</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -390,7 +424,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>第五章 Linux IO子系统 &raquo;</li>
-      <li>第四篇 Block IO Layer总结</li>
+      <li>第四篇 Block IO Layer(块IO层)总结</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -405,11 +439,236 @@
 <li><strong>块 IO 层</strong>即下图中的<strong>Block IO Layer</strong>
   <img alt="png" src="../../img/3ae062c0-04e9-4ead-871c-1bff21e19d4a.svg" /></li>
 </ul>
-<h2 id="genral-block-device-layer">一 Genral Block Device Layer</h2>
+<p><img alt="png" src="../../img/WechatIMG626.jpg" /></p>
+<p><img alt="png" src="../../img/WechatIMG628.jpg" /></p>
+<p>从图中可以看出，对于磁盘的一次读请求，首先经过<strong>虚拟文件系统（VFS）</strong>，其次是<strong>页高速缓存（page cache）</strong>，接下来是<strong>映射层（mapping layer，是具体的文件系统如 ext4）</strong>、<strong>通用块层（generic block layer）</strong>、<strong>IO 调度程序（I/O scheduler，也叫 elevator）</strong>、<strong>块设备驱动（block device driver）</strong>，最后是<strong>物理块设备（block device）</strong>。</p>
+<p>下面简要概括一个块设备 I/O 操作的执行过程：</p>
+<ol>
+<li>系统调用(如 read())的服务例程调用适当的 <strong>VFS 函数</strong>。</li>
+<li>VFS 函数确定所请求的数据是否已经存在，若数据存在于内存的<strong>页高速缓存</strong>中，则直接读内存；否则进入下一步。</li>
+<li>内核需要从块设备读数据，通过<strong>映射层</strong>确定数据的物理位置。</li>
+<li>现在内核可以向<strong>通用块层</strong>提交请求，启动 I/O 操作来传送所请求的数据。一般而言，每个 I/O 操作只针对磁盘上一组连续的块。由于请求的数据不必位于相邻的块中，所以通用块层可能启动几次 I/O 操作。每次 I/O 操作由一个<strong>“块 I/O”(简称“bio”)</strong>结构描述，它收集底层组件需要的所有信息以满足所发出的请求。</li>
+<li>通用块层下面的 <strong>I/O 调度程序</strong>根据预先定义的内核策略，<strong>将待处理的 I/O 操作（bio）映射成一个 I/O 请求（request）</strong>并插入到块设备的请求队列(request queue)中，或将一个 I/O 操作合并到队列中已有的、且物理介质上相邻的请求中。</li>
+<li><strong>激活</strong>的<strong>块设备驱动程序</strong>调用策略例程(strategy routine)选择一个待处理的请求，并向磁盘控制器的硬件接口发送适当的命令，来进行实际的数据传送。</li>
+<li>
+<p>当 I/O 操作终止时，<strong>磁盘控制器</strong>就产生一个中断，如果需要，相应的中断程序再调用策略例程去处理队列中的另一个请求。</p>
+</li>
+<li>
+<p>有意思的总结, Block IO Layer 分为 2 层: <strong>Generic Block Device Layer</strong>和<strong>I/O Scheduler Layer</strong>, 这两层分别可以简称为<strong>BIO 层</strong>和<strong>电梯层</strong></p>
+</li>
+</ol>
+<h2 id="bio">一 BIO 层</h2>
+<h3 id="generic-block-device-layer">Generic Block Device Layer 基础</h3>
 <ul>
-<li>参考《本章 第 7 篇》</li>
+<li>参考《本章 第 7 篇》, Genral Block Device Layer 基础 其实就是 block_device、gendisk、hd_struct 三个核心结构体及其组成的子系统</li>
 </ul>
-<h2 id="_2">二 电梯</h2>
+<h3 id="1-request">1 request 结构体</h3>
+<ul>
+<li>每个块设备的待处理请求都是用一个结构体 request 表示的:</li>
+</ul>
+<pre><code>struct request {
+  struct list_head queuelist; /* 用于挂在请求队列链表的节点，只能使用函数blkdev_dequeue_request访问，不能直接访问 */
+  struct list_head donelist;  /* 用于挂在已完成请求链表的节点 */
+  struct request_queue *q;    /* 指向请求队列的指针 */
+  unsigned int cmd_flags;     /* 命令标识 */
+  enum rq_cmd_type_bits cmd_type;  /* 命令类型 */
+
+  /* 各种各样的扇区计数: */
+  /* 为提交I/O维护bio横断面的状态信息，其中hard_*成员是通用块层内部更新的，驱动程序不应该修改 */
+  sector_t sector;     /* 要传送的下一个扇区号 */
+  sector_t hard_sector;      /* 要传送的下一个扇区号 */
+  unsigned long nr_sectors;  /* 整个请求还需要传送的扇区数 */
+  unsigned long hard_nr_sectors; /* 整个请求中还需要传送的扇区数 */
+  unsigned int current_nr_sectors;  /* 当前bio的当前段中还需要传送的扇区数 */
+  unsigned int hard_cur_sectors;    /* 当前bio的当前段中还需要传送的扇区数 */
+  struct bio *bio;     /* 请求中第一个未完成传送操作的bio */
+  struct bio *biotail; /* 请求链表中末尾的bio */
+  struct hlist_node hash;   /* 链入一个哈希表(用来查找与新bio相邻的请求) */
+
+  /* rb_node仅用在I/O调度器中把请求放到一棵红黑树上，当请求被移到分发队列中时，请求将被删除。 */
+  /* 因此，completion_data(用于给底层驱动保存一些额外的信息)可与rb_node分享空间 */
+  union {
+      struct rb_node rb_node;   /* 排序/查找 */
+      void *completion_data;
+  };
+
+  struct gendisk *rq_disk;    /* 请求所引用的磁盘 */
+  struct hd_struct *part;     /* 请求所引用的分区 */
+  unsigned long start_time;   /* 请求进入队列的时间(用jiffies表示) */
+
+  unsigned int timeout;     /* 请求的超时 */
+  int retries;
+
+  rq_end_io_fn *end_io;   /* 请求完成时的回调函数 */
+  void *end_io_data;
+
+  // ...
+};
+</code></pre>
+<ul>
+<li>每个请求(request)包含一个或多个 bio 结构.</li>
+<li>最初, 通用块层创建一个仅包含一个 bio 结构的请求.</li>
+<li>然后 I/O 调度程序可能向初始的 bio 中增加一个新段, 也可能将另一个 bio 结构链接到请求中(当新数据与请求中已存在的数据物理相邻), 从而扩展该请求.</li>
+<li>
+<p>request 结构体中的 bio 字段指向请求中的第一个 bio 结构, 而 biotail 字段指向最后一个 bio 结构.</p>
+</li>
+<li>
+<p>一个 request 实例中的几个成员字段值可能是动态变化的.</p>
+</li>
+<li>
+<ul>
+<li>例如一旦 bio 中引用的数据块全部传送完毕,</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>bio 字段立即更新从而指向请求链表中的下一个 bio.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>在此期间新的 bio 可能被加入到请求链表的尾部, 所以 biotail 的指向也可能改变.</li>
+</ul>
+</li>
+</ul>
+<h4 id="11-request-bio">1.1 request 结构体和 bio 结构体关系</h4>
+<p><img alt="png" src="../../img/WechatIMG625.jpg" /></p>
+<h4 id="12-gendisk-request_quque-request-bio">1.2 gendisk 结构体、request_quque 结构体、request 结构体、bio 结构体</h4>
+<p><img alt="png" src="../../img/WechatIMG629.jpg" /></p>
+<h3 id="2-bio">2 bio 结构体和写磁盘的整体过程</h3>
+<ul>
+<li>首先 submit_bh()函数，其作用：根据缓冲区首部的内容创建一个 bio，在该函数中通过 buffer_head 传进来的信息对 bio 的信息赋值。如下</li>
+</ul>
+<pre><code>bio-&gt;bi_sector = bh-&gt;b_blocknr * (bh-&gt;b_size &gt;&gt; 9); //扇区号
+
+bio-&gt;bi_bdev = bh-&gt;b_bdev; //设备，如分区
+
+bio-&gt;bi_io_vec[0].bv_page = bh-&gt;b_page; //对应页
+
+bio-&gt;bi_io_vec[0].bv_len = bh-&gt;b_size;  //块大小
+
+bio-&gt;bi_io_vec[0].bv_offset = bh_offset(bh); //buffer_head指向的缓存区相对于其所在页的偏移
+</code></pre>
+<h3 id="3-bio-bio_vec">3 bio 结构体和 bio_vec 结构体关系:</h3>
+<ul>
+<li>bio 和 bio_vec 的关系可以参考<a href="https://blog.csdn.net/juS3Ve/article/details/79890688">文件读写（BIO）波澜壮阔的一生</a>, 如下图:</li>
+<li>bio 的定义如下(include/linux/blk_types.h)</li>
+</ul>
+<pre><code>struct bio_vec {
+       struct page    *bv_page; /* 指向这个内存缓冲区所在的物理页面 */
+       unsigned int  bv_len; /* 内存缓冲区大小(字节) */
+       unsigned int  bv_offset;  /* 缓冲区在该物理页面上的偏移量(字节) */
+
+};
+
+struct bio {
+       struct bio              *bi_next; /* 请求队列中的下一个bio */
+       struct block_device      *bi_bdev;  /* 相关的块设备 */
+       sector_t            bi_sector;    /* 需要传输的第一个扇区号(磁盘中的位置) */
+       struct bvec_iter     bi_iter;
+       unsigned long        bi_flags;    /* bio标志位 */
+       unsigned long        bi_rw;        /* I/O操作类型及优先级 */
+       unsigned short  bi_vcnt;    /* bio_vec数组中段的数目 */
+       unsigned short  bi_idx;        /* bio_vec数组中段的当前索引值 */
+       /* Number of segments in this BIO after
+
+        * physical address coalescing is performed.
+
+        */
+
+       unsigned int        bi_phys_segments;   /* 结合后的片段数 */
+       unsigned int        bi_size;    /* 剩余的I/O数量 */
+       bio_end_io_t         *bi_end_io;
+       void               *bi_private;
+       atomic_t        bi_cnt;           /* pin count bio的引用计数器 */
+
+       struct bio_vec       *bi_io_vec;     /* the actual vec list */
+
+};
+
+
+</code></pre>
+<ul>
+<li>BIO 结构体其中最重要的几个成员变量是 bi_io_vecs、 bi_vcnt 和 bi_idx。</li>
+<li>
+<ul>
+<li>bi_io_vecs 指向一个 bio_vec 结构体数组，该结构体数组包含了一个特定 I/O 操作所需要使用到的所有段（segment）。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>每个 bio_vec 结构都是一个向量，它描述的是一个特定的<strong>段</strong>：段所在的物理页、块在物理页中的偏移量、从给定偏移量开始的块长度。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>整个 bio_io_vec 结构体数组表示了一个完整的缓冲区。即使一个缓冲区分散在内存的多个位置上，bio 结构体也能对内核保证 I/O 操作的执行，这样的就叫做向量 I/O（vectored I/O，或 scatter/gather I/O）。</li>
+</ul>
+</li>
+</ul>
+<p>它是一个描述硬盘里面的位置与 page cache 的页对应关系的数据结构，<strong>每个 bio 对应的硬盘里面一块连续的位置，每一块硬盘里面连续的位置，可能对应着 page cache 的多页或者一页</strong>，所以它里面会有一个 <code>bio_vec *bi_io_vec</code> 数组(可以理解为一个 bio_vec 数组, 数组是用首元素地址表示的, 所以这里指针指向首元素即可)</p>
+<p>在每个给定的块设备 I/O 操作中，bi_vcnt 域用来描述 bi_io_vec 所指向的 bio_vec 数组中的向量数目。<strong>当通用块层开始执行请求，需要使用各个片段时，bi_idx 就会不断更新，总是指向当前片段。</strong> 通用块层通过它可以跟踪块设备 I/O 操作的完成进度。</p>
+<p>bio 作为通用块层的主要数据结构，既描述了操作磁盘的位置(bi_sector)，又描述了内存的位置(bi_io_vec)，是上层内核 vfs 与下层驱动的连接纽带。</p>
+<p>我们现在假设 3 种情况</p>
+<ul>
+<li>第 1 种情况是 page_cache_sync_readahead()要读的 0~16KB 数据，在硬盘里面正好是顺序排列的(是否顺序排列，要查文件系统，如 ext3、ext4)，Linux 会为这一次 4 页的读，分配 1 个 bio 就足够了，并且让这个 bio 里面分配 4 个 bi_io_vec，指向 4 个不同的内存页：</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG573.jpg" /></p>
+<ul>
+<li>第 2 种情况是 page_cache_sync_readahead()要读的 0~16KB 数据，在硬盘里面正好是完全不连续的 4 块 (是否顺序排列，要查文件系统，如 ext3、ext4)，Linux 会为这一次 4 页的读，分配 4 个 bio，并且让这 4 个 bio 里面，每个分配 1 个 bi_io_vec，指向 4 个不同的内存页面：</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG574.jpg" /></p>
+<ul>
+<li>当然你还可以有第 3 种情况，比如 0~8KB 在硬盘里面连续，8~16KB 不连续，那可以是这样的:</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG575.jpg" /></p>
+<h3 id="4-io-request_queue">4 I/O 请求队列: request_queue</h3>
+<ul>
+<li>请求队列由一个大的结构体 request_queue 表示:</li>
+</ul>
+<pre><code>struct request_queue
+{
+  /*
+   * Together with queue_head for cacheline sharing
+   */
+  struct list_head    queue_head;
+  struct request        *last_merge;
+  struct elevator_queue    *elevator;
+
+  /*
+   * the queue request freelist, one for reads and one for writes
+   */
+  struct request_list    rq;   /* 请求结构体的freelist */
+
+  /* 不同情况下执行的回调方法： */
+  request_fn_proc        *request_fn;
+  make_request_fn        *make_request_fn;
+  prep_rq_fn        *prep_rq_fn;
+  unprep_rq_fn        *unprep_rq_fn;
+  merge_bvec_fn        *merge_bvec_fn;
+  softirq_done_fn        *softirq_done_fn;
+  rq_timed_out_fn        *rq_timed_out_fn;
+  dma_drain_needed_fn    *dma_drain_needed;
+  lld_busy_fn        *lld_busy_fn;
+
+  // ...
+};
+
+</code></pre>
+<ul>
+<li>请求队列（request_queue）实质上是一个双向链表，每个元素是一个请求(request 结构体).</li>
+<li>request_queue 结构体中的 queue_head 成员存放链表的头。</li>
+<li>结构体成员 make_request_fn 为 I/O 请求创建一个 request 结构体，然后把交给 I/O 调度程序。</li>
+<li>I/O 调度程序提供了几种预先定义好的元素排序方式（调度算法），后续会详细展开说明。</li>
+<li>
+<p>而成员 request_fn 存放来自设备驱动程序的请求处理函数。</p>
+</li>
+<li>
+<p>每个请求队列都有一个允许处理的最大请求数，request_queue 的 nr_requests 字段存放了每个数据传送方向所允许的最大请求数（默认读写队列的最大请求数都是 128 个）。</p>
+</li>
+<li>如果待处理的读/写请求数超过了允许的最大值，那么队列会被标志已满，需要把请求加入到某个传送方向的可阻塞进程被放置到 request_list 结构所对应的等待队列中睡眠。</li>
+</ul>
+<h2 id="_2">二 电梯层</h2>
 <h3 id="1">1 核心数据结构</h3>
 <p><img alt="png" src="../../img/55114748-9159-4587-9F2F-12F17A47B580.png" /></p>
 <h4 id="11-struct-elevator_queue">1.1 struct elevator_queue</h4>
@@ -629,6 +888,163 @@ struct elevator_ops
 <h4 id="c">C 分发执行</h4>
 <ul>
 <li>最终提交给设备驱动程序，执行 request。 电梯分发的 request，被设备驱动的 request_fn()挨个取出来，派发真正的硬件读写命令到硬盘。这个分发的队列，一般就是我们在块设备驱动里面见到的 request_queue 了。</li>
+</ul>
+<h2 id="_3">三 链路</h2>
+<h3 id="1-vfs-bio">1 从 vfs 到 bio 层核心代码:</h3>
+<pre><code>
+sys_read -&gt; vfs_read---&gt;ext4_file_read_iter---&gt;generic_file_read_iter(page cache) ---&gt;do_generic_file_read(在do_generic_file_read函数中调用page = find_get_page(mapping, index);)
+
+如果没有找到page，则
+if (!page) {
+          /* 如果page不在当前cache中，进行预读操作*/
+            page_cache_sync_readahead(mapping, ra, filp, index, last_index - index);
+            page = find_get_page(mapping, index);
+            if (unlikely(page == NULL))
+                goto no_cached_page;
+
+}
+
+</code></pre>
+<ol>
+<li><code>fs/read_write.c</code></li>
+</ol>
+<pre><code>
+ssize_t vfs_read(struct file *file, char __user *buf, size_t count, loff_t *pos)
+{
+    ssize_t ret;
+
+    if (!(file-&gt;f_mode &amp; FMODE_READ))
+        return -EBADF;
+    if (!(file-&gt;f_mode &amp; FMODE_CAN_READ))
+        return -EINVAL;
+    if (unlikely(!access_ok(VERIFY_WRITE, buf, count)))
+        return -EFAULT;
+
+    ret = rw_verify_area(READ, file, pos, count);
+    if (ret &gt;= 0) {
+        count = ret;
+        if (file-&gt;f_op-&gt;read)
+            ret = file-&gt;f_op-&gt;read(file, buf, count, pos);
+        else if (file-&gt;f_op-&gt;aio_read)
+            ret = do_sync_read(file, buf, count, pos);
+        else
+            ret = new_sync_read(file, buf, count, pos);
+        if (ret &gt; 0) {
+            fsnotify_access(file);
+            add_rchar(current, ret);
+        }
+        inc_syscr(current);
+    }
+
+    return ret;
+}
+
+EXPORT_SYMBOL(vfs_read);
+
+</code></pre>
+<ul>
+<li>
+<p>以 ext4 文件系统为例(fs/ext4/file.c),file-&gt;f_op-&gt;read(file, buf, count, pos) 具体函数为</p>
+</li>
+<li>
+<p>重点是 page_cache_sync_readahead()这个函数</p>
+</li>
+</ul>
+<pre><code>page_cache_sync_readahead()--&gt;进行预读--&gt;ondemand_readahead--&gt;__do_page_cache_readahead--&gt;read_pages--&gt;
+        ret = mapping-&gt;a_ops-&gt;readpages(filp, mapping, pages, nr_pages);--&gt; 这一步其实是具体文件系统的readpages方法，对于ext4来说就是ext4_readpages函数--&gt;ext4_readpages调用ext4_mpage_readpages--&gt;在ext4_mpage_readpages中，会构造一个bio--&gt;ext4_submit_bio_read--&gt; 调用通用方法submit_bio(bio)
+</code></pre>
+<ol>
+<li>
+<p>最终具体文件系统 ext4 这里执行了 submit_bio，submit_bio 执行了 generic_make_request</p>
+</li>
+<li>
+<p>generic_make_request 函数</p>
+</li>
+<li>
+<p>在 generic_make_request 中会向 bio 层申请 request 请求,内核调用 generic_make_request()函数，该函数是通用块层的主要入口点</p>
+</li>
+</ol>
+<pre><code>
+blk_qc_t generic_make_request(struct bio *bio)
+{
+    if (current-&gt;bio_list) {
+        bio_list_add(&amp;current-&gt;bio_list[0], bio);
+        goto out;
+    }
+
+    bio_list_init(&amp;bio_list_on_stack[0]);
+    current-&gt;bio_list = bio_list_on_stack;
+    do {
+        struct request_queue *q = bdev_get_queue(bio-&gt;bi_bdev);
+
+        if (likely(blk_queue_enter(q, false) == 0)) {
+            struct bio_list lower, same;
+
+            /* Create a fresh bio_list for all subordinate requests */
+            bio_list_on_stack[1] = bio_list_on_stack[0];
+            bio_list_init(&amp;bio_list_on_stack[0]);
+            ret = q-&gt;make_request_fn(q, bio);
+
+        } else {
+            bio_io_error(bio);
+        }
+        bio = bio_list_pop(&amp;bio_list_on_stack[0]);
+    } while (bio);
+    current-&gt;bio_list = NULL; /* deactivate */
+}
+</code></pre>
+<ul>
+<li>调用 queue 的 request_fn 方法把 request 提交给磁盘驱动进行真正的处理。</li>
+</ul>
+<h2 id="_4">总结</h2>
+<ul>
+<li>默认是走 PageCache, PageCache 和文件系统交互层函数:</li>
+<li>文件系统(ext4)和 BIO 层交互函数: <code>submit_bio()</code></li>
+<li>BIO 层开始函数 generic_make_request, generic_make_request 调用 q-&gt;make_request_fn(q, bio)放入 gendisk 的队列</li>
+<li>BIO 层到电梯层交互函数: 待定</li>
+<li>
+<p>电梯层到驱动层的交互函数：就是 request_queue 的 request_fn 成员(q-&gt;request_fn = scsi_request_fn;)</p>
+</li>
+<li>
+<p>做一个最最简短的总结:</p>
+</li>
+</ul>
+<pre><code>ext4构造bio请求--&gt; 调用submit_bio函数--&gt;generic_make_request调用q-&gt;make_request_fn(q, bio)放入队列--&gt; 经过一系列电梯排序--&gt;然后调用q-&gt;request_fn = scsi_request_fn; 真正下发给磁盘
+</code></pre>
+<ul>
+<li>两处史诗级函数</li>
+<li>
+<ul>
+<li>1 构造 bio 请求的 mpage_readpages()系列函数，以 ext4 文件系统为例就是 ext4_mpage_readpages,在 ext4_mpage_readpages 中，会构造一个 bio</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>2 将 bio 转化为 request 的史诗级函数,这个完成“造请求”的史诗级的函数，一般是 <code>void blk_queue_bio(struct request_queue *q, struct bio *bio)</code>，位于 block/blk-core.c。</li>
+</ul>
+</li>
+<li>
+<p>submit_bio 是块层的统一接口函数，bio 是统一 IO 结构体</p>
+</li>
+<li>request 是块层内部的 IO 请求的结构体，bio 到 request 有一层转换，这层转换就是排序、合并的时候；</li>
+<li>make_request_fn 就是 bio 转换成 request 的时机，IO 的排序、合并时机就在于此；</li>
+<li>request_fn 是 request 派发的时机，IO 的调度算法也在此发挥作用。从 request 队列中按照策略选一个 req 出来，封装成底层想要的样子，下发下去</li>
+<li>IO 调度器合并、排序，包括按照电梯直上直下派发请求的目的是减少磁盘寻址时间，从而提高整体性能；</li>
+<li>
+<ul>
+<li>noop，cfq，deadline 三种派发请求的算法都有适用自己的场景。- - noop 是几乎 bypass 请求，没有重拍、合并。deadline 是电梯算法衍生了一下。cfq 是全新的一种公平算法，跟电梯没啥关系；</li>
+</ul>
+</li>
+<li>块层最核心的逻辑是：bio 请求怎么入队，request 请求怎么出队而已，它远比文件系统要简单；</li>
+</ul>
+<h2 id="_5">参考</h2>
+<ul>
+<li>
+<p><a href="https://stardust-blog.cn/%E7%AC%94%E8%AE%B0/iostat%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Linux 通用块层及 iostat 学习笔记</a></p>
+</li>
+<li>
+<p><a href="https://blog.csdn.net/frank_zyp/article/details/88853932">linux 文件系统四 VFS 数据读取 vfs_read</a></p>
+</li>
 </ul>
               
             </div>

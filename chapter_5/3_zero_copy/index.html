@@ -74,6 +74,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/17_makefile/">第十七篇 Makefile使用</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/18_mysql/">第十八篇 MySQL使用</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -168,7 +170,7 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">第三篇 Linux 零拷贝技术总结</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#dma">背景知识 认识DMA</a>
+    <li class="toctree-l2"><a class="reference internal" href="#dma">背景知识 认识 DMA</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_2">零拷贝技术</a>
         <ul>
@@ -176,7 +178,7 @@
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#_3">发送文件</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#sendfile_1">sendfile的应用场景</a>
+    <li class="toctree-l4"><a class="reference internal" href="#sendfile_1">sendfile 的应用场景</a>
     </li>
         </ul>
     </li>
@@ -186,7 +188,9 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#mmap_1">二、使用 mmap 读写文件</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#mmap_2">三、mmap的使用方式</a>
+    <li class="toctree-l4"><a class="reference internal" href="#mmap_2">三、mmap 的使用方式</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#mmap-read">我们减少拷贝次数的一种方法是调用 mmap()来代替 read 调用：</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#_7">文件同步到磁盘的时机</a>
     </li>
@@ -202,7 +206,7 @@
     </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../4_io_scheduler_layer/">第四篇 Block IO Layer总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_io_scheduler_layer/">第四篇 Block IO Layer(块IO层)总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../6_fss/">第六篇 各类文件系统梳理</a>
                   </li>
@@ -292,6 +296,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/7_python/">第七篇 python语言总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul>
@@ -303,8 +309,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/5_kubernetes_monitor/">第五篇 Kubernetes监控</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
@@ -312,6 +316,10 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/9_cloudnative_monitor/">第九篇 云原生监控</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/10_event/">第十篇 彻底搞懂Kubernetes Event</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/11_best_practices/">第十一篇 Kubernetes最佳实践</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -401,9 +409,9 @@
               
                 <h1 id="_1">概述</h1>
 <ul>
-<li>本文总结Linux 3种零拷贝技术</li>
+<li>本文总结 Linux 3 种零拷贝技术</li>
 </ul>
-<h2 id="dma">背景知识 认识DMA</h2>
+<h2 id="dma">背景知识 认识 DMA</h2>
 <ul>
 <li>DMA 技术就是我们在主板上放一块独立的芯片。在进行内存和 I/O 设备的数据传输的时候，我们不再通过 CPU 来控制数据传输，而直接通过 DMA 控制器（DMA Controller，简称 DMAC）。</li>
 <li>这块芯片，我们可以认为它其实就是一个协处理器（Co-Processor）。</li>
@@ -431,14 +439,12 @@
 </li>
 <li>
 <p>使用 page cache 的 zero copy：</p>
-<ul>
+</li>
 <li>
 <p>sendfile：一次代替 read/write 系统调用，通过使用 DMA 技术以及传递文件描述符，实现了 zero copy</p>
 </li>
 <li>
 <p>mmap：仅代替 read 系统调用，将内核空间地址映射为用户空间地址，write 操作直接作用于内核空间。通过 DMA 技术以及地址映射技术，用户空间与内核空间无须数据拷贝，实现了 zero copy</p>
-</li>
-</ul>
 </li>
 <li>
 <p>不使用 page cache 的 Direct I/O：读写操作直接在磁盘上进行，不使用 page cache 机制，通常结合用户空间的用户缓存使用。通过 DMA 技术直接与磁盘/网卡进行数据交互，实现了 zero copy</p>
@@ -452,14 +458,14 @@
 <li>然后再调用 <code>write</code> 把缓冲区的数据发送给客户端 <code>Socket</code>。</li>
 </ul>
 <p>伪代码如下：</p>
-<pre><code>while ((n = read(file, buf, 4069)) &gt; 0) 
-{    
+<pre><code>while ((n = read(file, buf, 4069)) &gt; 0)
+{
     write(sock, buf , n);
 }
 </code></pre>
 <p>在上面的过程中，调用了 <code>read</code> 和 <code>write</code> 两个系统调用。<code>read</code> 系统调用是从文件中读取数据到用户空间的缓冲区中，所以调用 <code>read</code> 时需要从内核空间复制数据到用户空间，如图 2 所示：</p>
 <p><img alt="png" src="../../img/WX20211010-214356.png" /></p>
-<p>图2 就是数据的复制过程，首先会从文件中读取数据到内核的 <code>页缓存（page cache）</code>，然后再从页缓存中复制到用户空间的缓冲区中。</p>
+<p>图 2 就是数据的复制过程，首先会从文件中读取数据到内核的 <code>页缓存（page cache）</code>，然后再从页缓存中复制到用户空间的缓冲区中。</p>
 <p>而当调用 <code>write</code> 系统调用把用户空间缓冲区中的数据发送到客户端 Socket 时，首先会把缓冲区的数据复制到内核的 Socket 缓冲区中，网卡驱动会把 Socket 缓冲区的数据发送出去，如图 3 所示：</p>
 <p><img alt="png" src="../../img/WechatIMG307.png" /></p>
 <p>从上图可以看出，服务端发送文件给客户端的过程中需要进行两次数据复制，第一次是从内核空间的页缓存复制到用户空间的缓冲区，第二次是从用户空间的缓冲区复制到内核空间的 Socket 缓冲区。</p>
@@ -488,7 +494,7 @@ ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count);
 <p><code>sendfile</code> 发送数据的过程如图 5 所示：</p>
 <p><img alt="png" src="../../img/WechatIMG309.png" /></p>
 <p>对比图 5 与 图 3，我们发现使用 sendfile 可以减少一次系统调用，并且减少一次数据拷贝过程。</p>
-<h4 id="sendfile_1">sendfile的应用场景</h4>
+<h4 id="sendfile_1">sendfile 的应用场景</h4>
 <p>snedfile 的应用场景是：用户从磁盘读取一些文件数据后不需要经过任何计算与处理就通过网络传输出去。此场景的典型应用是消息队列。</p>
 <p>在传统 I/O 下，正如第一节所示，上述应用场景的一次数据传输需要四次 CPU 全权负责的拷贝与四次上下文切换，正如本文第一节所述。</p>
 <p>sendfile 主要使用到了两个技术：</p>
@@ -519,10 +525,11 @@ ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count);
 <p>由于 <code>sendfile</code> 仅仅对应一次系统调用，而传统文件操作则需要使用 <code>read</code> 以及 <code>write</code> 两个系统调用。</p>
 <p>正因为如此，<code>sendfile</code> 能够将用户态与内核态之间的上下文切换从 4 次减少到 2 次。</p>
 <p><img alt="png" src="../../img/WechatIMG312.jpeg" /></p>
+<p><img alt="png" src="../../img/WechatIMG623.jpg" /></p>
 <p>另一方面，我们需要注意 <code>sendfile</code> 系统调用的局限性。如果应用程序需要对从磁盘读取的数据进行写操作，例如解密或加密，那么 <code>sendfile</code> 系统调用就完全没法用。这是因为用户线程根本就不能够通过 <code>sendfile</code> 系统调用得到传输的数据。</p>
 <h3 id="mmap">mmap</h3>
 <h4 id="_6">一 传统的读写文件</h4>
-<p>一般来说，修改一个文件的内容需要如下3个步骤：</p>
+<p>一般来说，修改一个文件的内容需要如下 3 个步骤：</p>
 <ul>
 <li>把文件内容读入到内存中。</li>
 <li>修改内存中的内容。</li>
@@ -541,7 +548,7 @@ write(fd, buf, 1024); // 把buf的内容写入到文件
 <p>那么，有没有这样的技术能实现上面所说的方式呢？答案是肯定的，就是 <code>mmap</code>。</p>
 <p>使用 <code>mmap</code> 系统调用可以将用户空间的虚拟内存地址与文件进行映射（绑定），对映射后的虚拟内存地址进行读写操作就如同对文件进行读写操作一样。原理如图 2 所示：</p>
 <p><img alt="png" src="../../img/58A994EA-585C-4AD8-AC00-DF4066028030.png" /></p>
-<h4 id="mmap_2">三、mmap的使用方式</h4>
+<h4 id="mmap_2">三、mmap 的使用方式</h4>
 <p>下面我们介绍一下怎么使用 <code>mmap</code>，<code>mmap 函数</code>的原型如下：</p>
 <pre><code>void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
 </code></pre>
@@ -549,21 +556,17 @@ write(fd, buf, 1024); // 把buf的内容写入到文件
 <ul>
 <li>addr：指定映射的虚拟内存地址，可以设置为 NULL，让 Linux 内核自动选择合适的虚拟内存地址。</li>
 <li>length：映射的长度。</li>
-<li>prot：映射内存的保护模式，可选值如下：<ul>
+<li>prot：映射内存的保护模式，可选值如下：</li>
 <li>PROT_EXEC：可以被执行。</li>
 <li>PROT_READ：可以被读取。</li>
 <li>PROT_WRITE：可以被写入。</li>
 <li>PROT_NONE：不可访问。</li>
-</ul>
-</li>
-<li>flags：指定映射的类型，常用的可选值如下：<ul>
+<li>flags：指定映射的类型，常用的可选值如下：</li>
 <li>MAP_FIXED：使用指定的起始虚拟内存地址进行映射。</li>
 <li>MAP_SHARED：与其它所有映射到这个文件的进程共享映射空间（可实现共享内存）。</li>
 <li>MAP_PRIVATE：建立一个写时复制（Copy on Write）的私有映射空间。</li>
 <li>MAP_LOCKED：锁定映射区的页面，从而防止页面被交换出内存。</li>
 <li>...</li>
-</ul>
-</li>
 <li>fd：进行映射的文件句柄。</li>
 <li>offset：文件偏移量（从文件的何处开始映射）。</li>
 </ul>
@@ -583,6 +586,16 @@ void *addr = mmap(NULL, 8192, PROT_WRITE, MAP_SHARED, fd, 4096); // 对文件进
 </ul>
 <p>mmap 函数会返回映射后的内存地址，我们可以通过此内存地址对文件进行读写操作。我们通过图 3 展示上面例子在内核中的结构：</p>
 <p><img alt="png" src="../../img/WX20211010-143706.png" /></p>
+<h4 id="mmap-read">我们减少拷贝次数的一种方法是调用 mmap()来代替 read 调用：</h4>
+<pre><code>buf = mmap(diskfd, len);
+write(sockfd, buf, len);
+
+</code></pre>
+<ul>
+<li>应用程序调用 mmap()，磁盘上的数据会通过 DMA 被拷贝的内核缓冲区，接着操作系统会把这段内核缓冲区与应用程序共享，这样就不需要把内核缓冲区的内容往用户空间拷贝。应用程序再调用 write(),操作系统直接将内核缓冲区的内容拷贝到 socket 缓冲区中，这一切都发生在内核态，最后，socket 缓冲区再把数据发到网卡去。
+  同样的，看图很简单：
+  <img alt="png" src="../../img/WechatIMG624.jpg" /></li>
+</ul>
 <h4 id="_7">文件同步到磁盘的时机</h4>
 <p>前面我们介绍过，读写文件都需要经过 <code>页缓存</code>，所以 <code>mmap</code> 映射的正是文件的 <code>页缓存</code>，而非磁盘中的文件本身。由于 <code>mmap</code> 映射的是文件的 <code>页缓存</code>，所以就涉及到<code>同步的问题</code>，即 <code>页缓存</code> 会在什么时候把数据同步到磁盘。</p>
 <p>Linux 内核并不会主动把 mmap 映射的 页缓存 同步到磁盘，而是需要用户主动触发。同步 mmap 映射的内存到磁盘有 4 个时机：</p>
@@ -641,7 +654,7 @@ void *addr = mmap(NULL, 8192, PROT_WRITE, MAP_SHARED, fd, 4096); // 对文件进
 </li>
 </ol>
 <p>谁会使用 Direct I/O？</p>
-<p>IBM的一篇文章[2]指出，自缓存应用程序（ self-caching applications）可以选择使用 Direct I/O。</p>
+<p>IBM 的一篇文章[2]指出，自缓存应用程序（ self-caching applications）可以选择使用 Direct I/O。</p>
 <pre><code>自缓存应用程序
 
 对于某些应用程序来说，它会有它自己的数据缓存机制，比如，它会将数据缓存在应用程序地址空间，这类应用程序完全不需要使用操作系统内核中的高速缓冲存储器，这类应用程序就被称作是自缓存应用程序（ self-caching applications ）。
@@ -672,12 +685,42 @@ void *addr = mmap(NULL, 8192, PROT_WRITE, MAP_SHARED, fd, 4096); // 对文件进
 <p>内核缓冲区和用户缓冲区之间的传输优化：这种方式侧重于在用户进程的缓冲区和操作系统的页缓存之间的 CPU 拷贝的优化。这种方法延续了以往那种传统的通信方式，但更灵活。</p>
 </li>
 </ul>
+<table>
+<thead>
+<tr>
+<th>技术</th>
+<th>应用场景</th>
+<th>优点</th>
+<th>缺点(注意事项)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sendfile</td>
+<td>1. Nginx 静态文件服务器<br/></td>
+<td>1. 系统调用从 2 次降低为 1 次. <br/> 2.上下文切换从 4 次降低为 2 次. <br/> 3. 减少了数据拷贝的次数，数据传送始终只发生在 kernel space <br/></td>
+<td>我们需要注意 sendfile 系统调用的局限性。<br/> 如果应用程序需要对从磁盘读取的数据进行写操作，<br/>例如解密或加密，那么 sendfile 系统调用就完全没法用。</td>
+</tr>
+<tr>
+<td>mmap</td>
+<td>1. 应用程序可以调用 mmap()来代替 read() 调用</td>
+<td>1. 减少数据 copy,无需从内核 PageCache Copy 到用户空间. <br/>2. 当拷贝数据量很大时，无疑提升了效率.</td>
+<td>当你的程序 map 了一个文件，但是当这个文件被另一个进程截断(truncate)时, write 系统调用会因为访问非法地址而被 SIGBUS 信号终止。<br/>SIGBUS 信号默认会杀死你的进程并产生一个 coredump,如果你的服务器这样被中止了，那会产生一笔损失。</td>
+</tr>
+<tr>
+<td>Direct IO</td>
+<td>1. 应用层想要自己实现诸如 PageCache 缓存机制, 比如数据库 <br/>2. 通常配合 Linux AIO 一起使用</td>
+<td>1. 避免了内核空间到用户空间的数据拷贝，如果要传输的数据量很大，使用直接 I/O 的方式进行数据传输，而不需要操作系统内核地址空间拷贝数据操作的参与，这将会大大提高性能.<br/> 2. 提升写安全性,确保数据最快落盘 <br/> (由于其不使用 page cache，所以其进行写文件，如果返回成功，数据就真的落盘了)</td>
+<td>1. 需要 page pinning<br/> 2. 直接和 IO 层交互需要增加应用程序复杂性</td>
+</tr>
+</tbody>
+</table>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../2_io_stack/" class="btn btn-neutral float-left" title="第二篇 Linux IO栈总结"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../4_io_scheduler_layer/" class="btn btn-neutral float-right" title="第四篇 Block IO Layer总结">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../4_io_scheduler_layer/" class="btn btn-neutral float-right" title="第四篇 Block IO Layer(块IO层)总结">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>

@@ -74,6 +74,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/17_makefile/">第十七篇 Makefile使用</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/18_mysql/">第十八篇 MySQL使用</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -168,7 +170,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 Block IO Layer总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 Block IO Layer(块IO层)总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
                   </li>
@@ -258,6 +260,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/7_python/">第七篇 python语言总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul>
@@ -269,8 +273,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/5_kubernetes_monitor/">第五篇 Kubernetes监控</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
@@ -278,6 +280,10 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/9_cloudnative_monitor/">第九篇 云原生监控</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/10_event/">第十篇 彻底搞懂Kubernetes Event</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/11_best_practices/">第十一篇 Kubernetes最佳实践</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -344,19 +350,33 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#6">6 具体心得参考</a>
+    </li>
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_6">六 稳定性运营怎么运营?</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_7">产品稳定指标</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#rtc-sli">比如 RTC 产品的 SLI</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_7">七 活动重保稳定性怎么做</a>
+    <li class="toctree-l4"><a class="reference internal" href="#sli">比如点播产品的 SLI</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_8">事故治理核心指标</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_9">七 活动重保稳定性怎么做</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#0-1">八 稳定性从 0 到 1 建设</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_8">事故前预防</a>
+    <li class="toctree-l3"><a class="reference internal" href="#_10">事故前预防</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_9">事故感知</a>
+    <li class="toctree-l3"><a class="reference internal" href="#_11">事故感知</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_10">事故中定位和止损</a>
+    <li class="toctree-l3"><a class="reference internal" href="#_12">事故中定位和止损</a>
     </li>
         </ul>
     </li>
@@ -585,18 +605,136 @@
 <h3 id="5">5 稳定性文化</h3>
 <h4 id="51">5.1 红黑榜、年度奖项、个人奖项</h4>
 <h4 id="52">5.2 团队分享</h4>
+<h3 id="6">6 具体心得参考</h3>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>治理项目</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>边缘机房故障</td>
+<td>边缘机房稳定性治理、集群并池、容灾容错</td>
+</tr>
+<tr>
+<td>边缘集群容量问题</td>
+<td>一键限流</td>
+</tr>
+<tr>
+<td>客户端版本问题</td>
+<td>准出平台、客户端稳定性专项</td>
+</tr>
+<tr>
+<td>变更发版引起故障</td>
+<td>华佗质检、变更管控、指标归因</td>
+</tr>
+<tr>
+<td>边缘机房布点问题</td>
+<td>边缘机房稳定性治理、三线机房</td>
+</tr>
+<tr>
+<td>服务依赖基础组件异常</td>
+<td>故障注入演练平台</td>
+</tr>
+<tr>
+<td>中心机房故障</td>
+<td>容灾容错</td>
+</tr>
+</tbody>
+</table>
 <h2 id="_6">六 稳定性运营怎么运营?</h2>
 <ul>
 <li>稳定性红黑榜</li>
 <li>观测中心（SLI 指标收敛统一观测）</li>
 <li>应急响应收敛</li>
 </ul>
-<h2 id="_7">七 活动重保稳定性怎么做</h2>
+<h3 id="_7">产品稳定指标</h3>
+<blockquote>
+<p>怎么体现稳定性建设和治理的效果</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>对应项目</th>
+<th>指标</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>事故治理</td>
+<td>MTTR/MTBF/每半年事故数量</td>
+<td>1</td>
+</tr>
+<tr>
+<td>监控告警</td>
+<td>SLO 达标率</td>
+<td>我们每个月 SLO 达标率是多少，达标时间/总时间</td>
+</tr>
+<tr>
+<td>监控告警</td>
+<td>告警及时性和有效性</td>
+<td>我们每个月 SLO 达标率是多少，达标时间/总时间</td>
+</tr>
+<tr>
+<td>变更管控</td>
+<td>变更符合规范数量</td>
+<td></td>
+</tr>
+<tr>
+<td>变更管控</td>
+<td>灰度能力建设</td>
+<td></td>
+</tr>
+<tr>
+<td>变更管控</td>
+<td>白屏化建设</td>
+<td></td>
+</tr>
+<tr>
+<td>变更管控</td>
+<td>变更质检能力建设</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="rtc-sli">比如 RTC 产品的 SLI</h4>
+<ul>
+<li>关注用户的体验质量</li>
+<li>5s 进房成功率</li>
+<li>80ms 音频卡顿率</li>
+<li>500ms 视频卡顿率</li>
+<li>音视频首帧发送成功率</li>
+<li>音视频首帧解码成功率</li>
+<li>400ms 音视频网络传输延时达标率</li>
+<li>P0 档位 99.5%（调优档位 99.9%）</li>
+</ul>
+<h4 id="sli">比如点播产品的 SLI</h4>
+<ul>
+<li>上传成功率</li>
+<li>播放成功率</li>
+</ul>
+<h4 id="_8">事故治理核心指标</h4>
+<ul>
+<li>核心指标</li>
+<li>P0&amp;P1 重大事故数额度达标 (≤ 2 额度，2P1 或 1P0）</li>
+<li>全年事故分达标 (≤ 400 分)</li>
+<li>变更低级事故占比达标 (≤ 5%) 且 0 红线事故</li>
+<li>事故主动发现率达标 (≥ 70%)</li>
+<li>参考指标</li>
+<li>P0 改进项按时完成率达标 (≥ 85%)</li>
+<li>应急 5 分钟响应率达标 (≥ 80%)</li>
+<li>事故 30 分钟通报率达标 (≥ 80%)</li>
+<li>事故 MTTR 90 分位值降低 30% (目标 ≤ 90 分钟)</li>
+</ul>
+<h2 id="_9">七 活动重保稳定性怎么做</h2>
 <ul>
 <li>主要分为<strong>容量</strong>和<strong>预案</strong>两条线</li>
 </ul>
 <h2 id="0-1">八 稳定性从 0 到 1 建设</h2>
-<h3 id="_8">事故前预防</h3>
+<h3 id="_10">事故前预防</h3>
 <ul>
 <li>变更管控</li>
 <li>变更质检</li>
@@ -604,14 +742,14 @@
 <li>容量管理</li>
 <li>服务治理</li>
 </ul>
-<h3 id="_9">事故感知</h3>
+<h3 id="_11">事故感知</h3>
 <ul>
 <li>监控专项</li>
 <li>SLI 告警覆盖</li>
 <li>客诉感知</li>
 <li>OnCall 机制</li>
 </ul>
-<h3 id="_10">事故中定位和止损</h3>
+<h3 id="_12">事故中定位和止损</h3>
 <ul>
 <li>定位大盘</li>
 <li>变更查询和看板</li>
