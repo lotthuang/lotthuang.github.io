@@ -76,6 +76,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/18_mysql/">第十八篇 MySQL使用</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/19_network_ratelimit/">第十九篇 Linux网络限速</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul class="current">
@@ -383,14 +385,14 @@
 <h1 id="_2">架构师必备的特质</h1>
 <ul>
 <li>一名优秀的架构师，在设计系统时需要有以下这<a href="https://www.geek-share.com/detail/2794041054.html">四项关键能力</a>：「平衡取舍、预判未来、抽象思维、容错机制」</li>
-<li>作为一名优秀的SRE, 在设计技术方案时，也需要提升这四项关键能力.</li>
+<li>作为一名优秀的 SRE, 在设计技术方案时，也需要提升这四项关键能力.</li>
 </ul>
 <h2 id="_3">平衡取舍</h2>
 <p>一个架构本质上总会有优有劣，它不可能是完美的、普适的，也不存在一个架构在 A 场景能用，在 B 场景也最适用的情况，所以就需要我们准确判断，作出取舍。
 我们可以根据具体的业务需求来调整架构，也就是以当前的业务需求，选出最匹配的架构。另外，架构师还需要根据现状衡量好需求和资源、效率和安全、时延和吞吐等等之间的关系，做出判断。
 比如对于在线交易系统，可能更重要的是保证它的低时延，因此就可以牺牲一定的吞吐量，而对于离线系统，吞吐量则更重要一些。</p>
 <ul>
-<li>满足业务需求的前提下，最大化ROI.</li>
+<li>满足业务需求的前提下，最大化 ROI.</li>
 </ul>
 <h2 id="_4">预判未来</h2>
 <p>架构师需要具备一定的未来的预判能力，因为架构的调整周期通常比较长。这也是程序员和架构师之间一个很大的区别所在。
@@ -418,22 +420,20 @@
 <ul>
 <li>关注端到端的价值交付，技术团队要持续地顺畅交付有效价值给业务</li>
 <li>战略上藐视技术，战术上重视技术</li>
-<li>设计技术方案时，一些好的Idea<ul>
+<li>设计技术方案时，一些好的 Idea</li>
 <li>以空间换时间，牺牲写性能换取读性能</li>
 <li>技术方案注重冷热分离的思考</li>
 <li>技术方案注重<a href="https://mp.weixin.qq.com/s/cj67ldIIIkWpdZS92evfiA">推模型、拉模型、推拉结合</a>的思考</li>
 <li>故障处理时<code>只换不修</code>的思维, 直接给用户换一个新系统</li>
 </ul>
-</li>
-</ul>
 <h1 id="_8">常用的中间件技术总结</h1>
-<p><strong>以下是架构师常用到的中间件技术</strong> 
+<p><strong>以下是架构师常用到的中间件技术</strong>
 包括如下:</p>
 <ul>
-<li>LB技术</li>
+<li>LB 技术</li>
 <li>缓存技术</li>
 <li>线程池技术</li>
-<li>MQ技术</li>
+<li>MQ 技术</li>
 <li>数据库技术</li>
 <li>服务注册和发现技术</li>
 <li>微服务和服务网格技术</li>
@@ -441,23 +441,22 @@
 <li>客户端稳定性提升技术</li>
 <li>客户端埋点最佳实践</li>
 </ul>
-<h2 id="lb">LB技术</h2>
+<h2 id="lb">LB 技术</h2>
 <ul>
-<li>LB技术属于常用的一项中间件技术，经常用来做产品的流量入口或者内部服务之间互相调用的中间件. 注意区分4层反向代理，还是7层反向代理.</li>
-<li>LB的负载均衡策略，可以参考前面总结的"Nginx的均衡策略", 其他的负载均衡器具备的能力都非常相似.</li>
+<li>LB 技术属于常用的一项中间件技术，经常用来做产品的流量入口或者内部服务之间互相调用的中间件. 注意区分 4 层反向代理，还是 7 层反向代理.</li>
+<li>LB 的负载均衡策略，可以参考前面总结的"Nginx 的均衡策略", 其他的负载均衡器具备的能力都非常相似.</li>
 </ul>
 <h2 id="_9">缓存技术</h2>
 <h3 id="_10">工程上，缓存一般有几种使用方式？</h3>
-<h4 id="1">（1）进程内缓存；</h4>
-<h4 id="2">（2）进程外缓存，也就是缓存服务；</h4>
+<h4 id="1-2">（1）进程内缓存； ####（2）进程外缓存，也就是缓存服务；</h4>
 <h3 id="_11">如果有多个服务使用进程内缓存，如何保证一致性？</h3>
 <p>常见的有三种方法：</p>
 <ol>
 <li>服务节点同步通知；</li>
-<li>MQ异步通知；</li>
+<li>MQ 异步通知；</li>
 <li>牺牲少量一致性，定期后端更新；</li>
 </ol>
-<h3 id="redis">绝大部分情况，还是应该使用缓存服务(例如Redis). 缓存服务的使用，有什么注意点？</h3>
+<h3 id="redis">绝大部分情况，还是应该使用缓存服务(例如 Redis). 缓存服务的使用，有什么注意点？</h3>
 <p>以下几点，应该要注意：</p>
 <ol>
 <li>服务与服务之间不要通过缓存传递数据；</li>
@@ -481,11 +480,8 @@
 <li>缓存的本质是“冗余了数据库中的数据”。 可能存在什么问题？缓存与数据库数据不一致。</li>
 <li>出现不一致时，优化思路是什么？及时把缓存中的脏数据淘汰掉。</li>
 </ul>
-<h3 id="redis_1">什么时候选择优先使用Redis？</h3>
-<h4 id="1_1">（1）需要支持复杂数据结构；</h4>
-<h4 id="2_1">（2）需要支持持久化；</h4>
-<h4 id="3">（3）需要天然高可用；</h4>
-<h4 id="4value">（4）value存储内容比较大；</h4>
+<h3 id="redis_1">什么时候选择优先使用 Redis？</h3>
+<h4 id="1-2-3-4value">（1）需要支持复杂数据结构； ####（2）需要支持持久化； ####（3）需要天然高可用； ####（4）value 存储内容比较大；</h4>
 <h2 id="_16">线程池技术</h2>
 <ul>
 <li>这里区分<code>连接池</code>和<code>线程池</code>, 其实本质上都是保存<code>worker</code>的池子</li>
@@ -493,24 +489,26 @@
 <h3 id="_17">连接池</h3>
 <p>连接池的核心是什么？两个核心数据结构：连接数组，锁数据；三个核心接口：初始化，拿出连接，放回连接；</p>
 <h3 id="_18">线程池</h3>
-<h4 id="worker"><a href="https://mp.weixin.qq.com/s/OKTW_mZnNJcRBrIFHONR3g">线程池技术</a>解决的问题是： 保持一定量的worker线程，把提交任务和执行任务进行解耦.</h4>
+<h4 id="worker"><a href="https://mp.weixin.qq.com/s/OKTW_mZnNJcRBrIFHONR3g">线程池技术</a>解决的问题是： 保持一定量的 worker 线程，把提交任务和执行任务进行解耦.</h4>
 <ul>
 <li>当任务到达时，任务可以不需要等到线程创建就能立即执行.</li>
 </ul>
-<h4 id="7">线程池有7个核心参数</h4>
+<h4 id="7">线程池有 7 个核心参数</h4>
 <p><img alt="png" src="../../img/DE25F5F4-4689-4DFC-8D00-1D012765CB84.png" /></p>
 <ul>
 <li>
 <p>这些参数分别是</p>
-<ul>
-<li><code>int corePoolSize</code>：核心线程数</li>
+</li>
+<li>
+<p><code>int corePoolSize</code>：核心线程数</p>
+</li>
 <li><code>int maximumPoolSize</code>：最大线程数</li>
 <li><code>long keepAliveTime</code>：非核心线程的空闲时间</li>
 <li><code>TimeUnit unit</code>：空闲时间的单位</li>
 <li><code>BlockingQueue&lt;Runnable&gt; workQueue</code>：任务队列（线程安全的阻塞队列）</li>
 <li><code>ThreadFactory threadFactory</code>：线程工厂</li>
-<li><code>RejectedExecutionHandler handler</code>：拒绝策略</li>
-</ul>
+<li>
+<p><code>RejectedExecutionHandler handler</code>：拒绝策略</p>
 </li>
 <li>
 <p><code>corePoolSize</code>: 一开始任务数少的时候， 线程数量不会一下子全开好，而是每当有一个新任务进来，同时没有空闲线程时，就会新开一个线程, 如何创建线程呢，由<code>theadFactory</code>方法指定。直到达到<code>corePoolSize</code> 这个数量</p>
@@ -519,38 +517,32 @@
 <p>当达到<code>corePoolSize</code>时，如果还有任务不断被提交进来，同时没有空闲线程去做这些任务，那么会被加入一个队列， <code>workQueue</code></p>
 </li>
 <li>
-<p>直到有那么一个时刻，<code>workQueue</code>满了，（主要是秒杀类的高QPS业务场景）那么线程池又会继续加线程数量，直到加满<code>maximumPoolSize</code></p>
+<p>直到有那么一个时刻，<code>workQueue</code>满了，（主要是秒杀类的高 QPS 业务场景）那么线程池又会继续加线程数量，直到加满<code>maximumPoolSize</code></p>
 </li>
 <li>
 <p>如果加满<code>maximumPoolSize</code>还不够，那么新来的任务会被拒绝，拒绝的处理者就是那个<code>handler</code>定义的方法.</p>
 </li>
 <li>
-<p>如果加满（或者大于 <code>corePoolSize</code>  但是小于 <code>maximumPoolSize</code> ）<code>maximumPoolSize</code>足够处理新任务,  那么一段时间后，会有空闲的线程出来。 这些线程就称为 <code>非核心线程</code>， <code>非核心线程</code>空闲一段时间后 ，（这段时间由<code>keepAliveTime * unit</code>决定），就会被销毁，减少系统资源消耗.</p>
+<p>如果加满（或者大于 <code>corePoolSize</code> 但是小于 <code>maximumPoolSize</code> ）<code>maximumPoolSize</code>足够处理新任务, 那么一段时间后，会有空闲的线程出来。 这些线程就称为 <code>非核心线程</code>， <code>非核心线程</code>空闲一段时间后 ，（这段时间由<code>keepAliveTime * unit</code>决定），就会被销毁，减少系统资源消耗.</p>
 </li>
 </ul>
 <h4 id="_19">任务提交到线程池的整体流程</h4>
 <p><img alt="png" src="../../img/WechatIMG165.png" /></p>
-<h2 id="mq">MQ技术</h2>
-<h3 id="3_1">3个核心模型</h3>
+<h2 id="mq">MQ 技术</h2>
+<h3 id="3">3 个核心模型</h3>
 <ul>
 <li>消息(Message)</li>
 <li>发布者: (Producer)</li>
 <li>消费者(处理者): Consumer(worker)</li>
 </ul>
-<h3 id="3_2">3个核心应用场景</h3>
+<h3 id="3_1">3 个核心应用场景</h3>
 <ul>
-<li>解耦<ul>
+<li>解耦</li>
 <li>上下游服务进行隔离，整体架构更加清晰、整洁.</li>
-</ul>
-</li>
-<li>削峰<ul>
+<li>削峰</li>
 <li>对于短时间内极端流量，对后端服务可以启到保护作用.</li>
-</ul>
-</li>
-<li>异步<ul>
+<li>异步</li>
 <li>针对长时间的任务, 前端可以快速给用户反馈，后端可以慢慢处理.</li>
-</ul>
-</li>
 </ul>
 <h2 id="_20">数据库技术</h2>
 <p>这里主要探讨数据库设计上一些思考点</p>
@@ -562,7 +554,7 @@
 <h3 id="_22">架构上，数据库还必须考虑什么？</h3>
 <ol>
 <li>读性能提升；</li>
-<li>高可用； </li>
+<li>高可用；</li>
 <li>一致性保障；</li>
 <li>扩展性；</li>
 <li>垂直拆分；</li>
@@ -587,14 +579,14 @@
 </ol>
 <h2 id="service-discovery">服务发现（Service Discovery）中间件</h2>
 <p>服务发现要解决的是分布式系统中最常见的问题之一，即在同一个分布式集群中的进程或服务，要如何才能找到对方并建立连接。本质上来说，服务发现就是想要了解集群中是否有进程在监听 udp 或 tcp 端口，并且通过名字就可以查找和连接。</p>
-<h3 id="3_3">解决服务发现的3大支柱</h3>
+<h3 id="3_2">解决服务发现的 3 大支柱</h3>
 <p>要解决服务发现的问题，需要有下面三大支柱，缺一不可:</p>
 <ol>
-<li><strong>一个强一致性、高可用的服务存储目录.</strong> 
-基于 Raft 算法的 etcd 天生就是这样一个强一致性高可用的服务存储目录。 一致性k/v存储.</li>
+<li><strong>一个强一致性、高可用的服务存储目录.</strong>
+   基于 Raft 算法的 etcd 天生就是这样一个强一致性高可用的服务存储目录。 一致性 k/v 存储.</li>
 <li><strong>一种注册服务和监控服务健康状态的机制。</strong> 用户可以在 etcd 中注册服务，并且对注册的服务设置 key TTL，然后定时保持服务的心跳以达到监控健康状态的效果。</li>
 <li><strong>一种查找和连接服务的机制。</strong> 通过在 etcd 指定的主题下注册的服务也能在对应的主题下查找到。为了确保连接，我们可以在每个服务机器上都部署一个 Proxy 模式的 etcd，这样就可以确保能访问 etcd 集群的服务都能互相连接。
-<img alt="png" src="../../img/20180905111736.jpeg" /></li>
+   <img alt="png" src="../../img/20180905111736.jpeg" /></li>
 </ol>
 <h3 id="_26">关于自动服务发现</h3>
 <ul>
@@ -602,23 +594,23 @@
 <li>有一个地方动态的读取配置，从而能自动去调用服务。</li>
 <li>
 <ul>
-<li>举个例子, 比如Prometheus进程每5分钟周期性读取一下配置文件(<code>/etc/prometheus/prometheus-file-sd.yml</code>), 因此相应的监控Job修改之后无需重启Prometheus进程自动会被发现.</li>
+<li>举个例子, 比如 Prometheus 进程每 5 分钟周期性读取一下配置文件(<code>/etc/prometheus/prometheus-file-sd.yml</code>), 因此相应的监控 Job 修改之后无需重启 Prometheus 进程自动会被发现.</li>
 </ul>
 </li>
 </ul>
 <h4 id="_27">服务中心</h4>
 <p>在服务中心中，分为两种：</p>
 <ul>
-<li>一种是名称总线系统，也就是A系统需要调用某个服务的时候，只要请求服务中心即可，服务中心会自己去调用远程的服务然后得到响应，最后由服务中心响应给A系统。（ESB企业服务总线）</li>
+<li>一种是名称总线系统，也就是 A 系统需要调用某个服务的时候，只要请求服务中心即可，服务中心会自己去调用远程的服务然后得到响应，最后由服务中心响应给 A 系统。（ESB 企业服务总线）</li>
 </ul>
 <p><img alt="png" src="../../img/WechatIMG416.png" /></p>
 <ul>
-<li>一种是名称服务系统，也就是A系统需要调用某个服务的时候，去服务中心获取到远程的服务ip+port，然后A系统自己发送请求获得响应（和DNS类似，只是为了解析出IP和端口)</li>
+<li>一种是名称服务系统，也就是 A 系统需要调用某个服务的时候，去服务中心获取到远程的服务 ip+port，然后 A 系统自己发送请求获得响应（和 DNS 类似，只是为了解析出 IP 和端口)</li>
 </ul>
 <p><img alt="png" src="../../img/WechatIMG417.png" /></p>
-<h4 id="consul">Consul架构图</h4>
-<p>Consul的作用主要是管理这些集群服务的配置，整体流程是这样子的：服务（进程）启动的时候把服务名和自己的IP、端口通过HTTP告诉我，我将这些信息记到自己的内存表格中，客户端调用时带上要查询的服务名通过HTTP发送给我，我再自己的内存表中找到叫这服务名的所有配置发送给客户端。
-平时我还要做一些服务健康检查的事儿，在上面服务启动的时候，服务还要给我配置一个检查接口和检查频率等一些参数，我会按这些参数每隔一段时间，比如10秒钟去请求一下这个接口，如果不通，我就隔5秒再重试下，如果重试3次还不通，我就认定这个服务挂掉了，就从内存表格中删掉这个服务配置，不然客户端要请求到这个不通服务，我就罪过了。</p>
+<h4 id="consul">Consul 架构图</h4>
+<p>Consul 的作用主要是管理这些集群服务的配置，整体流程是这样子的：服务（进程）启动的时候把服务名和自己的 IP、端口通过 HTTP 告诉我，我将这些信息记到自己的内存表格中，客户端调用时带上要查询的服务名通过 HTTP 发送给我，我再自己的内存表中找到叫这服务名的所有配置发送给客户端。
+平时我还要做一些服务健康检查的事儿，在上面服务启动的时候，服务还要给我配置一个检查接口和检查频率等一些参数，我会按这些参数每隔一段时间，比如 10 秒钟去请求一下这个接口，如果不通，我就隔 5 秒再重试下，如果重试 3 次还不通，我就认定这个服务挂掉了，就从内存表格中删掉这个服务配置，不然客户端要请求到这个不通服务，我就罪过了。</p>
 <p><img alt="png" src="../../img/WechatIMG418.jpeg" /></p>
 <p>Consul 更像是一个 full stack 的解决方案，它不仅提供了一致性 k/v 存储，还封装了服务发现，健康检查，内置了 DNS server 等等.</p>
 <h2 id="service-mesh">微服务架构和服务网格（Service Mesh）</h2>
@@ -628,30 +620,30 @@
 <ul>
 <li>
 <p>用户流量进入服务端之后, 服务端(指上图中的<code>Web服务</code>和<code>Worker集群</code>)多种<code>应用</code>可以和<code>操作系统的进程</code>形成<code>多对多的模式</code>, 每种<code>应用</code>有如下特性</p>
-<ul>
-<li>顺畅、低成本的互相调用别的<code>应用</code></li>
-<li>高可用</li>
-<li>无限性能扩展(自动化扩缩容)</li>
-<li>负载均衡</li>
-</ul>
 </li>
 <li>
-<p>微服务部署的最佳实践是什么? Kubernetes集群</p>
+<p>顺畅、低成本的互相调用别的<code>应用</code></p>
+</li>
+<li>高可用</li>
+<li>无限性能扩展(自动化扩缩容)</li>
+<li>
+<p>负载均衡</p>
+</li>
+<li>
+<p>微服务部署的最佳实践是什么? Kubernetes 集群</p>
 </li>
 </ul>
 <p><img alt="png" src="../../img/WechatIMG178.jpeg" /></p>
-<h3 id="service-mesh_1">Service Mesh的由来</h3>
+<h3 id="service-mesh_1">Service Mesh 的由来</h3>
 <h4 id="_30">负载均衡、数据收集、服务发现、调用链跟踪。这些非业务的功能，一般是谁实现的呢？</h4>
 <ol>
 <li>互联网公司一般会有一个“架构部”，研发框架、组件、工具与技术平台；</li>
 <li>业务研发部门直接使用相关框架、组件、工具与技术平台，享受各种“黑科技”带来的便利；</li>
-<li>对于上述“黑科技”的使用与推广，存在什么问题？框架、组件、工具与技术平台的使用与推广，往往会遇到以下一些问题：<ul>
+<li>对于上述“黑科技”的使用与推广，存在什么问题？框架、组件、工具与技术平台的使用与推广，往往会遇到以下一些问题：</li>
 <li>业务研发团队，需要花大量时间去学习、使用基础框架与各类工具；</li>
-<li>架构部，对于“黑科技”不同语言客户端的支持，往往要开发C-client，Python-client，go-client，Java-client多语言版本；</li>
-<li>架构部，“黑科技” client要维护m个版本， server要维护n个版本，兼容性要测试m*n个版本；</li>
+<li>架构部，对于“黑科技”不同语言客户端的支持，往往要开发 C-client，Python-client，go-client，Java-client 多语言版本；</li>
+<li>架构部，“黑科技” client 要维护 m 个版本， server 要维护 n 个版本，兼容性要测试 m*n 个版本；</li>
 <li>每次“黑科技”的升级，都需要推动上下游进行升级，这个周期往往是以季度、半年、又甚至更久，整体效率极低；</li>
-</ul>
-</li>
 </ol>
 <p>解决思路是: <code>解耦，将业务服务拆分成两个进程</code>：</p>
 <p><img alt="png" src="../../img/WechatIMG168.png" /></p>
@@ -660,35 +652,36 @@
 <li>一个进程实现底层技术体系，<code>proxy</code>，即上图蓝色方块；(负载均衡、监控告警、服务发现与治理、调用链…等诸多基础设施，都放到这一层实现。)</li>
 </ol>
 <p>他们之间有这样一些特点：
-<img alt="png" src="../../img/WechatIMG168.png" />
-1. biz和proxy共同诞生，共同消亡，互为本地部署，即上图虚线方框；
-2. biz和proxy之间，为本地通讯，即上图黑色箭头；
-3.所有biz之间的通讯，都通过proxy之间完成，proxy之间才存在远端连接，即上图红色箭头；</p>
+<img alt="png" src="../../img/WechatIMG168.png" /></p>
+<ol>
+<li>biz 和 proxy 共同诞生，共同消亡，互为本地部署，即上图虚线方框；</li>
+<li>biz 和 proxy 之间，为本地通讯，即上图黑色箭头； 3.所有 biz 之间的通讯，都通过 proxy 之间完成，proxy 之间才存在远端连接，即上图红色箭头；</li>
+</ol>
 <p>这样就实现了<code>业务的归业务，技术的归技术</code>，实现了充分解耦，如果所有节点都实现了解耦，整个架构会演变为：
 <img alt="png" src="../../img/WechatIMG169.png" /></p>
 <ul>
 <li>绿色为<code>biz</code>；</li>
 <li>蓝色为<code>proxy</code>；
-整个服务集群变成了网格状，这就是<code>Service Mesh服务网格</code>的由来。</li>
+  整个服务集群变成了网格状，这就是<code>Service Mesh服务网格</code>的由来。</li>
 </ul>
-<h4 id="service-mesh_2">Service Mesh的行业开源最佳实践是什么？</h4>
+<h4 id="service-mesh_2">Service Mesh 的行业开源最佳实践是什么？</h4>
 <p><code>Istio</code></p>
-<h4 id="istio">Istio的架构核心是什么？</h4>
-<p>Istio架构分为两层：</p>
+<h4 id="istio">Istio 的架构核心是什么？</h4>
+<p>Istio 架构分为两层：</p>
 <ol>
 <li>数据平面(data plane)；</li>
 <li>控制平面(control plane)；
-<img alt="png" src="../../img/WechatIMG170.png" /></li>
+   <img alt="png" src="../../img/WechatIMG170.png" /></li>
 </ol>
-<h4 id="istio_1">Istio的优势讲解</h4>
+<h4 id="istio_1">Istio 的优势讲解</h4>
 <p><a href="https://mp.weixin.qq.com/s/CALHF1UBpiKtNNS-NFHVnA?locale=zh-CN">参考</a></p>
-<h5 id="1-kubernetesserviceclusterip">1. 一开始,  Kubernetes集群内部，通过Service的ClusterIP进行互相调用的情况</h5>
+<h5 id="1-kubernetes-service-clusterip">1. 一开始, Kubernetes 集群内部，通过 Service 的 ClusterIP 进行互相调用的情况</h5>
 <p><img alt="png" src="../../img/WechatIMG177.jpeg" />
 上图的 <code>Kubernetes</code> 集群中一共有两个节点和 4 个 <code>Pod</code>，每个 <code>Pod</code> 都有一个容器。服务 <code>service-nginx</code> 指向 <code>nginx pods</code>，服务 <code>service-python</code> 指向 <code>python pods</code>。红线显示了从 <code>pod1-nginx</code> 中的 <code>nginx</code> 容器向 <code>service-python</code> 服务发出的请求，该服务将请求重定向到 <code>pod2-python</code>。</p>
 <p>通过服务的<code>ClusterIP</code> 向后端<code>Pod</code>进行简单的随机或轮询转发请求，<code>Kubernetes</code> 中的 <code>Services</code> 并不存在于特定的节点上，而是存在于整个集群中。我们可以在下图 中看到更多细节:</p>
 <p><img alt="png" src="../../img/WechatIMG173.jpeg" /></p>
 <p>上图要更详细点，Kubernetes 中的服务是由运行在每个节点上的 kube-proxy 组件实现的，该组件创建 iptables 规则，并将请求重定向到 Pod。因此，服务就是 iptables 规则。(还有其他不使用 iptables 的代理模式，但过程是相同的。)</p>
-<h4 id="2-istio-control-plane-data-plane">2. 有了Istio之后, Control Plane 和  Data Plane之间通讯的示意图</h4>
+<h4 id="2-istio-control-plane-data-plane">2. 有了 Istio 之后, Control Plane 和 Data Plane 之间通讯的示意图</h4>
 <p><img alt="png" src="../../img/64020210725.png" />
 <code>Istio</code> 最常见的代理是 <code>Envoy</code>，当然也可以使用其他代理（如 <code>Nginx</code>），所以我们将代理称为<code>istio-proxy</code>。</p>
 <p>我们可以看到不再显示 <code>kube-proxy</code> 组件，这样做是为了保持图像的整洁，这些组件仍然存在，但是拥有 <code>istio-proxy</code> 的 <code>Pods</code> 将不再使用 <code>kube-proxy</code> 组件了。
@@ -700,8 +693,8 @@
 <p><img alt="png" src="../../img/WechatIMG175.jpeg" />
 在上图中，所有的 <code>istio-proxy</code> 容器已经被 <code>Istio 控制平面</code>所管控，并包含所有必要的路由信息，如图 3/4 所示，来自 <code>pod1-nginx</code> 的 <code>nginx 容器</code>向 <code>service-python</code> 发出请求。</p>
 <p>请求被 <code>pod1-nginx</code> 的 <code>istio-proxy</code> 容器拦截，并被重定向到一个 <code>python pod</code> 的 <code>istio-proxy</code> 容器，该容器随后将请求重定向到 <code>python</code> 容器。</p>
-<h5 id="istio_2">Istio的优势总结</h5>
-<p>现在所有流量都通过每个 Pod 中的 <code>istio-proxy</code> 容器进行路由，每当 <code>istio-proxy</code> 接收并重定向一个请求时，它还会将有关该请求的信息提交给 <code>Istio 控制平面</code>。因此 <code>Istio 控制平面</code>可以准确地知道该请求来自哪个Pod、存在哪些 HTTP 头、从一个<code>istio-proxy</code> 到另一个 <code>istio-proxy</code> 的请求需要多长时间等等。在具有彼此通信的服务的集群中，这可以提高可观察性并更好地控制所有流量</p>
+<h5 id="istio_2">Istio 的优势总结</h5>
+<p>现在所有流量都通过每个 Pod 中的 <code>istio-proxy</code> 容器进行路由，每当 <code>istio-proxy</code> 接收并重定向一个请求时，它还会将有关该请求的信息提交给 <code>Istio 控制平面</code>。因此 <code>Istio 控制平面</code>可以准确地知道该请求来自哪个 Pod、存在哪些 HTTP 头、从一个<code>istio-proxy</code> 到另一个 <code>istio-proxy</code> 的请求需要多长时间等等。在具有彼此通信的服务的集群中，这可以提高可观察性并更好地控制所有流量</p>
 <ul>
 <li>
 <p><code>先进的路由</code>，<code>Kubernetes</code> 内部 <code>Services</code> 只能对 <code>Pods</code> 执行轮询或随机分发请求，使用 <code>Istio</code> 可以实现更复杂的方式。比如，如果发生错误，根据请求头进行重定向，或者重定向到最少使用的服务。</p>
@@ -714,7 +707,7 @@
 </li>
 <li>
 <p><code>监控/图形</code>，<code>Istio</code> 可以连接到 <code>Prometheus</code> 等监控工具，也可以与 <code>Kiali</code> 一起展示所有的服务和他们的流量。
-<img alt="png" src="../../img/WechatIMG176.jpeg" /></p>
+  <img alt="png" src="../../img/WechatIMG176.jpeg" /></p>
 </li>
 <li>
 <p><code>追踪</code>，因为 <code>Istio 控制平面</code>拥有大量关于请求的数据，所以可以使用 Jaeger 等工具跟踪和检查这些数据。</p>
@@ -723,28 +716,25 @@
 <h2 id="_31">客户端网络质量改善技术</h2>
 <h3 id="_32">本质上都是利用边缘节点(代理节点)以及优化的骨干网络来降低用户访问服务端的延迟，提升用户体验.</h3>
 <ul>
-<li>代理节点<ul>
-<li>CDN的边缘节点</li>
+<li>代理节点</li>
+<li>CDN 的边缘节点</li>
 <li>公司自研的代理节点</li>
-</ul>
-</li>
-<li>优化的骨干网络<ul>
+<li>做好自动主备切换多 CDN 供应商</li>
+<li>优化的骨干网络</li>
 <li><a href="https://mp.weixin.qq.com/s/qur3Csb3WEWKavFdx9BjBg">利用公有云的骨干网络</a></li>
 <li>拉专线</li>
-</ul>
-</li>
 </ul>
 <h2 id="_33">客户端稳定性提升</h2>
 <blockquote>
 <p>以下是不同业务客户端都会需要的一些通用功能</p>
 </blockquote>
 <ul>
-<li>客户端网络探测器, 探测最快到达服务端的路径利器, 客户端选择路径有时候并不是直连服务端最快，而是先连接到加速节点, 再由加速节点代理回到服务端快. 因此不同客户端直接需要实现一个通用的SDK.</li>
-<li>客户端Dump系统, 搜集不同客户端奔溃率并上报.</li>
-<li>客户端通用下载器, 业务程序无需实现下载逻辑, 直接调用相关SDK</li>
+<li>客户端网络探测器, 探测最快到达服务端的路径利器, 客户端选择路径有时候并不是直连服务端最快，而是先连接到加速节点, 再由加速节点代理回到服务端快. 因此不同客户端直接需要实现一个通用的 SDK.</li>
+<li>客户端 Dump 系统, 搜集不同客户端奔溃率并上报.</li>
+<li>客户端通用下载器, 业务程序无需实现下载逻辑, 直接调用相关 SDK</li>
 <li>HTTPDNS SDK, 防劫持</li>
 <li>LBS SDK, 客户端获取地理位置、附近的人等</li>
-<li>通用问题探测(Detect)和上报相关SDK, 不同客户端可以直接集成该SDK, 在用户使用客户端的任意阶段有问题都可以上报</li>
+<li>通用问题探测(Detect)和上报相关 SDK, 不同客户端可以直接集成该 SDK, 在用户使用客户端的任意阶段有问题都可以上报</li>
 </ul>
 <h2 id="_34">客户端埋点最佳实践</h2>
 <ul>

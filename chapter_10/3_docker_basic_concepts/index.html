@@ -76,6 +76,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/18_mysql/">第十八篇 MySQL使用</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/19_network_ratelimit/">第十九篇 Linux网络限速</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -466,7 +468,17 @@
 <li>如何批量重新启动容器里的程序？</li>
 </ul>
 <p>解决这些问题需要容器编排技术，可以将众多机器抽象，对外呈现出一台超大机器。现在业界比较流行的有：Kubernetes、Mesos、Docker Swarm。</p>
-<p>Kubernetes 融合了虚拟化和自动化运维管理，是多主机面对高并发的一种很好的解决方案。</p>
+<p><strong>Kubernetes 融合了虚拟化和自动化运维管理</strong>，是<strong>多主机面对高并发的一种很好的解决方案</strong>。</p>
+<h3 id="1">1 自愈</h3>
+<p>重新启动失败的容器，在节点不可用时，替换和重新调度节点上的容器，对用户定义的健康检查不响应的容器会被中止，并且在容器准备好服务之前不会把其向客户端广播。</p>
+<h3 id="2">2 弹性伸缩</h3>
+<p>通过监控容器的 cpu 的负载值,如果这个平均高于 80%,增加容器的数量,如果这个平均低于 10%,减少容器的数量</p>
+<h3 id="3">3 服务发现和负载均衡</h3>
+<p>不需要修改您的应用程序来使用不熟悉的服务发现机制，Kubernetes 为容器提供了自己的 IP 地址和一组容器的单个 DNS 名称，并可以在它们之间进行负载均衡。</p>
+<h3 id="4">4 滚动升级和一键回滚</h3>
+<p>Kubernetes 逐渐部署对应用程序或其配置的更改，同时监视应用程序运行状况，以确保它不会同时终止所有实例。 如果出现问题，Kubernetes 会为您恢复更改，利用日益增长的部署解决方案的生态系统。</p>
+<h3 id="5">5 私密配置文件管理</h3>
+<p>web 容器里面,数据库的账户密码(测试库密码)</p>
               
             </div>
           </div><footer>

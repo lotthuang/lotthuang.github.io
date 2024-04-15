@@ -76,6 +76,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/18_mysql/">第十八篇 MySQL使用</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/19_network_ratelimit/">第十九篇 Linux网络限速</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -815,6 +817,9 @@ int register_filesystem(struct file_system_type * fs)
 <p>内核代码中，current 总是指向当前的进程的 task_struct</p>
 <h3 id="2-container_of">2 <a href="https://mp.weixin.qq.com/s/YVH5Va00XK_7xcr8nb15Xg">container_of</a> 宏</h3>
 <p>是一个在 Linux 内核中常用的宏，通过结构体的某个<strong>成员变量地址</strong>找到<strong>该结构体的首地址</strong></p>
+<p><img alt="png" src="../../img/WechatIMG653.jpg" /></p>
+<p>如下图案例，通过单链表组织起来的若干个结构体，当已知链表头遍历每个节点时，<strong>list 作为结构体成员，可使用 container_of 宏定义追溯到该结构首地址，进而可访问结构体中所有成员。</strong></p>
+<p><img alt="png" src="../../img/WechatIMG654.jpg" /></p>
 <p>例如下面通过 inode 结构体获取对应的 cdev 结构体, 然后将 file 结构体的 private_data 成员赋值给它, 是一个典型的 open 操作的实现方法.</p>
 <pre><code>cd   = container_of(inode-&gt;i_cdev,struct   mycdev,cdev);
     file-&gt;private_data =   cd;

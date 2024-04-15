@@ -76,6 +76,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/18_mysql/">第十八篇 MySQL使用</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/19_network_ratelimit/">第十九篇 Linux网络限速</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -331,6 +333,24 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#etcd">十五 ETCD 优化</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_24">十六 备份</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_25">备份方案制定</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#etcd_1">物理备份：etcd 备份</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#velero">逻辑备份：velero 备份 ，</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_26">优缺点</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#operator">十七 Operator</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_27">十八 调试</a>
+    </li>
     </ul>
                   </li>
               </ul>
@@ -508,6 +528,36 @@
 <ul>
 <li>参考<a href="https://imroc.cc/kubernetes/best-practices/ops/etcd-optimization">Etcd 优化</a></li>
 </ul>
+<h2 id="_24">十六 备份</h2>
+<h3 id="_25">备份方案制定</h3>
+<h4 id="etcd_1">物理备份：etcd 备份</h4>
+<p>保存某一个时刻的快照，快捷方便。</p>
+<p>使用命令</p>
+<pre><code>ETCDCTL_API=3 /usr/local/bin/etcdctl --endpoints=https://127.0.0.1:2379 \
+  --cacert=&quot;${ETCD_CA_CERT}&quot; --cert=&quot;${ETCD_CERT}&quot; --key=&quot;${ETCD_KEY}&quot; \
+  snapshot save &quot;${BACKUP_DIR}/etcd-snapshot-${DT}.db&quot;
+</code></pre>
+<h4 id="velero">逻辑备份：velero 备份 ，</h4>
+<p>允许用户自己选择备份的内容，比如单个 namespace、指定资源类型等。</p>
+<ul>
+<li>查看配置的存储位置是否可用</li>
+</ul>
+<pre><code>velero backup-location get
+</code></pre>
+<ul>
+<li>实际备份, 选择对应的资源进行备份</li>
+</ul>
+<pre><code>velero create schedule xxx --schedule=&quot;0 1 * * *&quot; --include-namespaces=prod --snapshot-volumes=false --default-volumes-to-restic=false --ttl=168h
+</code></pre>
+<h4 id="_26">优缺点</h4>
+<p>物理备份的优点是速度快，无论是备份还是回恢复，但缺点是元数据不可读，只能全部恢复。而逻辑备份正好相反，因此两者可以结合使用，既能快，又能有细粒度控制的能力。</p>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/t6sJX1IeTNn1u-kSW5ju8A">K8S 备份</a></li>
+</ul>
+<h2 id="operator">十七 Operator</h2>
+<p>通过自定义资源，我们可以将应用抽象为一个整体，而不用去关心该应用是由哪些 Kubernetes 原生组件构成的，什么 Pods、Deployments、Services 或 ConfigMaps 统统交给 Operator 来管理。创建 Operator 的关键是自定义资源的设计，通过直接调用 Kubernetes API，编写自定义规则自动管理和维护 Kubernetes 集群中的应用，包括自动化安装、配置、更新、故障转移、备份恢复等等。这样的应用也被称为 Kubernetes 原生应用（Kubernetes-native application</p>
+<h2 id="_27">十八 调试</h2>
+<p>1 <a href="https://blog.csdn.net/weixin_47575974/article/details/132565913">k8s 进入无 shell pod</a></p>
               
             </div>
           </div><footer>

@@ -76,6 +76,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/18_mysql/">第十八篇 MySQL使用</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/19_network_ratelimit/">第十九篇 Linux网络限速</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -453,7 +455,7 @@ typedef struct zone_struct {
 <li>在新版本内核中, 才使用<code>typdef ... free_area_t</code>形式</li>
 </ul>
 <p><code>free_area</code> 是伙伴系统算法的核心，可以看到<code>zone_t</code>的 <code>free_area</code>属性 有 10 个元素。每个元素都是一个类型为 free_area_t 的结构体，free_area_t 结构的 free_list 字段用于连接有相同页面个数的内存块。map 字段是一个位图，用于记录伙伴内存块的使用情况。</p>
-<p>Linux 内核使用 free_area[i] 管理 2i 个内存页面大小的内存块列表，例如 free_area[0] 就是管理 1 个内存页面大小的内存块(2的0次方 等于 1)；而 free_area[1] 则管理 2 个内存页面大小的内存块(2的1次方 等于 2)。如下图所示：</p>
+<p>Linux 内核使用 free_area[i] 管理 2i 个内存页面大小的内存块列表，例如 free_area[0] 就是管理 1 个内存页面大小的内存块(2 的 0 次方 等于 1)；而 free_area[1] 则管理 2 个内存页面大小的内存块(2 的 1 次方 等于 2)。如下图所示：</p>
 <p><img alt="png" src="../../img/WechatIMG263.png" /></p>
 <p>管理物理内存页的 struct page 结构中有个 list 的字段，内核就是通过这个字段把有着相同个数页面的内存块连成一个链表的：</p>
 <pre><code>typedef struct page {
@@ -476,6 +478,7 @@ typedef struct zone_struct {
 </ul>
 <p><img alt="png" src="../../img/WechatIMG268.png" /></p>
 <p><img alt="png" src="../../img/WechatIMG38.png" /></p>
+<p><img alt="png" src="../../img/11FABBB3-9C73-41BB-84FB-41D919A24A9B.png" /></p>
 <ul>
 <li>每个 Node 下面, 有多个 Zone, 每个 Zone 在内核中使用<code>struct zone_t</code>表示. <strong>每个 Node 下所有的物理 Page 是一个数组.</strong></li>
 <li>每个<code>struct zone_t</code>下有一个<code>free_area</code>数组, 该数组中有 11 个元素. 每个元素是一个<code>struct free_area_t</code>, 每个<code>free_area_t</code>用链表关联了多个<code>struct page</code>, 并且符合 free_area[i] 管理 2i 个内存页面大小的内存块列表.</li>
