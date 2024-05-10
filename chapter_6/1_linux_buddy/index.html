@@ -476,11 +476,17 @@ typedef struct zone_struct {
 <h3 id="nodezonefree_areapage">Node、Zone、free_area、Page 之间的关系</h3>
 <p><img alt="png" src="../../img/WechatIMG267.png" /></p>
 <ul>
-<li>上图中, 每一个 Memory 部分, 在内核中使用<code>struct pg_data_t</code>表示, 即是一个 NUMA Node, 对于 UMA 架构 其实相当于只有一个 Node, 对于 NUMA 架构相当于有多个 Node, 多个 Node 形成一个链表.</li>
+<li>
+<p>上图中, 每一个 Memory 部分, 在内核中使用<code>struct pg_data_t</code>表示, 即是一个 NUMA Node, 对于 UMA 架构 其实相当于只有一个 Node, 对于 NUMA 架构相当于有多个 Node, 多个 Node 形成一个链表.</p>
+</li>
+<li>
+<p>以下多个图来解释下这些结构体之间的关系:</p>
+</li>
 </ul>
 <p><img alt="png" src="../../img/WechatIMG268.png" /></p>
 <p><img alt="png" src="../../img/WechatIMG38.png" /></p>
 <p><img alt="png" src="../../img/11FABBB3-9C73-41BB-84FB-41D919A24A9B.png" /></p>
+<p><img alt="png" src="../../img/WechatIMG739.jpg" /></p>
 <ul>
 <li>每个 Node 下面, 有多个 Zone, 每个 Zone 在内核中使用<code>struct zone_t</code>表示. <strong>每个 Node 下所有的物理 Page 是一个数组.</strong></li>
 <li>每个<code>struct zone_t</code>下有一个<code>free_area</code>数组, 该数组中有 11 个元素. 每个元素是一个<code>struct free_area_t</code>, 每个<code>free_area_t</code>用链表关联了多个<code>struct page</code>, 并且符合 free_area[i] 管理 2i 个内存页面大小的内存块列表.</li>
