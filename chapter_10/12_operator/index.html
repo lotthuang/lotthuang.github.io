@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第十三篇 中断处理程序的例子 - Lott's Blog</title>
+    <title>概述 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u5341\u4e09\u7bc7 \u4e2d\u65ad\u5904\u7406\u7a0b\u5e8f\u7684\u4f8b\u5b50";
-        var mkdocs_page_input_path = "chapter_4/13_interrupt_handler_examples.md";
+        var mkdocs_page_name = "\u6982\u8ff0";
+        var mkdocs_page_input_path = "chapter_10/12_operator.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -132,46 +132,36 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../1_process_ulimit/">第一篇 进程Max open files的设置</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../2_pid_max/">第二篇 kernel源码中pid的最大值</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../3_interrupt_one/">第三篇 硬中断</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/3_interrupt_one/">第三篇 硬中断</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_soft_irq/">第四篇 软中断</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/5_soft_irq/">第四篇 软中断</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../6_cpu_famous_register/">第六篇 CPU中的著名寄存器梳理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/6_cpu_famous_register/">第六篇 CPU中的著名寄存器梳理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../7_linux_signal/">第七篇 Linux信号机制</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/7_linux_signal/">第七篇 Linux信号机制</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../8_linux_scheduler/">第八篇 Linux进程调度</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/8_linux_scheduler/">第八篇 Linux进程调度</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../10_linux_context_switch/">第十篇 低视角看context switch</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/10_linux_context_switch/">第十篇 低视角看context switch</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../11_linux_cpu_usage/">第十一篇 CPU利用率统计</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/11_linux_cpu_usage/">第十一篇 CPU利用率统计</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../12_linux_preemption/">第十二篇 内核抢占基础篇</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/12_linux_preemption/">第十二篇 内核抢占基础篇</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第十三篇 中断处理程序的例子</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#handler">一 网卡中断 handler 程序</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#handler_1">二 看门狗硬件中断 handler 程序</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_2">附带信息</a>
-    </li>
-        </ul>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/13_interrupt_handler_examples/">第十三篇 中断处理程序的例子</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../14_linux_kernel_tracing/">第十四篇 理解内核追踪机制</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/14_linux_kernel_tracing/">第十四篇 理解内核追踪机制</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../15_task_struct/">第十五篇 task_struct结构体总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/15_task_struct/">第十五篇 task_struct结构体总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../16_init_call/">第十六篇 Linux各类initcall总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/16_init_call/">第十六篇 Linux各类initcall总结</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
@@ -277,27 +267,27 @@
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/2_benefits_of_containerization/">第二篇 容器化好处</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_benefits_of_containerization/">第二篇 容器化好处</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/3_docker_basic_concepts/">第三篇 容器化基础概念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_docker_basic_concepts/">第三篇 容器化基础概念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/9_cloudnative_monitor/">第九篇 云原生监控</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_cloudnative_monitor/">第九篇 云原生监控</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/10_event/">第十篇 彻底搞懂Kubernetes Event</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_event/">第十篇 彻底搞懂Kubernetes Event</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/11_best_practices/">第十一篇 Kubernetes最佳实践</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../11_best_practices/">第十一篇 Kubernetes最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/12_cloud_network/">第十二篇 云网络</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_cloud_network/">第十二篇 云网络</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -375,8 +365,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>第四章 Linux CPU子系统 &raquo;</li>
-      <li>第十三篇 中断处理程序的例子</li>
+      <li>概述</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -387,45 +376,24 @@
               
                 <h1 id="_1">概述</h1>
 <ul>
-<li>本篇总结一些中断处理程序的例子</li>
+<li>本篇总结 operator</li>
 </ul>
-<h2 id="handler">一 网卡中断 handler 程序</h2>
-<p><img alt="png" src="../../img/WechatIMG236.png" /></p>
-<h2 id="handler_1">二 看门狗硬件中断 handler 程序</h2>
-<pre><code>
-static irqreturn_t s3c2410wdt_irq(int irqno, void *param)
-{
-        dev_info(wdt_dev, &quot;watchdog timer expired (irq)\n&quot;);
-
-        s3c2410wdt_keepalive();
-        return IRQ_HANDLED;
-}
-
-</code></pre>
+<h2 id="operator">基本概念: operator 是什么</h2>
+<p>operator：operator 是描述、部署和管理 kubernetes 应用的一套机制，从实现上来说，可以将其理解为 CRD 配合可选的 webhook 与 controller 来实现用户业务逻辑，即 operator = CRD + webhook + controller。</p>
+<p>operator 实质是指：用户注册自己自定义的 CRD，然后创建对应的资源实例（称为 Custom Resource，简称 CR），而后通过自己编写 Controller 来不断地检测当前 k8s 中所定义的 CR 的状态，如果状态和预期不一致，则调整。Controller 具体做的事就是通过调用 k8s api server 的客户端，根据比较预期的状态和实际的状态，来对相应的资源进行 增删改查。</p>
+<h2 id="operator-operator">operator 优势： 为什么要用 operator</h2>
+<h2 id="_2">使用经验</h2>
+<h3 id="_3">安装使用</h3>
+<h3 id="operator_1">编写第一个operator</h3>
+<h3 id="reconcile">什么是调谐（Reconcile）</h3>
+<p>在 K8s 中，用户通过声明式 API 定义资源的“预期状态”，Controller 则负责监视资源的实际状态，当资源的实际状态和“预期状态”不一致时，Controller 则对系统进行必要的更改，以确保两者一致，这个过程被称之为调谐（Reconcile）</p>
+<h2 id="_4">参考</h2>
 <ul>
-<li>其中的<code>s3c2410wdt_keepalive()</code>函数</li>
+<li><a href="https://blog.csdn.net/orz_include/article/details/132638088">Kubernetes Operator 学习</a></li>
 </ul>
-<pre><code>
-static void s3c2410wdt_keepalive(void)
-{
-        spin_lock(&amp;wdt_lock);
-        writel(wdt_count, wdt_base + S3C2410_WTCNT); //本质上就是往一个Count寄存器写一个int值
-        spin_unlock(&amp;wdt_lock);
-}
-
-
-</code></pre>
-<h3 id="_2">附带信息</h3>
-<blockquote>
-<p>Linux 内核中的 linux-2.6.29.4\drivers\watchdog\s3c2410_wdt.c 文件实现了看门狗驱动程序, 包含 IRQ 注册以及编写中断处理程序</p>
-</blockquote>
               
             </div>
           </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../12_linux_preemption/" class="btn btn-neutral float-left" title="第十二篇 内核抢占基础篇"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../14_linux_kernel_tracing/" class="btn btn-neutral float-right" title="第十四篇 理解内核追踪机制">Next <span class="icon icon-circle-arrow-right"></span></a>
-    </div>
 
   <hr/>
 
@@ -447,10 +415,6 @@ static void s3c2410wdt_keepalive(void)
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../12_linux_preemption/" style="color: #fcfcfc">&laquo; Previous</a></span>
-    
-    
-      <span><a href="../14_linux_kernel_tracing/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
