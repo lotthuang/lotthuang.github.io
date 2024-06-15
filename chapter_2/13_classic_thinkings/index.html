@@ -8,7 +8,7 @@
     <title>第十三篇 经典思维 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
@@ -17,12 +17,11 @@
         var mkdocs_page_url = null;
       </script>
     
-    <script src="../../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-      <script>hljs.initHighlightingOnLoad();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -34,7 +33,7 @@
           <a href="../.." class="icon icon-home"> Lott's Blog
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -78,6 +77,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/19_network_ratelimit/">第十九篇 Linux网络限速</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/20_mac_os_skills/">第二十篇 MacOS使用技巧</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul class="current">
@@ -101,7 +102,45 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../12_monitor_and_alert/">第十二篇 监控报警最佳实践</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第十三篇 经典思维</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第十三篇 经典思维</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1">1 简单</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2">2 用户提示要到位</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3">3 如何提升技术效率</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#4-linux">4 Linux软件的配置方式：</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#41">4.1 命令行选项</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#5-linux">5 Linux哲学</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#6">6 解决技术难题思路</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#7">7 学习新技术的体会</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#71-object">7.1 常见的核心模型（也可以理解为任何对象object）,都有自己本身的属性，和它提供的技能</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#72">7.2 如何抽象唯一值</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#8">8 全局角度</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#9-software-infrastructure">9 构建Software Infrastructure</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_2">开源软件的应用过程(即”三板斧”思路): 安装、配置、使用</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_3">其中，软件配置又是重中之重，是考验运维架构师对一个软件技能运用程度的重要衡量指标，</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#10-context">10 考虑Context</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../14_performance_optimization_topic/">第十四篇 性能优化专题</a>
                   </li>
@@ -248,7 +287,7 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/11_classic_technical_thinking/">第十一篇 经典技术思维汇总</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">第九章 编程经验</span></p>
+              <p class="caption"><span class="caption-text">第九章 编程经验和各类开源软件</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/1_suanfa/">第一篇 算法总结</a>
                   </li>
@@ -263,6 +302,14 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/7_python/">第七篇 python语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/8_rsyslog/">第八篇 rsyslog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/9_falcon/">第九篇 falcon和夜莺</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/10_json_schema/">第十篇 JSON-Schema使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/11_prometheus/">第十篇 Prometheus使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -364,9 +411,9 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>第二章 运维工作总结 &raquo;</li>
-      <li>第十三篇 经典思维</li>
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">第二章 运维工作总结</li>
+      <li class="breadcrumb-item active">第十三篇 经典思维</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -375,7 +422,302 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                
+                <h1 id="_1">概述</h1>
+<ul>
+<li>本篇总结一些经典的思维方案</li>
+</ul>
+<h2 id="1">1 简单</h2>
+<ul>
+<li>1 简单，让用户操作尽可能简单，不要让用户觉得难用，要让用户用起来一目了然。</li>
+<li>
+<ul>
+<li>1.1 底层封装好复杂的接口，做很多工作和思考</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>1.2 简单不是舍弃功能需求和安全需求，简单是要让用户用起来简单。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>1.3 简单的同时，要能方便的扩展。</li>
+</ul>
+</li>
+<li>
+<p>2 任何情况下，当用户没有提供时，就给一个默认的。</p>
+</li>
+</ul>
+<h2 id="2">2 用户提示要到位</h2>
+<ul>
+<li>用户提示一定要到位，流程出错了一定要站在用户的角度，说清楚他为什么错了。</li>
+<li>
+<ul>
+<li>一来用户能够快速知道原因，</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>二来你根本没有必要隐瞒自己做了什么，分享出来，会更容易得到帮助与建议。做好可视化。</li>
+</ul>
+</li>
+</ul>
+<h2 id="3">3 如何提升技术效率</h2>
+<ul>
+<li>加中间件（midware is king）：</li>
+<li>
+<ul>
+<li>比如要扫描整块硬盘去找一个东西，则加缓存，先在缓存中找，再去硬盘中找。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>比如JVM内存中，要扫描整个老年代中引用新生代的对象，每次要全部扫描效率。改进方案则是专门划分一块小内存，用来记录这个对应关系，并且维护这个对应关系。</li>
+</ul>
+</li>
+<li>缓存为王（cache is king）</li>
+</ul>
+<h2 id="4-linux">4 Linux软件的配置方式：</h2>
+<ul>
+<li>客户端程序会去读取配置文件，也可以在命令行输入选项。</li>
+<li>配置文件又有全局配置文件和用户个人配置文件的区分。</li>
+<li>优先级如下： <code>命令行选项&gt; 用户个人配置文件&gt; 全局配置文件</code></li>
+<li>经典用法： <strong>只用全局配置文件</strong></li>
+</ul>
+<h3 id="41">4.1 命令行选项</h3>
+<ul>
+<li>
+<p>命令行选项分类： 开关类选项（表示开启、关闭某一技能）和带参数类选项（表示作用对象、范围）</p>
+</li>
+<li>
+<p>总结来说，命令行选项还是为key＝value服务的，大致分为4种：</p>
+</li>
+<li>
+<ul>
+<li>1 短选项 ,表示模式选择 ，比如选择server模式还是client模式 ，直接是-server,-client这样的</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>2 短选项加参数 ，其实也是告诉命令一个key=value,比如 wget -o /dev/null (说到底还是为了告诉wget 下载的目标文件是/dev/null)</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>3 短选项加长参数 ，比如-Dfile.encoding=UTF-8   ，也是告知一个key=value</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>4 短选项,表示某些功能的开关（隐含的意思是加上某个选项就是加一个技能），比如 ls -l -h</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-linux">5 Linux哲学</h2>
+<ol>
+<li>Linux系统中几乎所有的资源都抽象为文件形式保存，包括硬件设备，甚至通信接口等；</li>
+<li>多个单一小程序组合完成复杂任务，每个小程序仅完成一个简单任务；</li>
+<li>尽量避免与用户进行交互操作，使用编程方式实现自动化管理；</li>
+<li>使用文本方式保存软件的配置信息</li>
+</ol>
+<h2 id="6">6 解决技术难题思路</h2>
+<ul>
+<li>运维工作中解决技术问题的思路： 三板斧</li>
+<li>
+<ul>
+<li><strong>看错误提示</strong>、<strong>看日志</strong>、<strong>想办法打开调试功能</strong>（这一步其实就是要求你去研究原理，弄懂原理）</li>
+</ul>
+</li>
+</ul>
+<p><img alt="png" src="../../img/22DF36E3-F1A3-4733-A6A9-48C1407A73D4.png" /></p>
+<h2 id="7">7 学习新技术的体会</h2>
+<ul>
+<li>如何总结、学习一样技术、一款开源软件、一个知识点、一个python模块</li>
+<li>
+<ul>
+<li>1 一定要明白整个过程、整个原理、整个核心链路（梳理核心模型和他的属性，以及核心模型和核心模型之间的关联关系能产生的作用）</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>2 一定要画出来架构图</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>3 过程中要确定唯一值和核心模型。 核心模型就是“什么人在什么时间什么地点干了什么事”，当中的“什么人”。</li>
+</ul>
+</li>
+</ul>
+<h3 id="71-object">7.1 常见的核心模型（也可以理解为任何对象object）,都有自己本身的属性，和它提供的技能</h3>
+<ul>
+<li>比如任何python对象，都有3个属性： id, 对象是什么类型，对象的值 </li>
+<li>比如flask_script插件，它的核心模型是Command子类，它有1 helpinfo ,2 option_list ,3 run()方法 这些属性</li>
+<li>
+<p>比如 mongodb中的 任意一个 副本集(replSet),它都有 名称、成员2个属性</p>
+</li>
+<li>
+<p>要总结核心模型(核心对象)的纵向扩展能力和横向扩展能力:</p>
+</li>
+<li>任何核心模型(核心对象)都有纵向扩展能力和横向扩展能力。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>对象模型</th>
+<th>纵向扩展能力</th>
+<th>横向扩展能力</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>mysql表</td>
+<td>当列数不够时，可以加列</td>
+<td>通过关联外键，增加表与表之间的联系</td>
+</tr>
+<tr>
+<td>2</td>
+<td>python class</td>
+<td>随着需求变化，而增加属性</td>
+<td>某一个属性，是别的class对象。</td>
+</tr>
+<tr>
+<td>3</td>
+<td>c语言结构体</td>
+<td>可以增加字段</td>
+<td>某一个字段，是别的struct.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>html元素</td>
+<td>增加字段,比如color=“red”,align=“left”,name=xxx,id=yyy等等，<br/>不一定需要全部用上，但是可以在需要时用上</td>
+<td>关联子元素、父元素</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>上面提到这些是核心模型的纵向扩展能力，有的核心模型之间是有关联关系的，详见服务规划能力</li>
+<li>核心模型的纵向扩展能力，也就是它自身的能力扩展方式（核心模型的ID不变的情况下，扩展核心模型自身的某个能力或者属性。比如表ID不变，在表里增加一列）。</li>
+<li>核心模型的横向扩展能力，也就是它和别的核心模型之间的关联关系（一个表ID不够了，再加一个新表，新表是另一个ID）。</li>
+</ul>
+<h3 id="72">7.2 如何抽象唯一值</h3>
+<table>
+<thead>
+<tr>
+<th>层面</th>
+<th>唯一值</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TCP协议</td>
+<td>tcp报文</td>
+<td></td>
+</tr>
+<tr>
+<td>http协议</td>
+<td>http报文</td>
+<td></td>
+</tr>
+<tr>
+<td>Linux内存管理</td>
+<td>内存页(page)</td>
+<td></td>
+</tr>
+<tr>
+<td>Linux磁盘管理</td>
+<td>block（将物理相邻的若干个扇区称为了一个簇）</td>
+<td></td>
+</tr>
+<tr>
+<td>flask-script插件</td>
+<td>Command类</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="8">8 全局角度</h2>
+<ul>
+<li>对事情，分析问题一定要想办法站在全局的角度，俯瞰全局，看清楚，想明白，想透彻。</li>
+<li>
+<ul>
+<li>怎么样算全局？可以用画圆的思路，集合的思路（男人和女人，前端和后端，一个Team里面各个小组加起来是一个完整的集合，）</li>
+</ul>
+</li>
+<li>对自己服务的对象，当衣食父母，用心服务到位，才是正确的出路。</li>
+<li>任何技术的学习，一定不是看过，用过就完事。</li>
+<li>
+<ul>
+<li>很多技术上的东西，看过一遍就忘记，其实真正的原因是自己偷懒了，不是看过一遍就好，看过之后，一定要用自己的方式，存储在脑海中，记在笔记里面。看过之后，一定要自己总结的心得体会，说出来，分享出来，帮助别人。
+比如学习一个新的运维服务，关注： 有没有了解整个过程，有没有自动化，有没有监控，有没有应急预案</li>
+</ul>
+</li>
+</ul>
+<h2 id="9-software-infrastructure">9 构建Software Infrastructure</h2>
+<h3 id="_2">开源软件的应用过程(即”三板斧”思路): 安装、配置、使用</h3>
+<h3 id="_3">其中，软件配置又是重中之重，是考验运维架构师对一个软件技能运用程度的重要衡量指标，</h3>
+<ul>
+<li>熟悉整个过程又可细分一个三板斧:</li>
+<li>
+<ul>
+<li>1 了解基础配置项的含义和作用。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>2 找到解释文档，可以通过该文档方便查阅各个配置项的含义。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>3 摸清楚该开源软件处理请求的整条核心链路。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>4 使用flask等技术，web化管理该开源软件的配置，并且把配置文件抽象化存入DB，提供相应技能:(包括权限控制、操作记录、RESTful API等)</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>5 以多少用到运维工作中和博客的浏览次数 为衡量是否掌握该开源软件的标尺。</li>
+</ul>
+</li>
+<li>
+<p>游戏SRE的一大技能是 事后验证，校验：</p>
+</li>
+<li>
+<ul>
+<li>1 自己平时做完任务后，一定要想清楚验证方法，并严格验证。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>2 给别人分配任务时，别人做完了一定要严格验证、校验、验收。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>验证小技巧总结积累：</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>1 校验数量: 比如校验索引的数量是否还对的上.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="10-context">10 考虑Context</h2>
+<ol>
+<li>任何进程、程序的运行，都要考虑其Context </li>
+</ol>
               
             </div>
           </div><footer>
@@ -411,14 +753,15 @@
     
   </span>
 </div>
-    <script>var base_url = '../..';</script>
-    <script src="../../js/theme_extra.js" defer></script>
-    <script src="../../js/theme.js" defer></script>
-      <script src="../../search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
-        };
+        });
     </script>
 
 </body>

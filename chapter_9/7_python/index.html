@@ -8,7 +8,7 @@
     <title>第七篇 python语言总结 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
@@ -17,12 +17,11 @@
         var mkdocs_page_url = null;
       </script>
     
-    <script src="../../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-      <script>hljs.initHighlightingOnLoad();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -34,7 +33,7 @@
           <a href="../.." class="icon icon-home"> Lott's Blog
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -77,6 +76,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/18_mysql/">第十八篇 MySQL使用</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/19_network_ratelimit/">第十九篇 Linux网络限速</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/20_mac_os_skills/">第二十篇 MacOS使用技巧</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -248,7 +249,7 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/11_classic_technical_thinking/">第十一篇 经典技术思维汇总</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">第九章 编程经验</span></p>
+              <p class="caption"><span class="caption-text">第九章 编程经验和各类开源软件</span></p>
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../1_suanfa/">第一篇 算法总结</a>
                   </li>
@@ -262,7 +263,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第七篇 python语言总结</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第七篇 python语言总结</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#_2">一 核心概念</a>
         <ul>
@@ -282,9 +283,23 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_7">二 开发框架</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_8">三 参考</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_8">三 一些新特性</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-breakpoint">1 内置函数 breakpoint()</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_9">参考</a>
     </li>
     </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_rsyslog/">第八篇 rsyslog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_falcon/">第九篇 falcon和夜莺</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_json_schema/">第十篇 JSON-Schema使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../11_prometheus/">第十篇 Prometheus使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -386,9 +401,9 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>第九章 编程经验 &raquo;</li>
-      <li>第七篇 python语言总结</li>
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">第九章 编程经验和各类开源软件</li>
+      <li class="breadcrumb-item active">第七篇 python语言总结</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -489,16 +504,37 @@
         yield x
 </code></pre>
 <h2 id="_7">二 开发框架</h2>
-<h2 id="_8">三 参考</h2>
+<h2 id="_8">三 一些新特性</h2>
+<h3 id="1-breakpoint">1 内置函数 breakpoint()</h3>
 <ul>
-<li><a href="https://mp.weixin.qq.com/s?__biz=MjM5MzgyODQxMQ==&amp;mid=2650366698&amp;idx=1&amp;sn=748bd7b7714f3b628b5758670bfcad44&amp;chksm=be9cd9be89eb50a8e2e399382fd5de317a6de37c2907dfc6f8833dd7b627d9f5edb4495fd543&amp;mpshare=1&amp;scene=1&amp;srcid=1103KrmGbsJCz8t28RyhS7D5&amp;key=352aec6a62eb7f7cd10695cbc790de1472118e451e4d4316c65b17da1620ade6652a048b3a0b3f7b0dadef3b8407ad8382fdb2b51f7f48ae86bf0991157b983203c6d2b730accaafc17a8b60260b11f3&amp;ascene=0&amp;uin=MTc3NTQ4NjIyMQ%3D%3D&amp;devicetype=iMac+MacBookAir7%2C2+OSX+OSX+10.12+build(16A323)&amp;version=12020810&amp;nettype=WIFI&amp;fontScale=100&amp;pass_ticket=68S6BcfOuQwZuMC0sWGd671eTOX2HHz9G8KpcwopEwxOGwkW8Iip0KElopp1CMbT">理解 Python 迭代对象、迭代器、生成器</a></li>
+<li>breakpoint() 是 Python 3.7 中新增的一个调试工具，它是一个内置函数，可以在程序执行过程中插入一个断点，让程序停在该处等待调试器的进一步命令。在程序中调用 breakpoint()函数会触发 Python 解释器暂停执行，并在调用位置进入调试器模式，这时你可以检查程序的状态，检查变量的值，单步执行程序等等。使用 breakpoint()函数可以替代旧的调试方法，如使用 import pdb; pdb.set_trace()或在代码中插入 print()语句进行调试。它可以让调试代码更简单，更易读，并且更加符合 Python 代码的风格。</li>
+</ul>
+<pre><code>
+def func(a, b):
+    c = a + b
+    breakpoint()  # 在这里插入一个断点
+    return c
+
+result = func(2, 3)
+print(result)
+
+</code></pre>
+<p>当程序执行到 breakpoint()时，它会暂停，并在调用位置进入调试器模式，你可以输入命令检查变量的值、执行代码，或者进一步调试程序。当调试完成后，你可以输入命令 continue 让程序继续执行。</p>
+<h2 id="_9">参考</h2>
+<ul>
+<li>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MjM5MzgyODQxMQ==&amp;mid=2650366698&amp;idx=1&amp;sn=748bd7b7714f3b628b5758670bfcad44&amp;chksm=be9cd9be89eb50a8e2e399382fd5de317a6de37c2907dfc6f8833dd7b627d9f5edb4495fd543&amp;mpshare=1&amp;scene=1&amp;srcid=1103KrmGbsJCz8t28RyhS7D5&amp;key=352aec6a62eb7f7cd10695cbc790de1472118e451e4d4316c65b17da1620ade6652a048b3a0b3f7b0dadef3b8407ad8382fdb2b51f7f48ae86bf0991157b983203c6d2b730accaafc17a8b60260b11f3&amp;ascene=0&amp;uin=MTc3NTQ4NjIyMQ%3D%3D&amp;devicetype=iMac+MacBookAir7%2C2+OSX+OSX+10.12+build(16A323)&amp;version=12020810&amp;nettype=WIFI&amp;fontScale=100&amp;pass_ticket=68S6BcfOuQwZuMC0sWGd671eTOX2HHz9G8KpcwopEwxOGwkW8Iip0KElopp1CMbT">理解 Python 迭代对象、迭代器、生成器</a></p>
+</li>
+<li>
+<p><a href="https://www.liujiangblog.com/blog/51/">Python3.6、3.7、3.8 新特性</a></p>
+</li>
 </ul>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../6_linux_kernel_patch/" class="btn btn-neutral float-left" title="第六篇 手把手教你向Linux Kernel提交Patch"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../../chapter_10/1_dockerfile_best_practice/" class="btn btn-neutral float-right" title="第一篇 dockerfile最佳实践">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../8_rsyslog/" class="btn btn-neutral float-right" title="第八篇 rsyslog">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -524,18 +560,19 @@
       <span><a href="../6_linux_kernel_patch/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../../chapter_10/1_dockerfile_best_practice/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../8_rsyslog/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
-    <script>var base_url = '../..';</script>
-    <script src="../../js/theme_extra.js" defer></script>
-    <script src="../../js/theme.js" defer></script>
-      <script src="../../search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
-        };
+        });
     </script>
 
 </body>

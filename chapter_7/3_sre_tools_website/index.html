@@ -8,7 +8,7 @@
     <title>第三篇 运维生产力工具(网站工具) - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
@@ -17,12 +17,11 @@
         var mkdocs_page_url = null;
       </script>
     
-    <script src="../../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-      <script>hljs.initHighlightingOnLoad();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -34,7 +33,7 @@
           <a href="../.." class="icon icon-home"> Lott's Blog
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -77,6 +76,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/18_mysql/">第十八篇 MySQL使用</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/19_network_ratelimit/">第十九篇 Linux网络限速</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/20_mac_os_skills/">第二十篇 MacOS使用技巧</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -208,7 +209,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第三篇 运维生产力工具(网站工具)</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第三篇 运维生产力工具(网站工具)</a>
     <ul class="current">
     </ul>
                   </li>
@@ -250,7 +251,7 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/11_classic_technical_thinking/">第十一篇 经典技术思维汇总</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">第九章 编程经验</span></p>
+              <p class="caption"><span class="caption-text">第九章 编程经验和各类开源软件</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/1_suanfa/">第一篇 算法总结</a>
                   </li>
@@ -265,6 +266,14 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/7_python/">第七篇 python语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/8_rsyslog/">第八篇 rsyslog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/9_falcon/">第九篇 falcon和夜莺</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/10_json_schema/">第十篇 JSON-Schema使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/11_prometheus/">第十篇 Prometheus使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -366,9 +375,9 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>第七章 运维小技巧和工具汇总和积累 &raquo;</li>
-      <li>第三篇 运维生产力工具(网站工具)</li>
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">第七章 运维小技巧和工具汇总和积累</li>
+      <li class="breadcrumb-item active">第三篇 运维生产力工具(网站工具)</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -388,18 +397,18 @@
 </blockquote>
 <p>这个神奇的网站,可以根据你输入的关键字,推荐一堆的变量名.快去试试吧.</p>
 <p><img alt="WX20190829-165552.png" src="../../img/WX20190829-165552.png" /></p>
-<h1 id="ppt">三 优品PPT</h1>
-<p>一个完全免费的PPT素材下载网站，在这个网站连注册登录都不需要，找到自己喜欢的模版或素材就可以直接一键下载，没有任何套路，这个网站我相信大多数人都是需要的！</p>
+<h1 id="ppt">三 优品 PPT</h1>
+<p>一个完全免费的 PPT 素材下载网站，在这个网站连注册登录都不需要，找到自己喜欢的模版或素材就可以直接一键下载，没有任何套路，这个网站我相信大多数人都是需要的！</p>
 <blockquote>
 <p>http://www.ypppt.com/</p>
 </blockquote>
-<h1 id="chrome">四 一个下载Chrome浏览器离线插件的站点</h1>
-<p>一个下载Chrome浏览器离线插件的站点，对于很多小伙们来说还是非常需要的，在这里已经为我们罗列了很多的分类，我们可以查找自己需要的扩展插件安装来强化浏览器！</p>
+<h1 id="chrome">四 一个下载 Chrome 浏览器离线插件的站点</h1>
+<p>一个下载 Chrome 浏览器离线插件的站点，对于很多小伙们来说还是非常需要的，在这里已经为我们罗列了很多的分类，我们可以查找自己需要的扩展插件安装来强化浏览器！</p>
 <blockquote>
 <p>https://chrome.zzzmh.cn/</p>
 </blockquote>
 <h1 id="_3">五 一个临时文件传输平台</h1>
-<p>最好用的临时文件传输平台，别跟我提某度盘，不开会员速度就10KB/s，根本不能忍，有时候给朋友发一个游戏发一个视频那么你就可以使用这个，下载不限速，支持文件下载后自动销毁！</p>
+<p>最好用的临时文件传输平台，别跟我提某度盘，不开会员速度就 10KB/s，根本不能忍，有时候给朋友发一个游戏发一个视频那么你就可以使用这个，下载不限速，支持文件下载后自动销毁！</p>
 <blockquote>
 <p>https://cowtransfer.com</p>
 </blockquote>
@@ -407,6 +416,10 @@
 <li>这个网站感觉适合小白用户</li>
 <li>另外得配套一个方便加密解密的方案,不然文件上传上去之后也不安全</li>
 </ol>
+<h1 id="it">六 IT 人必备工具箱</h1>
+<blockquote>
+<p>https://666666.dev/</p>
+</blockquote>
               
             </div>
           </div><footer>
@@ -442,14 +455,15 @@
     
   </span>
 </div>
-    <script>var base_url = '../..';</script>
-    <script src="../../js/theme_extra.js" defer></script>
-    <script src="../../js/theme.js" defer></script>
-      <script src="../../search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
-        };
+        });
     </script>
 
 </body>

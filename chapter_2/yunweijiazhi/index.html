@@ -8,7 +8,7 @@
     <title>第一篇 运维的价值和目标 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
@@ -17,12 +17,11 @@
         var mkdocs_page_url = null;
       </script>
     
-    <script src="../../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-      <script>hljs.initHighlightingOnLoad();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -34,7 +33,7 @@
           <a href="../.." class="icon icon-home"> Lott's Blog
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -78,10 +77,12 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/19_network_ratelimit/">第十九篇 Linux网络限速</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/20_mac_os_skills/">第二十篇 MacOS使用技巧</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul class="current">
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第一篇 运维的价值和目标</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第一篇 运维的价值和目标</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#_2">一 用一句话来概括运维的价值</a>
     </li>
@@ -89,7 +90,9 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#_4">(一) 思维导图</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_5">（二) 参考文章</a>
+    <li class="toctree-l3"><a class="reference internal" href="#_5">（三）思维方式</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">（三) 参考文章</a>
     </li>
         </ul>
     </li>
@@ -119,7 +122,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#slo">五 SLO 最佳实践</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_6">(一) 前言</a>
+    <li class="toctree-l3"><a class="reference internal" href="#_7">(一) 前言</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#slo_1">（二）为什么需要 SLO</a>
     </li>
@@ -308,7 +311,7 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/11_classic_technical_thinking/">第十一篇 经典技术思维汇总</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">第九章 编程经验</span></p>
+              <p class="caption"><span class="caption-text">第九章 编程经验和各类开源软件</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/1_suanfa/">第一篇 算法总结</a>
                   </li>
@@ -323,6 +326,14 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/7_python/">第七篇 python语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/8_rsyslog/">第八篇 rsyslog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/9_falcon/">第九篇 falcon和夜莺</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/10_json_schema/">第十篇 JSON-Schema使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/11_prometheus/">第十篇 Prometheus使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -424,9 +435,9 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>第二章 运维工作总结 &raquo;</li>
-      <li>第一篇 运维的价值和目标</li>
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">第二章 运维工作总结</li>
+      <li class="breadcrumb-item active">第一篇 运维的价值和目标</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -467,7 +478,19 @@
 <h3 id="_4">(一) 思维导图</h3>
 <p>安全、稳定、高效、低成本，怎么才能把这四大目标做好？应该做哪些事情来达成目标？用一张脑图来梳理一下：</p>
 <p><img alt="yunweijiazhi" src="../../img/yunweijiazhi.png" /></p>
-<h3 id="_5">（二) 参考文章</h3>
+<h3 id="_5">（三）思维方式</h3>
+<ul>
+<li>
+<p>旨在找到一条路，无论在哪家公司，何种环境，都可以把运维工作做好的路.怎么好？体现在4个方面： 高效、稳定、低成本、安全</p>
+</li>
+<li>
+<p>任何一家公司，技术运维岗位，都是做 标准化（规范化）、自动化（先流程化、后自动化）、然后做监控报警</p>
+</li>
+<li>
+<p>任何一家公司，管理岗位，也是在做 规范化和流程化（设计、迭代）。管理岗位的目标是： 组织目标达成、团队发展</p>
+</li>
+</ul>
+<h3 id="_6">（三) 参考文章</h3>
 <p>这篇文章是在<a href="https://www.jianshu.com/p/f1d831a9afaf">微信公众号看到并收藏的</a>.
 感谢原文作者---秦晓辉。</p>
 <p>关于秦晓辉大神，我所记得的 2 件事情:</p>
@@ -515,7 +538,7 @@
 <li><a href="http://dockone.io/article/1823">参考 2</a></li>
 </ul>
 <h2 id="slo">五 SLO 最佳实践</h2>
-<h3 id="_6">(一) 前言</h3>
+<h3 id="_7">(一) 前言</h3>
 <ul>
 <li>SLA （service level agreement）:服务等级协议</li>
 <li>
@@ -695,7 +718,7 @@
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../../chapter_1/19_network_ratelimit/" class="btn btn-neutral float-left" title="第十九篇 Linux网络限速"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_1/20_mac_os_skills/" class="btn btn-neutral float-left" title="第二十篇 MacOS使用技巧"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../yunweizhiyeguifan/" class="btn btn-neutral float-right" title="第二篇 业务SRE的职业规范">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -719,21 +742,22 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../../chapter_1/19_network_ratelimit/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../../chapter_1/20_mac_os_skills/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../yunweizhiyeguifan/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
-    <script>var base_url = '../..';</script>
-    <script src="../../js/theme_extra.js" defer></script>
-    <script src="../../js/theme.js" defer></script>
-      <script src="../../search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
-        };
+        });
     </script>
 
 </body>
