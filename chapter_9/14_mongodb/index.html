@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第七篇 字符集和编码 - Lott's Blog</title>
+    <title>第十四篇 MongoDB使用 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u4e03\u7bc7 \u5b57\u7b26\u96c6\u548c\u7f16\u7801";
-        var mkdocs_page_input_path = "chapter_7/7_charset.md";
+        var mkdocs_page_name = "\u7b2c\u5341\u56db\u7bc7 MongoDB\u4f7f\u7528";
+        var mkdocs_page_input_path = "chapter_9/14_mongodb.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -202,60 +202,26 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../1_sync_file/">第一篇 不同主机之间的文件传输</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/1_sync_file/">第一篇 不同主机之间的文件传输</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_server_side_evolution/">第五篇 服务端进化过程梳理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/5_server_side_evolution/">第五篇 服务端进化过程梳理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../6_elk/">第六篇 elk技术栈</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/6_elk/">第六篇 elk技术栈</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第七篇 字符集和编码</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#1">1.基础知识</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#charset">字符集（Charset）：</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#character-encoding">字符编码（Character Encoding）：</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#2">2. 常用字符集和字符编码</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_2">常见字符集名称：</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_3">中文编码方式的集合范围</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#3-unicode">3. 单独说Unicode</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#4-linux">4. Linux下文件名编码转换 和 文件内容编码转换</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#5-python">5. python字符集和编码</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#51-python">5.1 为什么python 源文件开头要加</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#52">5.2 不同终端导致的编码差异</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#53-python2-print">5.3 python2 print全过程： 核心路径</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#54-python3">5.4 python3的字符串</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/7_charset/">第七篇 字符集和编码</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../8_locale/">第八篇 locale设置</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/8_locale/">第八篇 locale设置</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../9_http_protocol/">第九篇 http协议</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/9_http_protocol/">第九篇 http协议</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../10_http_cookie_session_token/">第十篇 cookie和session和token总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/10_http_cookie_session_token/">第十篇 cookie和session和token总结</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第八章 职场通用经验</span></p>
@@ -282,36 +248,44 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第九章 编程经验和各类开源软件</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/1_suanfa/">第一篇 算法总结</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_suanfa/">第一篇 算法总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/2_data_structure/">第二篇 数据结构总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_data_structure/">第二篇 数据结构总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/3_c_lang/">第三篇 c语言总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_c_lang/">第三篇 c语言总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/4_symbol_table/">第四篇 符号表总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_symbol_table/">第四篇 符号表总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/5_golang/">第五篇 go语言总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../5_golang/">第五篇 go语言总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/7_python/">第七篇 python语言总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_python/">第七篇 python语言总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/8_rsyslog/">第八篇 rsyslog</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_rsyslog/">第八篇 rsyslog</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/9_falcon/">第九篇 falcon和夜莺</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_falcon/">第九篇 falcon和夜莺</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/10_json_schema/">第十篇 JSON-Schema使用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_json_schema/">第十篇 JSON-Schema使用</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/11_prometheus/">第十一篇 Prometheus使用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../11_prometheus/">第十一篇 Prometheus使用</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/12_grafana/">第十二篇 Grafana使用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_grafana/">第十二篇 Grafana使用</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/13_mysql/">第十三篇 MySQL使用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_mysql/">第十三篇 MySQL使用</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/14_mongodb/">第十四篇 MongoDB使用</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第十四篇 MongoDB使用</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 常见部署架构</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 一些基础概念</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/15_supervisor/">第十四篇 Supervisor使用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../15_supervisor/">第十四篇 Supervisor使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -414,8 +388,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">第七章 运维小技巧和工具汇总和积累</li>
-      <li class="breadcrumb-item active">第七篇 字符集和编码</li>
+          <li class="breadcrumb-item">第九章 编程经验和各类开源软件</li>
+      <li class="breadcrumb-item active">第十四篇 MongoDB使用</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -426,133 +400,36 @@
               
                 <h1 id="_1">概述</h1>
 <ul>
-<li>本篇用于梳理字符集和编码知识</li>
+<li>本篇总结MongoDB相关使用</li>
 </ul>
-<h2 id="1">1.基础知识</h2>
-<p>计算机中储存的信息都是用二进制数表示的；而我们在屏幕上看到的英文、汉字等字符是二进制数转换之后的结果。通俗的说，按照何种规则将字符存储在计算机中，如'a'用什么表示，称为"编码"；反之，将存储在计算机中的二进制数解析显示出来，称为"解码"，如同密码学中的加密和解密。在解码过程中，如果使用了错误的解码规则，则导致'a'解析成'b'或者乱码。</p>
-<h3 id="charset">字符集（Charset）：</h3>
-<p>是一个系统支持的所有抽象字符的集合。字符是各种文字和符号的总称，包括各国家文字、标点符号、图形符号、数字等。</p>
-<h3 id="character-encoding">字符编码（Character Encoding）：</h3>
-<p>是一套法则，使用该法则能够对自然语言的字符的一个集合（如字母表或音节表），与其他东西的一个集合（如号码或电脉冲）进行配对。即在符号集合与数字系统之间建立对应关系，它是信息处理的一项基本技术。通常人们用符号集合（一般情况下就是文字）来表达信息。而以计算机为基础的信息处理系统则是利用元件（硬件）不同状态的组合来存储和处理信息的。元件不同状态的组合能代表数字系统的数字，因此<code>字符编码就是将符号转换为计算机可以接受的数字系统的数</code>，称为数字代码。</p>
-<p><img alt="png" src="../../img/WechatIMG523.jpeg" /></p>
-<h2 id="2">2. 常用字符集和字符编码</h2>
-<h3 id="_2">常见字符集名称：</h3>
+<h2 id="_2">一 常见部署架构</h2>
+<p><img alt="png" src="../../img/69B5627A-EEBE-42E1-8343-B972441562EB.jpg" /></p>
+<h3 id="1">1 一些基础概念</h3>
+<p>各种概念由小到大；</p>
 <ul>
-<li>比如: ASCII字符集、GB2312字符集、BIG5字符集、GB18030字符集、Unicode字符集等。</li>
-<li>计算机要准确的处理各种字符集文字，需要进行字符编码，以便计算机能够识别和存储各种文字。</li>
-<li><code>字符集</code>和<code>字符编码</code>一般都是成对出现的，如ASCII、IOS-8859-1、GB2312、GBK，都是即表示了字符集又表示了对应的字符编码，以后统称为编码。Unicode比较特殊，后面细说。</li>
-</ul>
-<h3 id="_3">中文编码方式的集合范围</h3>
-<p>因此，就我们关心的汉字而言，三种编码方式的表示范围是：</p>
-<pre><code>
-GB18030 &gt; GBK &gt; GB2312
-
-</code></pre>
-<p>即GBK是GB2312的超集，GB1803又是GBK的超集。后面也会看到，一个汉字可以用GBK表示，但不一定能被GB2312所表示</p>
-<h2 id="3-unicode">3. 单独说Unicode</h2>
-<ul>
-<li>当计算机传到世界各个国家时，为了适合当地语言和字符，设计和实现类似GB232/GBK/GB18030/BIG5的编码方案。这样各搞一套，在本地使用没有问题，一旦出现在网络中，由于不兼容，互相访问就出现了乱码现象。</li>
-<li>为了解决这个问题，一个伟大的创想产生了——<code>Unicode</code>。<code>Unicode编码系统</code>为表达任意语言的任意字符而设计。它使用<code>4字节</code>的数字来表达每个字母、符号，或者表意文字(ideograph)。每个数字代表唯一的至少在某种语言中使用的符号。（并不是所有的数字都用上了，但是总数已经超过了65535，所以2个字节的数字是不够用的。）被几种语言共用的字符通常使用相同的数字来编码，除非存在一个在理的语源学(etymological)理由使不这样做。不考虑这种情况的话，每个字符对应一个数字，每个数字对应一个字符。即不存在二义性。不再需要记录"模式"了。U+0041总是代表'A'，即使这种语言没有'A'这个字符。</li>
-<li>
-<p>在计算机科学领域中，<code>Unicode（统一码、万国码、单一码、标准万国码）是业界的一种标准</code>，它可以使电脑得以体现世界上数十种文字的系统。Unicode 是基于通用字符集（Universal Character Set）的标准来发展，并且同时也以书本的形式对外发表。</p>
-</li>
-<li>
-<p>Unicode 还不断在扩增， 每个新版本插入更多新的字符。直至目前为止的第六版，Unicode 就已经包含了超过十万个字符（在2005年，Unicode 的第十万个字符被采纳且认可成为标准之一）、一组可用以作为视觉参考的代码图表、一套编码方法与一组标准字符编码、一套包含了上标字、下标字等字符特性的枚举等。</p>
-</li>
-<li>Unicode 组织（The Unicode Consortium）是由一个非营利性的机构所运作，并主导 Unicode 的后续发展，其目标在于：将既有的字符编码方案以Unicode 编码方案来加以取代，特别是既有的方案在多语环境下，皆仅有有限的空间以及不兼容的问题。</li>
-</ul>
-<p>-（可以这样理解：Unicode是字符集，UTF-32/ UTF-16/ UTF-8是三种字符编码方案。）</p>
-<h2 id="4-linux">4. Linux下文件名编码转换 和 文件内容编码转换</h2>
-<ul>
-<li>文件名编码转换 使用 <code>convmv</code></li>
-<li>文件内容编码转换 使用<code>iconv</code></li>
-</ul>
-<p>原因在于，Windows 的文件名中文编码默认为GBK，压缩或者上传后，文件名还会是GBK编码，而Linux中默认文件名编码为UTF8，由于编码不一致所以导致了文件名乱码的问题，解决这个问题需要对文件名进行转码。</p>
-<pre><code>
-yum install convmv 
-convmv -f gbk -t utf-8 -r --notest /home/wwwroot 
-
-</code></pre>
-<h2 id="5-python">5. python字符集和编码</h2>
-<ul>
-<li><code>unicode类型</code>，是操作系统层面真正的字符串</li>
-<li><code>str类型</code>是字节串一个序列对象，是一个二进制对象 </li>
-<li>一个unicode对象,调用encode(<code>utf-8</code>) 方法， 才会变成str对象</li>
-<li>一个str对象，调用decode(<code>utf-8</code>)方法，才会变成unicode对象</li>
-</ul>
-<p><img alt="png" src="../../img/WechatIMG524.jpeg" /></p>
-<p>我们要把 <code>unicode 符号</code>保存到文件或者传输到网络就需要经过编码处理转换成 str 类型，于是 python 提供了 encode 方法，从 unicode 转换到 str，反之亦然。</p>
-<p><img alt="png" src="../../img/WechatIMG526.png" /></p>
-<p><img alt="png" src="../../img/str%E5%92%8Cunicode.drawio.png" /></p>
-<h3 id="51-python">5.1 为什么python 源文件开头要加</h3>
-<pre><code>
-#-*- coding: utf-8 -*-
-
-</code></pre>
-<ul>
-<li>因为python是要先编译，再执行的，编译过程中，python解析器默认的编码方式是ASCII，如果源文件里有中文，编码就会报错，导致python解析器无法完成编译过程，因而报错退出 </li>
-</ul>
-<h3 id="52">5.2 不同终端导致的编码差异</h3>
-<ul>
-<li>同样一个汉字，同样是str类型，在不同终端下敲入，其存储形式是不一样的。 </li>
-<li>比如终端编码是gbk，那么该str其二进制形式 就是gbk的编码</li>
-<li>
-<p>比如终端编码是utf-8，那么该str其二进制形式就是utf-8的编码</p>
-</li>
-<li>
-<p>当然，如果输入的是unicode字符，那么其存储的始终是unicode编码， 但是问题是如果你的终端是GBK编码，就不好输入unicode字符了</p>
-</li>
-<li>当该str调用unicode(str)时，相当于把str对象进行decode，如果编码方式选择不对，</li>
+<li>片键shard key：文档中的一个字段</li>
+<li>文档doc：　     包含shard key的一行数据</li>
+<li>块chunk：        包含n个文档</li>
+<li>分片shard：     包含n个chunk</li>
+<li>集群cluster：   包含n个分片</li>
+<li>重点说一下Chunk，在一个shard server内部，MongoDB还是会把数据分为chunks，每个chunk代表这个shard server内部一部分数据。chunk的产生，会有以下两个用途：</li>
 <li>
 <ul>
-<li>比如一个gbk编码的str，decode()时（也就是调用unicode(str)时），方式为utf-8，就会出现unicodedecodeerror</li>
+<li>Splitting：当一个chunk的大小超过配置中的chunk size时，MongoDB的后台进程会把这个chunk切分成更小的chunk，从而避免chunk过大的情况</li>
 </ul>
 </li>
 <li>
 <ul>
-<li>unicode()函数，支持传入解码方式(比如gbk或者utf-8)，如果不传入，默认就是使用sys.getdefaultencoding(),python2里，默认是ascii</li>
+<li>Balancing：在MongoDB中，balancer是一个后台进程，负责chunk的迁移，从而均衡各个shard server的负载，系统初始1个chunk，chunk size默认值64M,生产库上选择适合业务的chunk size是最好的。MongoDB会自动拆分和迁移chunks。</li>
 </ul>
 </li>
-</ul>
-<h3 id="53-python2-print">5.3 python2 print全过程： 核心路径</h3>
-<ul>
-<li>
-<p><code>unicode对象或者str对象</code> —&gt; <code>解析成其对应的二进制序列</code> —&gt; <code>使用终端对应的解码方式来解码</code></p>
-</li>
-<li>
-<p>终端对应的解码方式是啥呢 ？ locale.getdefaultlocale()</p>
-</li>
-</ul>
-<p><img alt="png" src="../../img/WechatIMG525.jpeg" /></p>
-<ul>
-<li>这里为什么会显示乱码呢 ？ </li>
-<li>
-<ul>
-<li>首先us是一个unicode对象，us.encode(‘gbk’)会转化成str对象，</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>然后print该str对象时，会通过终端的编码方式设置来解码，这里终端的编码方式为utf-8，就会报错</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>终端的编码方式如果是gbk，就不会报错</li>
-</ul>
-</li>
-</ul>
-<p>print过程其实就是把内存里的字符串转为二进制序列，然后再把二进制序列解码、在屏幕上显示.</p>
-<h2 id="54-python3">5.4 python3的字符串</h2>
-<ul>
-<li>Python 把字符串的类型还搞成两种，unicode 和 str ，以至于把开发者都弄糊涂了，这是其二。python3 就彻底把 字符串重新改造了，只保留一种类型</li>
 </ul>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../6_elk/" class="btn btn-neutral float-left" title="第六篇 elk技术栈"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../8_locale/" class="btn btn-neutral float-right" title="第八篇 locale设置">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../13_mysql/" class="btn btn-neutral float-left" title="第十三篇 MySQL使用"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../15_supervisor/" class="btn btn-neutral float-right" title="第十四篇 Supervisor使用">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -575,10 +452,10 @@ convmv -f gbk -t utf-8 -r --notest /home/wwwroot
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../6_elk/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../13_mysql/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../8_locale/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../15_supervisor/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

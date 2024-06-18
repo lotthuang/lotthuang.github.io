@@ -73,8 +73,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/17_makefile/">第十七篇 Makefile使用</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/18_mysql/">第十八篇 MySQL使用</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/19_network_ratelimit/">第十九篇 Linux网络限速</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/20_mac_os_skills/">第二十篇 MacOS使用技巧</a>
@@ -287,6 +285,16 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1-breakpoint">1 内置函数 breakpoint()</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2">2 关于序列化和反序列化</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#a">A 什么是序列化和反序列化</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#b-python">B Python中有哪些序列化和反序列化方案</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#c">C 小结</a>
+    </li>
+        </ul>
+    </li>
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_9">参考</a>
@@ -302,6 +310,12 @@
                   <li class="toctree-l1"><a class="reference internal" href="../11_prometheus/">第十一篇 Prometheus使用</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../12_grafana/">第十二篇 Grafana使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_mysql/">第十三篇 MySQL使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../14_mongodb/">第十四篇 MongoDB使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../15_supervisor/">第十四篇 Supervisor使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -522,6 +536,128 @@ print(result)
 
 </code></pre>
 <p>当程序执行到 breakpoint()时，它会暂停，并在调用位置进入调试器模式，你可以输入命令检查变量的值、执行代码，或者进一步调试程序。当调试完成后，你可以输入命令 continue 让程序继续执行。</p>
+<h3 id="2">2 关于序列化和反序列化</h3>
+<h4 id="a">A 什么是序列化和反序列化</h4>
+<p>Python中的序列化与反序列化主要是指将数据结构或对象转换为一种可以存储或传输的格式（序列化），以及将这种格式的数据还原为原来的结构或对象（反序列化）的过程。这一过程在数据持久化、网络通信、配置保存与恢复等场景中非常常见。</p>
+<h4 id="b-python">B Python中有哪些序列化和反序列化方案</h4>
+<ul>
+<li>Python中有很多模块可以做为序列化和反序列化方案，包括但不限于: <strong>pickle模块</strong>、<strong>json模块</strong>、<strong>yaml模块</strong>、<strong>shelve模块</strong>、<strong>MessagePack模块</strong>等, 不同模块针对的应用场景不同，我们需要根据业务场景选择合适的模块</li>
+</ul>
+<h5 id="1-pickle">1. pickle模块</h5>
+<p>pickle是Python中一个常用的序列化模块，它可以将Python对象转化为字节流（序列化），也可以将字节流还原为Python对象（反序列化）。pickle不适合在不同编程语言间交换数据，主要用于Python程序内部。</p>
+<p>序列化：</p>
+<pre><code>import pickle
+# 需要序列化的数据
+data = {&quot;name&quot;: &quot;Alice&quot;, &quot;age&quot;: 30, &quot;city&quot;: &quot;New York&quot;}
+# 序列化为bytes
+serialized_data = pickle.dumps(data)
+
+</code></pre>
+<p>反序列化：</p>
+<pre><code># 反序列化为Python对象
+deserialized_data = pickle.loads(serialized_data)
+print(deserialized_data)  # 输出：{'name': 'Alice', 'age': 30, 'city': 'New York'}
+
+</code></pre>
+<h5 id="2-json">2. json模块</h5>
+<p>json模块提供了JSON格式的序列化和反序列化功能。JSON是一种轻量级的数据交换格式，易于人阅读和编写，同时也易于机器解析和生成。这使得JSON成为跨语言数据交换的优选格式。</p>
+<p>序列化（Python对象转JSON字符串）：</p>
+<pre><code>
+import json
+data = {&quot;name&quot;: &quot;Bob&quot;, &quot;age&quot;: 25, &quot;city&quot;: &quot;San Francisco&quot;}
+# 序列化为JSON字符串
+json_str = json.dumps(data)
+print(json_str)  # 输出：'{&quot;name&quot;: &quot;Bob&quot;, &quot;age&quot;: 25, &quot;city&quot;: &quot;San Francisco&quot;}'
+
+</code></pre>
+<p>反序列化（JSON字符串转Python对象）：</p>
+<pre><code># 反序列化为Python字典
+parsed_data = json.loads(json_str)
+print(parsed_data)  # 输出：{'name': 'Bob', 'age': 25, 'city': 'San Francisco'}
+
+</code></pre>
+<h5 id="3-yaml">3. yaml模块</h5>
+<p>PyYAML是一个用于处理YAML数据的Python库。YAML是一种直观、易于阅读的数据序列化格式，常用于配置文件。</p>
+<p>首先需要安装pyyaml库：<code>pip install pyyaml</code></p>
+<p>序列化：</p>
+<pre><code>import yaml
+data = {&quot;name&quot;: &quot;Charlie&quot;, &quot;age&quot;: 28, &quot;hobbies&quot;: [&quot;reading&quot;, &quot;cycling&quot;]}
+# 序列化为YAML字符串
+yaml_str = yaml.dump(data)
+print(yaml_str)
+
+</code></pre>
+<p>反序列化：</p>
+<pre><code># 反序列化为Python对象
+loaded_data = yaml.safe_load(yaml_str)
+print(loaded_data)
+
+</code></pre>
+<h5 id="4-shelve">4. shelve模块</h5>
+<p>shelve模块提供了一个简单的数据库存储接口，它允许你将Python对象存储到一个文件中，并且能够像操作字典一样进行读写操作。shelve实际上使用了pickle进行序列化，但是它为用户隐藏了文件管理的细节。</p>
+<p>存储对象：</p>
+<pre><code>
+import shelve
+# 打开或创建一个shelf文件
+shelf_file = shelve.open('mydata.db')
+# 存储数据
+shelf_file['profile'] = {&quot;name&quot;: &quot;David&quot;, &quot;age&quot;: 35, &quot;occupation&quot;: &quot;Engineer&quot;}
+shelf_file.close()
+
+</code></pre>
+<p>读取对象：</p>
+<pre><code>shelf_file = shelve.open('mydata.db')
+retrieved_profile = shelf_file['profile']
+print(retrieved_profile)
+shelf_file.close()
+
+</code></pre>
+<h5 id="5-messagepack">5. MessagePack</h5>
+<p>MessagePack是一种高效的二进制序列化格式，类似于JSON，但更小、更快。它适用于对性能有较高要求或者需要跨语言通信的场景。Python中可以使用msgpack库来实现序列化和反序列化。</p>
+<p>首先需要安装msgpack库：<code>pip install msgpack</code></p>
+<p>序列化：</p>
+<pre><code>
+import msgpack
+data = {&quot;name&quot;: &quot;Eva&quot;, &quot;age&quot;: 29, &quot;skills&quot;: [&quot;Python&quot;, &quot;Django&quot;]}
+# 序列化为字节流
+packed_data = msgpack.packb(data)
+
+</code></pre>
+<p>反序列化：</p>
+<pre><code># 反序列化为Python对象
+unpacked_data = msgpack.unpackb(packed_data)
+print(unpacked_data)
+
+</code></pre>
+<h4 id="c">C 小结</h4>
+<ul>
+<li>选择合适的序列化方式对于提高程序的效率、可维护性和跨平台交互性至关重要。</li>
+<li>
+<ul>
+<li>pickle适合纯Python环境下的快速序列化；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>json因为其通用性和可读性，是跨语言数据交换的标准格式；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>yaml则更适合配置文件的存储，因为它更加结构化且易于人类阅读；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>shelve提供了简单的键值对存储方式，适合小规模的数据持久化；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>MessagePack在性能敏感的应用中，尤其是需要高效传输大量数据时，是一个很好的选择。</li>
+</ul>
+</li>
+</ul>
 <h2 id="_9">参考</h2>
 <ul>
 <li>
@@ -529,6 +665,9 @@ print(result)
 </li>
 <li>
 <p><a href="https://www.liujiangblog.com/blog/51/">Python3.6、3.7、3.8 新特性</a></p>
+</li>
+<li>
+<p><a href="https://mp.weixin.qq.com/s/NXrdjh3ItvZp-5Oxv72zTw">python序列化与反序列化</a></p>
 </li>
 </ul>
               
