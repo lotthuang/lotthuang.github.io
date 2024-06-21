@@ -283,6 +283,24 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">二 最佳实践</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_1">1 如何实现读写分离</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-sql">2 如何查询慢SQL</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-mongodb">3 MongoDB连接池技术</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#31">3.1 最佳实践</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#32">3.2 如何配置和使用连接池</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-pymongomongodb">4 PyMongo和MongoDB兼容性表格</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../15_supervisor/">第十四篇 Supervisor使用</a>
@@ -374,6 +392,11 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/1_demo_of_ai/">第一篇 AI程序 Hello World</a>
                   </li>
               </ul>
+              <p class="caption"><span class="caption-text">第十六章 网络安全方向</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_16/1_network_attack/">第一篇 认识各种网络攻击</a>
+                  </li>
+              </ul>
       </div>
     </div>
     </nav>
@@ -410,6 +433,7 @@
 <li>片键shard key：文档中的一个字段</li>
 <li>文档doc：　     包含shard key的一行数据</li>
 <li>块chunk：        包含n个文档</li>
+<li>集合collection: 相当于MySQL的表，包含所有文档</li>
 <li>分片shard：     包含n个chunk</li>
 <li>集群cluster：   包含n个分片</li>
 <li>重点说一下Chunk，在一个shard server内部，MongoDB还是会把数据分为chunks，每个chunk代表这个shard server内部一部分数据。chunk的产生，会有以下两个用途：</li>
@@ -423,6 +447,59 @@
 <li>Balancing：在MongoDB中，balancer是一个后台进程，负责chunk的迁移，从而均衡各个shard server的负载，系统初始1个chunk，chunk size默认值64M,生产库上选择适合业务的chunk size是最好的。MongoDB会自动拆分和迁移chunks。</li>
 </ul>
 </li>
+</ul>
+<h2 id="_3">二 最佳实践</h2>
+<h3 id="1_1">1 如何实现读写分离</h3>
+<pre><code>mongodb://rwuser:&lt;password&gt;@192.168.xx.xx:8635,192.168.xx.xx:8635/test?authSource=admin&amp;replicaSet=replica&amp;readPreference=secondaryPreferred
+</code></pre>
+<ul>
+<li>连接实例后，读请求将优先发给Secondary节点实现读写分离。当主备关系发生变化时，自动将写操作切换到新的Primary节点上，以保证服务的高可用。</li>
+</ul>
+<h3 id="2-sql">2 如何查询慢SQL</h3>
+<ul>
+<li>
+<p><strong>根据某个库中是否有system.profile这个collection来判断某个库是否有慢SQL</strong></p>
+</li>
+<li>
+<p>执行以下命令，进入指定数据库，以“test”为例。</p>
+</li>
+</ul>
+<pre><code>use test
+</code></pre>
+<ul>
+<li>查看是否生成慢sql集合“system.profile”。</li>
+</ul>
+<p><code>show collections</code>;</p>
+<ul>
+<li>回显中有“system.profile”，说明产生了慢SQL，继续执行下一步。</li>
+</ul>
+<pre><code>mongos&gt; show collections
+system.profile
+test
+</code></pre>
+<ul>
+<li>回显中没有“system.profile”，说明未产生慢SQL，该数据库不涉及慢请求分析。</li>
+</ul>
+<pre><code>mongos&gt; show collections
+test
+</code></pre>
+<h3 id="3-mongodb">3 MongoDB连接池技术</h3>
+<h4 id="31">3.1 最佳实践</h4>
+<ol>
+<li>查看连接数占比，<strong>总的连接数不宜超过当前实例能承受的最大连接数的80%</strong>。连接太多会导致内存和多线程上下文的开销增加，影响请求处理延时。</li>
+<li>建议配置连接池，一般情况建议连接池最大不要超过200，</li>
+</ol>
+<h4 id="32">3.2 如何配置和使用连接池</h4>
+<p>文档数据库服务支持通过Connection String URI登录数据库。通过Connection String URI登录数据库时，在URI末尾加上“&amp;maxPoolSize=<integer>”，即可设置连接池的连接数。</p>
+<ul>
+<li>示例：使用Mongo Shell连接副本集实例时，限制连接池的连接数为10。</li>
+</ul>
+<pre><code>mongo &quot;mongodb://rwuser:xxxxxxxxxx@192.168.168.116:8635,192.168.200.147:8635/test?authSource=admin&amp;replicaSet=replica&amp;maxPoolSize=10&quot;
+
+</code></pre>
+<h4 id="4-pymongomongodb">4 PyMongo和MongoDB兼容性表格</h4>
+<ul>
+<li><a href="https://www.mongodb.com/zh-cn/docs/languages/python/pymongo-driver/current/compatibility/#std-label-pymongo-compatibility">链接</a></li>
 </ul>
               
             </div>

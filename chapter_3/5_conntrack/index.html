@@ -117,13 +117,35 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">第五篇 conntrack的常见应用</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#_2">(一) 模块介绍</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一是什么</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#nf_conntrack-hashtable">nf_conntrack 结构和 hashtable</a>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 基础概念</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#11-netfilter">1.1 什么是Netfilter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#12-linuxhook">1.2 Linux基础hook能力和包过滤以及连接跟踪框架是独立的两个概念</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_3">(二) 内核相关参数</a>
+    <li class="toctree-l3"><a class="reference internal" href="#1_1">1 模块介绍</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-nf_conntrack-hashtable">2 nf_conntrack 结构和 hashtable</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3">3 内核相关参数</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">二 为什么</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">三 怎么办</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_2">1 常见维护操作</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-nf_conntrack_max-hashsize">2 不同内存情况下 ，nf_conntrack_max 和 hashsize的设置建议</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3_1">3 超大连接数场景,直接把一些特定端口的连接，直接不追踪</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -376,6 +398,11 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/1_demo_of_ai/">第一篇 AI程序 Hello World</a>
                   </li>
               </ul>
+              <p class="caption"><span class="caption-text">第十六章 网络安全方向</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_16/1_network_attack/">第一篇 认识各种网络攻击</a>
+                  </li>
+              </ul>
       </div>
     </div>
     </nav>
@@ -400,8 +427,86 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="_1">一 基础知识</h1>
-<h2 id="_2">(一) 模块介绍</h2>
+                <h1 id="_1">概述</h1>
+<ul>
+<li>本篇总结conntrack相关知识，介绍连接跟踪（connection tracking，conntrack，CT）的原理，应用，及其在 Linux 内核中的实现。</li>
+</ul>
+<h2 id="_2">一是什么</h2>
+<h3 id="1">1 基础概念</h3>
+<ul>
+<li>连接跟踪，顾名思义，就是<strong>跟踪（并记录）连接的状态</strong>。</li>
+</ul>
+<p><img alt="png" src="../../img/E63C6116-F591-42D8-BFF2-9A2DE3686888.jpg" /></p>
+<p>例如，上图是一台 IP 地址为 10.1.1.2 的 Linux 机器，我们能看到这台机器上有三条 连接：</p>
+<ul>
+<li>
+<p>机器访问外部 HTTP 服务的连接（目的端口 80）</p>
+</li>
+<li>
+<p>外部访问机器内 FTP 服务的连接（目的端口 21）</p>
+</li>
+<li>
+<p>机器访问外部 DNS 服务的连接（目的端口 53）</p>
+</li>
+</ul>
+<p>连接跟踪所做的事情就是发现并跟踪这些连接的状态，具体包括：</p>
+<p>从数据包中提取<strong>元组（tuple）</strong>信息，辨别<strong>数据流（flow）</strong>和对应的<strong>连接（connection）</strong></p>
+<p>为所有连接维护一个<strong>状态数据库（conntrack table）</strong>，例如连接的创建时间、发送 包数、发送字节数等等</p>
+<p>回收过期的连接（GC）</p>
+<p>为更上层的功能（例如 NAT）提供服务</p>
+<p>需要注意的是，<strong>连接跟踪中所说的“连接”，概念和 TCP/IP 协议中“面向连接”（ connection oriented）的“连接”并不完全相同</strong>，简单来说：</p>
+<ul>
+<li>
+<p>TCP/IP 协议中，连接是一个四层（Layer 4）的概念。</p>
+</li>
+<li>
+<ul>
+<li>TCP 是有连接的，或称面向连接的（connection oriented），发送出去的包都要求对端应答（ACK），并且有重传机制</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>UDP 是无连接的，发送的包无需对端应答，也没有重传机制</li>
+</ul>
+</li>
+<li>
+<p>CT 中，一个元组（tuple）定义的一条数据流（flow ）就表示一条连接（connection）。</p>
+</li>
+<li>
+<ul>
+<li>后面会看到 UDP 甚至是 <strong>ICMP 这种三层协议在 CT 中也都是有连接记录的</strong></li>
+</ul>
+</li>
+<li>
+<ul>
+<li>但<strong>不是所有协议都会被连接跟踪</strong></li>
+</ul>
+</li>
+</ul>
+<p>本文中用到“连接”一词时，大部分情况下指的都是后者，即“连接跟踪”中的“连接”。</p>
+<h4 id="11-netfilter">1.1 什么是Netfilter</h4>
+<p>Netfilter 是 Linux 内核中一个对数据 包进行<strong>控制、修改和过滤（manipulation and filtering</strong>）的框架。它在内核协议 栈中设置了若干hook 点，以此对数据包进行拦截、过滤或其他处理。</p>
+<p>说地更直白一些，hook 机制就是在数据包的必经之路上设置若干检测点，所有到达这 些检测点的包都必须接受检测，根据检测的结果决定：</p>
+<ul>
+<li>
+<p>放行：不对包进行任何修改，退出检测逻辑，继续后面正常的包处理</p>
+</li>
+<li>
+<p>修改：例如修改 IP 地址进行 NAT，然后将包放回正常的包处理逻辑</p>
+</li>
+<li>
+<p>丢弃：安全策略或防火墙功能</p>
+</li>
+</ul>
+<h4 id="12-linuxhook">1.2 Linux基础hook能力和包过滤以及连接跟踪框架是独立的两个概念</h4>
+<p>现在提到连接跟踪（conntrack），可能首先都会想到 Netfilter。但由上节讨论可知， <strong>连接跟踪概念是独立于 Netfilter 的，Netfilter 只是 Linux 内核中的一种连接跟踪实现</strong>。</p>
+<p>换句话说，<strong>只要具备了 hook 能力，能拦截到进出主机的每个包，完全可以在此基础上自己实现一套连接跟踪</strong>。</p>
+<ul>
+<li>Linux基础hook能力，就摆在那里，理论上不止Netfilter可以使用，其他框架也可以使用</li>
+<li>目前除了Netfilter框架，还有Cilium框架</li>
+</ul>
+<p><img alt="png" src="../../img/3DED0594-BCF4-4F93-9CBE-2569FD207AB2.jpg" /></p>
+<h3 id="1_1">1 模块介绍</h3>
 <p>nf_conntrack模块在kernel 2.6.15（2006-01-03发布） 被引入，支持ipv4和ipv6，取代只支持ipv4的ip_connktrack，用于跟踪连接的状态，供其他模块使用。</p>
 <p>最常见的使用场景是 iptables 的 nat 和 state 模块：</p>
 <p>nat 根据转发规则修改IP包的源/目标地址，靠nf_conntrack的记录才能让返回的包能路由到发请求的机器。
@@ -419,7 +524,7 @@ state 直接用 nf_conntrack 记录的连接状态（NEW/ESTABLISHED/RELATED/INV
 <p>RELATED，表示分组要发起一个新的连接，但是这个连接和一个现有的连接有关，例如：FTP的数据传输连接 和控制连接之间就是RELATED关系。RELATED是个比较麻烦的状态。当一个连接和某个已处于ESTABLISHED状态的连接有关系时，就被认为 是RELATED的了。换句话说，一个连接要想是RELATED的，首先要有一个ESTABLISHED的连接。这个ESTABLISHED连接再产生一 个主连接之外的连接，这个新的连接就是RELATED的了，当然前提是conntrack模块要能理解RELATED。ftp是个很好的例子，FTP- data连接就是和FTP-control有RELATED的。还有其他的例子，</p>
 <p>INVAILD，表示分组对应的连接是未知的，说明数据包不能被识别属于哪个连接或没有任何状态。有几个原因可以产生这种情况，比如，内存溢出，收到不知属于哪个连接的ICMP错误信息。一般地，我们DROP这个状态的任何东西。</p>
 <p>并不是所有Linux发行版会启用nf_conntrack模块</p>
-<h3 id="nf_conntrack-hashtable">nf_conntrack 结构和 hashtable</h3>
+<h3 id="2-nf_conntrack-hashtable">2 nf_conntrack 结构和 hashtable</h3>
 <p><img alt="png" src="../../img/C78C4484-C9A7-4937-B12D-DFA20A5F1654.png" /></p>
 <p>在内核中，连接跟踪表是一个二维数组结构的哈希表(hash table)，哈希表的大小记作HASHSIZE，哈希表的每一项(hash table entry)称作bucket，因此哈希表中有HASHSIZE个bucket存在，每个bucket包含一个链表(linked list)，每个链表能够存放若干个conntrack条目(bucket size)。对于一个新收到的数据包，内核使用如下步骤判断其是否属于一个已有连接：</p>
 <p>1 内核提取此数据包信息(源目IP，port，协议号)进行hash计算得到一个hash值，在哈希表中以此hash值做索引，索引结果为数据包所属的bucket(链表)。这一步hash计算时间固定并且很短</p>
@@ -428,7 +533,7 @@ state 直接用 nf_conntrack 记录的连接状态（NEW/ESTABLISHED/RELATED/INV
 <li>CONNTRACK_MAX代表系统所有追踪的链接数</li>
 <li>HASHSIZE代表哈希表大小. 因此CONNTRACK_MAX:HASHSIZE最好不要太大, 通常推荐8:1或者4:1</li>
 </ul>
-<h2 id="_3">(二) 内核相关参数</h2>
+<h3 id="3">3 内核相关参数</h3>
 <pre><code>net.netfilter.nf_conntrack_max=6000000
 net.netfilter.nf_conntrack_buckets=1307648
 
@@ -445,7 +550,12 @@ net.netfilter.nf_conntrack_tcp_timeout_time_wait = 120
 net.netfilter.nf_conntrack_tcp_timeout_unacknowledged = 300
 </code></pre>
 <p>官方说明: https://www.kernel.org/doc/Documentation/networking/nf_conntrack-sysctl.txt</p>
-<h1 id="_4">二 常用操作</h1>
+<h2 id="_3">二 为什么</h2>
+<ul>
+<li>连接跟踪是许多网络应用的基础。例如，Kubernetes Service、ServiceMesh sidecar、 软件四层负载均衡器 LVS/IPVS、Docker network、OVS、iptables 主机防火墙等等，都依赖 连接跟踪功能。</li>
+</ul>
+<h2 id="_4">三 怎么办</h2>
+<h3 id="1_2">1 常见维护操作</h3>
 <pre><code>查看nf_conntrack表当前连接数    
 cat /proc/sys/net/netfilter/nf_conntrack_count       
 
@@ -473,7 +583,7 @@ sysctl -a | grep nf_conntrack
 yum install -y conntrack  / apt-get install -y conntrack
 conntrack -L  
 </code></pre>
-<h1 id="nf_conntrack_max-hashsize">三 不同内存情况下 ，nf_conntrack_max 和 hashsize的设置建议</h1>
+<h3 id="2-nf_conntrack_max-hashsize">2 不同内存情况下 ，nf_conntrack_max 和 hashsize的设置建议</h3>
 <pre><code>可以增大 conntrack 的条目(sessions, connection tracking entries) CONNTRACK_MAX 或者增加存储 conntrack 条目哈希表的大小 HASHSIZE
 默认情况下，CONNTRACK_MAX 和 HASHSIZE 会根据系统内存大小计算出一个比较合理的值：
 对于 CONNTRACK_MAX，其计算公式：
@@ -510,7 +620,7 @@ HASHSIZE = CONNTRACK_MAX / 8 = RAMSIZE (in bytes) / 131072 / (ARCH / 32)
 </tr>
 </tbody>
 </table>
-<h1 id="_5">四 超大连接数场景,直接把一些特定端口的连接，直接不追踪</h1>
+<h3 id="3_1">3 超大连接数场景,直接把一些特定端口的连接，直接不追踪</h3>
 <p>如果某一端口或者某些端口，有超大量的连接，那么可以修改raw表 ，不进行连接追踪</p>
 <pre><code>*filter
 iptables -t filter -A INPUT -m state --state RELATED,ESTABLISHED, UNTRACKED -j ACCEPT
@@ -527,6 +637,7 @@ iptables -t raw -A OUTPUT -p tcp -m multiport --sports 80,443 -j NOTRACK
 <ul>
 <li>https://clodfisher.github.io/2018/09/nf_conntrack/</li>
 <li>https://testerhome.com/topics/7509</li>
+<li><a href="https://mp.weixin.qq.com/s/-MVbqQbkTVAU60Wnj3WnOw">连接跟踪(conntrack)原理、应用以及Linux内核实现</a></li>
 </ul>
               
             </div>

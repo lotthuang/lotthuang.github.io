@@ -207,6 +207,8 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#io">二 文件系统本身在 IO 栈的角色</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#inodeblock">三 文件名存储在目录inode节点对应的block内</a>
+    </li>
         </ul>
     </li>
     </ul>
@@ -408,6 +410,11 @@
               <p class="caption"><span class="caption-text">第十五章 AI+嵌入式结合方向汇总</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/1_demo_of_ai/">第一篇 AI程序 Hello World</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十六章 网络安全方向</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_16/1_network_attack/">第一篇 认识各种网络攻击</a>
                   </li>
               </ul>
       </div>
@@ -914,6 +921,47 @@ struct files_struct {
 <h3 id="io">二 文件系统本身在 IO 栈的角色</h3>
 <ul>
 <li>属于 MAPPING 层，说白了就是一个映射. 上层目录树到硬盘 sector 的映射。</li>
+</ul>
+<h3 id="inodeblock">三 文件名存储在目录inode节点对应的block内</h3>
+<ul>
+<li>
+<p>Linux中一切皆文件，目录也不列外，目录也有对应的inode，其实目录inode指向的data block存储的就是这个目录下的所有文件名、对应的子目录名和他们对应inode number等对应关系，也即dentry。</p>
+</li>
+<li>
+<p>例如，通过如下方法就可以读取出ext4文件系统一个目录的dentry内容，可以看到dentry下包含了目录下的所有文件名。</p>
+</li>
+<li>
+<p>ext4文件系统实际存储在磁盘上的dentry结构：</p>
+</li>
+</ul>
+<pre><code>struct ext4_dir_entry_2 {
+    __le32  inode;         /* Inode number */
+    __le16  rec_len;       /* Directory entry length */
+    __u8    name_len;      /* Name length */
+    __u8    file_type;     /* Type of file */
+    char    name[EXT4_NAME_LEN]; /* File name, up to EXT4_NAME_LEN */
+};
+inode: 这是一个 32 位的字段，用于存储与该目录项关联的 inode 的编号。在 ext4 文件系统中，每个文件和目录都有一个 inode，其中包含了文件的元数据。
+
+rec_len: 这个 16 位的字段表示整个目录项的长度，包括所有字段。这个长度应该是 4 的倍数。
+
+name_len: 这是一个 8 位的字段，表示文件名的长度，不包括结尾的空字符。
+
+file_type: 这个 8 位的字段用于指明文件的类型（如普通文件、目录、符号链接等）。这个字段的值通常会是如下几种：
+   - `EXT4_FT_UNKNOWN(0)` - 未知文件类型
+   - `EXT4_FT_REG_FILE(1)` - 普通文件
+   - `EXT4_FT_DIR(2)` - 目录
+   - `EXT4_FT_CHRDEV(3)` - 字符设备
+   - `EXT4_FT_BLKDEV(4)` - 块设备
+   - `EXT4_FT_FIFO(5)` - FIFO
+   - `EXT4_FT_SOCK(6)` - 套接字
+   - `EXT4_FT_SYMLINK(7)` - 符号链接
+
+name[EXT4_NAME_LEN]: 这是一个字符数组，用于存储文件名。
+
+</code></pre>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/BQNE30KxpNMSefAvMVKmrQ">再论元数据，文件名不存在inode里，到底存在什么地方？如何从磁盘读取它</a></li>
 </ul>
               
             </div>
