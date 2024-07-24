@@ -359,7 +359,9 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/14_mongodb/">第十四篇 MongoDB使用</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/15_supervisor/">第十四篇 Supervisor使用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/15_supervisor/">第十五篇 Supervisor使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/16_redis/">第十六篇 Redis使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -559,7 +561,14 @@
 <p>索引一个文档，就是存储一个文档到一个索引中以便被检索</p>
 </blockquote>
 <ul>
-<li>一种数据结构</li>
+<li>
+<ul>
+<li>默认情况下，文档中的所有字段都会被索引</li>
+</ul>
+</li>
+<li>
+<p>一种数据结构</p>
+</li>
 </ul>
 <blockquote>
 <p>这里指：倒排索引 ，就是通过 value ——&gt; Key ，如下 👇 通过记录这个词和它所在的文档 ID，对应 Lucene 中的 segments (分段)</p>

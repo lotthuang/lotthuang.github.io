@@ -323,7 +323,9 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/14_mongodb/">第十四篇 MongoDB使用</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/15_supervisor/">第十四篇 Supervisor使用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/15_supervisor/">第十五篇 Supervisor使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/16_redis/">第十六篇 Redis使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -925,7 +927,10 @@ struct files_struct {
 <h3 id="inodeblock">三 文件名存储在目录inode节点对应的block内</h3>
 <ul>
 <li>
-<p>Linux中一切皆文件，目录也不列外，目录也有对应的inode，其实目录inode指向的data block存储的就是这个目录下的所有文件名、对应的子目录名和他们对应inode number等对应关系，也即dentry。</p>
+<p>inode包含了文件的元数据，例如文件权限、所有者信息、文件大小、创建和修改时间，以及指向文件实际数据块(data block)的指针.</p>
+</li>
+<li>
+<p><strong>Linux中一切皆文件，目录也不列外，目录也有对应的inode，其实目录inode指向的data block存储的就是这个目录下的所有文件名、对应的子目录名和他们对应inode number等对应关系</strong>。</p>
 </li>
 <li>
 <p>例如，通过如下方法就可以读取出ext4文件系统一个目录的dentry内容，可以看到dentry下包含了目录下的所有文件名。</p>

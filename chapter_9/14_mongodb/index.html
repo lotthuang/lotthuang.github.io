@@ -297,13 +297,53 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#4-pymongomongodb">4 PyMongo和MongoDB兼容性表格</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#5-saas">5 SaaS实例使用最佳实践</a>
+    </li>
         </ul>
     </li>
         </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#mongodb">三 MongoDB运维梳理</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_2">1 工具梳理</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#11-mongod">1.1 mongod</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-mongod">2 mongod扩展指令</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_4">是什么</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_5">为什么</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">关于复制集的节点角色</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_7">四 日志</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-oplog">1 oplog</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_8">是什么</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_9">怎么办</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_10">五 性能优化</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#keyfile">六 认证相关（keyfile）</a>
     </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../15_supervisor/">第十四篇 Supervisor使用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../15_supervisor/">第十五篇 Supervisor使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../16_redis/">第十六篇 Redis使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -501,12 +541,252 @@ test
 <ul>
 <li><a href="https://www.mongodb.com/zh-cn/docs/languages/python/pymongo-driver/current/compatibility/#std-label-pymongo-compatibility">链接</a></li>
 </ul>
+<h4 id="5-saas">5 SaaS实例使用最佳实践</h4>
+<ol>
+<li>容量不足，加Shard</li>
+<li>速度不够, 升级规格</li>
+</ol>
+<h2 id="mongodb">三 MongoDB运维梳理</h2>
+<ul>
+<li><a href="https://github.com/dunwu/db-tutorial/blob/master/docs/12.%E6%95%B0%E6%8D%AE%E5%BA%93/04.%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E5%BA%93/01.MongoDB/20.MongoDB%E8%BF%90%E7%BB%B4.md">MongoDB 运维</a></li>
+<li><a href="https://blog.csdn.net/weixin_52989403/article/details/130237082">MongoDB 运维实战总结</a></li>
+</ul>
+<h4 id="1_2">1 工具梳理</h4>
+<h5 id="11-mongod">1.1 mongod</h5>
+<pre><code>General options:
+  -h [ --help ]                         Show this usage information
+  --version                             Show version information
+  -f [ --config ] arg                   Configuration file specifying
+                                        additional options
+  --configExpand arg                    Process expansion directives in config
+                                        file (none, exec, rest)
+  --port arg                            Specify port number - 27017 by default #  端口号默认27017
+  --ipv6                                Enable IPv6 support (disabled by
+                                        default) #默认不开启ipv6
+  --listenBacklog arg (=128)            Set socket listen backlog size #全连接队列长度默认127
+  --maxConns arg (=1000000)             Max number of simultaneous connections #最大连接数
+  --pidfilepath arg                     Full path to pidfile (if not set, no
+                                        pidfile is created)
+  --timeZoneInfo arg                    Full path to time zone info directory,
+                                        e.g. /usr/share/zoneinfo
+  --nounixsocket                        Disable listening on unix sockets
+  --unixSocketPrefix arg                Alternative directory for UNIX domain
+                                        sockets (defaults to /tmp)
+  --filePermissions arg                 Permissions to set on UNIX domain
+                                        socket file - 0700 by default
+  --fork                                Fork server process
+  -v [ --verbose ] [=arg(=v)]           Be more verbose (include multiple times
+                                        for more verbosity e.g. -vvvvv)
+  --quiet                               Quieter output
+  --logpath arg                         Log file to send write to instead of
+                                        stdout - has to be a file, not
+                                        directory
+  --syslog                              Log to system's syslog facility instead
+                                        of file or stdout
+  --syslogFacility arg                  syslog facility used for mongodb syslog
+                                        message
+  --logappend                           Append to logpath instead of
+                                        over-writing
+  --logRotate arg                       Set the log rotation behavior
+                                        (rename|reopen)
+  --timeStampFormat arg                 Desired format for timestamps in log
+                                        messages. One of iso8601-utc or
+                                        iso8601-local
+  --setParameter arg                    Set a configurable parameter
+  --bind_ip arg                         Comma separated list of ip addresses to
+                                        listen on - localhost by default
+  --bind_ip_all                         Bind to all ip addresses
+  --noauth                              Run without security
+  --transitionToAuth                    For rolling access control upgrade.
+                                        Attempt to authenticate over outgoing
+                                        connections and proceed regardless of
+                                        success. Accept incoming connections
+                                        with or without authentication.
+  --slowms arg (=100)                   Value of slow for profile and console
+                                        log
+  --slowOpSampleRate arg (=1)           Fraction of slow ops to include in the
+                                        profile and console log
+  --profileFilter arg                   Query predicate to control which
+                                        operations are logged and profiled
+  --auth                                Run with security
+  --clusterIpSourceWhitelist arg        Network CIDR specification of permitted
+                                        origin for `__system` access
+  --profile arg                         0=off 1=slow, 2=all
+  --cpu                                 Periodically show cpu and iowait
+                                        utilization
+  --sysinfo                             Print some diagnostic system
+                                        information
+  --noscripting                         Disable scripting engine
+  --notablescan                         Do not allow table scans
+  --shutdown                            Kill a running server (for init
+                                        scripts)
+  --keyFile arg                         Private key for cluster authentication
+  --clusterAuthMode arg                 Authentication mode used for cluster
+                                        authentication. Alternatives are
+                                        (keyFile|sendKeyFile|sendX509|x509)
+
+Replication options:
+  --oplogSize arg                       Size to use (in MB) for replication op
+                                        log. default is 5% of disk space (i.e.
+                                        large is good)
+
+Replica set options:
+  --replSet arg                         arg is &lt;setname&gt;[/&lt;optionalseedhostlist
+                                        &gt;]
+  --enableMajorityReadConcern [=arg(=1)] (=1)
+                                        Enables majority readConcern
+
+Sharding options:
+  --configsvr                           Declare this is a config db of a
+                                        cluster; default port 27019; default
+                                        dir /data/configdb
+  --shardsvr                            Declare this is a shard db of a
+                                        cluster; default port 27018
+
+Storage options:
+  --storageEngine arg                   What storage engine to use - defaults
+                                        to wiredTiger if no data files present
+  --dbpath arg                          Directory for datafiles - defaults to
+                                        /data/db
+  --directoryperdb                      Each database will be stored in a
+                                        separate directory
+  --syncdelay arg (=60)                 Seconds between disk syncs
+  --journalCommitInterval arg (=100)    how often to group/batch commit (ms)
+  --upgrade                             Upgrade db if needed
+  --repair                              Run repair on all dbs
+  --journal                             Enable journaling
+  --nojournal                           Disable journaling (journaling is on by
+                                        default for 64 bit)
+  --oplogMinRetentionHours arg (=0)     Minimum number of hours to preserve in
+                                        the oplog. Default is 0 (turned off).
+                                        Fractions are allowed (e.g. 1.5 hours)
+
+TLS Options:
+  --tlsOnNormalPorts                    Use TLS on configured ports
+  --tlsMode arg                         Set the TLS operation mode
+                                        (disabled|allowTLS|preferTLS|requireTLS
+                                        )
+  --tlsCertificateKeyFile arg           Certificate and key file for TLS
+  --tlsCertificateKeyFilePassword arg   Password to unlock key in the TLS
+                                        certificate key file
+  --tlsClusterFile arg                  Key file for internal TLS
+                                        authentication
+  --tlsClusterPassword arg              Internal authentication key file
+                                        password
+  --tlsCAFile arg                       Certificate Authority file for TLS
+  --tlsClusterCAFile arg                CA used for verifying remotes during
+                                        inbound connections
+  --tlsCRLFile arg                      Certificate Revocation List file for
+                                        TLS
+  --tlsDisabledProtocols arg            Comma separated list of TLS protocols
+                                        to disable [TLS1_0,TLS1_1,TLS1_2]
+  --tlsAllowConnectionsWithoutCertificates
+                                        Allow client to connect without
+                                        presenting a certificate
+  --tlsAllowInvalidHostnames            Allow server certificates to provide
+                                        non-matching hostnames
+  --tlsAllowInvalidCertificates         Allow connections to servers with
+                                        invalid certificates
+  --tlsFIPSMode                         Activate FIPS 140-2 mode at startup
+  --tlsLogVersions arg                  Comma separated list of TLS protocols
+                                        to log on connect [TLS1_0,TLS1_1,TLS1_2
+                                        ]
+
+WiredTiger options:
+  --wiredTigerCacheSizeGB arg           Maximum amount of memory to allocate
+                                        for cache; Defaults to 1/2 of physical
+                                        RAM
+  --wiredTigerJournalCompressor arg (=snappy)
+                                        Use a compressor for log records
+                                        [none|snappy|zlib|zstd]
+  --wiredTigerDirectoryForIndexes       Put indexes and data in different
+                                        directories
+  --wiredTigerCollectionBlockCompressor arg (=snappy)
+                                        Block compression algorithm for
+                                        collection data [none|snappy|zlib|zstd]
+  --wiredTigerIndexPrefixCompression arg (=1)
+                                        Use prefix compression on row-store
+                                        leaf pages
+
+AWS IAM Options:
+  --awsIamSessionToken arg              AWS Session Token for temporary
+                                        credentials
+</code></pre>
+<ul>
+<li><a href="https://www.mongodb.com/docs/v4.4/reference/configuration-options/#processmanagement-options">官方配置文件说明</a></li>
+<li><a href="https://www.cnblogs.com/oldSimon/p/16894714.html">MongoDB配置文件详解</a></li>
+<li><a href="https://blog.csdn.net/cold___play/article/details/130549381">MongoDB---配置文件详解</a></li>
+</ul>
+<h4 id="2-mongod">2 mongod扩展指令</h4>
+<h5 id="_4">是什么</h5>
+<ul>
+<li>扩展指令主要包括"exec"和"reset"</li>
+</ul>
+<h5 id="_5">为什么</h5>
+<ul>
+<li>在配置文件中指定要执行的脚本，通过执行某个脚本获取到某个配置的value。例如执行<code>python /home/user/getIPAddresses.py</code> 获取到mongod进程要监听的IP</li>
+</ul>
+<pre><code>storage:
+  dbPath: &quot;/var/lib/mongo&quot;
+systemLog:
+  destination: file
+  path: &quot;/var/log/mongodb/mongod.log&quot;
+net:
+  bindIp:
+    __exec: &quot;python /home/user/getIPAddresses.py&quot;
+    type: &quot;string&quot;
+    trim: &quot;whitespace&quot;
+    digest: 85fed8997aac3f558e779625f2e51b4d142dff11184308dc6aca06cff26ee9ad
+    digest_key: 68656c6c30303030307365637265746d796f6c64667269656e64
+  tls:
+    mode: requireTLS
+    certificateKeyFile: &quot;/etc/tls/mongod.pem&quot;
+    certificateKeyFilePassword:
+      __rest: &quot;https://myrestserver.example.net/api/config/myCertKeyFilePassword&quot;
+      type: &quot;string&quot;
+      digest: b08519162ba332985ac18204851949611ef73835ec99067b85723e10113f5c26
+      digest_key: 6d795365637265744b65795374756666
+</code></pre>
+<h4 id="_6">关于复制集的节点角色</h4>
+<ul>
+<li>hidden从库和仲裁节点的作用不同。hidden从库用于数据同步，Hidden节点用于Secondary节点故障时接替该故障节点成为新的Secondary节点，而仲裁节点用于解决投票冲突。</li>
+<li>在配置hidden从库时，需要将其优先级设置为0以确保它不会被用于读操作。</li>
+<li>在配置仲裁节点时，需要将其优先级设置为0，并且将votes参数设置为1，以确保它只用于投票</li>
+<li>hidden节点必须始终是priority为0，因为hidden节点不能成为primary节点</li>
+<li>客户端不会将只读流量发给hidden节点，除了基本复制，这些成员不会收到任何流量</li>
+<li>hidden节点可以在副本集选举中投票</li>
+</ul>
+<h2 id="_7">四 日志</h2>
+<ul>
+<li>MongoDB中无论是oplog还是slowlog，都喜欢用collection去实现</li>
+</ul>
+<h3 id="1-oplog">1 oplog</h3>
+<h4 id="_8">是什么</h4>
+<p>MongoDB 的 Replication 是通过一个日志来存储写操作的，这个日志就叫做 oplog。在默认情况下，oplog 分配的是 5% 的空闲磁盘空间。通常而言,这是一种合理的设置。可以通过 mongod --oplogSize 来改变 oplog 的日志大小。</p>
+<p>oplog 是 capped collection，因为 oplog 的特点（不能太多把磁盘填满了，固定大小）需要，MongoDB 才发明了 capped collection（the oplog is actually the reason capped collections were invented）。</p>
+<p>oplog 是 local 库下的一个固定集合，Oplog 是 MongoDB 实现复制集的关键数据结构，在复制集中 Primary 对数据库操作之后就会产生一个 Oplog 文档保存在 local.oplog.rs 集合中，Secondary 成员会拉取 Primary 的 Oplog 并重放相同的操作，从而达到 Secondary 成员与 Primary 有一致的数据。实际上复制集中每一个成员都会保存 Oplog，其他成员会根据连接延迟等因数选择最近的成员拉取 Oplog 数据。</p>
+<p>Oplog 存在集合 local.oplog.rs，这是系统内置集合，一个 capped collection，即是这个 collection 有固定大小，一旦写满数据会从头开始写入，就像一个圆形的队列结构。这个 collection 大小在初始化集群时设置，默认的大小是 5% 的空闲磁盘空间，也可以在配置文件设置 oplogSizeMB 选项，或者在启动 MongoDB 后使用 replSetResizeOplog 命令动态设置 collection 大小。</p>
+<h4 id="_9">怎么办</h4>
+<ol>
+<li>如何利用oplog恢复数据</li>
+<li>复制集实验：主从切换、oplog导出、数据恢复</li>
+<li>搭建2分片，1config分片，2mongos集群</li>
+</ol>
+<h2 id="_10">五 性能优化</h2>
+<ul>
+<li>如果 nscanned(扫描的记录数)远大于 nreturned(返回结果的记录数)的话，那么我们就要考虑 通过加索引来优化记录定位了。reslen 如果过大，那么说明我们返回的结果集太大了，这时请查看 find 函数的第二个参数是 否只写上了你需要的属性名。</li>
+</ul>
+<p>常见方案：
+1. 创建索引，显著提高查询效率
+2. 限定返回数据量大小（比如只返回需要的字段、限定行数）
+3. 使用Server Side Code Exceuption，降低网络传输量</p>
+<h2 id="keyfile">六 认证相关（keyfile）</h2>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../13_mysql/" class="btn btn-neutral float-left" title="第十三篇 MySQL使用"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../15_supervisor/" class="btn btn-neutral float-right" title="第十四篇 Supervisor使用">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../15_supervisor/" class="btn btn-neutral float-right" title="第十五篇 Supervisor使用">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>

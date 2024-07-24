@@ -299,6 +299,18 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_9">参考</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#python">四 一些python库</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-pyjwt">1 PyJWT</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#installation">Installation</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example-usage">Example Usage</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../8_rsyslog/">第八篇 rsyslog</a>
@@ -315,7 +327,9 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../14_mongodb/">第十四篇 MongoDB使用</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../15_supervisor/">第十四篇 Supervisor使用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../15_supervisor/">第十五篇 Supervisor使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../16_redis/">第十六篇 Redis使用</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -673,6 +687,41 @@ print(unpacked_data)
 </li>
 <li>
 <p><a href="https://mp.weixin.qq.com/s/NXrdjh3ItvZp-5Oxv72zTw">python序列化与反序列化</a></p>
+</li>
+</ul>
+<h2 id="python">四 一些python库</h2>
+<h3 id="1-pyjwt">1 PyJWT</h3>
+<ul>
+<li>
+<p><strong>PyJWT</strong> is a Python library which allows you to encode and decode JSON Web Tokens (JWT). JWT is an open, industry-standard (RFC 7519) for representing claims securely between two parties.</p>
+</li>
+<li>
+<p><strong>PyJWT</strong>是一个python库，方便的在python代码中编码和解码JWT. JWT本身是一种工业标准，用于在两端安全的传递一些用户名等信息.</p>
+</li>
+</ul>
+<h4 id="installation">Installation</h4>
+<p>You can install pyjwt with pip:</p>
+<pre><code>$ pip install pyjwt
+
+</code></pre>
+<p>See Installation for more information.</p>
+<h4 id="example-usage">Example Usage</h4>
+<pre><code>&gt;&gt;&gt; import jwt
+&gt;&gt;&gt; encoded_jwt = jwt.encode({&quot;some&quot;: &quot;payload&quot;}, &quot;secret&quot;, algorithm=&quot;HS256&quot;)
+&gt;&gt;&gt; print(encoded_jwt)
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzb21lIjoicGF5bG9hZCJ9.4twFt5NiznN84AWoo1d7KO1T_yoc0Z6XOpOVswacPZg
+&gt;&gt;&gt; jwt.decode(encoded_jwt, &quot;secret&quot;, algorithms=[&quot;HS256&quot;])
+{'some': 'payload'}
+
+</code></pre>
+<ul>
+<li>首先肯定要有一个密码，比如在KS, 原来是明文颁发密码，后来呢，改成使用kcstore控制系统颁发密码.</li>
+<li>有了密码之后呢， 就可以用jwt编码一些payload，payload就是一些python字典，比如 <code>{"user":"tom06", "iss":_service_name,"exp":int(time.time())+3600, "usertype":1}</code></li>
+<li>
+<p>编码之后呢就得到一个很长的字符串，然后把这个字符串放到特定的Http Header中（比如X-JWT-Token），请求公司内部系统API的时候，带上该Header，对方就能拿到jwt编码后的字符串，并且能够通过jwt库解码得到你的payload.</p>
+</li>
+<li>
+<p>参考<a href="https://pyjwt.readthedocs.io/en/stable/">PyJWT</a></p>
 </li>
 </ul>
               
