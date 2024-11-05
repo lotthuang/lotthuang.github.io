@@ -138,6 +138,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#10-context">10 考虑Context</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#11">11 客户端分散</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../14_performance_optimization_topic/">第十四篇 性能优化专题</a>
@@ -730,6 +732,11 @@
 <h2 id="10-context">10 考虑Context</h2>
 <ol>
 <li>任何进程、程序的运行，都要考虑其Context </li>
+</ol>
+<h2 id="11">11 客户端分散</h2>
+<ol>
+<li>解决单点问题的一个思路是前面加一层LB</li>
+<li>但也可以是客户端分散，客户端随机选择一个服务器，就算其中一个服务器挂了，也只影响部分客户端、不影响全局</li>
 </ol>
               
             </div>

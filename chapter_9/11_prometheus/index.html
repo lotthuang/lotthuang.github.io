@@ -293,6 +293,8 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#4">4. 生成图和报表</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#5-sql">5. SQL语句使用</a>
+    </li>
         </ul>
     </li>
     </ul>
@@ -590,6 +592,75 @@ prometheus_http_requests_total{status=&quot;200&quot;, method=&quot;GET&quot;} 1
 <ul>
 <li><a href="https://mp.weixin.qq.com/s/VSj3lnGOUOl-ly92vsCGhA">Prometheus</a></li>
 <li><a href="https://mp.weixin.qq.com/s?__biz=MzkzNjI5OTM5Nw==&amp;mid=2247483738&amp;idx=1&amp;sn=e8bdbb974a2cd003c1abcc2b5405dd18&amp;chksm=c2a19fb0f5d616a63185cd79277a79a6b80118ef2185890d0683d2bb20451bd9303c78d083c5#rd">监控的自我修养，过去十年和未来十年</a></li>
+</ul>
+<h3 id="5-sql">5. SQL语句使用</h3>
+<ol>
+<li>label_replace用法</li>
+</ol>
+<p>label_replace(v instant-vector, dst_label string, replacement string, src_label string, regex string)</p>
+<p>有4个输入参数</p>
+<ul>
+<li>1 v, 就是个指标。 可以多种情况</li>
+<li>
+<ul>
+<li>1.1 比如简单的： <code>namedprocess_namegroup_memory_bytes{groupname=~".*router.*", memtype="resident", job="$job"}</code></li>
+</ul>
+</li>
+<li>
+<ul>
+<li>1.2 嵌套一层rate函数: <code>rate(namedprocess_namegroup_cpu_seconds_total{groupname=~"$processes", job="$job"}[$interval])</code></li>
+</ul>
+</li>
+<li>
+<p>2 目标label</p>
+</li>
+<li>
+<ul>
+<li>就是我要替换哪个label， 比如一个指标它有多个label，比如<code>http_requests_total{code=“400”,handler=“query”,instance=“120.77.65.193:9090”,job=“prometheus”,method=“get”}</code>, 那么它有code、handler、instance、job、method 5个label，这几个label都可以替换。并且这里替换是完全替换</li>
+</ul>
+</li>
+<li>
+<p>3 替换的字符串</p>
+</li>
+<li>
+<ul>
+<li>3.1 这里可以直接是字符串</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>3.2 也可以是$0\$1\$2这种形式，这种形式就是正则表达式捕获的group，$0代表整体，$1代表第一个组，以此类推</li>
+</ul>
+</li>
+<li>
+<p>4 源label</p>
+</li>
+<li>
+<ul>
+<li>4.1 如果你是上面3.1这种情况，其实源label可以随便写，应该是没用</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>4.2 如果你是上面3.2这种情况，那源label就是指定正则表达式用哪个字符串，比如选了instance，那么源字符串就是"120.77.65.193:9090"</li>
+</ul>
+</li>
+<li>
+<p>5 正则表达式</p>
+</li>
+<li>
+<ul>
+<li>5.1 如果你是上面3.1这种情况，其实正则表达式可以随便写，应该是没用，不会进行正则匹配</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>5.2 如果你是上面3.2这种情况，源字符串已经在4这一步写了，5这里就写一个正则表达式，通过正则表达式捕获到的内容会替换掉2里的label</li>
+</ul>
+</li>
+<li>
+<p><a href="https://blog.csdn.net/hxlovexn/article/details/131479148">参考</a></p>
+</li>
 </ul>
               
             </div>
