@@ -482,7 +482,13 @@
 <p>再往后，CPU 以各种不同的方式收到的这些 0x21 0x06 0x80，都会一视同仁，做同样的后续处理流程，所以从现在开始，前面的事情就不用再管了，这也体现了分层的好处。</p>
 <h2 id="_4">如何处理中断信号</h2>
 <ul>
-<li>先用一句不太准确的话总结，CPU 收到一个中断号 n 后，会去<code>中断向量表</code>中寻找第 n 个<code>中断描述符</code>，从<code>中断描述符</code>中找到<code>中断处理程序</code>的地址，然后跳过去执行。</li>
+<li>
+<p>先用一句不太准确的话总结，CPU 收到一个中断号 n 后，会去<code>中断向量表</code>中寻找第 n 个<code>中断描述符</code>，从<code>中断描述符</code>中找到<code>中断处理程序</code>的地址，然后跳过去执行。</p>
+</li>
+<li>
+<p>不太准确的图:
+<img alt="png" src="../../img/0F9F9E88-134E-479B-8856-34B552FC0A81.png" /></p>
+</li>
 </ul>
 <h3 id="_5">什么是中断向量表</h3>
 <p>中断向量表就是中断描述符表. 是一个数组.</p>
@@ -619,6 +625,9 @@ _timer_interrupt:
 <p>（当然别的中断号，例如网卡中断，可以打断键盘中断处理程序）</p>
 <p>上半部核心是<code>do_irq()</code>函数,每次调用<code>do_irq()</code>函数时，传入了 CPU 当前寄存器的状态.<code>unsigned do_IRQ(struct pt_regs regs)</code></p>
 <p><img alt="png" src="../../img/WechatIMG235.png" /></p>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/K4SS3xOByozpbdR45ImtQQ">参考</a></li>
+</ul>
               
             </div>
           </div><footer>

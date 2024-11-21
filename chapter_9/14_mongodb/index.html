@@ -299,6 +299,8 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#5-saas">5 SaaS实例使用最佳实践</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#6">6 常规性能上限</a>
+    </li>
         </ul>
     </li>
         </ul>
@@ -556,6 +558,12 @@ test
 <li>容量不足，加Shard</li>
 <li>速度不够, 升级规格</li>
 </ol>
+<h4 id="6">6 常规性能上限</h4>
+<ul>
+<li>单个实例中，数据库的总的个数不要超过200个，总的集合个数不要超过500个</li>
+<li>单个MongoD实例，连接数不建议超过3万.</li>
+<li>单个集合的索引数量不超过5个</li>
+</ul>
 <h2 id="mongodb">三 MongoDB运维梳理</h2>
 <ul>
 <li><a href="https://github.com/dunwu/db-tutorial/blob/master/docs/12.%E6%95%B0%E6%8D%AE%E5%BA%93/04.%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E5%BA%93/01.MongoDB/20.MongoDB%E8%BF%90%E7%BB%B4.md">MongoDB 运维</a></li>
