@@ -308,6 +308,12 @@
     <li class="toctree-l3"><a class="reference internal" href="#2_1">2 删除策略</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#3-hotkeybigkey">3 HotKey和BigKey</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#31-bigkey">3.1 BigKey</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#32-hotkey">3.2 HotKey</a>
+    </li>
+        </ul>
     </li>
         </ul>
     </li>
@@ -479,6 +485,75 @@
 <h3 id="2_1">2 删除策略</h3>
 <h3 id="3-hotkeybigkey">3 HotKey和BigKey</h3>
 <p>本质上都是负载不均衡，容易打死某一个Redis实例</p>
+<h4 id="31-bigkey">3.1 BigKey</h4>
+<ul>
+<li>
+<p>大Key可以分为两种情况:</p>
+</li>
+<li>
+<ul>
+<li>Key的Value占用存储空间较大。一般单个String类型的Key大小达到10KB，或者集合类型的Key总大小达到50MB，则被定义为大Key。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>Key的元素较多。一般集合类型的Key中元素超过5000个，则被定义为大Key。</li>
+</ul>
+</li>
+</ul>
+<h4 id="32-hotkey">3.2 HotKey</h4>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/RWQzLZq6X7B5ThaKX6U4SQ">Redis热key问题</a>是指单位时间内，某个特定key的访问量特别高，占用大量的CPU资源，影响其他请求并导致整体性能降低。而且，如果访问热key的命令是时间复杂度较高的命令，会使得CPU消耗变得更加严重；或者，如果访问的热key同时也是一个大key，也可能使得访问流量达到节点所在机器带宽上限。</li>
+</ul>
+<h5 id="321-rediskey">3.2.1 Redis热Key常见探测方法</h5>
+<p><img alt="png" src="../../img/892B2A2C-5E9F-4D20-BF25-621C0D77903B.png" /></p>
+<ul>
+<li>
+<p>Redis-cli hotkeys参数</p>
+</li>
+<li>
+<ul>
+<li>Redis自4.0起在Redis-cli中提供了hotkeys参数来方便用户进行实例级的热key分析功能，Redis-cli通过向Redis-server节点发送scan + object freq命令以遍历的方式分析Redis实例中所有key，然后返回实例中热key信息。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>该方式存在以下几个问题：</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>使用该方案的前提条件是需要将Redis-server的淘汰策略maxmemory-policy参数设置为LFU（volatile-lfu或allkeys-lfu）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>实时性差。由于需要扫描整个keyspace，实时性较差，扫描时间与key数量正相关，如果key数量比较多，耗时可能会非常长。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>信息不够丰富。首先记录的访问频率是一个与访问次数的对数成比例的相关近似值，不能够很直观的看出来热key的访问频率；另外，返回的信息中也没有key的类型和热key出现的时间等。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>华为云上的热Key分析就是基于此</li>
+</ul>
+</li>
+</ul>
               
             </div>
           </div><footer>
