@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>第六篇 各类文件系统梳理 - Lott's Blog</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u7b2c\u516d\u7bc7 \u5404\u7c7b\u6587\u4ef6\u7cfb\u7edf\u68b3\u7406";
+        var mkdocs_page_input_path = "chapter_5/6_fss.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Lott's Blog
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首页</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第一章 各种杂项基础</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/3_linux_kernel_basic/">第三篇 Linux内核基础</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/10_virtual_machine_on_mac_m1_chip/">第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/11_nftables/">第十一篇 Debian 11以及往后版本nftables防火墙配置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY、PTY和控制台(Console)区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/15_bosun/">第十五篇 Bosun使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/16_assembler/">第十六篇 汇编语言使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/17_makefile/">第十七篇 Makefile使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/19_network_ratelimit/">第十九篇 Linux网络限速</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/20_mac_os_skills/">第二十篇 MacOS使用技巧</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/guzhangguanli/">第四篇 故障管理概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/biangengguanli/">第五篇 变更管理概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/rongliangguanli/">第六篇 容量管理概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/cicd/">第八篇 CICD流程概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/9_changkanchangxin/">第九篇 常看常新</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/12_monitor_and_alert/">第十二篇 监控报警最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能优化专题</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/5_conntrack/">第五篇 conntrack的常见应用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/6_tcp/">第六篇 TCP协议总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/10_linux_net/">第十篇 Linux Net子系统总结、收发包流程再次梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/11_igb/">第十一篇 igb网卡驱动梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/12_rss_rps_rfs_xps/">第十二篇 Linux网卡rss和rps和rfs和xps</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/3_interrupt_one/">第三篇 硬中断</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/5_soft_irq/">第四篇 软中断</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/6_cpu_famous_register/">第六篇 CPU中的著名寄存器梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/7_linux_signal/">第七篇 Linux信号机制</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/8_linux_scheduler/">第八篇 Linux进程调度</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/10_linux_context_switch/">第十篇 低视角看context switch</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/11_linux_cpu_usage/">第十一篇 CPU利用率统计</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/12_linux_preemption/">第十二篇 内核抢占基础篇</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/13_interrupt_handler_examples/">第十三篇 中断处理程序的例子</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/14_linux_kernel_tracing/">第十四篇 理解内核追踪机制</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/15_task_struct/">第十五篇 task_struct结构体总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/16_init_call/">第十六篇 Linux各类initcall总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_io_stack/">第二篇 Linux IO栈总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_io_scheduler_layer/">第四篇 Block IO Layer(块IO层)总结</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第六篇 各类文件系统梳理</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#sys">一 sys</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_2">基础知识</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#api">关于内核 API 函数</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#linux-sysfs">Linux 下添加自己的 sysfs 接口</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1">1 添加步骤</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2">2 加载后使用</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#sysfs-cpu">利用 sysfs 操作 CPU 上线下线（热插拔）</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#proc">二 proc</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_1">1 概览各文件作用</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2_1">2 一些总结</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-procpid">3 /proc/${pid}/</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#linux">Linux 进程名和命令行的区别</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#bdevfs">三 bdevfs</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_3">仅存于内核空间的伪文件系统</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#bdevfs_1">bdevfs</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#anon_inodefs-inode">四 anon_inodefs 匿名 inode 文件系统</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_4">是什么</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_5">为什么</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">怎么办</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-anon_inodefs">1 anon_inodefs 的初始化</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-anon_inodefs">2 anon_inodefs 对外提供的接口</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-dentry-anon_inodedentry_name">3 dentry 名字为啥叫“anon_inode:${dentry_name}” ?</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-inode">4 谁用到了匿名 inode</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#5-linux-dentry">5 Linux 目录树和内核 dentry 树</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#timerfd">timerfd</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#timerfd_1">timerfd 是什么</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#timerfd_2">timerfd 基本使用</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#socketfs">五 socketfs</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_2">1 初始化</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-fs_type-sock_fs_type-mount">2 fs_type: sock_fs_type 和 mount</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-sock_fs_typemount">3 何时调用 sock_fs_type.mount 呢?</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-dentry_operations">4 dentry_operations</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#5-super_operations">5 super_operations</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_7">注册文件系统</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_8">其他文件系统</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_three_object_of_block_device/">第七篇 块设备三大对象block_device、gendisk、hd_struct数据结构总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_kobjet_kset_ktype/">第八篇 Linux设备模型的基石:kset/kobject/ktype</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_io_uring/">第八篇 io_uring研究和总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/1_linux_buddy/">第一篇 伙伴系统介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/2_slab/">第二篇 Slab层介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理基础篇</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/6_alloc_mem_apis/">第六篇 Linux内核内存分配API函数分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理升级篇</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/9_page_cache_and_buffer_cache/">第九篇 PageCache和BufferCache演进过程</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/1_sync_file/">第一篇 不同主机之间的文件传输</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/5_server_side_evolution/">第五篇 服务端进化过程梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/6_elk/">第六篇 elk技术栈</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/7_charset/">第七篇 字符集和编码</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/8_locale/">第八篇 locale设置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/9_http_protocol/">第九篇 http协议</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/10_http_cookie_session_token/">第十篇 cookie和session和token总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第八章 职场通用经验</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/1_xuexixinde/">第一篇 学习心得和工作箴言</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/2_bangzhuqitatongxue/">第二篇 工作能力评价体系</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/3_yewuliuchengshuyu/">第三篇 项目管理总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/4_jishunenglimoxing/">第四篇 技术能力模型总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/5_chanpingsiwei_1/">第五篇 产品思维总结和梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/6_jixiaobaogao/">第六篇 如何写绩效报告</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/7_xiangshangguanli/">第七篇 如何向上管理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/9_speaking_skills/">第九篇 沟通能力和演讲技巧</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/10_jixiaofangtan/">第十篇 绩效访谈总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/11_classic_technical_thinking/">第十一篇 经典技术思维汇总</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第九章 编程经验和各类开源软件</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/1_suanfa/">第一篇 算法总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/2_data_structure/">第二篇 数据结构总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/3_c_lang/">第三篇 c语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/4_symbol_table/">第四篇 符号表总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/5_golang/">第五篇 go语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/7_python/">第七篇 python语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/8_rsyslog/">第八篇 rsyslog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/9_falcon/">第九篇 falcon和夜莺</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/10_json_schema/">第十篇 JSON-Schema使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/11_prometheus/">第十一篇 Prometheus使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/12_grafana/">第十二篇 Grafana使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/13_mysql/">第十三篇 MySQL使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/14_mongodb/">第十四篇 MongoDB使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/15_supervisor/">第十五篇 Supervisor使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/16_redis/">第十六篇 Redis使用</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/2_benefits_of_containerization/">第二篇 容器化好处</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/3_docker_basic_concepts/">第三篇 容器化基础概念</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/9_cloudnative_monitor/">第九篇 云原生监控</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/10_event/">第十篇 彻底搞懂Kubernetes Event</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/11_best_practices/">第十一篇 Kubernetes最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/12_cloud_network/">第十二篇 云网络</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/1_theory/">第一篇 稳定性概论</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/10_high_avaliable/">第二篇 高可用原则总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/2_slo_process/">第三篇 SLO实施流程</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/3_stress/">第四篇 压测经验总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/11_stability/">第五篇 稳定性理论总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十二章 商业化知识总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_12/1_shifouzhide/">第一篇 如何判断一件事情值不值得做</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十三章 芯片知识总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_13/1_about_riscv/">第一篇 RISC-V 简介</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十四章 Linux驱动方向总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/1_demo_of_led_driver/">第一篇 驱动程序的Hello World</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/2_qianrushidev/">第二篇 嵌入式开发基础</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/3_linux_kernel_api_list/">第三篇 Linux内核API汇总和各类风格总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/4_zifushebeiqudongyuanli/">第四篇 字符设备驱动实现原理和物理内存地址空间和IO端口空间</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/5_device_tree/">第五篇 platform总线模型和设备树</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/6_device_driver_sop/">第六篇 从阅读硬件手册开始设备驱动程序编写</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/7_linux_kernel_clipping/">第七篇 Linux移植</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/8_linux_driver_framework/">第八篇 Linux驱动框架和SoC驱动框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/9_linux_device_class/">第九篇 Linux设备分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/10_u_boot/">第十篇 u-boot梳理和总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/11_linux_reset_subsystem_and_framework/">第十一篇 Linux Reset子系统及其框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/12_pinctl_and_gpio/">第十二篇 Linux pinctl和gpio子系统及其框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/14_linux_kernel_trimming/">第十四篇 Linux内核裁剪总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/15_imx6ull/">第十五篇 IMX6UL实验记录</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十五章 AI+嵌入式结合方向汇总</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/1_demo_of_ai/">第一篇 AI程序 Hello World</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十六章 网络安全方向</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_16/1_network_attack/">第一篇 认识各种网络攻击</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Lott's Blog</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">第五章 Linux IO子系统</li>
+      <li class="breadcrumb-item active">第六篇 各类文件系统梳理</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="_1">概述</h1>
+<ul>
+<li>本篇梳理各类文件系统</li>
+</ul>
+<h2 id="sys">一 sys</h2>
+<ul>
+<li>sysfs 是 Linux 下可以反应设备层次架构的一个虚拟的文件系统。他可以产生一个包括所有硬件的层级视图，也可以通过输入输出进行一些硬件操作。</li>
+<li>基本上挂载在/sys 目录</li>
+</ul>
+<h3 id="_2">基础知识</h3>
+<ul>
+<li>参考<strong>第十四章 第八篇</strong></li>
+<li>参考<strong>第五章 第八篇</strong></li>
+<li>每个<code>kobject</code>对应<code>sys文件系统</code>下的一个目录,</li>
+<li>
+<ul>
+<li>目录下可以直接是该 kobject 的属性（比如 name 属性, 使用 sysfs_create_files 创建)</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>也可以是多个属性形成的一个 group，group 是一个属性组，表现为该目录下的子目录，属性组内所有的 attr 都是文件，参考下文的 struct attribute_group 数组和 sysfs_create_group</li>
+</ul>
+</li>
+</ul>
+<h3 id="api">关于内核 API 函数</h3>
+<ul>
+<li>kobject_create_and_add</li>
+<li>sysfs_create_group</li>
+<li>sysfs_remove_group</li>
+</ul>
+<h3 id="linux-sysfs">Linux 下添加自己的 sysfs 接口</h3>
+<ul>
+<li>本质上是在/sys 目录下创建一些目录或者文件, 然后往这些文件进行 read、write 调用时, 自动可以执行一些内核函数. 举个例子 其实可以自己写函数获取内核信息, 从而实现监控接口.</li>
+</ul>
+<h4 id="1">1 添加步骤</h4>
+<p>添加步骤从需求方向来看。</p>
+<h5 id="11">1.1 注册</h5>
+<pre><code>
+struct kobject *test_kobj = NULL;
+int mysys_init(void)
+{
+    ...
+    test_kobj = kobject_create_and_add(&quot;test_sysfs&quot;, NULL);
+    sysfs_create_group(test_kobj, &amp;test_sysfs_attr_group);
+    ...
+}
+
+void mysys_exit(void)
+{
+    ...
+    sysfs_remove_group(test_kobj , &amp;test_sysfs_attr_group);
+    kobject_put(test_kobj );
+}
+
+</code></pre>
+<p><a href="https://mp.weixin.qq.com/s/P5PiKohwGujHJyxbyHDvLg">首先需要向系统注册目录 test_sysfs</a>，</p>
+<ul>
+<li>
+<p><code>kobject_create_and_add("test_sysfs", NULL)</code>的第一个参数是目录名称，第二个参数是父目录，<code>NULL</code>为空，那就会在<code>/sys/</code>生成目录，结果为<code>/sys/test_sysfs</code>。</p>
+</li>
+<li>
+<p>如果使用父目录如<code>kobject_create_and_add("test_sysfs", firmware_kobj)</code> 就会在<code>/sys/firmware/</code>下生成目录<code>/sys/firmware/test_sysfs</code>。其中<code>firmware_kobj</code>是在<code>drivers/base/firmware.c</code>定义的全局变量。</p>
+</li>
+</ul>
+<pre><code>
+firmware_kobj = kobject_create_and_add(&quot;firmware&quot;, NULL);
+</code></pre>
+<h5 id="12-struct-attribute-struct-attribute_group">1.2 定义 struct attribute 和 struct attribute_group 数组</h5>
+<pre><code>
+static struct attribute_group test_sysfs_attr_group= {
+          .name = &quot;test_my_attr&quot;,       //不写这个成员就不会创建子文件夹
+          .attrs = test_sysfs_attr,
+};
+static struct attribute *test_sysfs_attr[] = {
+          &amp;test_sysfs_read.attr,
+          &amp;test_sysfs_write.attr,
+      &amp;test_sysfs_num1.attr,
+          &amp;test_sysfs_num2.attr,
+          NULL,
+};
+
+</code></pre>
+<p>这是注册使用的结构体。<code>.name = "test_my_attr"</code>,会再创建一个子文件夹，会形成目录<code>/sys/test_sysfs/test_my_attr</code>。如果不需要这行不加就行了。<code>test_sysfs_attr</code>这个指针数组包含的内容就是包含要显示的属性的地址。此例子中为<code>read、write、num1、num2</code>这几个属性。</p>
+<h5 id="13">1.3 构造各个属性</h5>
+<pre><code>
+static struct kobj_attribute test_sysfs_read=**ATTR(show, S_IRUSR, test_show, NULL);
+static struct kobj_attribute test_sysfs_write=**ATTR(write, S_IWUSR, NULL,test_store);
+static struct kobj_attribute test_sysfs_num1=**ATTR(num1, S_IRUSR, test_num1, NULL);
+static struct kobj_attribute test_sysfs_num1=**ATTR(num2, S_IWUSR, NULL,test_num2);
+
+</code></pre>
+<p>使用 <code>__ATTR</code> 构造了 <code>read、write、num1、num2</code> 这几个属性。声明了对应的几个函数。</p>
+<p><code>__ATTR</code> 第一个参数是 显示的属性（节点）名字；</p>
+<p>第二个参数是 节点权限；</p>
+<p>第三个参数是 使用 cat 命令查看 sys 接口时调用的函数</p>
+<p>第四个参数是 使用 echo 命令往 sys 接口写入内容时调用的函数</p>
+<h5 id="14">1.4 各个属性的函数编写</h5>
+<p>编写上面的几个函数。</p>
+<pre><code>
+static test_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf){
+...
+return 1;
+}
+static test_store(struct kobject *kobj, struct kobj_attribute *attr, constchar *buf, size_t count){
+...
+return count;
+}
+static test_num1(struct kobject *kobj, struct kobj_attribute *attr, char *buf){
+...
+return 1;
+}
+static test_num2(struct kobject *kobj, struct kobj_attribute *attr, constchar *buf, size_t count){
+...
+return count;
+}
+
+</code></pre>
+<p>这是从需求端看，实际的步骤倒着来就可以了。</p>
+<h4 id="2">2 加载后使用</h4>
+<p>加载后可以在 sys 下看到目录</p>
+<pre><code>/sys/test_sysfs/test_my_attr/read
+
+/sys/test_sysfs/test_my_attr/write
+
+/sys/test_sysfs/test_my_attr/num1
+
+/sys/test_sysfs/test_my_attr/num2
+
+</code></pre>
+<p>通过调用 <code>cat /sys/test_sysfs/test_my_attr/read</code> 可以调用 <code>test_show</code> 函数；</p>
+<p>通过调用 <code>echo 1 &gt; /sys/test_sysfs/test_my_attr/num2</code> 可以调用 <code>test_num2</code> 函数；</p>
+<h3 id="sysfs-cpu">利用 sysfs 操作 CPU 上线下线（热插拔）</h3>
+<p>（一） 操作 CPU 热插拔</p>
+<p>你无需调用特殊的接口，只需要 echo 就可以在 sysfs 中通过写文件的方式将 CPU 进行热插拔：</p>
+<pre><code>
+[root@localhost ~]# echo 0 &gt;/sys/devices/system/cpu/cpu0/online
+
+[root@localhost ~]# echo 0 &gt;/sys/devices/system/cpu/cpu2/online
+
+</code></pre>
+<p>结果就只剩 2 个 CPU 了</p>
+<pre><code>[root@localhost ~]# cat /proc/cpuinfo |grep processor
+
+processor  : 1
+
+processor        : 3
+
+[root@localhost ~]#
+
+</code></pre>
+<p>（二） 查看已经被下线的 CPU</p>
+<p>以上面的 CPU 热插拔为例，<code>/sys/devices/system/cpu</code>是一个目录，它表示系统的所有 CPU，其属性为：</p>
+<pre><code>
+cpu0  cpu1  cpu2  cpu3  cpuidle  isolated  kernel_max  microcode  modalias  nohz_full  offline  online  possible  power  present  uevent
+
+</code></pre>
+<p>我们查看其 offline 属性，它表示已经下掉的 CPU，只需要读该文件即可：</p>
+<pre><code>
+[root@localhost ~]# cat /sys/devices/system/cpu/offline
+
+0,2
+
+</code></pre>
+<h2 id="proc">二 proc</h2>
+<h3 id="1_1">1 概览各文件作用</h3>
+<ul>
+<li>/proc/cpuinfo</li>
+<li>/proc/meminfo</li>
+<li>/proc/interrupts —&gt; 中断情况</li>
+<li>/proc/devices —&gt; 内核识别的设备</li>
+<li>/proc/loadavg 系统负载</li>
+<li>/proc/uptime</li>
+<li>/proc/kmsg 内核的日志接口 ，rsyslogd 进程从这里读取内核打印的日志</li>
+<li>/proc/stat ---&gt; 通过 top 命令看到 cpu 利用率</li>
+<li>/proc/diskstats ---&gt; This file contains disk I/O statistics for each disk device.</li>
+<li>/proc/version 查看当前 Linux Kernel 的版本</li>
+<li>/proc/locks 则是保存当前由内核锁定的文件的相关信息</li>
+<li>/proc/filesystems 显示当前内核支持的文件系统</li>
+</ul>
+<p>http://man7.org/linux/man-pages/man5/proc.5.html /proc 文件系统官方文档</p>
+<h3 id="2_1">2 一些总结</h3>
+<p>总体来说分为 2 类：</p>
+<p>1 提供系统信息的查看，例如/proc,/proc/net</p>
+<p>2 提供系统信息的设置 ,例如/proc/sys/fs /proc/sys/net /proc/sys/vm /proc/sys/kernel</p>
+<p><img alt="png" src="../../img/WechatIMG285.png" /></p>
+<p><img alt="png" src="../../img/WechatIMG286.png" /></p>
+<h3 id="3-procpid">3 /proc/${pid}/</h3>
+<ul>
+<li>cwd==&gt; 指向当前的工作目录</li>
+<li>fd ==&gt; 指向当前打开的文件</li>
+<li>comm ==&gt; 当前进程的进程名</li>
+<li>cmdline ==&gt; 启动当前进程的完整的命令行</li>
+</ul>
+<h4 id="linux">Linux 进程名和命令行的区别</h4>
+<p><img alt="png" src="../../img/WechatIMG287.png" /></p>
+<ul>
+<li>一个是进程名，<code>nginx</code></li>
+<li>一个是完整命令行： <code>nginx: master process /usr/sbin/nginx -g daemon on; master_process on;</code></li>
+</ul>
+<h2 id="bdevfs">三 bdevfs</h2>
+<h3 id="_3">仅存于内核空间的伪文件系统</h3>
+<p>文件系统的精髓所在是让用户可以通过文件描述符来对指定的 inode 进行一系列的操作。</p>
+<p>伪文件系统和普通文件系统的区别在于，其 inode 对用户不可访问，即仅在内核态可见，从用户层的视角来看该文件系统并不存在。</p>
+<p>伪文件系统的作用是对一些操作系统中的元素进行封装，和普通的文件统一接口，如块设备<code>bdevfs</code>，管道文件<code>pipefs</code>，套接字<code>socketfs</code>等。</p>
+<p>通过这种方式的统一封装，才实现了 Linux 一切皆文件的思想。</p>
+<p><a href="https://ty-chen.github.io/linux-kernel-block-device/">参考</a></p>
+<h3 id="bdevfs_1">bdevfs</h3>
+<p><code>bdevfs</code>对应的超级块名为<code>blockdev_superblock</code>，初始化工作在系统初始化时调用<code>bdev_cache_init()</code>完成。所有表示块设备的 <code>inode</code> 都保存在伪文件系统 <code>bdevfs</code> 中以方便块设备的管理。Linux 将块设备的 <code>block_device</code> 和 <code>bdev 文件系统</code>的块设备的 inode 通过 <code>struct bdev_inode</code> 进行关联。</p>
+<pre><code>
+struct super_block *blockdev_superblock __read_mostly;
+
+static struct file_system_type bd_type = {
+    .name = &quot;bdev&quot;,
+    .mount = bd_mount,
+    .kill_sb = kill_anon_super,
+};
+
+void __init bdev_cache_init(void)
+{
+    int err;
+    static struct vfsmount *bd_mnt;
+    bdev_cachep = kmem_cache_create(&quot;bdev_cache&quot;, sizeof(struct bdev_inode),
+            0, (SLAB_HWCACHE_ALIGN|SLAB_RECLAIM_ACCOUNT|
+                SLAB_MEM_SPREAD|SLAB_ACCOUNT|SLAB_PANIC),
+            init_once);
+    err = register_filesystem(&amp;bd_type);
+    if (err)
+        panic(&quot;Cannot register bdev pseudo-fs&quot;);
+    bd_mnt = kern_mount(&amp;bd_type);
+    if (IS_ERR(bd_mnt))
+        panic(&quot;Cannot create bdev pseudo-fs&quot;);
+    blockdev_superblock = bd_mnt-&gt;mnt_sb;   /* For writeback */
+}
+
+struct bdev_inode {
+    struct block_device bdev;
+    struct inode vfs_inode;
+};
+
+
+</code></pre>
+<p><a href="https://ty-chen.github.io/linux-kernel-block-device/">Linux 操作系统学习笔记（十四）块设备</a></p>
+<p><a href="http://blog.chinaunix.net/uid-28449808-id-5820139.html">块设备剖析之关键数据结构分析 - block_device/gendisk/hd_struct</a></p>
+<h2 id="anon_inodefs-inode">四 anon_inodefs 匿名 inode 文件系统</h2>
+<h3 id="_4">是什么</h3>
+<ul>
+<li>什么是匿名 inode</li>
+</ul>
+<p>在 Linux 里一切皆文件，你理解的常见“文件”有什么特性？是路径，也就是 path ，匿名的意思说的就是没有路径（ <strong>在内核里面说的就是没有有效的 dentry</strong> ）</p>
+<ul>
+<li>来看看长什么样</li>
+</ul>
+<p>我们经常在 /proc/${pid}/fd/ 下面能看到 anon_inode : 前缀的句柄，如下：</p>
+<pre><code>root@ubuntu:~/temp# ll /proc/5398/fd
+
+lr-x------ 1 root root 64 Aug 24 09:39 11 -&gt; anon_inode:inotify
+lrwx------ 1 root root 64 Aug 24 09:39 4 -&gt; anon_inode:[eventpoll]
+lrwx------ 1 root root 64 Aug 24 09:39 5 -&gt; anon_inode:[signalfd]
+lrwx------ 1 root root 64 Aug 24 09:39 7 -&gt; anon_inode:[timerfd]
+lrwx------ 1 root root 64 Aug 24 09:39 9 -&gt; anon_inode:[eventpoll]
+
+</code></pre>
+<p>如果是正常的文件句柄，一般显式的是一个路径：</p>
+<pre><code>
+ls -l /proc/2824114/fd
+
+lrwx------ 1 root root 64 Jan  5 09:47 4 -&gt; /tmp/.1.txt.swp
+</code></pre>
+<p>当然 path 只是一个浅层次的感官，因为对于 socket 句柄来说也不算有 path ，所以这个匿名其实<strong>匿的是 inode</strong> 。</p>
+<h3 id="_5">为什么</h3>
+<p>在 Linux 的文件体系中，一个文件句柄，对应一个 file 结构体，关联一个 inode 。 <strong>file/dentry/inode 这三驾马车是一定要配齐的</strong>，就算是匿名的（无 path，无效 dentry），对于 file 结构体来说，一定要绑定 inode 和 dentry ，<strong>哪怕是伪造的、不完整的 inode</strong>。</p>
+<p>anon_inodefs 就应运而生了，内核就帮你搞出来一个公共的 inode ，这就节省了所有有这样需求的内核模块，避免了内存的浪费，省了冗余重复的 inode 初始化代码。</p>
+<p>匿名 fd 背后的是一个叫做 anon_inodefs 的内核文件系统（ 位于 <code>fs/anon_inodes.c</code> ），这个文件系统极其简单，整个文件系统只有一个 inode ，这个 inode 是文件系统初始化的时候创建好的。之后，所有需要一个匿名 inode 的句柄都直接跟这个 inode 关联即可。</p>
+<h3 id="_6">怎么办</h3>
+<h4 id="1-anon_inodefs">1 anon_inodefs 的初始化</h4>
+<p>上面提到了，匿名 inode 是一个公共需求，我们不需要一个完整功能的 inode，而只是需要一个 inode 而已，绑定到 dentry ，file 等结构体。</p>
+<p>anon_inodes.c 用来创建一个绑定匿名 inode 的 file 结构体。</p>
+<p>整个 anon_inodefs 就只有一个文件，操作系统初始化的时候会调用初始化函数 fs_initcall(anon_inode_init) ，其中 anon_inode_init 只做两件事：</p>
+<ol>
+<li>创建出一个 vfsmount 实例，创建出来之后赋值给全局变量 anon_inode_mnt ；</li>
+<li>创建出一个 inode 实例，创建出来之后赋值给全局变量 anon_inode_inode ；</li>
+</ol>
+<p>这两个变量就是 anon_inodefs 这个文件系统的全部家当了。</p>
+<ul>
+<li>源码如下: <code>fs/anod_inodes.c</code>:</li>
+</ul>
+<pre><code>
+static int __init anon_inode_init(void)
+{
+    anon_inode_mnt = kern_mount(&amp;anon_inode_fs_type);
+    if (IS_ERR(anon_inode_mnt))
+        panic(&quot;anon_inode_init() kernel mount failed (%ld)\n&quot;, PTR_ERR(anon_inode_mnt));
+
+    anon_inode_inode = alloc_anon_inode(anon_inode_mnt-&gt;mnt_sb);
+    if (IS_ERR(anon_inode_inode))
+        panic(&quot;anon_inode_init() inode allocation failed (%ld)\n&quot;, PTR_ERR(anon_inode_inode));
+
+    return 0;
+}
+
+fs_initcall(anon_inode_init);
+
+</code></pre>
+<h4 id="2-anon_inodefs">2 anon_inodefs 对外提供的接口</h4>
+<p>anon_inodefs 只提供了 2 个实用函数，一个获取到一个绑定匿名 inode 的 file 实例，另一个更多一些封装，返回的是 fd 句柄（整数）。如下：</p>
+<h5 id="21-anon_inode_getfile">2.1 anon_inode_getfile</h5>
+<p>这个函数非常简单，只做两件事：</p>
+<ul>
+<li>获取一个 inode （ 获取全局的 inode 变量 anon_inode_inode ，当然也可以通过一个参数控制来创建新的 inode ）；</li>
+<li>创建一个 file 结构体实例，并且把这个 inode 关联起来；</li>
+</ul>
+<p>返回 struct file 实例</p>
+<h5 id="22-anon_inode_getfd">2.2 anon_inode_getfd</h5>
+<p>这个函数非常简单，只做两件事情：</p>
+<ul>
+<li>创建一个新的 fd 句柄，返回的是一个非负整数；</li>
+<li>创建一个 file 实例（ 调用的是 anon_inode_getfile 来获取 ），然后把这个 fd 和 file 关联起来；</li>
+</ul>
+<p>返回 struct file 实例对应到当前 task_struct 的文件句柄（一个正整数）</p>
+<p>这两个函数就是 anon_inodefs 提供的两个对外的函数接口。获取到一个 file 实例，这个实例绑定到 anon_inodefs 公共的 inode 实例。</p>
+<p>关于 anon_inodefs 的功能，其实在函数的注释中也提到了，太直白了，如下：</p>
+<pre><code>
+// anon_inode_getfile 和 anon_inode_getfd 的注释明确提到了 anon_inodefs 的两个目的：
+// - 节省内存
+// - 封装公共的冗余代码
+ * Creates a new file by hooking it on a single inode. This is
+ * useful for files that do not need to have a full-fledged inode in
+ * order to operate correctly.  All the files created with
+ * anon_inode_getfd() will use the same singleton inode, reducing
+ * memory use and avoiding code duplication for the file/inode/dentry
+ * setup.  Returns a newly created file descriptor or an error code.
+
+</code></pre>
+<h4 id="3-dentry-anon_inodedentry_name">3 dentry 名字为啥叫“anon_inode:${dentry_name}” ?</h4>
+<p>还是得看源码</p>
+<p>为什么常见的匿名 fd 都有以 “anon_inode:” 这样开头？</p>
+<p>其实这种看得到的字符串都是 path ，这个是和 dentry 对应起来的，对于这种匿名 inode 的 dentry ，有着统一的名字：</p>
+<pre><code>
+
+// dentry 的操作表
+static const struct dentry_operations anon_inodefs_dentry_operations = {
+    .d_dname    = anon_inodefs_dname,
+};
+
+// 操作表 .d_dname 方法的定制实现
+static char *anon_inodefs_dname(struct dentry *dentry, char *buffer, int buflen)
+{
+    return dynamic_dname(dentry, buffer, buflen, &quot;anon_inode:%s&quot;, dentry-&gt;d_name.name);
+}
+
+</code></pre>
+<p>那么 dentry-&gt;d_name.name 又是怎么赋值的呢？我以 epoll fd 来举个例子：</p>
+<pre><code>
+// epoll_create 函数入口 ( fs/eventpoll.c )
+static int do_epoll_create(int flags)
+{
+    // 创建匿名句柄 ...
+    file = anon_inode_getfile(&quot;[eventpoll]&quot;, &amp;eventpoll_fops, ep, O_RDWR | (flags &amp; O_CLOEXEC));
+}
+
+</code></pre>
+<p>传入的 name 是"[eventpoll]",所以"anon_inode:%s"最终组合起来就是"anon_inode:[eventpoll]"</p>
+<ul>
+<li>参考<a href="https://www.qiyacloud.cn/2021/09/2021-09-24/">Linux fd 系列 | 匿名 fd 是什么？</a></li>
+</ul>
+<h4 id="4-inode">4 谁用到了匿名 inode</h4>
+<ul>
+<li>随便列举一些 eventfd，eventpoll，timerfd，signalfd，inotifyfd，io_uring fd 等等，还有很多</li>
+</ul>
+<h4 id="5-linux-dentry">5 Linux 目录树和内核 dentry 树</h4>
+<p>在 Linux 中是一个倒挂树的设计，从根目录（ / ）开始，叶子结点为文件或者目录，从根节点到叶子结点这一段就称为 path 路径，在内存里面这颗倒挂的树就体现为 dentry 树，节点就是 dentry 结构体。</p>
+<p>这里就有个重要的知识点：</p>
+<p>划重点：一个 inode 上可以挂多个 dentry ，一个 dentry 只能属于一个 inode 。</p>
+<p><img alt="png" src="../../img/WechatIMG537.jpg" /></p>
+<p>可以看到/etc/a.txt 和 /etc/b.txt 互为硬链接</p>
+<p>每个文件或者目录都会在这棵树上有自己的位置，内核用 struct path 结构体来表示唯一的位置。</p>
+<pre><code>struct path {
+    struct vfsmount *mnt;   // 标识在哪个具体的文件系统实例
+    struct dentry *dentry;  // 内存目录树节点
+};
+
+</code></pre>
+<p>这里顺便再说另一个重要知识点：为什么内核之中，需要用 struct path 这个复合结构体来标识唯一的一个目录树位置呢？</p>
+<p>其实所谓的<strong>挂载</strong>是把文件系统实例和目录树上的一个 dentry 关联起来，形成一个 vfsmount 结构体实例。而一个 dentry 是可以绑定多个文件系统实例的。</p>
+<ul>
+<li>文件系统实例是指 super_block 吗？应该不对，应该是一个 vfsmount 实例</li>
+</ul>
+<pre><code>struct vfsmount {
+    struct dentry *mnt_root;    /* root of the mounted tree */ //指向挂载文件系统根目录项dentry实例
+    struct super_block *mnt_sb; /* pointer to superblock */ //指向文件系统超级块实例
+    int mnt_flags; //内核内部使用的挂载标记
+    struct user_namespace *mnt_userns;
+};
+</code></pre>
+<ul>
+<li>mount 源码是怎样的，参考<a href="https://zhuanlan.zhihu.com/p/606596107">Linux 内核—文件系统 mount 过程</a></li>
+</ul>
+<p>换句话说：对于一个目录树路径其实是可以挂载多个文件系统实例。比如 /mnt/path 这么一个路径，其实是可以挂载多个文件系统的，不会报错，后面的挂载直接覆盖前面的。</p>
+<p><img alt="png" src="../../img/WechatIMG538.jpg" /></p>
+<h2 id="timerfd">timerfd</h2>
+<h3 id="timerfd_1">timerfd 是什么</h3>
+<ul>
+<li>timerfd 是一个时间相关的 fd，当 timerfd 初始化时，可以设置一个超时时间，超时之后，该句柄可读，读出来的是超时的次数。</li>
+</ul>
+<h3 id="timerfd_2">timerfd 基本使用</h3>
+<p>timerfd 相关的系统调用有 3 个：</p>
+<pre><code>// 创建一个 timerfd 句柄
+int timerfd_create(int clockid, int flags);
+// 启动或关闭 timerfd 对应的定时器
+int timerfd_settime(int fd, int flags, const struct itimerspec *new_value, struct itimerspec *old_value);
+// 获取指定 timerfd 距离下一次超时还剩的时间
+int timerfd_gettime(int fd, struct itimerspec *curr_value);
+
+</code></pre>
+<pre><code>
+timerfd 常与 epoll 系统调用结合使用：
+
+// 创建一个 timerfd 句柄
+int fdTimer = timerfd_create(CLOCK_MONOTONIC, 0 /*flags*/);
+
+itimerspec timespec {
+    // 设置超时间隔
+    .it_interval = {
+        .tv_sec = 5,
+        .tv_nsec = 0,
+    },
+    //第一次超时时间
+    .it_value = {
+        .tv_sec = 5,
+        .tv_nsec = 0,
+    },
+};
+
+//启动定时器
+int timeRes = timerfd_settime(fdTimer, 0 /*flags*/, &amp;timespec, nullptr);
+
+// epoll 监听 timerfd
+epoll_ctl(mEpollFd, EPOLL_CTL_Add, fdTimer, &amp;eventItem);
+
+
+while (true)
+{
+    // 进入休眠状态
+    epoll_wait(mEpollFd, eventItems, EPOLL_MAX_EVENTS, timeoutMillis);
+    if (count &lt; 0)
+    {
+        perror(&quot;epoll failed&quot;);
+        break;
+    }
+    for (int i=0;i &lt; count;i++)
+    {
+        //处理计时器到达事件
+    }
+}
+
+</code></pre>
+<h2 id="socketfs">五 socketfs</h2>
+<p><a href="https://mp.weixin.qq.com/s/Mknn2bVuVwwkgA0rbCqQFA">Linux 内核-网络部分之 sockfs</a></p>
+<h3 id="1_2">1 初始化</h3>
+<pre><code>
+static int __init sock_init(void)
+{
+    int err;
+    /*
+     *      Initialize the network sysctl infrastructure.
+     */
+    err = net_sysctl_init();
+    if (err)
+        goto out;
+
+    /*
+     *      Initialize skbuff SLAB cache
+     */
+    skb_init();
+
+    /*
+     *      Initialize the protocols module.
+     */
+
+    init_inodecache();
+
+    err = register_filesystem(&amp;sock_fs_type);
+    if (err)
+        goto out_fs;
+    sock_mnt = kern_mount(&amp;sock_fs_type);
+    if (IS_ERR(sock_mnt)) {
+        err = PTR_ERR(sock_mnt);
+        goto out_mount;
+    }
+
+    /* The real protocol initialization is performed in later initcalls.
+     */
+
+#ifdef CONFIG_NETFILTER
+    err = netfilter_init();
+    if (err)
+        goto out;
+#endif
+
+    ptp_classifier_init();
+
+out:
+    return err;
+
+out_mount:
+    unregister_filesystem(&amp;sock_fs_type);
+out_fs:
+    goto out;
+}
+
+core_initcall(sock_init);   /* early initcall */
+</code></pre>
+<ul>
+<li>对比 anon_inode_init, <code>fs/anon_inodes.c</code></li>
+</ul>
+<pre><code>
+static int __init anon_inode_init(void)
+{
+    anon_inode_mnt = kern_mount(&amp;anon_inode_fs_type);
+    if (IS_ERR(anon_inode_mnt))
+        panic(&quot;anon_inode_init() kernel mount failed (%ld)\n&quot;, PTR_ERR(anon_inode_mnt));
+
+    anon_inode_inode = alloc_anon_inode(anon_inode_mnt-&gt;mnt_sb);
+    if (IS_ERR(anon_inode_inode))
+        panic(&quot;anon_inode_init() inode allocation failed (%ld)\n&quot;, PTR_ERR(anon_inode_inode));
+
+    return 0;
+}
+
+fs_initcall(anon_inode_init);
+</code></pre>
+<ul>
+<li>对比 ext4 初始化</li>
+</ul>
+<pre><code>static int __init ext4_init_fs(void)
+{
+    int i, err;
+
+    ext4_li_info = NULL;
+    mutex_init(&amp;ext4_li_mtx);
+
+    /* Build-time check for flags consistency */
+    ext4_check_flag_values();
+
+    for (i = 0; i &lt; EXT4_WQ_HASH_SZ; i++) {
+        mutex_init(&amp;ext4__aio_mutex[i]);
+        init_waitqueue_head(&amp;ext4__ioend_wq[i]);
+    }
+
+    err = ext4_init_es();
+    if (err)
+        return err;
+
+    err = ext4_init_pageio();
+    if (err)
+        goto out7;
+
+    err = ext4_init_system_zone();
+    if (err)
+        goto out6;
+    ext4_kset = kset_create_and_add(&quot;ext4&quot;, NULL, fs_kobj);
+    if (!ext4_kset) {
+        err = -ENOMEM;
+        goto out5;
+    }
+    ext4_proc_root = proc_mkdir(&quot;fs/ext4&quot;, NULL);
+
+    err = ext4_init_feat_adverts();
+    if (err)
+        goto out4;
+
+    err = ext4_init_mballoc();
+    if (err)
+        goto out2;
+    else
+        ext4_mballoc_ready = 1;
+    err = init_inodecache();
+    if (err)
+        goto out1;
+    register_as_ext3();
+    register_as_ext2();
+    err = register_filesystem(&amp;ext4_fs_type);
+    if (err)
+        goto out;
+
+    return 0;
+out:
+    unregister_as_ext2();
+    unregister_as_ext3();
+    destroy_inodecache();
+out1:
+    ext4_mballoc_ready = 0;
+    ext4_exit_mballoc();
+out2:
+    ext4_exit_feat_adverts();
+out4:
+    if (ext4_proc_root)
+        remove_proc_entry(&quot;fs/ext4&quot;, NULL);
+    kset_unregister(ext4_kset);
+out5:
+    ext4_exit_system_zone();
+out6:
+    ext4_exit_pageio();
+out7:
+    ext4_exit_es();
+
+    return err;
+}
+
+module_init(ext4_init_fs)
+
+</code></pre>
+<h3 id="2-fs_type-sock_fs_type-mount">2 fs_type: sock_fs_type 和 mount</h3>
+<pre><code>static struct file_system_type sock_fs_type = {
+    .name =     &quot;sockfs&quot;,
+    .mount =    sockfs_mount,
+    .kill_sb =  kill_anon_super,
+    .get_sb = sockfs_get_sb,
+};
+
+static struct dentry *sockfs_mount(struct file_system_type *fs_type,
+             int flags, const char *dev_name, void *data)
+{
+    return mount_pseudo(fs_type, &quot;socket:&quot;, &amp;sockfs_ops,
+        &amp;sockfs_dentry_operations, SOCKFS_MAGIC);
+}
+
+</code></pre>
+<ul>
+<li>对比 anon_inode_fs_type, <code>fs/anon_inodes.c</code></li>
+</ul>
+<pre><code>
+static struct file_system_type anon_inode_fs_type = {
+    .name       = &quot;anon_inodefs&quot;,
+    .mount      = anon_inodefs_mount,
+    .kill_sb    = kill_anon_super,
+};
+
+static struct dentry *anon_inodefs_mount(struct file_system_type *fs_type,
+                int flags, const char *dev_name, void *data)
+{
+    return mount_pseudo(fs_type, &quot;anon_inode:&quot;, NULL,
+            &amp;anon_inodefs_dentry_operations, ANON_INODE_FS_MAGIC);
+}
+
+</code></pre>
+<ul>
+<li>对比 ext4 <code>fs/ext4/super.c</code></li>
+</ul>
+<pre><code>static struct file_system_type ext4_fs_type = {
+    .owner      = THIS_MODULE,
+    .name       = &quot;ext4&quot;,
+    .mount      = ext4_mount,
+    .kill_sb    = kill_block_super,
+    .fs_flags   = FS_REQUIRES_DEV,
+};
+
+static struct dentry *ext4_mount(struct file_system_type *fs_type, int flags,
+               const char *dev_name, void *data)
+{
+    return mount_bdev(fs_type, flags, dev_name, data, ext4_fill_super);
+}
+
+</code></pre>
+<h3 id="3-sock_fs_typemount">3 何时调用 sock_fs_type.mount 呢?</h3>
+<h3 id="4-dentry_operations">4 dentry_operations</h3>
+<pre><code>/*
+ * sockfs_dname() is called from d_path().
+ */
+static char *sockfs_dname(struct dentry *dentry, char *buffer, int buflen)
+{
+    return dynamic_dname(dentry, buffer, buflen, &quot;socket:[%lu]&quot;,
+                dentry-&gt;d_inode-&gt;i_ino);
+}
+
+static const struct dentry_operations sockfs_dentry_operations = {
+    .d_dname  = sockfs_dname,
+};
+</code></pre>
+<ul>
+<li>对比 anon_fs</li>
+</ul>
+<pre><code>/*
+ * anon_inodefs_dname() is called from d_path().
+ */
+static char *anon_inodefs_dname(struct dentry *dentry, char *buffer, int buflen)
+{
+    return dynamic_dname(dentry, buffer, buflen, &quot;anon_inode:%s&quot;,
+                dentry-&gt;d_name.name);
+}
+
+static const struct dentry_operations anon_inodefs_dentry_operations = {
+    .d_dname    = anon_inodefs_dname,
+};
+</code></pre>
+<ul>
+<li>对比 ext4</li>
+</ul>
+<pre><code>
+
+
+</code></pre>
+<h3 id="5-super_operations">5 super_operations</h3>
+<pre><code>static const struct super_operations sockfs_ops = {
+    .alloc_inode    = sock_alloc_inode,
+    .destroy_inode  = sock_destroy_inode,
+    .statfs     = simple_statfs,
+};
+
+</code></pre>
+<ul>
+<li>对比 ext4</li>
+</ul>
+<pre><code>static const struct super_operations ext4_sops = {
+    .alloc_inode    = ext4_alloc_inode,
+    .destroy_inode  = ext4_destroy_inode,
+    .write_inode    = ext4_write_inode,
+    .dirty_inode    = ext4_dirty_inode,
+    .drop_inode = ext4_drop_inode,
+    .evict_inode    = ext4_evict_inode,
+    .put_super  = ext4_put_super,
+    .sync_fs    = ext4_sync_fs,
+    .freeze_fs  = ext4_freeze,
+    .unfreeze_fs    = ext4_unfreeze,
+    .statfs     = ext4_statfs,
+    .remount_fs = ext4_remount,
+    .show_options   = ext4_show_options,
+#ifdef CONFIG_QUOTA
+    .quota_read = ext4_quota_read,
+    .quota_write    = ext4_quota_write,
+#endif
+    .bdev_try_to_free_page = bdev_try_to_free_page,
+};
+</code></pre>
+<h2 id="_7">注册文件系统</h2>
+<pre><code>/**
+ *  register_filesystem - register a new filesystem
+ *  @fs: the file system structure
+ *
+ *  Adds the file system passed to the list of file systems the kernel
+ *  is aware of for mount and other syscalls. Returns 0 on success,
+ *  or a negative errno code on an error.
+ *
+ *  The &amp;struct file_system_type that is passed is linked into the kernel
+ *  structures and must not be freed until the file system has been
+ *  unregistered.
+ */
+
+int register_filesystem(struct file_system_type * fs)
+{
+    int res = 0;
+    struct file_system_type ** p;
+
+    BUG_ON(strchr(fs-&gt;name, '.'));
+    if (fs-&gt;next)
+        return -EBUSY;
+    write_lock(&amp;file_systems_lock);
+    p = find_filesystem(fs-&gt;name, strlen(fs-&gt;name));
+    if (*p)
+        res = -EBUSY;
+    else
+        *p = fs;
+    write_unlock(&amp;file_systems_lock);
+    return res;
+}
+
+EXPORT_SYMBOL(register_filesystem);
+
+
+</code></pre>
+<ul>
+<li>1 检查文件系统名称中是否包含点号，如果包含，则引发 BUG（内核错误）。</li>
+<li>2 检查文件系统类型是否已经注册，如果已经注册，则返回 -EBUSY 表示繁忙。</li>
+<li>3 初始化文件系统超级块链表。</li>
+<li>4 使用写锁锁定 file_systems_lock，以确保在多线程环境下对文件系统列表的并发安全。</li>
+<li>5 查找文件系统类型是否已经存在，如果存在，则返回 -EBUSY，否则将文件系统类型添加到文件系统列表中。</li>
+<li>6 释放写锁，完成注册。</li>
+</ul>
+<h2 id="_8">其他文件系统</h2>
+<p>tmpfs</p>
+<p>devtmpfs</p>
+<ul>
+<li>devtmpfs 的功用是在 Linux 核心 启动早期建立一个初步的 /dev，令一般启动程序不用等待 udev，缩短 GNU/Linux 的开机时间。</li>
+</ul>
+<p>debugfs</p>
+<ul>
+<li>在内核追踪技术的发展初期，追踪相关的文件都放在 debugfs 虚拟文件系统中，debugfs 主要设计目的是为了提供一个通用的内核调试接口，内核的任意子系统都有可能使用 debugfs 做调试.</li>
+</ul>
+<p>socketfs</p>
+<p>pipefs</p>
+<p>ramfs</p>
+<p>btrfs</p>
+<p>autofs</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../4_io_scheduler_layer/" class="btn btn-neutral float-left" title="第四篇 Block IO Layer(块IO层)总结"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../7_three_object_of_block_device/" class="btn btn-neutral float-right" title="第七篇 块设备三大对象block_device、gendisk、hd_struct数据结构总结">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../4_io_scheduler_layer/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../7_three_object_of_block_device/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>第四篇 软中断 - Lott's Blog</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u7b2c\u56db\u7bc7 \u8f6f\u4e2d\u65ad";
+        var mkdocs_page_input_path = "chapter_4/5_soft_irq.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Lott's Blog
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首页</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第一章 各种杂项基础</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/3_linux_kernel_basic/">第三篇 Linux内核基础</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/10_virtual_machine_on_mac_m1_chip/">第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/11_nftables/">第十一篇 Debian 11以及往后版本nftables防火墙配置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY、PTY和控制台(Console)区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/15_bosun/">第十五篇 Bosun使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/16_assembler/">第十六篇 汇编语言使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/17_makefile/">第十七篇 Makefile使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/19_network_ratelimit/">第十九篇 Linux网络限速</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/20_mac_os_skills/">第二十篇 MacOS使用技巧</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/guzhangguanli/">第四篇 故障管理概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/biangengguanli/">第五篇 变更管理概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/rongliangguanli/">第六篇 容量管理概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/cicd/">第八篇 CICD流程概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/9_changkanchangxin/">第九篇 常看常新</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/12_monitor_and_alert/">第十二篇 监控报警最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能优化专题</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/5_conntrack/">第五篇 conntrack的常见应用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/6_tcp/">第六篇 TCP协议总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/10_linux_net/">第十篇 Linux Net子系统总结、收发包流程再次梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/11_igb/">第十一篇 igb网卡驱动梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/12_rss_rps_rfs_xps/">第十二篇 Linux网卡rss和rps和rfs和xps</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_process_ulimit/">第一篇 进程Max open files的设置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_pid_max/">第二篇 kernel源码中pid的最大值</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_interrupt_one/">第三篇 硬中断</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第四篇 软中断</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">软中断和硬中断的区别</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_3">宏观层面</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_4">微观层面</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">软中断实现原理</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">开启内核软中断处理的守护线程</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_7">注册中断向量表</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_8">触发一次软中断</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_9">小结</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_10">中断的上半部和下半部说明</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_11">中断处理程序的上部分和下半部可以理解为：</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_12">软中断执行的时机</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_13">软中断的常用优化技能</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 系统里有哪些软中断？</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2">2 常用的一些优化经验</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-cpu">3 如何定位软中断 CPU 使用率过高的问题？</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_14">中断下半部三种机制的区别和基础使用</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#3">3 种下半部机制的区别</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#1-softirq">1 softirq 核心数据结构和使用</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_15">相关接口</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_16">软中断实例</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-tasklet">2 tasklet 核心数据结构和使用</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#tasklet">tasklet 使用</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#tasklet_1">tasklet 实例</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-workqueue">3 workqueue 核心数据结构和使用</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_17">硬中断、软中断、用户进程之间的优先级</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-ksoftirqd">1 为什么出现 ksoftirqd 线程</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-ksoftirqd-softirq">2 如何使用 ksoftirqd（进程上下文）来运行 softirq（中断上下文）</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3_1">3 软中断执行的三个场景</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4">4 扩展</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_cpu_famous_register/">第六篇 CPU中的著名寄存器梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_linux_signal/">第七篇 Linux信号机制</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_linux_scheduler/">第八篇 Linux进程调度</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_linux_context_switch/">第十篇 低视角看context switch</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../11_linux_cpu_usage/">第十一篇 CPU利用率统计</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_linux_preemption/">第十二篇 内核抢占基础篇</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_interrupt_handler_examples/">第十三篇 中断处理程序的例子</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../14_linux_kernel_tracing/">第十四篇 理解内核追踪机制</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../15_task_struct/">第十五篇 task_struct结构体总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../16_init_call/">第十六篇 Linux各类initcall总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/2_io_stack/">第二篇 Linux IO栈总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 Block IO Layer(块IO层)总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/7_three_object_of_block_device/">第七篇 块设备三大对象block_device、gendisk、hd_struct数据结构总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/8_kobjet_kset_ktype/">第八篇 Linux设备模型的基石:kset/kobject/ktype</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/9_io_uring/">第八篇 io_uring研究和总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/1_linux_buddy/">第一篇 伙伴系统介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/2_slab/">第二篇 Slab层介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理基础篇</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/6_alloc_mem_apis/">第六篇 Linux内核内存分配API函数分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理升级篇</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/9_page_cache_and_buffer_cache/">第九篇 PageCache和BufferCache演进过程</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/1_sync_file/">第一篇 不同主机之间的文件传输</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/5_server_side_evolution/">第五篇 服务端进化过程梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/6_elk/">第六篇 elk技术栈</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/7_charset/">第七篇 字符集和编码</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/8_locale/">第八篇 locale设置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/9_http_protocol/">第九篇 http协议</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/10_http_cookie_session_token/">第十篇 cookie和session和token总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第八章 职场通用经验</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/1_xuexixinde/">第一篇 学习心得和工作箴言</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/2_bangzhuqitatongxue/">第二篇 工作能力评价体系</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/3_yewuliuchengshuyu/">第三篇 项目管理总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/4_jishunenglimoxing/">第四篇 技术能力模型总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/5_chanpingsiwei_1/">第五篇 产品思维总结和梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/6_jixiaobaogao/">第六篇 如何写绩效报告</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/7_xiangshangguanli/">第七篇 如何向上管理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/9_speaking_skills/">第九篇 沟通能力和演讲技巧</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/10_jixiaofangtan/">第十篇 绩效访谈总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/11_classic_technical_thinking/">第十一篇 经典技术思维汇总</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第九章 编程经验和各类开源软件</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/1_suanfa/">第一篇 算法总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/2_data_structure/">第二篇 数据结构总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/3_c_lang/">第三篇 c语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/4_symbol_table/">第四篇 符号表总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/5_golang/">第五篇 go语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/7_python/">第七篇 python语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/8_rsyslog/">第八篇 rsyslog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/9_falcon/">第九篇 falcon和夜莺</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/10_json_schema/">第十篇 JSON-Schema使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/11_prometheus/">第十一篇 Prometheus使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/12_grafana/">第十二篇 Grafana使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/13_mysql/">第十三篇 MySQL使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/14_mongodb/">第十四篇 MongoDB使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/15_supervisor/">第十五篇 Supervisor使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/16_redis/">第十六篇 Redis使用</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/2_benefits_of_containerization/">第二篇 容器化好处</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/3_docker_basic_concepts/">第三篇 容器化基础概念</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/9_cloudnative_monitor/">第九篇 云原生监控</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/10_event/">第十篇 彻底搞懂Kubernetes Event</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/11_best_practices/">第十一篇 Kubernetes最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/12_cloud_network/">第十二篇 云网络</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/1_theory/">第一篇 稳定性概论</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/10_high_avaliable/">第二篇 高可用原则总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/2_slo_process/">第三篇 SLO实施流程</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/3_stress/">第四篇 压测经验总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/11_stability/">第五篇 稳定性理论总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十二章 商业化知识总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_12/1_shifouzhide/">第一篇 如何判断一件事情值不值得做</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十三章 芯片知识总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_13/1_about_riscv/">第一篇 RISC-V 简介</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十四章 Linux驱动方向总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/1_demo_of_led_driver/">第一篇 驱动程序的Hello World</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/2_qianrushidev/">第二篇 嵌入式开发基础</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/3_linux_kernel_api_list/">第三篇 Linux内核API汇总和各类风格总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/4_zifushebeiqudongyuanli/">第四篇 字符设备驱动实现原理和物理内存地址空间和IO端口空间</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/5_device_tree/">第五篇 platform总线模型和设备树</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/6_device_driver_sop/">第六篇 从阅读硬件手册开始设备驱动程序编写</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/7_linux_kernel_clipping/">第七篇 Linux移植</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/8_linux_driver_framework/">第八篇 Linux驱动框架和SoC驱动框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/9_linux_device_class/">第九篇 Linux设备分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/10_u_boot/">第十篇 u-boot梳理和总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/11_linux_reset_subsystem_and_framework/">第十一篇 Linux Reset子系统及其框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/12_pinctl_and_gpio/">第十二篇 Linux pinctl和gpio子系统及其框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/14_linux_kernel_trimming/">第十四篇 Linux内核裁剪总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/15_imx6ull/">第十五篇 IMX6UL实验记录</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十五章 AI+嵌入式结合方向汇总</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/1_demo_of_ai/">第一篇 AI程序 Hello World</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十六章 网络安全方向</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_16/1_network_attack/">第一篇 认识各种网络攻击</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Lott's Blog</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">第四章 Linux CPU子系统</li>
+      <li class="breadcrumb-item active">第四篇 软中断</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="_1">概述</h1>
+<ul>
+<li>本篇文档总结<a href="https://mp.weixin.qq.com/s/g9rGKRQofAlWjdq8lDTTkQ">软中断相关知识</a></li>
+</ul>
+<h2 id="_2">软中断和硬中断的区别</h2>
+<ul>
+<li><code>硬中断</code>包括<code>中断</code>、<code>异常</code>以及 <code>INT 指令</code>这种软件中断，整个中断机制是纯硬件实现的逻辑，别管触发它的是谁，所以通通叫硬中断。</li>
+</ul>
+<h3 id="_3">宏观层面</h3>
+<ul>
+<li><code>软中断</code>是纯软件实现的，宏观效果看上去和中断差不多的一种方式。
+  什么叫宏观效果呢？意思就是说，中断在宏观层面看来，就是<strong>打断当前正在运行的程序，转而去执行中断处理程序，执行完之后再返回原程序</strong>。</li>
+</ul>
+<p>从这个层面看，硬中断可以达到这个效果，软中断也可以达到这个效果，所以说宏观效果一样。
+那微观层面呢？就是我们需要了解的原理啦。</p>
+<h3 id="_4">微观层面</h3>
+<ul>
+<li>
+<p>硬中断的微观层面，就是 CPU 在每一个指令周期的最后，都会留一个 CPU 周期去查看是否有中断，如果有，就把中断号取出，去中断向量表中寻找中断处理程序，然后跳过去。</p>
+</li>
+<li>
+<p>软中断的微观层面，简单说就是有一个单独的守护进程，不断轮询一组<code>标志位</code>，如果哪个标志位有值了，那去这个标志位对应的<code>软中断向量表数组</code>的相应位置，找到<code>软中断处理函数</code>，然后跳过去。</p>
+</li>
+</ul>
+<h2 id="_5">软中断实现原理</h2>
+<ul>
+<li>既然是内核守护线程来运行软中断处理程序, 那么首先要开启内核线程。 名字通常为「ksoftirqd/CPU 编号」, 比如 0 号 CPU 对应的软中断内核线程的名字是 <code>ksoftirqd/0</code></li>
+</ul>
+<h3 id="_6">开启内核软中断处理的守护线程</h3>
+<p><img alt="png" src="../../img/WechatIMG278.jpeg" /></p>
+<p>这个是我之前在讲解自制操作系统时的图，放在这里完全没有问题，这就是 Linux 的启动过程，文件名都一样。
+唯一不同的是，我们这里内核主方法叫 <code>kernel_start</code>，Linux-2.6.0 里叫 <code>start_kernel</code>, 效果都一样.</p>
+<p>接下来看这个入口方法。</p>
+<pre><code>asmlinkage void __init start_kernel(void) {
+    ...
+    trap_init();
+    sched_init();
+    time_init();
+    ...
+    rest_init();
+}
+</code></pre>
+<p>省略了很多部分，但可以看出这个方法里就是<strong>各种初始化</strong>。</p>
+<p>接着看 <code>rest_init()</code> 这个方法。</p>
+<pre><code>static void rest_init(void) {
+    kernel_thread(init, NULL, CLONE_KERNEL);
+}
+
+static int init(void * unused) {
+    do_pre_smp_initcalls();
+}
+
+static void do_pre_smp_initcalls(void) {
+    spawn_ksoftirqd();
+}
+</code></pre>
+<p>看到一个 <code>spawn_ksoftirqd()</code>，翻译过来就是 <code>spawn kernel soft irt daemon</code>，开启内核软中断守护进程，这名字太直观了，都不用我讲了！</p>
+<p>再往里跟。很长，但有用的信息很少。</p>
+<pre><code>__init int spawn_ksoftirqd(void) {
+    cpu_callback(&amp;cpu_nfb, CPU_ONLINE, (void *)(long)smp_processor_id());
+    register_cpu_notifier(&amp;cpu_nfb);
+    return 0;
+}
+
+static int __devinit cpu_callback(...) {
+    kernel_thread(ksoftirqd, hcpu, CLONE_KERNEL);
+}
+
+static int ksoftirqd(void * __bind_cpu) {
+    for (;;) {
+        while (local_softirq_pending()) {
+            do_softirq();
+            cond_resched();
+        }
+    }
+}
+
+asmlinkage void do_softirq(void) {
+    h = softirq_vec;
+    pending = local_softirq_pending();
+    do {
+        if (pending &amp; 1) {
+            h-&gt;action(h);
+        h++;
+        pending &gt;&gt;= 1;
+    } while (pending);
+}
+</code></pre>
+<p>前面的不用管，直接看最后一个方法，<code>do_softirq()</code>，这个方法展示了软中断处理守护进程所做的事情的精髓，我给翻译一下。</p>
+<pre><code>// 这就是软中断处理函数表（软中断向量表）
+// 和硬中断的中断向量表一样
+static struct softirq_action softirq_vec[32];
+
+asmlinkage void do_softirq(void) {
+    // h = 软中断向量表起始地址指针
+    h = softirq_vec;
+    // 这个是软中断标志位们，一次性拿到所有的软中断标志位
+    pending = local_softirq_pending();
+    do {
+        // 此时的软中断标志位有值（说明有软中断）
+        if (pending &amp; 1) {
+            // 去对应的软中断向量表执行对应的处理函数
+            h-&gt;action(h);
+        // 软中断向量表指针向后移动
+        h++;
+        // 同时软中断处理标志位也向后移动
+        pending &gt;&gt;= 1;
+    } while (pending);
+}
+</code></pre>
+<p>这翻译还没看明白，那我来几个图你就懂了。</p>
+<p>首先 <code>h</code> 代表<code>软中断向量表 softirq_vec</code>，和硬中断的中断向量表的存在是一个目的，就是个<code>数组</code>嘛，然后里面的元素存储着<code>软中断处理程序的地址指针</code>，在 <code>action</code> 中。</p>
+<p><img alt="png" src="../../img/WechatIMG279.jpeg" /></p>
+<p>然后 pending 代表软<code>中断标志位（们）</code>。
+这里完全由于 Linux 里用了好多 C 语言的宏定义搞得很绕，我先放出来，别担心。</p>
+<pre><code>typedef struct {
+    unsigned int __softirq_pending;
+    unsigned long idle_timestamp;
+    unsigned int __nmi_count;   /* arch dependent */
+    unsigned int apic_timer_irqs;   /* arch dependent */
+} irq_cpustat_t;
+
+extern irq_cpustat_t irq_stat[];    /* defined in asm/hardirq.h */
+#define __IRQ_STAT(cpu, member) (irq_stat[cpu].member)
+#define __IRQ_STAT(cpu, member) ((void)(cpu), irq_stat[0].member)
+#define softirq_pending(cpu)  __IRQ_STAT((cpu), __softirq_pending)
+#define local_softirq_pending() softirq_pending(smp_processor_id())
+
+pending = local_softirq_pending();
+</code></pre>
+<p>把这些宏定义都翻译过来，再去掉多处理器的逻辑，就当只有一个核心，就变得很简单了。</p>
+<pre><code>pending = irq_stat[0].__softirq_pending;
+</code></pre>
+<p>它就是个 <code>int</code> 值而已，<code>32 位</code>。
+回过头看之前的，<code>pending（软中断标志位）</code>与 <code>h（软中断向量表）</code>的向后移动的步长。</p>
+<pre><code>// 软中断向量表指针向后移动
+h++;
+// 同时软中断处理标志位也向后移动
+pending &gt;&gt;= 1;
+</code></pre>
+<p>可以看出<code>软中断标志位的一位</code>对应着<code>软中断向量表中的一个元素</code>，这就不难理解为什么中断向量表这个数组大小是 <code>32 位</code>了。</p>
+<p><img alt="png" src="../../img/WechatIMG280.jpeg" /></p>
+<p>好了，这样这个内核软中断处理这个守护进程做的事，就完全搞懂了。
+就是<code>不断遍历 pending 这个软中断标志位的每一位，如果是 0 就忽略，如果是 1，那从上面的 h 软中断向量表中找到对应的元素，然后执行 action 方法，action 就对应着不同的软中断处理函数</code>。</p>
+<p>而且也能看到，内核软中断处理守护进程，在 Linux 启动后，会自动跑起来，那也就代表了，软中断机制生效了。
+如果让你使用这个内核功能，做软中断的事情，那不难想象，很简单。</p>
+<ul>
+<li>
+<p>第一步，<code>注册软中断向量表</code>，其实就是把软中断向量表的每个 action 变量赋值，相当于硬中断中注册中断向量表的过程。</p>
+</li>
+<li>
+<p>第二步，<code>触发一个软中断</code>，其实就是修改 pending 的某个标志位，触发一次软中断，相当于硬中断中由外部硬件、异常、或者 INT 指令来触发硬中断一样。
+  而实际上，Linux 就是这样做的，和我们猜的一样，我们一步步看。</p>
+</li>
+</ul>
+<h3 id="_7">注册中断向量表</h3>
+<p>就是给 <code>softirq_vec 这个软中断向量表</code>，也是一个数组，里面的每一个元素的 action 附上值，赋的就是软中断处理函数的函数地址。
+这代码很容易就可以想到，太好写了，就这样呗。</p>
+<pre><code>softirq_vec[0].action = NULL;
+softirq_vec[1].action = run_timer_softirq;
+softirq_vec[2].action = net_tx_action;
+...
+softirq_vec[31].action = xxx;
+</code></pre>
+<p>没错，就是这样，不要以为 Linux 有啥神奇的操作，也是得这样老老实实给他们赋值。
+比如，<strong>网络子系统的初始化</strong>，有一步就需要<strong>注册网络的软中断处理函数</strong>。</p>
+<pre><code>subsys_initcall(net_dev_init);
+
+static int __init net_dev_init(void) {
+    ...
+    // 网络发包的处理函数
+    open_softirq(NET_TX_SOFTIRQ, net_tx_action, NULL);
+    // 网络收包的处理函数
+    open_softirq(NET_RX_SOFTIRQ, net_rx_action, NULL);
+    ...
+}
+
+void open_softirq(int nr, void (*action)(struct softirq_action*), void *data)
+{
+    softirq_vec[nr].data = data;
+    // 简直完全一样
+    softirq_vec[nr].action = action;
+}
+</code></pre>
+<p>这和我们写的不能说是相似，简直完全是一样呀，只是多包装了一层函数叫 <code>open_softirq</code> 方便调用罢了。</p>
+<p><code>NET_TX_SOFTIRQ</code> 这些是枚举值，具体看这些枚举也会发现 Linux-2.6.0 中也不多。</p>
+<pre><code>enum
+{
+    HI_SOFTIRQ=0,
+    TIMER_SOFTIRQ,
+    NET_TX_SOFTIRQ,
+    NET_RX_SOFTIRQ,
+    SCSI_SOFTIRQ,
+    TASKLET_SOFTIRQ
+};
+</code></pre>
+<p>好奇翻了下 Linux-5.11，发现也不多</p>
+<pre><code>enum
+{
+    HI_SOFTIRQ=0,
+    TIMER_SOFTIRQ,
+    NET_TX_SOFTIRQ,
+    NET_RX_SOFTIRQ,
+    BLOCK_SOFTIRQ,
+    IRQ_POLL_SOFTIRQ,
+    TASKLET_SOFTIRQ,
+    SCHED_SOFTIRQ,
+    HRTIMER_SOFTIRQ,
+    RCU_SOFTIRQ,
+    NR_SOFTIRQS
+};
+</code></pre>
+<h3 id="_8">触发一次软中断</h3>
+<p>同上，这代码也很容易就可以想到，就这样呗。
+你看，表示软中断标志位的 p 不是这样取值的么。</p>
+<pre><code>pending = local_softirq_pending();
+</code></pre>
+<p>取出来的是个 32 位的 int 值。</p>
+<p>那只需要把 <code>local_softirq_pending() 对应的标志位改成 1</code>就触发了软中断了，比如我们想触发一个 2 号软中断，就像这样。</p>
+<p><img alt="png" src="../../img/WechatIMG281.png" /></p>
+<p>代码这么写就行了。</p>
+<pre><code>local_softirq_pending() |= 1UL &lt;&lt; 2;
+</code></pre>
+<p>而 Linux 居然也是这么做的，我们看网络数据包到来之后，有一段代码。</p>
+<pre><code>#define __raise_softirq_irqoff(nr) \
+do { local_softirq_pending() |= 1UL &lt;&lt; (nr); } while (0)
+
+static inline void __netif_rx_schedule(struct net_device *dev) {
+    list_add_tail(&amp;dev-&gt;poll_list, &amp;__get_cpu_var(softnet_data).poll_list);
+    // 发出软中断
+    __raise_softirq_irqoff(NET_RX_SOFTIRQ);
+}
+</code></pre>
+<p>如果把 do while(0) 这种 C 语言宏定义的一种玩法去掉，其实就和我们的完全一样了，这回可真的是完全一样。</p>
+<pre><code>static inline void __netif_rx_schedule(struct net_device *dev) {
+    list_add_tail(&amp;dev-&gt;poll_list, &amp;__get_cpu_var(softnet_data).poll_list);
+    // 发出软中断
+    local_softirq_pending() |= 1UL &lt;&lt; (NET_RX_SOFTIRQ)
+}
+</code></pre>
+<p>所以我之前总是说，当你真的去接触这个东西的时候，一个个细节逐步拨开后，会发现一点也不难，而且都是顺理成章，和我们猜测的也一样。</p>
+<h3 id="_9">小结</h3>
+<ul>
+<li>软中断没什么神奇的骚操作，<code>就是一组一位一位的软中断标志位，对应着软中断向量表中一个一个的中断处理函数，然后有个内核守护进程不断去循环判断调用</code>，而已。</li>
+<li>然后，由各个子系统调用 <code>open_softirq</code> 负责把软中断向量表附上值。</li>
+<li>再由各个需要触发软中断的地方调用 <code>raise_softirq_irqoff</code> 修改中断标志位的值。</li>
+<li>后面的工作就交给内核那个软中断守护进程，去触发这个软中断了，其实就是个遍历并查找对应函数的简单过程。</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG282.jpeg" /></p>
+<h2 id="_10">中断的上半部和下半部说明</h2>
+<ul>
+<li>
+<p>中断的上半部是在具体 irq 号完全禁止的状态下执行的, 下半部则不是. 下半部由多种实现方式, 例如: <code>软中断</code>、<code>tasklet</code>、<code>workqueue</code>, 只有<code>workqueue</code>是在进程上下文中执行, 可以睡眠和被重新调度, 而软中断和 tasklet 是不能睡眠的, 因为他是在中断上下文中执行.</p>
+</li>
+<li>
+<p>上半部核心函数是<code>do_irq()</code>函数,每次调用<code>do_irq()</code>函数时，传入了 CPU 当前寄存器的状态.<code>unsigned do_IRQ(struct pt_regs regs)</code></p>
+</li>
+</ul>
+<p><img alt="png" src="../../img/%E4%B8%AD%E6%96%AD%E4%B8%8A%E5%8D%8A%E9%83%A8%E6%9C%BA%E5%88%B6.png" /></p>
+<ul>
+<li>下半部运行时，允许硬中断（例如网卡下半部运行时，又允许其他硬中断了）</li>
+<li>上半部的中断处理程序中，触发了下半部程序.</li>
+<li>下半部程序都是在 do_softirq()函数中运行.</li>
+<li>那么触发后，具体何时运行呢？ 在上半部中断处理程序返回时，或者在 ksoftirqd 线程里</li>
+<li>对于硬件驱动的研发人员，可以用</li>
+<li>
+<ul>
+<li>1 request_irq()函数 —&gt; 注册上半部中断处理程序</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>2 可以用 open_irq()函数 —&gt; 注册下半部中断处理程序</li>
+</ul>
+</li>
+</ul>
+<h3 id="_11">中断处理程序的上部分和下半部可以理解为：</h3>
+<ul>
+<li>上半部直接处理硬件请求，也就是硬中断，主要是负责耗时短的工作，特点是快速执行；</li>
+<li>下半部是由内核触发，也就说软中断，主要是负责上半部未完成的工作，通常都是耗时比较长的事情，特点是延迟执行；。Linux 中的软中断包括网络收发、定时、调度、RCU 锁等各种类型。</li>
+</ul>
+<h2 id="_12">软中断执行的时机</h2>
+<p>在下列地方，待处理的软中断会被检查和执行：</p>
+<p>a. 从一个硬件中断代码处返回时</p>
+<p>b. 在 ksoftirqd 内核线程中</p>
+<p>c. 在那些显示检查和执行待处理的软中断的代码中，如网络子系统中</p>
+<h2 id="_13">软中断的常用优化技能</h2>
+<h3 id="1">1 系统里有哪些软中断？</h3>
+<p>在 Linux 系统里，我们可以通过查看 /proc/softirqs 的 内容来知晓「软中断」的运行情况，以及 /proc/interrupts 的 内容来知晓「硬中断」的运行情况。</p>
+<p>接下来，就来简单的解析下 /proc/softirqs 文件的内容，在我服务器上查看到的文件内容如下：</p>
+<p><img alt="png" src="../../img/WechatIMG27.jpeg" /></p>
+<p><img alt="png" src="../../img/WechatIMG28.png" /></p>
+<p>你可以看到，每一个 CPU 都有自己对应的不同类型软中断的累计运行次数，有 3 点需要注意下。</p>
+<ul>
+<li>
+<p>第一点，要注意第一列的内容，它是代表着软中断的类型，在我的系统里，软中断包括了 10 个类型，分别对应不同的工作类型，比如 NET_RX 表示网络接收中断，NET_TX 表示网络发送中断、TIMER 表示定时中断、RCU 表示 RCU 锁中断、SCHED 表示内核调度中断。</p>
+</li>
+<li>
+<p>第二点，要注意同一种类型的软中断在不同 CPU 的分布情况，正常情况下，同一种中断在不同 CPU 上的累计次数相差不多，比如我的系统里，NET_RX 在 CPU0 、CPU1、CPU2、CPU3 上的中断次数基本是同一个数量级，相差不多。</p>
+</li>
+<li>
+<p>第三点，这些数值是系统运行以来的累计中断次数，数值的大小没什么参考意义，但是系统的中断次数的变化速率才是我们要关注的，我们可以使用 <code>watch -d cat /proc/softirqs</code> 命令查看中断次数的变化速率。</p>
+</li>
+</ul>
+<h3 id="2">2 常用的一些优化经验</h3>
+<ul>
+<li>当你发现软中断占用的 CPU 利用率比较高时，可以从以下几个方面排查</li>
+<li>网卡软中断的优化,把中断信号发给不同的 CPU，因为默认情况下所有中断都发给了 CPU0，导致 CPU0 被打满。把中断信号发给不同的 CPU 之后，多个 CPU 肯定比单个 CPU 处理起来快，因此性能能够显著提升。</li>
+<li>硬件 CPU 功率是否开启最大性能模式. 如果一台机器是节能模式、一台是 MaxPerformance 模式, 那么在相同业务量的情况下, 节能模式那台的 CPU soft irq 就会高.</li>
+<li>高流量 redis 服务器，并没有把网卡软中断负载均衡到所有 CPU 上，而是把网卡软中断绑定的 NUMA 架构中的其中一个节点（例如该节点是 4 核 CPU），然后把 redis 进程绑定的 NUMA 架构中的其他节点（例如其他 1 个节点）</li>
+</ul>
+<h3 id="3-cpu">3 如何定位软中断 CPU 使用率过高的问题？</h3>
+<p>要想知道当前的系统的软中断情况，我们可以使用 top 命令查看，下面是一台服务器上的 top 的数据：</p>
+<p><img alt="png" src="../../img/WechatIMG29.jpeg" /></p>
+<p>上图中的黄色部分 si，就是 CPU 在软中断上的使用率，而且可以发现，每个 CPU 使用率都不高，两个 CPU 的使用率虽然只有 3% 和 4% 左右，但是都是用在软中断上了。</p>
+<p>另外，也可以看到 CPU 使用率最高的进程也是软中断 ksoftirqd，因此可以认为此时系统的开销主要来源于软中断。</p>
+<p>如果要知道是哪种软中断类型导致的，我们可以使用 watch -d cat /proc/softirqs 命令查看每个软中断类型的中断次数的变化速率。</p>
+<p><img alt="png" src="../../img/WechatIMG30.png" /></p>
+<p>进而确定问题所在.</p>
+<h2 id="_14">中断下半部三种机制的区别和基础使用</h2>
+<ul>
+<li>中断下半部有哪 3 种机制?</li>
+<li>
+<ul>
+<li><code>softirq</code>, <code>tasklet</code>, <code>workqueue</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="3">3 种下半部机制的区别</h3>
+<p><strong>软中断使用的几个要点：</strong></p>
+<ul>
+<li>一个软中断不会抢占另外一个软中断。</li>
+<li>惟一可以抢占软中断的是中断处理程序。</li>
+<li>其他的软中断可以在其他处理器上同时执行</li>
+</ul>
+<h3 id="1-softirq">1 softirq 核心数据结构和使用</h3>
+<ul>
+<li>
+<p><code>softirq</code>即软中断，代码位于<code>kernel/softirq.c</code>文件中；</p>
+</li>
+<li>
+<p>每个软中断由<code>softirq_action</code>结构表示：</p>
+</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG375.jpg" /></p>
+<p>在<code>softirq.c</code>中定义了一个软中断向量数组<code>softirq_vec</code>：</p>
+<pre><code>static struct softirq_action softirq_vec[NR_SOFTIRQS] __cacheline_aligned_in_smp;
+    enum
+    {
+       HI_SOFTIRQ=0, /*用于高优先级的tasklet*/
+       TIMER_SOFTIRQ, /*用于定时器的下半部*/
+       NET_TX_SOFTIRQ, /*用于网络层发包*/
+       NET_RX_SOFTIRQ, /*用于网络层收报*/
+       BLOCK_SOFTIRQ,
+       BLOCK_IOPOLL_SOFTIRQ,
+       TASKLET_SOFTIRQ, /*用于低优先级的tasklet*/
+       SCHED_SOFTIRQ,
+       HRTIMER_SOFTIRQ,
+       RCU_SOFTIRQ, /* Preferable RCU should always be the last softirq */
+       NR_SOFTIRQS
+   };
+
+</code></pre>
+<p>数组的成员数由<code>NR_SOFTIRQS</code>决定，是一个枚举常量。</p>
+<p><strong>新增一个软中断时，需要在文件<code>include/linux/interrupt.h</code> 中添加一个枚举常量。</strong></p>
+<h4 id="_15">相关接口</h4>
+<ul>
+<li>
+<p>注册软中断</p>
+</li>
+<li>
+<ul>
+<li><code>void open_softirq(int nr, void (*action)(struct softirq_action *))</code></li>
+</ul>
+</li>
+<li>
+<ul>
+<li>即注册对应类型的处理函数到全局数组<code>softirq_vec</code>中。</li>
+</ul>
+</li>
+<li>
+<p>触发软中断</p>
+</li>
+<li>
+<ul>
+<li><code>void raise_softirq(unsigned int nr)</code></li>
+</ul>
+</li>
+<li>
+<ul>
+<li>实际上即以软中断类型 nr 作为偏移量会置位<code>irq_stat[cpu_id]</code>的成员变量<code>__softirq_pending</code>.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><code>__softirq_pending</code>字段中的每一个 bit，对应着某一个软中断，某个 bit 被置位，说明有相应的软中断等待处理。</li>
+</ul>
+</li>
+</ul>
+<p>这也是同一类型软中断可以在多个 cpu 上并行运行的根本原因。</p>
+<h4 id="_16">软中断实例</h4>
+<p>以一个<strong>按键驱动的中断处理</strong>为例，将按键驱动的中断处理分成上下两部分：</p>
+<ul>
+<li>上半部：读取键值，触发软中断</li>
+<li>下半部：唤醒进程</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG376.jpg" /></p>
+<p>软中断的注册，在驱动的入口函数，注册软中断：</p>
+<p><img alt="png" src="../../img/WechatIMG378.jpg" /></p>
+<p>添加的枚举常量：</p>
+<p><img alt="png" src="../../img/WechatIMG379.jpg" /></p>
+<p>可以看到，使用软中断是需要修改内核，添加一个枚举的，有些繁琐。</p>
+<p>所以，通常我们<strong>不建议擅自增加软中断的数量</strong>，如果需要新的软中断，尽可能把它们实现为<strong>基于软中断的<code>tasklet</code>形式</strong>。</p>
+<h3 id="2-tasklet">2 tasklet 核心数据结构和使用</h3>
+<p><strong>tasklet</strong>是利用<strong>软中断</strong>实现的一种<strong>下半部机制</strong>。</p>
+<p>那是用<strong>软中断</strong>还是<code>tasklet</code>好呢？</p>
+<p>选择到底是用<strong>软中断</strong>还是<code>tasklet</code>其实很简单：</p>
+<ul>
+<li>
+<p><strong>通常你应该用 <code>tasklet</code></strong>。就像我们在前面看到的，软中断资源有限，也麻烦，而且软中断的使用者屈指可数。它只在那些执行频率很高和连续性要求很高的情况下才需要。<strong>只有<code>网络</code>和<code>SCSI</code> 2 个子系统直接使用软中断</strong></p>
+</li>
+<li>
+<p>而 <strong>tasklet 却有更广泛的用途</strong>。大多数情况下用 <code>tasklet</code> 效果都不错，而且它们还非常容易使用。</p>
+</li>
+<li>
+<p>因为 <code>tasklet</code> 是通过软中断实现的，所以它们<strong>本身也是软中断</strong>。</p>
+</li>
+</ul>
+<h4 id="tasklet">tasklet 使用</h4>
+<p>tasklet 的使用步骤如下：</p>
+<p>1、编写 tasklet 处理函数（下半部）</p>
+<pre><code>void my_tasklet_fun (unsigned long data)
+
+</code></pre>
+<p>2、声明 tasklet</p>
+<pre><code>//静态
+DECLARE_TASKLET(my_tasklet,my_tasklet_fun,data);
+//动态
+struct  tasklet_struct xxx;
+tasklet_init(&amp;xxx,tasklet_handler,dev)
+
+
+</code></pre>
+<p>3、调度 tasklet</p>
+<pre><code>tasklet_schedule(&amp;my_tasklet);
+</code></pre>
+<p>登记 my_tasklet, 然后允许系统在合适的时间调度它。</p>
+<h4 id="tasklet_1">tasklet 实例</h4>
+<ul>
+<li>以按键中断驱动为例：</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG380.jpg" /></p>
+<ul>
+<li>先使用<code>DECLARE_TASKLET</code>静态声明一个<code>tasklet</code>，指定其下半部函数为<code>btn_tasklet_func</code>，在中断服务函数（上半部）获取按键值后，调用<code>tasklet_schedule</code>调度。</li>
+</ul>
+<h3 id="3-workqueue">3 workqueue 核心数据结构和使用</h3>
+<ul>
+<li>
+<p><code>work queue</code>即<strong>工作队列</strong>，也是中断下半部的一种。</p>
+</li>
+<li>
+<p><code>work queue</code>将下半部工作推迟给一个<strong>内核线程</strong>去执行 <code>——work</code> 总是运行于进程上下文.</p>
+</li>
+</ul>
+<p>两个要点：</p>
+<ul>
+<li>如果推迟的工作需要<strong>睡眠</strong>，则使用<code>work queue</code>。否则使用<code>softirq</code>或<code>tasklet</code>.</li>
+<li><code>work queue</code>适用于需要分配大量的内存，获得一个信号量，或者执行阻塞的<code>I/O</code>的情况.</li>
+</ul>
+<p>工作队列的相关接口函数：</p>
+<p><img alt="png" src="../../img/WechatIMG381.jpg" /></p>
+<p>在使用上，<strong>工作队列</strong>与<code>tasklet</code>是类似的：</p>
+<p><img alt="png" src="../../img/WechatIMG382.jpg" /></p>
+<h2 id="_17">硬中断、软中断、用户进程之间的优先级</h2>
+<blockquote>
+<p>我们知道按照优先级来说，<strong>中断&gt;软中断&gt;用户进程</strong>，也就是说中断可以打断软中断，而软中断又可以打断用户进程。</p>
+</blockquote>
+<h3 id="1-ksoftirqd">1 为什么出现 ksoftirqd 线程</h3>
+<ul>
+<li>
+<p>问题是什么? 如果软中断全部在 ksoftirqd 线程中执行, 那么它肯定是可以再调度的, 除非 ksoftirqd 线程一直是所有线程中最高优先级的</p>
+</li>
+<li>
+<p>事实是什么?</p>
+</li>
+<li>
+<ul>
+<li>如果软中断本身出现的频率较高，再加上他们又有将自己重新设置为可执行状态的能力，那么就会导致用户空间的进程无法获得足够的处理时间，因而处于饥饿状态。为了避免用户进程的饥饿。内核开发者做了一些折中，最终在内核的实现方案中是不会立即处理由软中断自身重新触发的软中断（不允许软中断嵌套）。而作为改进，<strong>内核会唤醒一组内核线程来处理这些过多的软中断</strong>，这些内核线程在最低优先级上运行（nice 值是 19），这能避免它们跟其他重要的任务抢夺资源，但它们最终肯定会被执行，所以这个方案能够保证软中断负载很重的时候，用户进程不会因为得不到处理时间而处于饥饿状态，相应的，也能保证过量的软中断终究会得到处理。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>读者可能会对系统上运行的<code>ksoftirqd</code> 感到疑惑，该进程主要用于<strong>在系统的软中断负载过高时降低软中断的处理</strong>。正规处理中，如果内联的软中断进程代码在循环处理 10 次之后，发现还需要处理更多的软中断(由于不断产生中断)，此时中断进程会唤醒合适的 ksoftirqd (每个 CPU 都有一个 ksoftirqd 进程)进程并退出，后续由 ksoftirqd 进程处理软中断。Ksoftirqd 可以被(硬件或软件)中断上下文之外的软中断打断，这种处理是必要的，否则 Ksoftirqd 在处理下一个软中断前可以运行任意时间。在老的内核中，Ksoftirqd 进程以最低的优先级运行，即对软中断的处理取决于该进程是系统上的最高优先级还是最低优先级。从 2.6.23 开始，Ksoftirqd 默认使用普通用户优先级运行。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>也就是说<code>软中断</code>默认是在硬中断处理结束之后就执行, 但是万一系统上有太多<code>软中断</code>要处理, 为了避免用户进程饥饿, 就把软中断放到 ksoftirqd 进程去执行.</li>
+</ul>
+</li>
+<li>
+<p><a href="http://m.blog.chinaunix.net/uid-28344355-id-5835218.html">Linux 系统中的知名内核线程(1)——ksoftirqd 和 events</a></p>
+</li>
+<li><a href="https://www.cnblogs.com/charlieroro/p/12169220.html">软中断和实时性</a></li>
+</ul>
+<h3 id="2-ksoftirqd-softirq">2 如何使用 ksoftirqd（进程上下文）来运行 softirq（中断上下文）</h3>
+<ul>
+<li>I find it quite puzzling and difficult to think how ksoftirqd (<strong>process context</strong>) is employed in order to run softirqs (<strong>interrupt context</strong>)</li>
+</ul>
+<pre><code>
+&quot;ksoftirqd is implemented as a set of threads, each of which is constrained to only run on a specific CPU. They are scheduled (at a very high priority) by the normal task scheduler. This implementation has the advantage that the time spent executing the bottom halves is accounted to a system task. It is thus possible for the user to see that the machine is overloaded with interrupt processing, and maybe take remedial action.
+
+Although the work is now being done in process context rather than bottom half context, ksoftirqd sets up an environment identical to that found in bottom half context. Specifically, it executes the softirq handlers with local interrupts enabled and bottom halves disabled locally. Code which runs as a bottom half does not need to change for ksoftirqd to run it.&quot;
+
+</code></pre>
+<ul>
+<li><a href="https://stackoverflow.com/questions/26458730/ksoftirqds-bottom-halves-in-interrupt-or-process-context">ksoftirqd 设置了一个与下半部分上下文中相同的环境</a>, 也就是说 ksoftirqd 进程设置了<strong>下半部环境</strong></li>
+</ul>
+<h3 id="3_1">3 软中断执行的三个场景</h3>
+<p><a href="https://www.halolinux.us/process-manager/the-software-interrupt-kernel-thread.html">The previous section</a> has described how software interrupts are handled in interrupt context on the return path from hardware interrupt handling, but there is also a kernel thread (in fact, one per CPU) dedicated to handling software interrupts. This thread is woken up when the load of software interrupts becomes too great to handle in interrupt context (it would take too many machine cycles from the current process).</p>
+<ul>
+<li>默认情况下（第一种），硬中断返回的时候就开始执行软中断. 如果软中断太多, 则进入第二种</li>
+<li>第二种， 在 softirqd 内核线程下</li>
+<li>
+<p>第三种, 显式调用软中断的内核代码</p>
+</li>
+<li>
+<p>第一种</p>
+</li>
+</ul>
+<p><code>kernel/softirq.c</code></p>
+<pre><code>
+/*
+ * Exit an interrupt context. Process softirqs if needed and possible:
+ */
+void irq_exit(void)
+{
+#ifndef __ARCH_IRQ_EXIT_IRQS_DISABLED
+    local_irq_disable();
+#else
+    WARN_ON_ONCE(!irqs_disabled());
+#endif
+
+    account_irq_exit_time(current);
+    preempt_count_sub(HARDIRQ_OFFSET);
+    if (!in_interrupt() &amp;&amp; local_softirq_pending())
+        invoke_softirq();
+
+    tick_irq_exit();
+    rcu_irq_exit();
+    trace_hardirq_exit(); /* must be last! */
+}
+
+
+
+static inline void invoke_softirq(void)
+{
+    if (!force_irqthreads) {
+#ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
+        /*
+         * We can safely execute softirq on the current stack if
+         * it is the irq stack, because it should be near empty
+         * at this stage.
+         */
+        __do_softirq();
+#else
+        /*
+         * Otherwise, irq_exit() is called on the task stack that can
+         * be potentially deep already. So call softirq in its own stack
+         * to prevent from any overrun.
+         */
+        do_softirq_own_stack();
+#endif
+    } else {
+        wakeup_softirqd();
+    }
+}
+
+
+</code></pre>
+<p><img alt="png" src="../../img/30A84B91-E7A9-4A2D-B635-8A489534F03B.png" /></p>
+<ul>
+<li>综上所述, <code>irq_exit()</code> ---&gt; <code>invoke_softirq()</code> ---&gt; <code>__do_softirq()</code></li>
+</ul>
+<h3 id="4">4 扩展</h3>
+<ul>
+<li><a href="https://stackoverflow.com/questions/7135915/which-context-are-softirq-and-tasklet-in">Which Context are softirq and tasklet in?</a></li>
+</ul>
+<pre><code>The softirq and tasklet are both kind of bottom-halves mechanism. Sleep is not allowed becuase they run under interrupt context not process context. If sleep is allowed, then the linux cannot schedule them and finally cause a kernel panic with a dequeue_task error. The interrupt context does not even have a data structure describing the register info, so they can never be scheduled by linux. If it is designed to have that structure and can be scheduled, the performance for interrupt handling process will be effected.
+
+</code></pre>
+<ul>
+<li>
+<p><a href="https://stackoverflow.com/questions/9389688/in-what-context-kernel-thread-runs-in-linux">In What Context Kernel Thread Runs In Linux</a></p>
+</li>
+<li>
+<p><a href="https://stackoverflow.com/questions/7106050/what-context-does-the-scheduler-code-run-in">What context does the scheduler code run in</a></p>
+</li>
+<li>
+<p><a href="https://www.oreilly.com/library/view/understanding-the-linux/0596005652/ch04s07.html">Softirqs and Tasklets</a></p>
+</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../3_interrupt_one/" class="btn btn-neutral float-left" title="第三篇 硬中断"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../4_process_thread_coroutine/" class="btn btn-neutral float-right" title="第五篇 进程、线程、协程">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../3_interrupt_one/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../4_process_thread_coroutine/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
