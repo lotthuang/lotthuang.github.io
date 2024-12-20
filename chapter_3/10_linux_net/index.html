@@ -159,7 +159,7 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#81-socket-inet-proto">8.1 关于 socket 和 inet 和 proto 的说明</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#9-tcp">9 用户的 tcp 发送队列是一个链表</a>
+    <li class="toctree-l4"><a class="reference internal" href="#9-tcp-sock">9 tcp sock 对象的发送队列是一个链表</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#10-struct-sock">10 struct sock 讲解</a>
     </li>
@@ -169,7 +169,7 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#103-struct-inet_sock">10.3 struct inet_sock</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#104">10.4 半连接哈希表和全链接队列</a>
+    <li class="toctree-l4"><a class="reference internal" href="#104">10.4 半连接哈希表和全连接队列(半连接队列和全连接队列)</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#105-struct-request_sock-mini-sock-to-represent-a-connection-request">10.5 struct request_sock - mini sock to represent a connection request</a>
     </li>
@@ -294,6 +294,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../11_igb/">第十一篇 igb网卡驱动梳理</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../12_rss_rps_rfs_xps/">第十二篇 Linux网卡rss和rps和rfs和xps</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_linghunkaowen/">第十三篇 Linux网络子系统灵魂拷问</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
@@ -1623,9 +1625,13 @@ And <code>sk-&gt;sk_prot-&gt;connect()</code> will call <code>proto_connect()</c
 <p>参考<a href="https://stackoverflow.com/questions/25656846/understand-struct-proto-and-struct-proto-ops-in-the-kernel">understand 'struct proto' and 'struct proto_ops' in the kernel</a></p>
 </li>
 </ul>
-<h4 id="9-tcp">9 用户的 tcp 发送队列是一个链表</h4>
+<h4 id="9-tcp-sock">9  tcp sock 对象的发送队列是一个链表</h4>
 <p>skb 是 struct sk_buff 对象的简称，用户的发送队列就是该对象组成的一个链表。</p>
 <p><img alt="png" src="../../img/9EA77EDB-4091-41DC-8A8A-902CA205D6C2.png" /></p>
+<ul>
+<li>另外针对服务端、针对其监听的某个tcp端口，有全连接和半连接队列的概念.</li>
+<li>针对具体某个tcp sock对象, 有sk_write_queue和sk_receive_queue概念.</li>
+</ul>
 <h4 id="10-struct-sock">10 struct sock 讲解</h4>
 <ul>
 <li>struct socket 是在虚拟文件系统上被创建出来的，可以把它看成一个文件。</li>
@@ -2078,13 +2084,15 @@ struct inet_sock {
 
 
 </code></pre>
-<h4 id="104">10.4 半连接哈希表和全链接队列</h4>
+<h4 id="104">10.4 半连接哈希表和全连接队列(半连接队列和全连接队列)</h4>
 <p><img alt="png" src="../../img/WechatIMG425.jpg" /></p>
 <ul>
 <li><strong>半连接哈希表</strong>是采用<code>struct lisen_sock</code>结构体表示</li>
-<li><strong>全链接队列</strong>采用 rskq_accept_head 和 rskq_accept_tail 指针分别指向头部和尾部</li>
-<li>其底层元素都是<code>struct request_sock</code></li>
+<li><strong>全连接队列</strong>采用 rskq_accept_head 和 rskq_accept_tail 指针分别指向头部和尾部</li>
+<li>其底层元素都是<code>struct request_sock</code>, 全连接队列就是一个链表</li>
 <li><strong>半连接哈希表</strong>和<strong>全链接队列</strong>被<strong>一起</strong>封装在<strong>struct requst_sock_queue</strong>当中</li>
+<li>内核世界中，哈希表就是数组, 因为数组有下标，无论多大都可以快速找到某个指定元素. </li>
+<li>半连接队列就是一个<code>struct request_sock</code>组成的数组，全连接队列就是一个<code>struct request_sock</code>组成的链表</li>
 </ul>
 <h4 id="105-struct-request_sock-mini-sock-to-represent-a-connection-request">10.5 struct request_sock - mini sock to represent a connection request</h4>
 <pre><code>

@@ -129,6 +129,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/12_rss_rps_rfs_xps/">第十二篇 Linux网卡rss和rps和rfs和xps</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/13_linghunkaowen/">第十三篇 Linux网络子系统灵魂拷问</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
               <ul>
@@ -360,6 +362,30 @@
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_12">八 各种节点的作用</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#mongodb_1">九 MongoDB监控</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#journaling">十 journaling</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#mongodb_2">十一 MongoDB数据库工具</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#mongodump">mongodump</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mongorestore">mongorestore</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#bsondump">bsondump</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mongoimport">mongoimport</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mongoexport">mongoexport</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mongostat">mongostat</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mongotop">mongotop</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mongofiles">mongofiles</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -835,7 +861,7 @@ mongorestore --port 28018  --oplogReplay --oplogLimit &quot;1111111111:1&quot;  
 <p>6 生产环境通常做法是<strong>通过oplog恢复到一台单独的MongDB实例，然后由应用程序进行数据校验和恢复到生产环境库.</strong></p>
 <h4 id="oplog_1">oplog窗口时间</h4>
 <ul>
-<li>oplog窗口时间 是从[时间]维度恒量oplog的大小，又名Oplog recovery window。</li>
+<li>oplog窗口时间 是从[时间]维度恒量oplog的大小，又名Oplog  window。</li>
 <li>
 <p><img alt="png" src="../../img/BE30E489-00EE-4268-8F28-46A01655771A.png" /></p>
 </li>
@@ -870,7 +896,44 @@ oplog的内容存储在local.oplog.rs的Capped collections中，oplog.rs能存�
 <li>下面示例是oplog窗口时间小于24小时的p1级别<a href="https://www.modb.pro/db/55869">短信告警</a></li>
 </ul>
 </li>
+<li>总之，oplog window越小，说明当前mongodb rs越无法满足应用需求. </li>
+<li>为什么要采用oplog window概念，而不是采用oplog size使用百分比？因为oplog window概念其实是和业务相结合的，同样的oplog size，业务写的多oplog window就小，业务写的少oplog window就大。也就是说我们要监控oplog window，当它过小时，要及时扩容oplog size. </li>
+<li>从mongodb设计者考虑oplog window概念相比去统计磁盘空间使用率，相对更加通用.</li>
+<li>另外MongoDB secondary节点是定期从primary节点同步数据, 这个定期参数用户是无法设置的，是MongoDB自己计算和调节的。</li>
+<li>另外如何给正在运行的MongoDB primary节点增加secondary节点？</li>
+<li>
+<ul>
+<li>一般是先mongodump出来，然后把数据恢复到secondary节点。此时secondary节点数据已经和primary节点比较接近。</li>
 </ul>
+</li>
+<li>
+<ul>
+<li>然后再在primary节点上执行<code>rs.add("newSecondaryNodeHost:port")</code>, secondary节点会从指定时间点之后把oplog全部同步过来， 因此该指定时间点必须落在primary节点的oplog window内.</li>
+</ul>
+</li>
+</ul>
+<h5 id="oplog_5">如何查看oplog大小</h5>
+<p>在云数据库 MongoDB 版中，oplog的默认大小是实例磁盘空间的10%（例如您实例的磁盘空间为500 GB，则相应的oplog大小就是50 GB）。oplog大小会随着磁盘扩容而自动调整。</p>
+<p>如需调整oplog大小，您可以在控制台对replication.oplogSizeMB参数进行调整，调整后无需重启，提交后即生效。如何修改配置参数，请参见设置数据库参数。</p>
+<p>您可使用以下两种方式查看oplog表的实际大小：</p>
+<ul>
+<li>
+<p>在控制台监控信息页面的磁盘空间使用率指标中查看oplog表的实际大小。具体操作，请参见基本监控。</p>
+</li>
+<li>
+<p>通过客户端工具（mongo shell或mongosh）连接实例后，执行以下命令来查看oplog表的大小以及oplog窗口期。</p>
+</li>
+</ul>
+<pre><code>rs.printReplicationInfo()
+</code></pre>
+<p>示例结果如下:</p>
+<pre><code>configured oplog size:   192MB
+log length start to end: 65422secs (18.17hrs)
+oplog first event time:  Mon Jun 23 2014 17:47:18 GMT-0400 (EDT)
+oplog last event time:   Tue Jun 24 2014 11:57:40 GMT-0400 (EDT)
+now:                     Thu Jun 26 2014 14:24:39 GMT-0400 (EDT)
+</code></pre>
+<p>在示例中，oplog大小约为192MB，oplog窗口约为18小时。</p>
 <h2 id="_10">五 性能优化</h2>
 <ul>
 <li>如果 nscanned(扫描的记录数)远大于 nreturned(返回结果的记录数)的话，那么我们就要考虑 通过加索引来优化记录定位了。reslen 如果过大，那么说明我们返回的结果集太大了，这时请查看 find 函数的第二个参数是 否只写上了你需要的属性名。</li>
@@ -973,6 +1036,116 @@ oplog的内容存储在local.oplog.rs的Capped collections中，oplog.rs能存�
   ],
 
 </code></pre>
+<h2 id="mongodb_1">九 MongoDB监控</h2>
+<p>监控如下模块</p>
+<ul>
+<li>内存使用</li>
+<li>缺页中断次数</li>
+<li>监控磁盘IO延迟 （云主机有磁盘IOPS使用率）</li>
+</ul>
+<h2 id="journaling">十 journaling</h2>
+<p>MongoDB 的 journaling 是一种数据持久化机制，用于确保在系统崩溃或意外关闭时，数据不会丢失。以下是关于 MongoDB journaling 的一些关键点：</p>
+<ul>
+<li>什么是 Journaling？</li>
+<li>
+<ul>
+<li>日志记录：MongoDB 会将所有写操作记录到一个日志文件（称为 journal），该日志文件存储在存储引擎的目录中。即使数据库进程崩溃，日志文件也可以用于恢复未写入磁盘的数据。</li>
+</ul>
+</li>
+<li>Journaling 的工作原理</li>
+<li>
+<ul>
+<li>写操作：当执行写操作时，MongoDB 会首先将该操作记录到 journal 中，而不是立即写入数据文件。这确保了即使系统崩溃，已记录的操作仍然可以恢复。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>定期刷新：MongoDB 会定期将 journal 中的操作应用到数据文件中。这一过程称为“提交”。提交后，journal 中的条目会被清除。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>持久性：启用 journaling 可以提高数据的持久性，特别是在意外停机的情况下。即使写操作未完全写入数据文件，已记录在 journal 中的操作也可以恢复。</li>
+</ul>
+</li>
+<li>启用和配置 Journaling</li>
+<li>
+<ul>
+<li>默认启用：在 MongoDB 的默认配置中，journaling 是启用的。可以通过配置文件或启动参数进行调整。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>关闭 Journaling：在某些场景下，可以选择关闭 journaling（例如，为了提高性能），但这会增加数据丢失的风险。</li>
+</ul>
+</li>
+<li>性能影响</li>
+<li>
+<ul>
+<li>性能开销：启用 journaling 会带来一定的性能开销，因为每次写操作都需要先记录到 journal 中。但通常，这种开销是可以接受的，尤其是在确保数据安全性时。</li>
+</ul>
+</li>
+<li>示例</li>
+<li>
+<ul>
+<li>在 MongoDB 中，用户通常不需要直接管理 journaling。只需确保 MongoDB 的配置文件中未禁用 journaling，MongoDB 会自动处理相关操作。</li>
+</ul>
+</li>
+<li>
+<p>总结</p>
+</li>
+<li>
+<ul>
+<li>Journaling 是 MongoDB 中重要的持久化机制，它通过记录写操作到日志中，确保数据在系统崩溃时能够恢复。虽然会带来一定的性能开销，但其带来的数据安全性是非常重要的。</li>
+</ul>
+</li>
+</ul>
+<h2 id="mongodb_2">十一 <a href="https://www.mongodb.com/zh-cn/docs/database-tools/mongotop/">MongoDB数据库工具</a></h2>
+<h3 id="mongodump">mongodump</h3>
+<h3 id="mongorestore">mongorestore</h3>
+<h3 id="bsondump">bsondump</h3>
+<h3 id="mongoimport">mongoimport</h3>
+<h3 id="mongoexport">mongoexport</h3>
+<h3 id="mongostat">mongostat</h3>
+<ul>
+<li>适用场景</li>
+<li>
+<ul>
+<li>快速诊断：当需要快速了解 MongoDB 实例的整体性能和状态时，可以使用 mongostat。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>监控性能变化：在执行某些操作时，可以使用 mongostat 观察性能指标的变化，以便评估操作对数据库性能的影响。</li>
+</ul>
+</li>
+</ul>
+<h3 id="mongotop">mongotop</h3>
+<ul>
+<li>适用场景</li>
+<li>
+<ul>
+<li>性能瓶颈分析：当需要分析特定集合的读写活动时，mongotop 是很有用的工具。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>识别热点集合：可以用于识别在高负载情况下被频繁访问的集合，帮助优化数据库设计和查询。</li>
+</ul>
+</li>
+<li>总结</li>
+<li>
+<ul>
+<li>使用 mongostat 适合快速了解整个 MongoDB 实例的性能状态，而 mongotop 则更适合深入分析特定集合的读写活动。mongotop只能针对单个mongod进程，无法通过mongos连接</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>这两个工具可以组合使用，以获得更全面的监控和性能分析。</li>
+</ul>
+</li>
+</ul>
+<h3 id="mongofiles">mongofiles</h3>
               
             </div>
           </div><footer>

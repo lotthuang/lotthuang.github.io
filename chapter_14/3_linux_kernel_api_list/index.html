@@ -129,6 +129,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/12_rss_rps_rfs_xps/">第十二篇 Linux网卡rss和rps和rfs和xps</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/13_linghunkaowen/">第十三篇 Linux网络子系统灵魂拷问</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
               <ul>
@@ -416,6 +418,8 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#4-pfn-struct-page">4 PFN 和物理页结构体 struct page 之间的相互转换的宏</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#5-bug_on">5 BUG_ON宏</a>
+    </li>
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_5">六 各类有意思问题</a>
@@ -425,6 +429,8 @@
     <li class="toctree-l4"><a class="reference internal" href="#a">A 如何理解函数返回指针</a>
     </li>
         </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2_3">2 内核错误风格</a>
     </li>
         </ul>
     </li>
@@ -840,13 +846,42 @@ int register_filesystem(struct file_system_type * fs)
 <h3 id="1-current">1 current 宏</h3>
 <p>内核代码中，current 总是指向当前的进程的 task_struct</p>
 <h3 id="2-container_of">2 <a href="https://mp.weixin.qq.com/s/YVH5Va00XK_7xcr8nb15Xg">container_of</a> 宏</h3>
-<p>是一个在 Linux 内核中常用的宏，通过结构体的某个<strong>成员变量地址</strong>找到<strong>该结构体的首地址</strong></p>
+<ul>
+<li>是一个在 Linux 内核中常用的宏，通过结构体的某个<strong>成员变量地址</strong>找到<strong>该结构体的首地址</strong></li>
+<li>
+<ul>
+<li>通过<strong>结构体实例</strong>的某个<strong>成员变量地址</strong>找到<strong>该结构体实例的首地址</strong></li>
+</ul>
+</li>
+</ul>
 <p><img alt="png" src="../../img/WechatIMG653.jpg" /></p>
+<ul>
+<li>定义如下</li>
+</ul>
+<pre><code>/**
+ * container_of - cast a member of a structure out to the containing structure
+ * @ptr:    the pointer to the member.
+ * @type:   the type of the container struct this is embedded in.
+ * @member: the name of the member within the struct.
+ *
+ */
+#define container_of(ptr, type, member) ({          \
+    const typeof( ((type *)0)-&gt;member ) *__mptr = (ptr); \
+    (type *)( (char *)__mptr - offsetof(type,member) );})
+</code></pre>
+<ul>
+<li>ptr：结构体实例成员变量的指针</li>
+<li>type：一个结构体实例</li>
+<li>member：结构体成员变量的名字</li>
+<li>换句话说，叫：<strong>已知结构体<code>type</code>的成员<code>member</code>的地址<code>ptr</code>，求解结构体<code>type</code>的起始地址</strong>。</li>
+</ul>
 <p>如下图案例，通过单链表组织起来的若干个结构体，当已知链表头遍历每个节点时，<strong>list 作为结构体成员，可使用 container_of 宏定义追溯到该结构首地址，进而可访问结构体中所有成员。</strong></p>
 <p><img alt="png" src="../../img/WechatIMG654.jpg" /></p>
-<p>例如下面通过 inode 结构体获取对应的 cdev 结构体, 然后将 file 结构体的 private_data 成员赋值给它, 是一个典型的 open 操作的实现方法.</p>
-<pre><code>cd   = container_of(inode-&gt;i_cdev,struct   mycdev,cdev);
-    file-&gt;private_data =   cd;
+<ul>
+<li>例如下面通过 inode 结构体获取对应的 cdev 结构体, 然后将 file 结构体的 private_data 成员赋值给它, 是一个典型的 open 操作的实现方法.</li>
+</ul>
+<pre><code>cd = container_of(inode-&gt;i_cdev,struct   mycdev,cdev);
+file-&gt;private_data = cd;
 
 </code></pre>
 <h3 id="3-init_list_head">3 INIT_LIST_HEAD 用于在运行时初始化一个链表</h3>
@@ -855,6 +890,21 @@ int register_filesystem(struct file_system_type * fs)
 </ul>
 <h3 id="4-pfn-struct-page">4 PFN 和物理页结构体 struct page 之间的相互转换的宏</h3>
 <p>内核提供了两个宏来完成 PFN 与 物理页结构体 struct page 之间的相互转换。它们分别是 page_to_pfn 与 pfn_to_page</p>
+<h3 id="5-bug_on">5 BUG_ON宏</h3>
+<p>在内核中经常看到BUG()和BUG_ON()宏，这也是内核调试常用的技巧之一。</p>
+<pre><code>#&lt;include/asm-generic/bug.h&gt;
+
+#define BUG_ON(condition) do { if (unlikely(condition)) BUG();} while(0)
+
+#define BUG() do { \
+ printk(&quot;BUG:failure at %s:%d/%s()!\n&quot;,__FILE__, __LINE__, __func__); \
+    panic(&quot;BUG!&quot;); \
+}while(0)
+</code></pre>
+<ul>
+<li>对于BUG_ON()宏来说，满足条件（condition）就会触发BUG()宏，它<strong>会使用panic()函数来主动让系统宕机</strong>。</li>
+<li>通常只有一些内核的bug才会触发BUG_ON()宏，在实际产品中使用该宏需要小心谨慎。</li>
+</ul>
 <h2 id="_5">六 各类有意思问题</h2>
 <h3 id="1_1">1 为什么内核代码中很多返回值都都要加个负号</h3>
 <p>比如</p>
@@ -893,6 +943,8 @@ static int fs_name(unsigned int index, char __user * buf)
 <li>（3）调用失败返回错误信息指针（无效指针）</li>
 </ul>
 <p>我们就是通过这个错误指针来传递有关错误的信息。</p>
+<h3 id="2_3">2 内核错误风格</h3>
+<p>都喜欢返回 <code>return -ENOMEM</code>, <code>return -E INVAL</code>, <code>return -EMFILE</code>等</p>
               
             </div>
           </div><footer>
