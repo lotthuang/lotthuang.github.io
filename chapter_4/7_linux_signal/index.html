@@ -148,6 +148,30 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">第七篇 Linux信号机制</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 进程处理信号的时机</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 用户进程处理信号的时机</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#11">1.1 不同状态的用户进程</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2">2 内核进程处理信号的时机</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">二 常见的信号分类</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_1">1 常规信号和实时信号</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2_1">2 可以被用户空间捕获的信号</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3">3 信号的发送</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-linux">4 linux内核相关实现</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../8_linux_scheduler/">第八篇 Linux进程调度</a>
@@ -165,6 +189,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../15_task_struct/">第十五篇 task_struct结构体总结</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../16_init_call/">第十六篇 Linux各类initcall总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../17_coredump/">第十七篇 Linux coredump总结</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
@@ -403,16 +429,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h2 id="_1">概述</h2>
+                <h1 id="_1">概述</h1>
 <ul>
 <li>本篇主要讲述Linux信号机制</li>
 </ul>
-<h2 id="_2">进程处理信号的时机</h2>
-<h3 id="_3">用户进程处理信号的时机</h3>
+<h2 id="_2">一 进程处理信号的时机</h2>
+<h3 id="1">1 用户进程处理信号的时机</h3>
 <p>我们对一个进程发送一个信号以后，其实并没有硬中断发生，只是简单把信号挂载到目标进程的信号 pending 队列上去，信号真正得到执行的时机是进程执行完异常/中断返回到用户态的时刻。</p>
+<p>在进程从用户态陷入内核态时，<strong>内核态完成了相关工作之后，返回用户态之前，都会例行对进程的信号队列进行检查</strong>。</p>
 <p>让信号看起来是一个异步中断的关键就是，正常的用户进程是会频繁的在用户态和内核态之间切换的（这种切换包括：系统调用、缺页异常、系统中断…），所以信号能很快的能得到执行。</p>
 <p><img alt="png" src="../../img/WechatIMG501.png" /></p>
-<h4 id="_4">不同状态的用户进程</h4>
+<h4 id="11">1.1  不同状态的用户进程</h4>
 <ul>
 <li>运行状态</li>
 <li>
@@ -433,7 +460,7 @@
 <li>如果进程处于可中断（TASK_INTERRUPTIBLE）状态，信号发送函数会直接唤醒进程，让进程处理完内核态操作去返回用户态，让进程迅速去执行信号处理函数；</li>
 <li>如果进程处于不可中断（TASK_UNINTERRUPTIBLE）状态俗称为 D 进程，信号只会挂到信号队列，但是没有机会去立即执行。</li>
 </ul>
-<h3 id="_5">内核进程处理信号的时机</h3>
+<h3 id="2">2 内核进程处理信号的时机</h3>
 <p>让信号看起来是一个异步中断的关键就是，正常的用户进程是会频繁的在用户态和内核态之间切换的（这种切换包括：系统调用、缺页异常、系统中断…），所以信号能很快的能得到执行。但这也带来了一点问题，内核进程是不响应信号的，除非它刻意的去查询。所以通常情况下我们无法通过kill命令去杀死一个内核进程。</p>
 <p>内核进程普通情况下是不会响应信号的，如果需要内核进程响应信号，可以在内核进程中加入如下代码：</p>
 <pre><code>
@@ -444,13 +471,13 @@
     flush_signals(current);
 
 </code></pre>
-<h2 id="_6">常见的信号分类</h2>
+<h2 id="_3">二 常见的信号分类</h2>
 <p>在给大家引出重点的信号响应时机以后，还是简单介绍以下信号的背景知识。<strong>信号也是一种进程间通讯的机制，它传递的信息很短，只有一个编号</strong>。</p>
-<h3 id="_7">常规信号和实时信号</h3>
+<h3 id="1_1">1  常规信号和实时信号</h3>
 <p>Linux 传统的信号 1~31 为常规信号（regular signal），POSIX 还引入了一种新的信号实时信号（real-time signal）编号为 32~64。它们的不同在于：常规信号同一个编号在 pending 队列中只存在一份，如果有重复的则直接丢弃；实时信号的多个相同信号不能丢弃，需要保证每个信号都能送达。</p>
 <p>Linux 常用的是常规信号，以下是具体的定义1</p>
 <p><img alt="png" src="../../img/WX20220528-124716.png" /></p>
-<h3 id="_8">可以被用户空间捕获的信号</h3>
+<h3 id="2_1">2 可以被用户空间捕获的信号</h3>
 <table>
 <thead>
 <tr>
@@ -491,7 +518,7 @@
 <li><a href="https://mp.weixin.qq.com/s/rcpK-UEYIy628b77IG-obA">捕获信号之后的处理过程</a>:</li>
 </ul>
 <p><img alt="png" src="../../img/WechatIMG500.jpeg" /></p>
-<h3 id="_9">信号的发送</h3>
+<h3 id="3">3 信号的发送</h3>
 <p>信号的发送者可以是 user 也可以是 kernel，我们经常是通过用户态来调用 kill()、tkill() 等函数来发送信号的，我们通过分析这些系统调用来理解信号的具体发送过程。</p>
 <p>与信号相关的系统调用主要有以下函数：</p>
 <table>
@@ -524,6 +551,31 @@
 </tr>
 </tbody>
 </table>
+<h3 id="4-linux">4 linux内核相关实现</h3>
+<ul>
+<li>首先每个进程的结构体里都有信号的信息存储</li>
+</ul>
+<pre><code>struct task_struct {
+    ...
+    int sigpending;
+    ...
+    struct signal_struct *sig;
+    sigset_t blocked;
+    struct sigpending pending;
+    ...
+}
+</code></pre>
+<ul>
+<li>
+<p>sigpending 表示进程是否有信号需要处理（1表示有，0表示没有）；成员 blocked 表示被屏蔽的信息，每个位代表一个被屏蔽的信号；成员 sig 表示信号相应的处理方法，其类型是 struct signal_struct。</p>
+</li>
+<li>
+<p>在进程从用户态陷入内核态时，内核态完成了相关工作之后，返回用户态之前，都会例行对进程的信号队列进行检查。</p>
+</li>
+<li>
+<p>这段<a href="https://mp.weixin.qq.com/s/8OvaJ_41sNn5rBCIf1dubg">逻辑</a>是汇编实现的，因为在linux内核中，用户态的切换就是汇编来控制的。【可能有同学对用户态和内核态的切换不太了解，其实用大白话讲就是，只是对cpu的寄存器的赋值进行更换，跟普通的进程切换可能没什么区别，但是同时又有区别，因为用户态和内核态的堆栈是分离开的，这样二者在切换的时候是需要在两个堆栈上进行操作，并且保存上下文信息】【大白话讲就是写某某些寄存器实现】</p>
+</li>
+</ul>
               
             </div>
           </div><footer>

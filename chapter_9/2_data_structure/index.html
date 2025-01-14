@@ -164,6 +164,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/16_init_call/">第十六篇 Linux各类initcall总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/17_coredump/">第十七篇 Linux coredump总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
               <ul>
@@ -431,6 +433,36 @@
 <li><strong>Linux内核实现了常用的通用数据结构</strong>：链表、队列、映射、二叉树；内核开发者应尽可能使用这些<a href="https://mp.weixin.qq.com/s/JX2aYSZ5SM2B7Z8Q4yy-rg">数据结构</a>，不要造轮子重复开发。</li>
 </ul>
 <h2 id="_2">一 链表</h2>
+<ol>
+<li><a href="https://mp.weixin.qq.com/s/Aqfr4E2mcI31nR-LiU218Q">链表的结构</a>
+Linux内核中的链表定义在头文件 include/linux/list.h 中，核心是 list_head 结构体：</li>
+</ol>
+<pre><code>struct list_head {
+    struct list_head *next, *prev;
+}; 
+</code></pre>
+<ul>
+<li>特点：</li>
+<li>
+<ul>
+<li>双向：next 指向下一个节点，prev 指向上一个节点。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>循环：尾节点的 next 指向头节点，头节点的 prev 指向尾节点。</li>
+</ul>
+</li>
+<li>链表节点与数据结构的结合
+链表本身不存储数据，而是作为一个成员嵌入在其他数据结构中。常见用法如下：</li>
+</ul>
+<pre><code>struct my_data {
+    int value;
+    struct list_head list;
+};
+
+</code></pre>
+<p><strong>通过 list_head 结构，将多个 my_data 结构链接成一个链表。</strong></p>
 <h2 id="_3">二 队列</h2>
 <h2 id="_4">三 映射</h2>
 <h2 id="_5">四 红黑树</h2>
