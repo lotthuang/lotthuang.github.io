@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第十九篇 Gitlab-ce维护 - Lott's Blog</title>
+    <title>第十九篇 Gitlab-CE维护 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u5341\u4e5d\u7bc7 Gitlab-ce\u7ef4\u62a4";
+        var mkdocs_page_name = "\u7b2c\u5341\u4e5d\u7bc7 Gitlab-CE\u7ef4\u62a4";
         var mkdocs_page_input_path = "chapter_9/19_gitlab_ce.md";
         var mkdocs_page_url = null;
       </script>
@@ -291,7 +291,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../18_elk_2/">第十八篇 ELK基础</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第十九篇 Gitlab-ce维护</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第十九篇 Gitlab-CE维护</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#_2">一 安装</a>
         <ul>
@@ -414,7 +414,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">第九章 编程经验和各类开源软件</li>
-      <li class="breadcrumb-item active">第十九篇 Gitlab-ce维护</li>
+      <li class="breadcrumb-item active">第十九篇 Gitlab-CE维护</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -455,8 +455,18 @@ sudo gitlab-ctl start
 </code></pre>
 <h2 id="_3">二 使用</h2>
 <ul>
-<li>如何给项目组人员开普通账号？</li>
+<li>如何给项目组人员开普通账号？root账户可以加新账户、另外也可以直接开放注册</li>
 <li>普通人员如何新建repo、维护repo？ </li>
+<li>
+<ul>
+<li>先创建group，比如sre，再创建repo，比如xxxx_hmt</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>80端口和ssh端口仅限办公网访问</li>
+</ul>
+</li>
 </ul>
               
             </div>
