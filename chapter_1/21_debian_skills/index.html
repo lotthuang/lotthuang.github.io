@@ -81,6 +81,10 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#1-debianeth0">1 Debian修改默认网卡为eth0</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2-shell">2 完善shell历史记录，新增明确日期时间和用户</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3">3 默认的内核参数优化</a>
+    </li>
     </ul>
                   </li>
               </ul>
@@ -439,6 +443,55 @@ GRUB_CMDLINE_LINUX=&quot;net.ifnames=0 biosdevname=0&quot;
 </li>
 </ol>
 <p><img alt="png" src="../../img/B387176C-D0B4-4CCD-8196-56561AEDF286.png" /></p>
+<h2 id="2-shell">2 完善shell历史记录，新增明确日期时间和用户</h2>
+<pre><code>修改/etc/profile
+
+export HISTTIMEFORMAT=&quot;%F %T `whoami` &quot;
+</code></pre>
+<h2 id="3">3 默认的内核参数优化</h2>
+<pre><code>vim /etc/
+
+vm.max_map_count = 655360
+net.ipv4.ip_forward = 1
+net.ipv4.tcp_syncookies=1
+net.ipv4.conf.default.accept_source_route = 0
+net.ipv4.tcp_max_tw_buckets = 400000
+net.ipv4.tcp_sack = 1
+net.ipv4.tcp_synack_retries = 1
+net.ipv4.tcp_syn_retries = 5
+net.ipv4.tcp_window_scaling = 1
+net.ipv4.tcp_mem = 94500000 915000000 927000000
+net.ipv4.tcp_rmem = 4096   87380   6291456
+net.ipv4.tcp_wmem = 4096   16384   4194304
+net.ipv4.tcp_timestamps = 0
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.tcp_max_syn_backlog = 512000
+net.core.somaxconn = 65535
+net.core.netdev_max_backlog = 262144
+net.ipv4.tcp_keepalive_time = 1200
+net.ipv4.tcp_fin_timeout = 10
+
+net.ipv4.ip_local_port_range = 2048 65535
+net.ipv4.ip_local_reserved_ports = 4000-21000
+net.ipv4.tcp_syncookies = 1
+net.ipv4.conf.default.rp_filter = 1
+
+kernel.sysrq = 0
+kernel.msgmnb = 65536
+kernel.msgmax = 65536
+kernel.shmmax = 68719476736
+kernel.shmall = 4294967296
+
+
+
+kernel.core_pattern = /data/coredump/core-%t-%u-%g-%s-%p-%e
+kernel.core_uses_pid = 1
+
+fs.nr_open = 10485760
+
+kernel.pid_max = 4194304
+kernel.threads-max = 4194304
+</code></pre>
               
             </div>
           </div><footer>

@@ -297,6 +297,16 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#es">二 ES</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 安装</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2">2 启动前相应修改配置文件</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3">3 测试访问</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../19_gitlab_ce/">第十九篇 Gitlab-CE维护</a>
@@ -428,6 +438,33 @@
 <ul>
 <li>Kibana查询语言<a href="https://www.elastic.co/guide/en/kibana/current/kuery-query.html#_querying_nested_fields">Kibana Query Language</a></li>
 </ul>
+<h2 id="es">二 ES</h2>
+<h3 id="1">1 安装</h3>
+<ul>
+<li>从这里下载最新的压缩文件</li>
+<li>参考<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/install-elasticsearch.html">Installing Elasticsearch</a></li>
+</ul>
+<h3 id="2">2 启动前相应修改配置文件</h3>
+<p><code>vim /data/web_server/elasticsearch-8.17.1/config/elasticsearch.yml</code></p>
+<pre><code>node.name: node-1
+path.data: /data/web_server/es
+path.logs: /data/web_server/logs/es
+network.host: 0.0.0.0
+http.port: 9200
+xpack.security.enabled: true
+xpack.security.enrollment.enabled: true
+xpack.security.http.ssl:
+  enabled: true
+  keystore.path: certs/http.p12
+xpack.security.transport.ssl:
+  enabled: true
+  verification_mode: certificate
+  keystore.path: certs/transport.p12
+  truststore.path: certs/transport.p12
+cluster.initial_master_nodes: [&quot;node-1&quot;]
+</code></pre>
+<h3 id="3">3 测试访问</h3>
+<p><img alt="png" src="../../img/E54ED8FF-47BB-4D48-8081-7574614CF8E5.jpg" /></p>
               
             </div>
           </div><footer>

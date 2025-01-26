@@ -84,6 +84,10 @@
     <li class="toctree-l2"><a class="reference internal" href="#virtualenv">三 安装virtualenv</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#iterm2rzsz">四 让iTerm2支持rzsz</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#42-iterm200-xxx-01">4.2 iTerm2复制粘贴出现：00~ xxx 01~</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#vscodesettingsjson">五 VScode打开settings.json</a>
     </li>
@@ -484,6 +488,12 @@ source /Users/sre/venv/default/bin/activate
 </code></pre>
 <p>设置路径: "Settings" ---&gt; "Profile" ---&gt; "Advanced" ---&gt; "Triggers"</p>
 <p><img alt="png" src="../../img/59F938FE-74B9-4CEF-B46D-83D67E317657.png" /></p>
+<h3 id="42-iterm200-xxx-01">4.2 iTerm2复制粘贴出现：00~ xxx 01~</h3>
+<p>是因为<strong>括号粘贴模式</strong>
+如何关闭<strong>括号粘贴模式</strong>?</p>
+<p>在终端输入<code>printf "\e[?2004l"</code>
+或者加入.bash_profile中</p>
+<p>参考<a href="https://blog.csdn.net/yilovexing/article/details/128803541">Mac 在终端下复制粘贴出现：00~ xxx 01~ 问题的解决方案</a></p>
 <h2 id="vscodesettingsjson">五 VScode打开settings.json</h2>
 <ul>
 <li>可以默认使用工作区下面的settings.json , 比如你的工作区是<code>/Users/sre/code</code>, 可以在该目录下新建<strong>.vscode</strong>目录, 然后新建<code>settings.json</code>文件</li>
