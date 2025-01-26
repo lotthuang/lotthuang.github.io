@@ -295,6 +295,8 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1-kql">1 KQL</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-es">2 连接ES进行认证</a>
+    </li>
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#es">二 ES</a>
@@ -310,6 +312,8 @@
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../19_gitlab_ce/">第十九篇 Gitlab-CE维护</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../20_minio/">第二十篇 MinIO维护</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -437,6 +441,11 @@
 <h3 id="1-kql">1 KQL</h3>
 <ul>
 <li>Kibana查询语言<a href="https://www.elastic.co/guide/en/kibana/current/kuery-query.html#_querying_nested_fields">Kibana Query Language</a></li>
+</ul>
+<h3 id="2-es">2 连接ES进行认证</h3>
+<ul>
+<li>需要使用ES service-account-token而非传统的用户名、密码方式</li>
+<li>另外内置的elastic账号不能在这里使用</li>
 </ul>
 <h2 id="es">二 ES</h2>
 <h3 id="1">1 安装</h3>
