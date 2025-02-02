@@ -85,6 +85,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#3">3 默认的内核参数优化</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#4-limits">4 limits修改</a>
+    </li>
     </ul>
                   </li>
               </ul>
@@ -227,8 +229,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/5_server_side_evolution/">第五篇 服务端进化过程梳理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/6_elk/">第六篇 elk技术栈</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/7_charset/">第七篇 字符集和编码</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/8_locale/">第八篇 locale设置</a>
@@ -302,6 +302,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/19_gitlab_ce/">第十九篇 Gitlab-CE维护</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/20_minio/">第二十篇 MinIO维护</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/21_elk_1/">第二十一篇 ELK维护</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -493,6 +495,19 @@ fs.nr_open = 10485760
 
 kernel.pid_max = 4194304
 kernel.threads-max = 4194304
+</code></pre>
+<h2 id="4-limits">4 limits修改</h2>
+<ul>
+<li><code>/etc/security/limits.conf</code></li>
+</ul>
+<pre><code>* soft nofile 10000000
+* hard nofile 10000000
+root soft nofile 10000000
+root hard nofile 10000000
+* soft nproc 10000000
+* hard nproc 10000000
+root soft nproc 10000000
+root hard nproc 10000000
 </code></pre>
               
             </div>

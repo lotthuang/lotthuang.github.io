@@ -219,8 +219,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/5_server_side_evolution/">第五篇 服务端进化过程梳理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/6_elk/">第六篇 elk技术栈</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/7_charset/">第七篇 字符集和编码</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/8_locale/">第八篇 locale设置</a>
@@ -297,6 +295,8 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#2-es">2 连接ES进行认证</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3">3 安装</a>
+    </li>
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#es">二 ES</a>
@@ -305,15 +305,27 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#2">2 启动前相应修改配置文件</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#3">3 测试访问</a>
+    <li class="toctree-l3"><a class="reference internal" href="#3_1">3 测试访问</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-es">4 ES集群扩容</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#41">4.1 配置新节点</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#42">4.2 新节点上查看健康情况和验证</a>
     </li>
         </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#logstash">三 LogStash</a>
     </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../19_gitlab_ce/">第十九篇 Gitlab-CE维护</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../20_minio/">第二十篇 MinIO维护</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../21_elk_1/">第二十一篇 ELK维护</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -446,13 +458,48 @@
 <ul>
 <li>需要使用ES service-account-token而非传统的用户名、密码方式</li>
 <li>另外内置的elastic账号不能在这里使用</li>
+<li>创建token</li>
+</ul>
+<pre><code>./elasticsearch-service-tokens create elastic/kibana abcd
+</code></pre>
+<h3 id="3">3 安装</h3>
+<ul>
+<li>从<a href="https://www.elastic.co/guide/en/kibana/current/install.html">这里</a>下载安装最新Kibana</li>
 </ul>
 <h2 id="es">二 ES</h2>
 <h3 id="1">1 安装</h3>
 <ul>
 <li>从这里下载最新的压缩文件</li>
 <li>参考<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/install-elasticsearch.html">Installing Elasticsearch</a></li>
+<li>启动: <code>bin/elasticsearch -d</code></li>
+<li>首次启动后，修改内置用户密码: <code>bin/elasticsearch-reset-password -u elastic</code></li>
+<li>并且首次启动后,elasticsearch会自动修改config目录下elasticsearch.yml内容, 新增ssl相关配置:</li>
 </ul>
+<pre><code>#----------------------- BEGIN SECURITY AUTO CONFIGURATION -----------------------
+#
+# The following settings, TLS certificates, and keys have been automatically
+# generated to configure Elasticsearch security features on 02-02-2025 06:46:46
+#
+# --------------------------------------------------------------------------------
+
+# Enable security features
+xpack.security.enabled: true
+
+xpack.security.enrollment.enabled: true
+
+# Enable encryption for HTTP API client connections, such as Kibana, Logstash, and Agents
+xpack.security.http.ssl:
+  enabled: false
+  keystore.path: certs/http.p12
+
+# Enable encryption and mutual authentication between cluster nodes
+xpack.security.transport.ssl:
+  enabled: true
+  verification_mode: certificate
+  keystore.path: certs/transport.p12
+  truststore.path: certs/transport.p12
+#----------------------- END SECURITY AUTO CONFIGURATION -------------------------
+</code></pre>
 <h3 id="2">2 启动前相应修改配置文件</h3>
 <p><code>vim /data/web_server/elasticsearch-8.17.1/config/elasticsearch.yml</code></p>
 <pre><code>node.name: node-1
@@ -472,8 +519,102 @@ xpack.security.transport.ssl:
   truststore.path: certs/transport.p12
 cluster.initial_master_nodes: [&quot;node-1&quot;]
 </code></pre>
-<h3 id="3">3 测试访问</h3>
+<h3 id="3_1">3 测试访问</h3>
 <p><img alt="png" src="../../img/E54ED8FF-47BB-4D48-8081-7574614CF8E5.jpg" /></p>
+<p>常用命令</p>
+<pre><code>curl -u 'elastic:pass' -X GET http://127.0.0.1:9200/ ---&gt; 验证是否启动成功
+
+
+curl -u 'elastic:pass' -X GET http://127.0.0.1:9200/_cat/health ---&gt; 查看ES实例的健康状态,green,yellow,red
+
+ ./elasticsearch-reset-password --username elastic --&gt; 重置密码
+
+---&gt; 创建一个和内置elastic账号一样权限的用户
+ curl -X PUT &quot;localhost:9200/_security/user/new_user&quot; -H 'Content-Type: application/json' -d'
+{
+  &quot;password&quot;: &quot;your_password&quot;,
+  &quot;roles&quot;: [ &quot;superuser&quot; ],
+  &quot;full_name&quot;: &quot;New User Full Name&quot;,
+  &quot;email&quot;: &quot;newuser@example.com&quot;
+}
+'
+
+</code></pre>
+<h3 id="4-es">4 ES集群扩容</h3>
+<ul>
+<li>
+<p>扩容要确保elasticsearch.yml中cluster.name一致</p>
+</li>
+<li>
+<p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/add-elasticsearch-nodes.html?baymax=rec&amp;rogue=rec-1&amp;elektra=guide">Add and remove nodes in your cluster</a></p>
+</li>
+<li><a href="https://blog.csdn.net/yabingshi_tech/article/details/120909507">ES集群扩容-新增一个节点</a></li>
+<li><a href="https://blog.csdn.net/Suubyy/article/details/119735526">ElasticSearch 设置（二）在集群中添加和删除节点</a></li>
+</ul>
+<h4 id="41">4.1 配置新节点</h4>
+<ul>
+<li>1 修改配置文件，添加集群名称</li>
+</ul>
+<pre><code>cd /usr/local/ElasticSearch/config
+
+vi elasticsearch.yml
+
+确保cluster.name名称和要加入的ES集群里的集群名称一致，这里是vcom：
+
+cluster.name: vcom
+</code></pre>
+<ul>
+<li>
+<p>2 修改node.name (要用一个新的名字)</p>
+</li>
+<li>
+<p>3 修改 discovery.seed_hosts, 把新旧节点一起填上</p>
+</li>
+</ul>
+<p>比如<code>discovery.seed_hosts: ["192.168.2.30", "192.168.2.106"]</code></p>
+<ul>
+<li>4 因为用到了证书相关，所以要从源节点复制<code>config/certs</code>目录 </li>
+</ul>
+<p>或者直接从源节点复制整个config目录，然后再修改<code>config/elasticsearch.yml</code>配置文件
+并且<code>config/jvm.options</code>文件内容也是同步的</p>
+<ul>
+<li>
+<p>5 确保删除<code>config/elasticsearch.yml</code>中的<code>cluster.initial_master_nodes</code>配置, 按照官方文档，在集群形成之后这一行就不再需要</p>
+</li>
+<li>
+<p>6 完整的新节点配置文件</p>
+</li>
+</ul>
+<pre><code>cluster.name: c1-test-es-01
+node.name: node-2
+path.data: /data/web_server/es
+path.logs: /data/web_server/logs/es
+network.host: 0.0.0.0
+http.port: 9200
+discovery.seed_hosts: [&quot;192.168.2.30&quot;, &quot;192.168.2.106&quot;]
+
+
+xpack.security.enabled: true
+
+xpack.security.enrollment.enabled: true
+
+xpack.security.http.ssl:
+  enabled: false
+  keystore.path: certs/http.p12
+
+xpack.security.transport.ssl:
+  enabled: true
+  verification_mode: certificate
+  keystore.path: certs/transport.p12
+  truststore.path: certs/transport.p12
+</code></pre>
+<h4 id="42">4.2 新节点上查看健康情况和验证</h4>
+<p>比如</p>
+<pre><code>curl -u 'elastic:pass' -X GET http://127.0.0.1:9200/
+curl -u 'elastic:pass' -X GET http://127.0.0.1:9200/_cat/health
+curl -u 'elastic:pass' -X GET http://127.0.0.1:9200/_nodes
+</code></pre>
+<h2 id="logstash">三 LogStash</h2>
               
             </div>
           </div><footer>
