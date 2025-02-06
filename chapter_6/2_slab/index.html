@@ -473,7 +473,7 @@
 </li>
 <li>
 <ul>
-<li>每个 XX_cachep 会有一个或多个 struct slab, 每个 slab 会有一个或多个 struct page, 每个 slab 中预先申请好多个（比如 1000 个）object，其他内核子系统可以申请使用/回收这些 Object，一些 Object 是<strong>专用</strong>(比如 mm_cachep)，一些 Object 是<strong>通用</strong>, 申请使用只是标记对应 Object 已使用, 申请回收只是标记对应 Object 未使用.</li>
+<li>每个 XX_cachep 会有一个或多个 struct slab, 每个 slab 会有一个或多个 struct page, 每个 slab 中预先申请好多个（比如 1000 个）object，其他内核子系统可以申请使用/回收这些 Object，一些 Object 是<strong>专用</strong>(比如 mm_cachep)，一些 Object 是<strong>通用</strong>, 申请使用只是标记对应 Object 已使用, 申请回收只是标记对应 Object 未使用. 下图中kmem_cache<code>链表头</code>是<strong>全局变量slab_caches</strong></li>
 </ul>
 </li>
 <li>
