@@ -301,6 +301,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../21_elk_1/">第二十一篇 ELK维护</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../22_httpdns/">第二十二篇 HTTPDNS梳理</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul>
@@ -422,11 +424,17 @@
                 <h1 id="_1">概述</h1>
 <ul>
 <li>本篇总结一些MinIO的维护经验</li>
+<li>MinIO 是高性能的对象存储，是为海量数据存储、人工智能、大数据分析而设计的，它完全兼容Amazon S3接口，单个对象最大可达5TB，适合存储海量图片、视频、日志文件、备份数据和容器/虚拟机镜像等。MinIO主要采用Golang语言实现，，客户端与存储服务器之间采用http/https通信协议。</li>
 </ul>
 <h2 id="_2">一 安装</h2>
 <ul>
 <li><a href="https://mp.weixin.qq.com/s/vNWHnovgqZ0H-j74edyyUA">CentOS7.5安装部署MinIO服务单机环境</a></li>
+<li>启动命令</li>
 </ul>
+<pre><code>wget https://dl.min.io/server/minio/release/linux-amd64/minio
+mv minio /usr/bin/
+/usr/bin/minio server --config-dir /etc/minio --address &quot;0.0.0.0:9000&quot; http://172.20.30.54/data/web_server/minio_data
+</code></pre>
 <h2 id="_3">二 监控</h2>
 <ul>
 <li><a href="https://mp.weixin.qq.com/s/ibaoAvfCYTS4wAZpqM03Pw">企业级MinIO监控面板：确保数据存储的高性能与安全</a></li>
