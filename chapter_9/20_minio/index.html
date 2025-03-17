@@ -168,6 +168,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/17_coredump/">第十七篇 Linux coredump总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/18_cpu_CacheLine/">第十八篇 CPU CacheLine总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
               <ul>
@@ -293,9 +295,31 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">第二十篇 MinIO维护</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#_2">一 安装</a>
+    <li class="toctree-l2"><a class="reference internal" href="#1">1 安装</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_3">二 监控</a>
+    <li class="toctree-l2"><a class="reference internal" href="#2">2 监控</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3">3 使用</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#31-mc">3.1 客户端工具mc</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#32-for-mc-admin">3.2 客户端工具for管理人员 mc admin</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#31-ngnixminio_s3">3.1 NGNIX反向代理minio_s3服务</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#4">4 核心概念</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#41-minio">4.1 minio部署</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#42-minio">4.2 管理minio部署</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#43">4.3 存储桶复制</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#44">4.4 存储桶复制和站点复制的区别</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -352,6 +376,8 @@
               <p class="caption"><span class="caption-text">第十三章 芯片知识总结</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_13/1_about_riscv/">第一篇 RISC-V 简介</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_13/2_danpianji/">第二篇 单片机简介</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十四章 Linux驱动方向总结</span></p>
@@ -426,7 +452,7 @@
 <li>本篇总结一些MinIO的维护经验</li>
 <li>MinIO 是高性能的对象存储，是为海量数据存储、人工智能、大数据分析而设计的，它完全兼容Amazon S3接口，单个对象最大可达5TB，适合存储海量图片、视频、日志文件、备份数据和容器/虚拟机镜像等。MinIO主要采用Golang语言实现，，客户端与存储服务器之间采用http/https通信协议。</li>
 </ul>
-<h2 id="_2">一 安装</h2>
+<h2 id="1">1 安装</h2>
 <ul>
 <li><a href="https://mp.weixin.qq.com/s/vNWHnovgqZ0H-j74edyyUA">CentOS7.5安装部署MinIO服务单机环境</a></li>
 <li>启动命令</li>
@@ -435,9 +461,118 @@
 mv minio /usr/bin/
 /usr/bin/minio server --config-dir /etc/minio --address &quot;0.0.0.0:9000&quot; http://172.20.30.54/data/web_server/minio_data
 </code></pre>
-<h2 id="_3">二 监控</h2>
+<h2 id="2">2 监控</h2>
 <ul>
 <li><a href="https://mp.weixin.qq.com/s/ibaoAvfCYTS4wAZpqM03Pw">企业级MinIO监控面板：确保数据存储的高性能与安全</a></li>
+</ul>
+<h2 id="3">3 使用</h2>
+<ol>
+<li>中型游戏项目所需一般只有1台Minio主机，前面可以挂载公有云ELB，负责和客户端之间进行https通信，然后将443端口的7层流量转发至后端Minio服务的9000端口.</li>
+<li>全局只有一个管理员帐号，通过minio服务的9001端口可以登录管理后台；通过客户端工具（mc）可以和minio server 9000端口通信.</li>
+<li>设置为匿名访问的文件，可以通过公有云ELB直接下载（已经设置好转发规则的前提下）</li>
+</ol>
+<h3 id="31-mc">3.1 客户端工具<a href="https://min-io.cn/docs/minio/linux/reference/minio-mc.html">mc</a></h3>
+<ol>
+<li><strong>mc alias</strong> 命令提供了一个方便的界面，用于管理 mc 可以连接到并针对其运行操作的 S3 兼容主机列表。 主要是设置好AK和SK，然后可以通过mc工具管理该Minio Server集群.</li>
+<li><strong>mc anonymous</strong> 命令支持设置或删除对存储桶及其内容的匿名策略。具有匿名策略的存储桶允许公共访问，其中客户端可以在没有 身份验证 的情况下执行策略授予的任何操作。 主要是设置桶或者桶内对象可匿名访问.</li>
+<li><strong>mc cp</strong> 命令将对象复制到MinIO集群或从 MinIO 部署中复制，其中<strong>源</strong>可以是 MinIO 或本地文件系统。</li>
+<li><strong>mc ls</strong> 命令列出 MinIO 或其他与 S3 兼容的服务上的存储桶和对象。</li>
+<li><strong>mc mb</strong> 命令在指定路径创建新的存储桶或目录。</li>
+<li><strong>mc rb</strong> 命令删除 MinIO 上或其他与 S3 兼容的服务上的一个或多个存储桶。如果需求是仅删除存储桶的内容，请使用 <strong>mc rm</strong> 代替。</li>
+<li><strong>mc rm</strong> 命令从 MinIO 部署上的存储桶中 删除对象。 要完全删除存储桶，请使用 <strong>mc rb</strong> 代替。</li>
+<li><strong>mc put</strong> 命令将对象从本地文件系统上传到目标 S3 部署上的存储桶。</li>
+</ol>
+<h3 id="32-for-mc-admin">3.2 客户端工具for管理人员 <a href="https://min-io.cn/docs/minio/linux/reference/minio-mc-admin.html#command-mc.admin">mc admin</a></h3>
+<ul>
+<li>MinIO Client 还包含一个用于管理 MinIO 部署的管理扩展。请参阅 <a href="https://min-io.cn/docs/minio/linux/reference/minio-mc-admin.html#command-mc.admin">mc admin</a>，了解更完整的文档。</li>
+</ul>
+<h3 id="31-ngnixminio_s3">3.1 NGNIX反向代理minio_s3服务</h3>
+<ul>
+<li>nginx配置文件参考</li>
+</ul>
+<pre><code>upstream minio_s3 {
+   least_conn;
+   server 127.0.0.1:9000;
+}
+
+
+server {
+   listen       80;
+   listen  [::]:80;
+   server_name  _;
+
+   # Allow special characters in headers
+   ignore_invalid_headers off;
+   # Allow any size file to be uploaded.
+   # Set to a value such as 1000m; to restrict file size to a specific value
+   client_max_body_size 0;
+   # Disable buffering
+   proxy_buffering off;
+   proxy_request_buffering off;
+
+   location / {
+      proxy_set_header Host $http_host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+
+      proxy_connect_timeout 300;
+      # Default is HTTP/1, keepalive is only enabled in HTTP/1.1
+      proxy_http_version 1.1;
+      proxy_set_header Connection &quot;&quot;;
+      chunked_transfer_encoding off;
+
+      proxy_pass http://minio_s3; # This uses the upstream directive definition to load balance
+   }
+}
+</code></pre>
+<p>通过类似<code>mc anonymous set download testminio/test-bucket/a.txt</code>设置为download策略的文件，可通过nginx直接下载.</p>
+<h2 id="4">4 核心概念</h2>
+<h3 id="41-minio">4.1 minio部署</h3>
+<ul>
+<li><strong>minio部署</strong> 是指一次部署完成后，可正式使用的minio集群; 例如一台单机的minio服务器，是一个<code>minio部署</code>; 4台minio主机组成的集群，也是一个<code>minio部署</code></li>
+</ul>
+<h3 id="42-minio">4.2 管理<strong>minio部署</strong></h3>
+<ul>
+<li>管理<strong>minio部署</strong> 其实就是对它进行<strong>扩容</strong>、<strong>升级</strong>、<strong>停用</strong>, 参考<a href="https://min-io.cn/docs/minio/linux/operations/manage-existing-deployments.html">管理现有的 MinIO 部署</a></li>
+</ul>
+<h3 id="43">4.3 存储桶复制</h3>
+<p>有两种方式: <a href="https://min-io.cn/docs/minio/linux/administration/bucket-replication.html#minio-bucket-replication-serverside">服务端存储桶复制</a>和<a href="https://min-io.cn/docs/minio/linux/administration/bucket-replication.html#minio-bucket-replication-serverside">客户端存储桶复制</a></p>
+<ul>
+<li>操作步骤:</li>
+</ul>
+<pre><code>1 创建两个同名bucket
+2 两个bucket都version enable
+3 然后设置复制  mc replicate add testminio/test-bucket  --remote-bucket 'http://KD43FWJZYPIEALFP47AU:+SLxgghqyKU5nki+27wqGih6JxgwvRE4dVcG++Ny@192.168.2.124:9000/test-bucket'   --replicate &quot;delete,delete-marker,existing-objects&quot;
+4 只读域名，nginx指向两个机器的9000端口
+5 读写域名，（通常是内网），指向主机器的9000端口 
+</code></pre>
+<h3 id="44">4.4 存储桶复制和站点复制的区别</h3>
+<p>存储桶与站点复制</p>
+<ul>
+<li>
+<p><strong>存储桶复制</strong>与 <strong>站点复制</strong> 不同且互斥。</p>
+</li>
+<li>
+<ul>
+<li>存储桶复制在存储桶级别同步数据，例如存储桶前缀路径和对象。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>您可以随时配置存储桶复制，远程 MinIO 部署可能在复制目标存储桶上具有预先存在的数据。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>站点复制将存储桶复制扩展到包括 IAM、安全令牌、访问密钥和存储桶级配置。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>站点复制通常在最初部署 MinIO 对等站点时配置。在初始配置时，只有一个站点可以持有任何存储桶或对象。</li>
+</ul>
+</li>
 </ul>
               
             </div>
