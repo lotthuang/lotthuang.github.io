@@ -106,6 +106,10 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能优化专题</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/15_secure_sre/">第十五篇 安全运维</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/16_yunweijiazhi/">第十六篇 公司视角下运维的价值</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
               <ul>
@@ -318,6 +322,18 @@
     <li class="toctree-l4"><a class="reference internal" href="#31-bigkey">3.1 BigKey</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#32-hotkey">3.2 HotKey</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4">4 缓存穿透类问题</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#41">4.1 缓存穿透</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#42-">4.2 缓存穿透解决方案-布隆过滤器</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#42">4.2 缓存雪崩</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#43">4.3 缓存击穿</a>
     </li>
         </ul>
     </li>
@@ -575,6 +591,36 @@
 <li>华为云上的热Key分析就是基于此</li>
 </ul>
 </li>
+</ul>
+<h3 id="4">4 缓存穿透类问题</h3>
+<h4 id="41">4.1 缓存穿透</h4>
+<ul>
+<li><strong>缓存穿透</strong>是指查询不存在的数据, 比如恶意攻击或者业务代码BUG。解决方案包括缓存空值、布隆过滤器、请求校验。</li>
+</ul>
+<h4 id="42-">4.2 缓存穿透解决方案-布隆过滤器</h4>
+<ul>
+<li>布隆过滤器</li>
+<li>
+<ul>
+<li>在缓存之前加一层布隆过滤器，用来判断数据是否存在。如果布隆过滤器判断数据不存在，就立即返回，不查缓存和数据库。布隆过滤器是一种概率型数据结构，用于判断一个元素是否在集合中。它的特点是<strong>占用空间小、查询速度快，但有一定的误判率</strong>。</li>
+</ul>
+</li>
+</ul>
+<p><img alt="png" src="../../img/B8C42FFB-E076-4605-A065-77BE9195FA53.jpg" /></p>
+<h4 id="42">4.2 缓存雪崩</h4>
+<ul>
+<li><strong>缓存雪崩</strong>是指在某个时间点，缓存中的数据大面积同时失效（或缓存服务redis不可用）</li>
+</ul>
+<h4 id="43">4.3 缓存击穿</h4>
+<ul>
+<li><strong>缓存击穿</strong>热点数据突然失效。解决方案包括互斥锁、永不过期、缓存降级。</li>
+<li>
+<p>可以认为<strong>缓存击穿</strong>是<strong>缓存雪崩</strong>的一个子集</p>
+</li>
+<li>
+<p><a href="https://xiaolincoding.com/redis/cluster/cache_problem.html#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9">什么是缓存雪崩、击穿、穿透</a></p>
+</li>
+<li><a href="https://mp.weixin.qq.com/s/IqzJyiVnYRVYlatfAnq91A">Redis缓存三剑客：穿透、雪崩、击穿—手把手教你解决</a></li>
 </ul>
               
             </div>

@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第十三篇 Linux网络子系统灵魂拷问 - Lott's Blog</title>
+    <title>第十五篇 安全运维 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u5341\u4e09\u7bc7 Linux\u7f51\u7edc\u5b50\u7cfb\u7edf\u7075\u9b42\u62f7\u95ee";
-        var mkdocs_page_input_path = "chapter_3/13_linghunkaowen.md";
+        var mkdocs_page_name = "\u7b2c\u5341\u4e94\u7bc7 \u5b89\u5168\u8fd0\u7ef4";
+        var mkdocs_page_input_path = "chapter_2/15_secure_sre.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -81,101 +81,73 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../yunweijiazhi/">第一篇 运维的价值和目标</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../yunweipingtailinian/">第三篇 运维平台建设的理念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/guzhangguanli/">第四篇 故障管理概述</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../guzhangguanli/">第四篇 故障管理概述</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/biangengguanli/">第五篇 变更管理概述</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../biangengguanli/">第五篇 变更管理概述</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/rongliangguanli/">第六篇 容量管理概述</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../rongliangguanli/">第六篇 容量管理概述</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/cicd/">第八篇 CICD流程概述</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../cicd/">第八篇 CICD流程概述</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/9_changkanchangxin/">第九篇 常看常新</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_changkanchangxin/">第九篇 常看常新</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/12_monitor_and_alert/">第十二篇 监控报警最佳实践</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_monitor_and_alert/">第十二篇 监控报警最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_classic_thinkings/">第十三篇 经典思维</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能优化专题</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../14_performance_optimization_topic/">第十四篇 性能优化专题</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/15_secure_sre/">第十五篇 安全运维</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第十五篇 安全运维</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 基础安全体系</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">二 云与容器安全</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">三 应用与数据安全</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">四 网络与协议安全</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_6">五 合规与组织管理</a>
+    </li>
+    </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/16_yunweijiazhi/">第十六篇 公司视角下运维的价值</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../16_yunweijiazhi/">第十六篇 公司视角下运维的价值</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_conntrack/">第五篇 conntrack的常见应用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/5_conntrack/">第五篇 conntrack的常见应用</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../6_tcp/">第六篇 TCP协议总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/6_tcp/">第六篇 TCP协议总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../10_linux_net/">第十篇 Linux Net子系统总结、收发包流程再次梳理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/10_linux_net/">第十篇 Linux Net子系统总结、收发包流程再次梳理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../11_igb/">第十一篇 igb网卡驱动梳理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/11_igb/">第十一篇 igb网卡驱动梳理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../12_rss_rps_rfs_xps/">第十二篇 Linux网卡rss和rps和rfs和xps</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/12_rss_rps_rfs_xps/">第十二篇 Linux网卡rss和rps和rfs和xps</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第十三篇 Linux网络子系统灵魂拷问</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#time_wait">一 TIME_WAIT状态的连接</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#1-time_wait">1 几万个TIME_WAIT状态的连接有什么影响？</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#2-time_wait">2 一个TIME_WAIT状态连接具体消耗是什么?</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#tcp">二 一台服务器可以支撑多少个TCP连接</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#tcp_1">三 一台客户端机器可以支撑多个TCP连接</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#tcp_2">四 一个TCP连接需要消耗多大的内存?</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#127001">五 访问127.0.0.1经过网卡吗?</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#net_rxnet_tx">六 软中断这块为何NET_RX要比NET_TX高很多?即使收发流量差不多的主机</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#copy">七 零COPY到底解约了哪些步骤，有哪些步骤是硬性的没法越过?</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#tcpdumpiptables">八 tcpdump能否抓到被iptables禁用的包</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#ioepoll">九 IO多路复用epoll为什么就能提升网络性能?</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#listen">十 为什么一定要listen一下</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_2">十一 服务器半/全连接满了会怎么样</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#tcpsocket">十二 新TCP连接的内核socket对象是什么时候建立的？</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#tcp_3">十三 建立一条TCP连接耗时要多久?</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#established">十四 服务器上一条空ESTABLISHED连接需要消耗多少内存？</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#tcp_4">十五 一台服务器要支撑尽可能多的TCP连接（比如单机两百万连接），要修改哪些内核参数?</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_3">十六</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/13_linghunkaowen/">第十三篇 Linux网络子系统灵魂拷问</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
@@ -453,8 +425,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">第三章 Linux Net子系统</li>
-      <li class="breadcrumb-item active">第十三篇 Linux网络子系统灵魂拷问</li>
+          <li class="breadcrumb-item">第二章 运维工作总结</li>
+      <li class="breadcrumb-item active">第十五篇 安全运维</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -465,39 +437,129 @@
               
                 <h1 id="_1">概述</h1>
 <ul>
-<li>本篇以问答形式, 梳理linux net子系统的一些灵魂拷问</li>
+<li>本篇总结安全运维相关<a href="https://mp.weixin.qq.com/s/BMh1c4n1_wRuKYzIu-WZFA">知识点</a></li>
 </ul>
-<h2 id="time_wait">一 TIME_WAIT状态的连接</h2>
-<h3 id="1-time_wait">1 几万个TIME_WAIT状态的连接有什么影响？</h3>
-<h3 id="2-time_wait">2 一个TIME_WAIT状态连接具体消耗是什么?</h3>
-<h2 id="tcp">二 一台服务器可以支撑多少个TCP连接</h2>
-<h2 id="tcp_1">三 一台客户端机器可以支撑多个TCP连接</h2>
-<h2 id="tcp_2">四 一个TCP连接需要消耗多大的内存?</h2>
-<h2 id="127001">五 访问127.0.0.1经过网卡吗?</h2>
-<h2 id="net_rxnet_tx">六 软中断这块为何NET_RX要比NET_TX高很多?即使收发流量差不多的主机</h2>
-<ul>
-<li>因为收数据时, 一定会会经过软中断, 此时触发的是RET_RX软中断. 而发数据时，大部分在cpu system下处理，不会让软中断处理.</li>
-<li>另外就算发数据触发了软中断，如果触发软中断，触发的也是RET_RX软中断.</li>
-</ul>
-<h2 id="copy">七 零COPY到底解约了哪些步骤，有哪些步骤是硬性的没法越过?</h2>
-<h2 id="tcpdumpiptables">八 tcpdump能否抓到被iptables禁用的包</h2>
-<h2 id="ioepoll">九 IO多路复用epoll为什么就能提升网络性能?</h2>
-<h2 id="listen">十 为什么一定要listen一下</h2>
-<h2 id="_2">十一 服务器半/全连接满了会怎么样</h2>
-<h2 id="tcpsocket">十二 新TCP连接的内核socket对象是什么时候建立的？</h2>
-<h2 id="tcp_3">十三 建立一条TCP连接耗时要多久?</h2>
-<h2 id="established">十四 服务器上一条空ESTABLISHED连接需要消耗多少内存？</h2>
-<ul>
-<li>因为空连接，所以是没有CPU消耗的</li>
-</ul>
-<h2 id="tcp_4">十五 一台服务器要支撑尽可能多的TCP连接（比如单机两百万连接），要修改哪些内核参数?</h2>
-<h2 id="_3">十六</h2>
+<h2 id="_2">一 基础安全体系</h2>
+<ol>
+<li>最小权限原则：所有账号、服务仅授予必要权限，避免权限泛化。</li>
+<li>日志全生命周期管理：采集、存储、分析一体化，结合SIEM系统实时监控。</li>
+<li>漏洞闭环管理：扫描→分级→修复→验证，高危漏洞24小时内修复。</li>
+<li>密码策略：长度≥12位，混合大小写、数字及符号，禁用弱口令和重复密码。</li>
+<li>多因素认证（MFA）：强制开启，优先使用硬件令牌或生物识别。</li>
+<li>防火墙规则优化：默认拒绝所有入站流量，仅开放必要端口和服务。</li>
+<li>补丁自动化：通过Ansible、SaltStack等工具实现批量补丁分发。</li>
+<li>系统基线加固：禁用默认账户、关闭非必要服务，参考CIS Benchmark。</li>
+<li>网络分段：划分VLAN，隔离生产环境与测试环境。</li>
+<li>入侵检测系统（IDS）：部署Snort、Suricata实时监测异常流量。</li>
+<li>数据备份3-2-1原则：3份副本、2种介质、1份离线存储。</li>
+<li>安全审计：定期审查账号权限、配置变更记录。</li>
+<li>物理安全：机房门禁、摄像头、温湿度监控全覆盖。</li>
+<li>终端防护：EDR工具实时监控进程行为，阻断恶意软件。</li>
+<li>DNS安全：启用DNSSEC，防御DNS劫持与缓存投毒。</li>
+<li>邮件安全：SPF、DKIM、DMARC三件套防钓鱼与伪造。</li>
+<li>SSH加固：禁用root登录，使用密钥认证，修改默认端口。</li>
+<li>安全培训：每季度开展钓鱼邮件模拟演练。</li>
+<li>零信任架构：基于身份的动态访问控制，替代传统边界防护。</li>
+<li>蜜罐技术：部署伪装系统诱捕攻击者，分析攻击手法。</li>
+</ol>
+<h2 id="_3">二 云与容器安全</h2>
+<ol>
+<li>云资源合规基线：遵循CIS云安全标准，禁用0.0.0.0/0规则。</li>
+<li>IAM策略：基于角色的访问控制（RBAC），定期轮换临时凭证。</li>
+<li>容器镜像扫描：集成Trivy、Clair到CI/CD流水线。</li>
+<li>Kubernetes加固：启用Pod安全策略（PSP）、NetworkPolicy。</li>
+<li>云存储加密：启用服务端加密（SSE-S3/AES-256）。</li>
+<li>云日志审计：集中管理CloudTrail、操作日志，关联分析异常行为。</li>
+<li>Serverless安全：限制函数执行时间，监控冷启动攻击。</li>
+<li>API网关防护：速率限制、JWT令牌校验、请求签名。</li>
+<li>密钥管理服务（KMS）：避免硬编码密钥，动态生成临时凭证。</li>
+<li>云原生WAF：防御SQL注入、XSS、API滥用攻击。</li>
+<li>容器运行时安全：监控异常进程、文件系统挂载。</li>
+<li>云漏洞扫描：定期扫描ECS、RDS、OSS等资源。</li>
+<li>跨云安全策略：统一管理多云环境权限与合规基线。</li>
+<li>无服务器函数隔离：限制内存与CPU使用，防止资源耗尽攻击。</li>
+<li>云防火墙：基于标签的流量过滤，阻断恶意IP。</li>
+<li>容器注册表安全：私有Registry启用扫描与签名验证。</li>
+<li>云负载均衡防护：屏蔽非常规协议与端口扫描。</li>
+<li>数据泄露防护（DLP）：监控敏感数据（如信用卡号）外传。</li>
+<li>云资产清单：自动发现并分类所有云资源。</li>
+<li>服务网格安全：Istio双向TLS加密，限流熔断。</li>
+</ol>
+<h2 id="_4">三 应用与数据安全</h2>
+<ol>
+<li>OWASP Top 10防护：重点防御注入、失效身份验证等风险。</li>
+<li>XSS防御：输入过滤、输出编码，CSP内容安全策略。</li>
+<li>CSRF防护：Token校验、SameSite Cookie属性。</li>
+<li>SQL注入防御：预编译语句、ORM框架、WAF规则。</li>
+<li>API安全：OAuth 2.0鉴权、速率限制、请求签名。</li>
+<li>数据脱敏：生产环境屏蔽敏感字段（如手机号）。</li>
+<li>SSL/TLS配置：强制TLS 1.3，禁用弱密码套件。</li>
+<li>文件上传防护：限制文件类型、扫描恶意内容。</li>
+<li>会话管理：设置短超时时间，JWT令牌加密存储。</li>
+<li>业务逻辑漏洞：验证支付、订单修改等关键流程。</li>
+<li>第三方组件扫描：通过Snyk检测依赖库漏洞。</li>
+<li>GDPR合规：数据匿名化、跨境传输加密。</li>
+<li>数据库审计：记录所有SQL操作，关联用户行为。</li>
+<li>备份加密：AES-256加密离线备份数据。</li>
+<li>数据完整性校验：使用SHA-256哈希验证关键文件。</li>
+<li>日志脱敏：隐藏日志中的敏感信息（如密码）。</li>
+<li>API限速：防止DDoS与撞库攻击。</li>
+<li>Webshell检测：监控异常文件创建与执行行为。</li>
+<li>反序列化防护：验证输入数据，禁用危险类加载。</li>
+<li>业务连续性计划（BCP）：制定RTO/RPO目标，定期演练。</li>
+</ol>
+<h2 id="_5">四 网络与协议安全</h2>
+<ol>
+<li>网络流量基线：建立正常流量模型，检测异常峰值。</li>
+<li>VPN加固：IPSec/IKEv2协议，禁用PPTP。</li>
+<li>DNS防护：启用DoH/DoT加密查询。</li>
+<li>BGP安全：配置RPKI防止路由劫持。</li>
+<li>NAC网络准入：基于设备指纹控制接入权限。</li>
+<li>SD-WAN安全：加密跨地域流量，集中策略管理。</li>
+<li>无线网络防护：WPA3加密，隐藏SSID广播。</li>
+<li>IPv6安全：禁用ICMPv6冗余功能，过滤非法地址。</li>
+<li>网络协议分析：使用Wireshark捕获并解析可疑流量。</li>
+<li>零信任网络（ZTNA）：基于身份的动态访问控制913。</li>
+<li>DDoS防御：部署流量清洗中心，启用SYN Cookie。</li>
+<li>NTP安全：限制NTP服务器访问，防止时间篡改。</li>
+<li>MAC地址绑定：防止ARP欺骗攻击。</li>
+<li>网络拓扑隐藏：禁用ICMP响应与TTL泄露。</li>
+<li>QUIC协议优化：平衡性能与安全，监控加密握手。</li>
+<li>物联网协议防护：MQTT/CoAP强制双向认证。</li>
+<li>负载均衡安全：屏蔽非常规HTTP方法（如PUT/DELETE）。</li>
+<li>网络分段微隔离：基于业务逻辑划分安全域。</li>
+<li>TOR流量识别：阻断匿名网络访问敏感资源。</li>
+<li>网络设备固件升级：定期更新路由器、交换机系统。</li>
+</ol>
+<h2 id="_6">五 合规与组织管理</h2>
+<ol>
+<li>等保2.0合规：三级系统部署堡垒机、数据库审计。</li>
+<li>ISO 27001认证：建立ISMS信息安全管理体系。</li>
+<li>PCID DSS合规：加密存储持卡人数据，定期渗透测试。</li>
+<li>SOX审计：确保财务系统访问日志完整可追溯。</li>
+<li>安全运营中心（SOC）：7×24小时监控与响应。</li>
+<li>风险评估模型：使用FAIR、NIST框架量化风险。</li>
+<li>供应商安全管理：审查第三方服务商的安全资质。</li>
+<li>事件响应计划（IRP）：明确RACI矩阵与SOP流。</li>
+<li>灾难恢复演练：每年至少一次全链路演练。</li>
+<li>安全文化建设：定期举办CTF竞赛与红蓝对抗。</li>
+<li>知识库管理：沉淀故障案例与解决方案。</li>
+<li>法律合规：遵守《网络安全法》《数据安全法》。</li>
+<li>隐私保护设计（PbD）：在产品设计阶段嵌入隐私保护。</li>
+<li>供应链安全：验证开源组件许可证与漏洞状态。</li>
+<li>安全绩效考核：将漏洞修复率纳入团队KPI。</li>
+<li>跨部门协作：建立DevSecOps流程，左移安全防护。</li>
+<li>安全预算规划：按风险优先级分配防护资源。</li>
+<li>外部漏洞报告：设立SRC（安全响应中心）接收白帽提交。</li>
+<li>安全意识培训：覆盖全员，包括高管与外包人员。</li>
+<li>持续改进机制：通过PDCA循环优化安全体系。</li>
+</ol>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../12_rss_rps_rfs_xps/" class="btn btn-neutral float-left" title="第十二篇 Linux网卡rss和rps和rfs和xps"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../../chapter_4/1_process_ulimit/" class="btn btn-neutral float-right" title="第一篇 进程Max open files的设置">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../14_performance_optimization_topic/" class="btn btn-neutral float-left" title="第十四篇 性能优化专题"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../16_yunweijiazhi/" class="btn btn-neutral float-right" title="第十六篇 公司视角下运维的价值">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -520,10 +582,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../12_rss_rps_rfs_xps/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../14_performance_optimization_topic/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../../chapter_4/1_process_ulimit/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../16_yunweijiazhi/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
