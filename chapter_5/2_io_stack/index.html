@@ -104,7 +104,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能优化专题</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能调优</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/15_secure_sre/">第十五篇 安全运维</a>
                   </li>
@@ -207,9 +207,9 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#bio">BIO 层的优化</a>
+    <li class="toctree-l2"><a class="reference internal" href="#bio">BIO层的优化</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_5">电梯层 层的优化</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">电梯层的优化</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1-io">1 关于 IO 调度算法的单队列和多队列</a>
     </li>
@@ -385,6 +385,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/12_cloud_network/">第十二篇 云网络</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/13_containerd/">第十三篇 Containerd</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/14_k8s_and_gpu/">第十四篇 基于K8S管理GPU集群</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -649,12 +651,12 @@
 <li>用户层最多到达<code>通用块层</code>, <code>通用块层</code>以下必须由内核自行控制了.</li>
 <li>用户层在 wirte 系统调用时, 使用<code>O_DIRECT</code>标记, 会开启 Direct IO, 但光有 Direct IO, 仍然只是写到<code>通用块层</code>, 如果需要数据绝不丢失, 那么还要加上<code>O_SYNC</code>标记</li>
 </ul>
-<h2 id="bio">BIO 层的优化</h2>
+<h2 id="bio">BIO层的优化</h2>
 <ul>
 <li>为不同进程指定不同的 IO 优先级. Linux supports I/O scheduling priorities and classes since 2.6.13 with the CFQ I/O scheduler.</li>
 <li>常用的 IO classess 包括: <code>Idle</code>、<code>Best-effort</code>、<code>Realtime</code>.</li>
 </ul>
-<h2 id="_5">电梯层 层的优化</h2>
+<h2 id="_5">电梯层的优化</h2>
 <ul>
 <li>电梯调度算法</li>
 <li>Request 队列个数、预读数据大小</li>

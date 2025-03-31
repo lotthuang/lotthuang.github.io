@@ -104,7 +104,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能优化专题</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能调优</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/15_secure_sre/">第十五篇 安全运维</a>
                   </li>
@@ -271,9 +271,33 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_7">注册文件系统</a>
+    <li class="toctree-l2"><a class="reference internal" href="#ext4xfs">六 EXT4和XFS对比</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#ext4">一、EXT4：通用且稳定的选择</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_7">适用场景：</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_8">其他文件系统</a>
+    <li class="toctree-l4"><a class="reference internal" href="#_8">优势：</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_9">缺点：</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#xfs">二、XFS：高性能的大数据处理高手</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_10">适用场景：</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_11">优势：</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_12">缺点：</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_13">注册文件系统</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_14">其他文件系统</a>
     </li>
     </ul>
                   </li>
@@ -419,6 +443,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/12_cloud_network/">第十二篇 云网络</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/13_containerd/">第十三篇 Containerd</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/14_k8s_and_gpu/">第十四篇 基于K8S管理GPU集群</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -1248,7 +1274,43 @@ static const struct dentry_operations anon_inodefs_dentry_operations = {
     .bdev_try_to_free_page = bdev_try_to_free_page,
 };
 </code></pre>
-<h2 id="_7">注册文件系统</h2>
+<h2 id="ext4xfs">六 EXT4和XFS<a href="https://mp.weixin.qq.com/s/iQ869MImH6GDTfyqFoqECw">对比</a></h2>
+<h3 id="ext4">一、EXT4：通用且稳定的选择</h3>
+<h4 id="_7">适用场景：</h4>
+<p>✅ 个人计算机、开发环境、小型服务器</p>
+<p>✅ 需要较好的兼容性（支持几乎所有 Linux 发行版）</p>
+<p>✅ 适用于存储大量小文件，如网页、配置文件、日志等</p>
+<h4 id="_8">优势：</h4>
+<ul>
+<li>兼容性强：支持几乎所有的 Linux 发行版，即使是较老的系统也能稳定运行。</li>
+<li>碎片化管理好：对于小文件存储和频繁读写场景，EXT4 具有较好的碎片整理能力，性能较稳定。</li>
+<li>支持文件系统检查（fsck）：在系统崩溃后，EXT4 允许运行 fsck 工具进行数据恢复。</li>
+<li>支持动态缩小分区：可在不格式化的情况下缩小分区，这对存储管理非常灵活。</li>
+</ul>
+<h4 id="_9">缺点：</h4>
+<ul>
+<li>大文件性能不如 XFS：如果存储的是大文件（如视频、数据库），EXT4 在写入速度上可能略逊一筹。</li>
+<li>在线扩展支持有限：扩展 EXT4 分区需要先卸载文件系统，影响可用性。</li>
+</ul>
+<h3 id="xfs">二、XFS：高性能的大数据处理高手</h3>
+<h4 id="_10">适用场景：</h4>
+<p>✅ 服务器、数据库、大规模存储系统 </p>
+<p>✅ 需要高并发 I/O（如 RAID 存储、大型网站服务器） </p>
+<p>✅ 适用于大文件存储（如视频、数据库、备份文件）</p>
+<h4 id="_11">优势：</h4>
+<ul>
+<li>大文件处理能力强：XFS 设计之初就考虑了高性能，并行写入能力远胜于 EXT4。</li>
+<li>在线扩展更简单：可以在系统运行时直接扩展 XFS 分区，而无需卸载。</li>
+<li>适合高并发写入：如果你的服务器需要同时处理大量读写请求，XFS 通过日志结构优化了 I/O 性能。</li>
+<li>支持超大存储：单个 XFS 分区可达 8 EB（相当于百万 TB），适用于企业级存储。</li>
+</ul>
+<h4 id="_12">缺点：</h4>
+<ul>
+<li>不支持文件系统检查（fsck）：XFS 文件系统损坏后，无法使用 fsck 进行修复，只能通过备份恢复。</li>
+<li>不适合作为根文件系统（/）：许多 Linux 发行版不建议将 XFS 作为系统分区，可能会遇到兼容性问题。</li>
+<li>不能缩小分区：XFS 只支持扩展，不支持缩小，因此在分区时要慎重考虑大小。</li>
+</ul>
+<h2 id="_13">注册文件系统</h2>
 <pre><code>/**
  *  register_filesystem - register a new filesystem
  *  @fs: the file system structure
@@ -1292,7 +1354,7 @@ EXPORT_SYMBOL(register_filesystem);
 <li>5 查找文件系统类型是否已经存在，如果存在，则返回 -EBUSY，否则将文件系统类型添加到文件系统列表中。</li>
 <li>6 释放写锁，完成注册。</li>
 </ul>
-<h2 id="_8">其他文件系统</h2>
+<h2 id="_14">其他文件系统</h2>
 <p>tmpfs</p>
 <p>devtmpfs</p>
 <ul>

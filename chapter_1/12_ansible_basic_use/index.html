@@ -71,6 +71,18 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1">实例 1</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#1-playbook">1 什么是Playbook</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2">2 基础结构</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#22-playbook">2.2 Playbook 各组件详解</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-playbook">3 运行 Playbook</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-playbook">4 Playbook 最佳实践</a>
+    </li>
         </ul>
     </li>
     </ul>
@@ -116,7 +128,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能优化专题</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能调优</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/15_secure_sre/">第十五篇 安全运维</a>
                   </li>
@@ -342,6 +354,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/13_containerd/">第十三篇 Containerd</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/14_k8s_and_gpu/">第十四篇 基于K8S管理GPU集群</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
               <ul>
@@ -510,6 +524,261 @@ ansible-playbook -i hosts/your_hosts_file test_playbook.yaml
 <li><img alt="png" src="../../img/B31B4CC6-6CA1-4472-9F0E-7EC39417C643.png" /></li>
 </ul>
 </li>
+</ul>
+<h3 id="1-playbook">1 什么是<a href="https://mp.weixin.qq.com/s/6Z-jyfznPuCk82KyNxHvRA">Playbook</a></h3>
+<ul>
+<li>
+<p>Playbook 是 Ansible 自动化中的核心组件，以 YAML 格式编写，用于定义一组或多组任务的执行步骤。</p>
+</li>
+<li>
+<p>1.2 作用</p>
+</li>
+<li>
+<ul>
+<li>自动化执行复杂任务。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>提供可重用的任务定义文件。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>支持任务的条件判断和动态配置。</li>
+</ul>
+</li>
+<li>1.3 特点</li>
+<li>
+<ul>
+<li>结构化且可读性强：以 YAML 格式书写，适合团队协作和版本控制。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>模块化支持：结合变量、模板、roles 等，实现灵活和高效的自动化任务。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>幂等性：确保任务多次运行后，目标主机状态保持一致。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2">2 基础结构</h3>
+<p>一个 Playbook 通常由以下几个部分组成：</p>
+<pre><code>---
+- name: &quot;Play 描述性名称&quot;
+  hosts:  # 主机组名称或目标主机
+  become:  # 是否提升权限 (true/false)
+  vars: 
+    # 定义全局变量或局部变量。
+  tasks:
+    # 定义任务
+  handlers:
+    # 用于触发在某些条件下执行的动作。 (可选)
+  roles:
+    # 调用预定义的角色 (可选)
+</code></pre>
+<p>示例 Playbook</p>
+<pre><code>---
+- name: 安装和配置 Apache Web 服务器
+  hosts: webservers
+  become: true
+  vars:
+    apache_port: 8080
+
+  tasks:
+    - name: 安装 Apache
+      yum:
+        name: httpd
+        state: present
+
+    - name: 配置 Apache 端口
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^Listen'
+        line: &quot;Listen {{ apache_port }}&quot;
+
+    - name: 确保 Apache 已启动
+      service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: 配置防火墙
+      firewalld:
+        port: &quot;{{ http_port }}/tcp&quot;
+        permanent: true
+        state: enabled
+      notify:
+        - 重启防火墙
+
+  handlers:
+    - name: 重启防火墙
+      service:
+        name: firewalld
+        state: restarted
+</code></pre>
+<h4 id="22-playbook">2.2 Playbook 各组件详解</h4>
+<h5 id="221-hosts">2.2.1. hosts</h5>
+<p>hosts 定义任务要运行在哪些目标主机上：</p>
+<p>可以是 inventory 文件中定义的主机组。
+支持单主机名称或主机模式表达式。</p>
+<pre><code>hosts: webservers
+</code></pre>
+<p>也可以使用表达式：</p>
+<pre><code>hosts: 192.168.1.[1:5]
+</code></pre>
+<h5 id="222-vars">2.2.2. vars（变量）</h5>
+<p>vars 用于定义任务中使用的变量，支持动态插值。</p>
+<pre><code>vars:
+  app_dir: /var/www/html
+  port: 80
+</code></pre>
+<p>变量使用方式：</p>
+<pre><code>tasks:
+  - name: 使用变量配置文件路径
+    file:
+      path: &quot;{{ app_dir }}&quot;
+      state: directory
+</code></pre>
+<h5 id="223-tasks">2.2.3. tasks（任务）</h5>
+<p>任务是 Playbook 的核心，描述了要执行的操作。</p>
+<p>任务结构：</p>
+<pre><code>name: 描述性文字，用于记录任务目的。
+模块: 使用 Ansible 模块完成操作。
+参数: 模块的配置选项。
+tasks:
+  - name: 安装软件包
+    yum:
+      name: httpd
+      state: present
+</code></pre>
+<h5 id="224-handlers">2.2.4. handlers（处理器）</h5>
+<p>handlers 是特殊任务，仅在被 notify 调用时执行。典型应用是服务重启、配置重新加载等。</p>
+<pre><code>tasks:
+  - name: 更新配置文件
+    copy:
+      src: myapp.conf
+      dest: /etc/myapp.conf
+    notify:
+      - 重启服务
+
+handlers:
+  - name: 重启服务
+    service:
+      name: myapp
+      state: restarted
+</code></pre>
+<h5 id="225-loops">2.2.5. loops（循环）</h5>
+<p>支持循环执行任务，减少重复代码。</p>
+<pre><code>tasks:
+  - name: 安装多组软件
+    yum:
+      name: &quot;{{ item }}&quot;
+      state: present
+    loop:
+      - httpd
+      - php
+      - mariadb
+</code></pre>
+<h5 id="226-when">2.2.6. when（条件执行）</h5>
+<p>条件允许在满足特定条件时运行任务。</p>
+<p>示例：仅在 RedHat 系统中执行</p>
+<pre><code>
+
+tasks:
+  - name: 安装 Apache
+    yum:
+      name: httpd
+      state: present
+    when: ansible_os_family == &quot;RedHat&quot;
+</code></pre>
+<p>示例：使用变量判断</p>
+<pre><code>vars:
+  is_webserver: true
+
+tasks:
+  - name: 安装 Web 服务器
+    yum:
+      name: httpd
+      state: present
+    when: is_webserver
+</code></pre>
+<h5 id="227-templates">2.2.7. templates（模板）</h5>
+<p>通过模板动态生成配置文件，使用 Jinja2 模板语言。</p>
+<p>模板文件（example.j2）：</p>
+<pre><code>
+ServerName {{ ansible_hostname }}
+Listen {{ apache_port }}
+Playbook 中调用模板：
+
+tasks:
+  - name: 配置 Apache
+    template:
+      src: example.j2
+      dest: /etc/httpd/conf/httpd.conf
+</code></pre>
+<h5 id="228-roles">2.2.8. roles（角色）</h5>
+<p>roles 是 Playbook 的高级抽象，用于组织和重用任务。一个 role 通常包含以下目录结构：</p>
+<pre><code>roles/
+├── common/
+│   ├── tasks/
+│   │   └── main.yml
+│   ├── handlers/
+│   │   └── main.yml
+│   ├── templates/
+│   │   └── example.j2
+│   ├── files/
+│   │   └── somefile
+│   ├── vars/
+│   │   └── main.yml
+│   ├── defaults/
+│   │   └── main.yml
+Playbook 调用 Role：
+
+- name: 部署 Web 服务器
+  hosts: webservers
+  roles:
+    - common
+    - web
+</code></pre>
+<h5 id="229-tags">2.2.9. tags（标签）</h5>
+<p>tags 用于在运行 Playbook 时选择性地执行任务。</p>
+<pre><code>tasks:
+  - name: 安装 Apache
+    yum:
+      name: httpd
+      state: present
+    tags: apache
+
+  - name: 安装 MySQL
+    yum:
+      name: mysql
+      state: present
+    tags: mysql
+运行特定标签的任务：
+
+ansible-playbook site.yml --tags &quot;apache&quot;
+
+</code></pre>
+<h3 id="3-playbook">3 运行 Playbook</h3>
+<p>运行 Playbook 使用 ansible-playbook 命令：</p>
+<pre><code>ansible-playbook playbook.yml
+</code></pre>
+<p>常用参数</p>
+<pre><code>-i：指定 inventory 文件。
+--check：检查模式，不做实际更改。
+-e：传递额外变量。
+--tags： 运行指定标签任务。
+</code></pre>
+<h3 id="4-playbook">4 Playbook 最佳实践</h3>
+<ul>
+<li>使用 roles 管理大型 Playbook。</li>
+<li>合理使用变量和模板，增强动态性。</li>
+<li>在任务名称中添加描述性信息，便于调试。</li>
+<li>尽量使用 幂等操作，确保任务多次运行不会产生副作用。</li>
 </ul>
               
             </div>

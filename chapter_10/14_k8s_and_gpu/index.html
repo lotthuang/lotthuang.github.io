@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第十三篇 经典思维 - Lott's Blog</title>
+    <title>第十四篇 基于K8S管理GPU集群 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u5341\u4e09\u7bc7 \u7ecf\u5178\u601d\u7ef4";
-        var mkdocs_page_input_path = "chapter_2/13_classic_thinkings.md";
+        var mkdocs_page_name = "\u7b2c\u5341\u56db\u7bc7 \u57fa\u4e8eK8S\u7ba1\u7406GPU\u96c6\u7fa4";
+        var mkdocs_page_input_path = "chapter_10/14_k8s_and_gpu.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -81,74 +81,34 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../yunweijiazhi/">第一篇 运维的价值和目标</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../yunweipingtailinian/">第三篇 运维平台建设的理念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../guzhangguanli/">第四篇 故障管理概述</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/guzhangguanli/">第四篇 故障管理概述</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../biangengguanli/">第五篇 变更管理概述</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/biangengguanli/">第五篇 变更管理概述</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../rongliangguanli/">第六篇 容量管理概述</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/rongliangguanli/">第六篇 容量管理概述</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../cicd/">第八篇 CICD流程概述</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/cicd/">第八篇 CICD流程概述</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../9_changkanchangxin/">第九篇 常看常新</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/9_changkanchangxin/">第九篇 常看常新</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../12_monitor_and_alert/">第十二篇 监控报警最佳实践</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/12_monitor_and_alert/">第十二篇 监控报警最佳实践</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第十三篇 经典思维</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#1">1 简单</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#2">2 用户提示要到位</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#3">3 如何提升技术效率</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#4-linux">4 Linux软件的配置方式：</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#41">4.1 命令行选项</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#5-linux">5 Linux哲学</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#6">6 解决技术难题思路</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#7">7 学习新技术的体会</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#71-object">7.1 常见的核心模型（也可以理解为任何对象object）,都有自己本身的属性，和它提供的技能</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#72">7.2 如何抽象唯一值</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#8">8 全局角度</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#9-software-infrastructure">9 构建Software Infrastructure</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_2">开源软件的应用过程(即”三板斧”思路): 安装、配置、使用</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_3">其中，软件配置又是重中之重，是考验运维架构师对一个软件技能运用程度的重要衡量指标，</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#10-context">10 考虑Context</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#11">11 客户端分散</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../14_performance_optimization_topic/">第十四篇 性能调优</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能调优</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../15_secure_sre/">第十五篇 安全运维</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/15_secure_sre/">第十五篇 安全运维</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../16_yunweijiazhi/">第十六篇 公司视角下运维的价值</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/16_yunweijiazhi/">第十六篇 公司视角下运维的价值</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
@@ -345,32 +305,46 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/2_benefits_of_containerization/">第二篇 容器化好处</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_benefits_of_containerization/">第二篇 容器化好处</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/3_docker_basic_concepts/">第三篇 容器化基础概念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_docker_basic_concepts/">第三篇 容器化基础概念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/9_cloudnative_monitor/">第九篇 云原生监控</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_cloudnative_monitor/">第九篇 云原生监控</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/10_event/">第十篇 彻底搞懂Kubernetes Event</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_event/">第十篇 彻底搞懂Kubernetes Event</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/11_best_practices/">第十一篇 Kubernetes最佳实践</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../11_best_practices/">第十一篇 Kubernetes最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/12_cloud_network/">第十二篇 云网络</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_cloud_network/">第十二篇 云网络</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/13_containerd/">第十三篇 Containerd</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_containerd/">第十三篇 Containerd</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/14_k8s_and_gpu/">第十四篇 基于K8S管理GPU集群</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第十四篇 基于K8S管理GPU集群</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 安装和入门</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#0-node">(0) Node节点操作</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#gpu">(一) 管理配有不同类型 GPU 的集群</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#tkeqgpu">(二) 在腾讯云TKE中使用qGPU</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#ackgpu">（三）在阿里云ACK中使用GPU调度</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -455,8 +429,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">第二章 运维工作总结</li>
-      <li class="breadcrumb-item active">第十三篇 经典思维</li>
+          <li class="breadcrumb-item">第十章 容器化和Kubernetes</li>
+      <li class="breadcrumb-item active">第十四篇 基于K8S管理GPU集群</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -467,311 +441,210 @@
               
                 <h1 id="_1">概述</h1>
 <ul>
-<li>本篇总结一些经典的思维方案</li>
+<li>本篇总结k8s管理GPU集群</li>
 </ul>
-<h2 id="1">1 简单</h2>
+<h2 id="_2">一 安装和<a href="https://kubernetes.io/zh-cn/docs/tasks/manage-gpus/scheduling-gpus/">入门</a></h2>
 <ul>
-<li>1 简单，让用户操作尽可能简单，不要让用户觉得难用，要让用户用起来一目了然。</li>
 <li>
-<ul>
-<li>1.1 底层封装好复杂的接口，做很多工作和思考</li>
-</ul>
+<p>要在节点上安装<strong>设备插件</strong>，一旦你安装了插件，你的集群就会暴露一个自定义可调度的资源，例如 <code>amd.com/gpu</code> 或 <code>nvidia.com/gpu</code>;</p>
 </li>
 <li>
-<ul>
-<li>1.2 简单不是舍弃功能需求和安全需求，简单是要让用户用起来简单。</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>1.3 简单的同时，要能方便的扩展。</li>
-</ul>
-</li>
-<li>
-<p>2 任何情况下，当用户没有提供时，就给一个默认的。</p>
+<p>以下是一个 Pod 请求 GPU 的示例清单：</p>
 </li>
 </ul>
-<h2 id="2">2 用户提示要到位</h2>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: example-vector-add
+spec:
+  restartPolicy: OnFailure
+  containers:
+    - name: example-vector-add
+      image: &quot;registry.example/example-vector-add:v42&quot;
+      resources:
+        limits:
+          gpu-vendor.example/example-gpu: 1 # 请求 1 个 GPU
+</code></pre>
 <ul>
-<li>用户提示一定要到位，流程出错了一定要站在用户的角度，说清楚他为什么错了。</li>
-<li>
-<ul>
-<li>一来用户能够快速知道原因，</li>
+<li>以下是使用腾讯云TKE 请求GPU的示例</li>
 </ul>
-</li>
-<li>
+<pre><code>spec:
+  containers:
+    resources:
+      limits:
+        tke.cloud.tencent.com/qgpu-memory: &quot;5&quot;
+        tke.cloud.tencent.com/qgpu-core: &quot;30&quot;
+      requests:
+        tke.cloud.tencent.com/qgpu-memory: &quot;5&quot;
+        tke.cloud.tencent.com/qgpu-core: &quot;30&quot;
+</code></pre>
+<h3 id="0-node">(0) Node节点操作</h3>
 <ul>
-<li>二来你根本没有必要隐瞒自己做了什么，分享出来，会更容易得到帮助与建议。做好可视化。</li>
+<li>1 安装Toolkit</li>
 </ul>
-</li>
-</ul>
-<h2 id="3">3 如何提升技术效率</h2>
+<pre><code># sudo apt-get install -y nvidia-container-toolkit
+</code></pre>
 <ul>
-<li>加中间件（midware is king）：</li>
-<li>
-<ul>
-<li>比如要扫描整块硬盘去找一个东西，则加缓存，先在缓存中找，再去硬盘中找。</li>
+<li>2 配置容器运行时（以docker为例子）</li>
 </ul>
-</li>
-<li>
+<pre><code># sudo nvidia-ctk runtime configure --runtime=docker
+INFO[0000] Loading config from /etc/docker/daemon.json  
+INFO[0000] Wrote updated config to /etc/docker/daemon.json 
+INFO[0000] It is recommended that docker daemon be restarted. 
+</code></pre>
+<p>这条命令会修改配置文件/etc/docker/daemon.json添加runtimes配置</p>
+<pre><code># cat /etc/docker/daemon.json 
+{
+    &quot;insecure-registries&quot;: [
+        &quot;192.168.3.61&quot;
+    ],
+    &quot;registry-mirrors&quot;: [
+        &quot;https://7sl94zzz.mirror.aliyuncs.com&quot;,
+        &quot;https://hub.atomgit.com&quot;,
+        &quot;https://docker.awsl9527.cn&quot;
+    ],
+    &quot;runtimes&quot;: {
+        &quot;nvidia&quot;: {
+            &quot;args&quot;: [],
+            &quot;path&quot;: &quot;nvidia-container-runtime&quot;
+        }
+    }
+</code></pre>
+<p>然后重启docker</p>
 <ul>
-<li>比如JVM内存中，要扫描整个老年代中引用新生代的对象，每次要全部扫描效率。改进方案则是专门划分一块小内存，用来记录这个对应关系，并且维护这个对应关系。</li>
+<li>3 验证容器可以使用GPU（以docker为例子）</li>
 </ul>
-</li>
-<li>缓存为王（cache is king）</li>
-</ul>
-<h2 id="4-linux">4 Linux软件的配置方式：</h2>
+<pre><code>#   docker run --rm --runtime=nvidia --gpus all ubuntu nvidia-smi
+Sat Oct 12 01:33:33 2024       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 555.42.06              Driver Version: 555.42.06      CUDA Version: 12.5     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 4090        Off |   00000000:01:00.0 Off |                  Off |
+|  0%   53C    P2             59W /  450W |    4795MiB /  24564MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+
+</code></pre>
+<p>该输出结果显示了 GPU 的详细信息，包括型号、温度、功率使用情况和内存使用情况等。这表明 Docker 容器成功地访问到了 NVIDIA GPU，并且 NVIDIA Container Toolkit 安装和配置成功。</p>
 <ul>
-<li>客户端程序会去读取配置文件，也可以在命令行输入选项。</li>
-<li>配置文件又有全局配置文件和用户个人配置文件的区分。</li>
-<li>优先级如下： <code>命令行选项&gt; 用户个人配置文件&gt; 全局配置文件</code></li>
-<li>经典用法： <strong>只用全局配置文件</strong></li>
+<li>4 使用K8S集群Pod调用GPU</li>
 </ul>
-<h3 id="41">4.1 命令行选项</h3>
+<p>以下操作在K8S机器的Master节点操作</p>
+<p><code>kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v0.16.1/deployments/static/nvidia-device-plugin.yml</code>
+安装K8S插件</p>
+<p>yml文件内容如下</p>
+<pre><code># cat nvidia-device-plugin.yml 
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nvidia-device-plugin-daemonset
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: nvidia-device-plugin-ds
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: nvidia-device-plugin-ds
+    spec:
+      tolerations:
+      - key: nvidia.com/gpu
+        operator: Exists
+        effect: NoSchedule
+      # Mark this pod as a critical add-on; when enabled, the critical add-on
+      # scheduler reserves resources for critical add-on pods so that they can
+      # be rescheduled after a failure.
+      # See https://kubernetes.io/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/
+      priorityClassName: &quot;system-node-critical&quot;
+      containers:
+      - image: nvcr.io/nvidia/k8s-device-plugin:v0.16.1
+        name: nvidia-device-plugin-ctr
+        env:
+          - name: FAIL_ON_INIT_ERROR
+            value: &quot;false&quot;
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: [&quot;ALL&quot;]
+        volumeMounts:
+        - name: device-plugin
+          mountPath: /var/lib/kubelet/device-plugins
+      volumes:
+      - name: device-plugin
+        hostPath:
+          path: /var/lib/kubelet/device-plugins
+使用DaemonSet方式部署在每一台node服务器部署
+
+</code></pre>
 <ul>
-<li>
-<p>命令行选项分类： 开关类选项（表示开启、关闭某一技能）和带参数类选项（表示作用对象、范围）</p>
-</li>
-<li>
-<p>总结来说，命令行选项还是为key＝value服务的，大致分为4种：</p>
-</li>
-<li>
-<ul>
-<li>1 短选项 ,表示模式选择 ，比如选择server模式还是client模式 ，直接是-server,-client这样的</li>
+<li>5 查看GPU节点信息</li>
 </ul>
-</li>
-<li>
-<ul>
-<li>2 短选项加参数 ，其实也是告诉命令一个key=value,比如 wget -o /dev/null (说到底还是为了告诉wget 下载的目标文件是/dev/null)</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>3 短选项加长参数 ，比如-Dfile.encoding=UTF-8   ，也是告知一个key=value</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>4 短选项,表示某些功能的开关（隐含的意思是加上某个选项就是加一个技能），比如 ls -l -h</li>
-</ul>
-</li>
-</ul>
-<h2 id="5-linux">5 Linux哲学</h2>
-<ol>
-<li>Linux系统中几乎所有的资源都抽象为文件形式保存，包括硬件设备，甚至通信接口等；</li>
-<li>多个单一小程序组合完成复杂任务，每个小程序仅完成一个简单任务；</li>
-<li>尽量避免与用户进行交互操作，使用编程方式实现自动化管理；</li>
-<li>使用文本方式保存软件的配置信息</li>
-</ol>
-<h2 id="6">6 解决技术难题思路</h2>
-<ul>
-<li>运维工作中解决技术问题的思路： 三板斧</li>
-<li>
-<ul>
-<li><strong>看错误提示</strong>、<strong>看日志</strong>、<strong>想办法打开调试功能</strong>（这一步其实就是要求你去研究原理，弄懂原理）</li>
-</ul>
-</li>
-</ul>
-<p><img alt="png" src="../../img/22DF36E3-F1A3-4733-A6A9-48C1407A73D4.png" /></p>
-<h2 id="7">7 学习新技术的体会</h2>
-<ul>
-<li>如何总结、学习一样技术、一款开源软件、一个知识点、一个python模块</li>
-<li>
-<ul>
-<li>1 一定要明白整个过程、整个原理、整个核心链路（梳理核心模型和他的属性，以及核心模型和核心模型之间的关联关系能产生的作用）</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>2 一定要画出来架构图</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>3 过程中要确定唯一值和核心模型。 核心模型就是“什么人在什么时间什么地点干了什么事”，当中的“什么人”。</li>
-</ul>
-</li>
-</ul>
-<h3 id="71-object">7.1 常见的核心模型（也可以理解为任何对象object）,都有自己本身的属性，和它提供的技能</h3>
-<ul>
-<li>比如任何python对象，都有3个属性： id, 对象是什么类型，对象的值 </li>
-<li>比如flask_script插件，它的核心模型是Command子类，它有1 helpinfo ,2 option_list ,3 run()方法 这些属性</li>
-<li>
-<p>比如 mongodb中的 任意一个 副本集(replSet),它都有 名称、成员2个属性</p>
-</li>
-<li>
-<p>要总结核心模型(核心对象)的纵向扩展能力和横向扩展能力:</p>
-</li>
-<li>任何核心模型(核心对象)都有纵向扩展能力和横向扩展能力。</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>序号</th>
-<th>对象模型</th>
-<th>纵向扩展能力</th>
-<th>横向扩展能力</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>mysql表</td>
-<td>当列数不够时，可以加列</td>
-<td>通过关联外键，增加表与表之间的联系</td>
-</tr>
-<tr>
-<td>2</td>
-<td>python class</td>
-<td>随着需求变化，而增加属性</td>
-<td>某一个属性，是别的class对象。</td>
-</tr>
-<tr>
-<td>3</td>
-<td>c语言结构体</td>
-<td>可以增加字段</td>
-<td>某一个字段，是别的struct.</td>
-</tr>
-<tr>
-<td>4</td>
-<td>html元素</td>
-<td>增加字段,比如color=“red”,align=“left”,name=xxx,id=yyy等等，<br/>不一定需要全部用上，但是可以在需要时用上</td>
-<td>关联子元素、父元素</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>上面提到这些是核心模型的纵向扩展能力，有的核心模型之间是有关联关系的，详见服务规划能力</li>
-<li>核心模型的纵向扩展能力，也就是它自身的能力扩展方式（核心模型的ID不变的情况下，扩展核心模型自身的某个能力或者属性。比如表ID不变，在表里增加一列）。</li>
-<li>核心模型的横向扩展能力，也就是它和别的核心模型之间的关联关系（一个表ID不够了，再加一个新表，新表是另一个ID）。</li>
-</ul>
-<h3 id="72">7.2 如何抽象唯一值</h3>
-<table>
-<thead>
-<tr>
-<th>层面</th>
-<th>唯一值</th>
-<th>备注</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>TCP协议</td>
-<td>tcp报文</td>
-<td></td>
-</tr>
-<tr>
-<td>http协议</td>
-<td>http报文</td>
-<td></td>
-</tr>
-<tr>
-<td>Linux内存管理</td>
-<td>内存页(page)</td>
-<td></td>
-</tr>
-<tr>
-<td>Linux磁盘管理</td>
-<td>block（将物理相邻的若干个扇区称为了一个簇）</td>
-<td></td>
-</tr>
-<tr>
-<td>flask-script插件</td>
-<td>Command类</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h2 id="8">8 全局角度</h2>
-<ul>
-<li>对事情，分析问题一定要想办法站在全局的角度，俯瞰全局，看清楚，想明白，想透彻。</li>
-<li>
-<ul>
-<li>怎么样算全局？可以用画圆的思路，集合的思路（男人和女人，前端和后端，一个Team里面各个小组加起来是一个完整的集合，）</li>
-</ul>
-</li>
-<li>对自己服务的对象，当衣食父母，用心服务到位，才是正确的出路。</li>
-<li>任何技术的学习，一定不是看过，用过就完事。</li>
-<li>
-<ul>
-<li>很多技术上的东西，看过一遍就忘记，其实真正的原因是自己偷懒了，不是看过一遍就好，看过之后，一定要用自己的方式，存储在脑海中，记在笔记里面。看过之后，一定要自己总结的心得体会，说出来，分享出来，帮助别人。
-比如学习一个新的运维服务，关注： 有没有了解整个过程，有没有自动化，有没有监控，有没有应急预案</li>
-</ul>
-</li>
-</ul>
-<h2 id="9-software-infrastructure">9 构建Software Infrastructure</h2>
-<h3 id="_2">开源软件的应用过程(即”三板斧”思路): 安装、配置、使用</h3>
-<h3 id="_3">其中，软件配置又是重中之重，是考验运维架构师对一个软件技能运用程度的重要衡量指标，</h3>
-<ul>
-<li>熟悉整个过程又可细分一个三板斧:</li>
-<li>
-<ul>
-<li>1 了解基础配置项的含义和作用。</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>2 找到解释文档，可以通过该文档方便查阅各个配置项的含义。</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>3 摸清楚该开源软件处理请求的整条核心链路。</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>4 使用flask等技术，web化管理该开源软件的配置，并且把配置文件抽象化存入DB，提供相应技能:(包括权限控制、操作记录、RESTful API等)</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>5 以多少用到运维工作中和博客的浏览次数 为衡量是否掌握该开源软件的标尺。</li>
-</ul>
-</li>
-<li>
-<p>游戏SRE的一大技能是 事后验证，校验：</p>
-</li>
-<li>
-<ul>
-<li>1 自己平时做完任务后，一定要想清楚验证方法，并严格验证。</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>2 给别人分配任务时，别人做完了一定要严格验证、校验、验收。</li>
-</ul>
-</li>
-<li>
-<ul>
-<li>验证小技巧总结积累：</li>
-</ul>
-</li>
-<li>
+<pre><code># kubectl describe node aiserver003087
+
+</code></pre>
 <ul>
 <li>
 <ul>
-<li>1 校验数量: 比如校验索引的数量是否还对的上.</li>
+<li><img alt="png" src="../../img/AF8655C3-D35D-42A1-8D12-7F7D8D07F00B.jpg" /></li>
 </ul>
 </li>
-</ul>
+<li>
+<p>6 在k8s中测试GPU资源调用</p>
 </li>
 </ul>
-<h2 id="10-context">10 考虑Context</h2>
-<ol>
-<li>任何进程、程序的运行，都要考虑其Context </li>
-</ol>
-<h2 id="11">11 客户端分散</h2>
-<ol>
-<li>解决单点问题的一个思路是前面加一层LB</li>
-<li>但也可以是客户端分散，客户端随机选择一个服务器，就算其中一个服务器挂了，也只影响部分客户端、不影响全局</li>
-</ol>
+<p><a href="https://mp.weixin.qq.com/s/93K0Nqpl3fDPVs1pbyiXZQ">测试Pod</a></p>
+<pre><code># cat gpu_test.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ffmpeg-pod
+spec:
+  nodeName: aiserver003087 #指定有gpu的节点
+  containers:
+    - name: ffmpeg-container
+      image: nightseas/ffmpeg:latest #k8s中配置阿里的私有仓库遇到一些问题，暂时用公共镜像
+      command: [ &quot;/bin/bash&quot;, &quot;-ce&quot;, &quot;tail -f /dev/null&quot; ]
+      resources:
+        limits:
+          nvidia.com/gpu: 1 # 请求分配 1个 GPU
+创建Pod
+
+# kubectl apply -f gpu_test.yaml 
+pod/ffmpeg-pod configured
+
+</code></pre>
+<h3 id="gpu">(一) 管理配有不同类型 GPU 的集群</h3>
+<ul>
+<li>
+<p>通过为不同Node打不同label实现（人工打标签）</p>
+</li>
+<li>
+<p>通过自动节点标签Kubernetes Node Feature Discovery (NFD)实现</p>
+</li>
+</ul>
+<h3 id="tkeqgpu">(二) 在腾讯云TKE中使用<a href="https://cloud.tencent.com/document/product/457/65734">qGPU</a></h3>
+<h3 id="ackgpu">（三）在阿里云ACK中使用<a href="https://help.aliyun.com/zh/ack/ack-managed-and-ack-dedicated/user-guide/use-gpu-scheduling-in-ack-clusters">GPU调度</a></h3>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../12_monitor_and_alert/" class="btn btn-neutral float-left" title="第十二篇 监控报警最佳实践"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../14_performance_optimization_topic/" class="btn btn-neutral float-right" title="第十四篇 性能调优">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../13_containerd/" class="btn btn-neutral float-left" title="第十三篇 Containerd"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_11/1_theory/" class="btn btn-neutral float-right" title="第一篇 稳定性概论">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -794,10 +667,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../12_monitor_and_alert/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../13_containerd/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../14_performance_optimization_topic/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../chapter_11/1_theory/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
