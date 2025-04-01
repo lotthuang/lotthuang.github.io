@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第七篇 Linux移植 - Lott's Blog</title>
+    <title>第十五篇 公有云最佳实践总结 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u4e03\u7bc7 Linux\u79fb\u690d";
-        var mkdocs_page_input_path = "chapter_14/7_linux_kernel_clipping.md";
+        var mkdocs_page_name = "\u7b2c\u5341\u4e94\u7bc7 \u516c\u6709\u4e91\u6700\u4f73\u5b9e\u8df5\u603b\u7ed3";
+        var mkdocs_page_input_path = "chapter_10/15_public_cloud_use.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -305,34 +305,44 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/2_benefits_of_containerization/">第二篇 容器化好处</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_benefits_of_containerization/">第二篇 容器化好处</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/3_docker_basic_concepts/">第三篇 容器化基础概念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_docker_basic_concepts/">第三篇 容器化基础概念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/9_cloudnative_monitor/">第九篇 云原生监控</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_cloudnative_monitor/">第九篇 云原生监控</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/10_event/">第十篇 彻底搞懂Kubernetes Event</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_event/">第十篇 彻底搞懂Kubernetes Event</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/11_best_practices/">第十一篇 Kubernetes最佳实践</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../11_best_practices/">第十一篇 Kubernetes最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/12_cloud_network/">第十二篇 云网络</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_cloud_network/">第十二篇 云网络</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/13_containerd/">第十三篇 Containerd</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_containerd/">第十三篇 Containerd</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/14_k8s_and_gpu/">第十四篇 基于K8S管理GPU集群</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../14_k8s_and_gpu/">第十四篇 基于K8S管理GPU集群</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/15_public_cloud_use/">第十五篇 公有云最佳实践总结</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第十五篇 公有云最佳实践总结</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 云监控</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#grafana">（一）如何在自建Grafana上展示华为云云产品监控指标</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#grafana_1">（二）如何在自建Grafana上展示腾讯云云产品监控指标</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -361,68 +371,36 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十四章 Linux驱动方向总结</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../1_demo_of_led_driver/">第一篇 驱动程序的Hello World</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/1_demo_of_led_driver/">第一篇 驱动程序的Hello World</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../2_qianrushidev/">第二篇 嵌入式开发基础</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/2_qianrushidev/">第二篇 嵌入式开发基础</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../3_linux_kernel_api_list/">第三篇 Linux内核API汇总和各类风格总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/3_linux_kernel_api_list/">第三篇 Linux内核API汇总和各类风格总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../4_zifushebeiqudongyuanli/">第四篇 字符设备驱动实现原理和物理内存地址空间和IO端口空间</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/4_zifushebeiqudongyuanli/">第四篇 字符设备驱动实现原理和物理内存地址空间和IO端口空间</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_device_tree/">第五篇 platform总线模型和设备树</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/5_device_tree/">第五篇 platform总线模型和设备树</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../6_device_driver_sop/">第六篇 从阅读硬件手册开始设备驱动程序编写</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/6_device_driver_sop/">第六篇 从阅读硬件手册开始设备驱动程序编写</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第七篇 Linux移植</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#rootfs">一 rootfs 三问(是什么 有啥好 怎么办)</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_2">是什么</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#_3">文件系统的重要性</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_4">为什么</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#initramfs">为什么需要 initramfs</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#initramfs_1">为什么不把驱动程序全部放入内核，而单独搞 initramfs</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_5">怎么办</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#q">Q:如何制作根文件系统？</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#q_1">Q:有没有比它更好用的工具？</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#q-busybox">Q:如何使用 busybox？</a>
-    </li>
-        </ul>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#linux">二 嵌入式 Linux 系统移植四大部分</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/7_linux_kernel_clipping/">第七篇 Linux移植</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../8_linux_driver_framework/">第八篇 Linux驱动框架和SoC驱动框架</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/8_linux_driver_framework/">第八篇 Linux驱动框架和SoC驱动框架</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../9_linux_device_class/">第九篇 Linux设备分类</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/9_linux_device_class/">第九篇 Linux设备分类</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../10_u_boot/">第十篇 u-boot梳理和总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/10_u_boot/">第十篇 u-boot梳理和总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../11_linux_reset_subsystem_and_framework/">第十一篇 Linux Reset子系统及其框架</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/11_linux_reset_subsystem_and_framework/">第十一篇 Linux Reset子系统及其框架</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../12_pinctl_and_gpio/">第十二篇 Linux pinctl和gpio子系统及其框架</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/12_pinctl_and_gpio/">第十二篇 Linux pinctl和gpio子系统及其框架</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../14_linux_kernel_trimming/">第十四篇 Linux内核裁剪总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/14_linux_kernel_trimming/">第十四篇 Linux内核裁剪总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../15_imx6ull/">第十五篇 IMX6UL实验记录</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/15_imx6ull/">第十五篇 IMX6UL实验记录</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十五章 AI+嵌入式结合方向汇总</span></p>
@@ -449,8 +427,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">第十四章 Linux驱动方向总结</li>
-      <li class="breadcrumb-item active">第七篇 Linux移植</li>
+          <li class="breadcrumb-item">第十章 容器化和Kubernetes</li>
+      <li class="breadcrumb-item active">第十五篇 公有云最佳实践总结</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -461,85 +439,60 @@
               
                 <h1 id="_1">概述</h1>
 <ul>
+<li>本篇总结公有云的一些最佳实践</li>
+</ul>
+<h2 id="_2">一 云监控</h2>
+<h3 id="grafana">（一）如何在自建Grafana上展示华为云云产品监控指标</h3>
+<ul>
 <li>
-<p>本篇总结 Linux 内核移植相关</p>
+<p>常见的华为云云产品包括MongoDB、Redis、MySQL、ELB等</p>
 </li>
 <li>
-<p>嵌入式 Linux 移植三巨头:<code>uboot、Linux kernel、rootfs(根文件系统)</code>。</p>
+<p><img alt="png" src="../../img/2735759C-A070-4F35-ABDF-7107FF145A51.jpg" /></p>
+</li>
+<li>
+<p>在<a href="https://github.com/huaweicloud/cloudeye-exporter"><strong>cloudeye-exporter</strong></a>那里需要填写华为云AK/SK</p>
+</li>
+<li><a href=""><strong>cloudeye-exporter</strong></a> 华为云<a href="https://support.huaweicloud.com/usermanual-ces/ces_01_0153.html">说明文档</a></li>
+<li>华为云云监控指标<a href="https://support.huaweicloud.com/api-ces/ces_03_0059.html">说明文档</a></li>
+</ul>
+<h3 id="grafana_1">（二）如何在自建Grafana上展示腾讯云云产品监控指标</h3>
+<ul>
+<li>
+<ul>
+<li>常见的腾讯云云产品包括MongoDB、Redis、MySQL、CLB等</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>腾讯云也和华为云<a href="https://github.com/huaweicloud/cloudeye-exporter"><strong>cloudeye-exporter</strong></a>类似的<a href="https://github.com/tencentyun/tencentcloud-exporter"><strong>tencentcloud-exporter</strong></a>, 不过已经不再维护</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>腾讯云还可以通过<a href="https://grafana.com/grafana/plugins/tencentcloud-monitor-app/">Tencent Cloud Monitor Grafana App</a> 获取到云监控数据, 只要Grafana实例安装该插件、配置相应AK、SK之后即可</li>
+</ul>
+</li>
+<li>
+<p><img alt="png" src="../../img/BE3E9EE1-9C53-4D28-A6DE-EC3E5FFD7459.jpg" /></p>
+</li>
+<li>
+<ul>
+<li><strong>Tencent Cloud Monitor Grafana App</strong> GitHub地址: https://github.com/TencentCloud/tencentcloud-monitor-grafana-app</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>Tencent Cloud Monitor Grafana App</strong> 监控指标说明<a href="https://cloud.tencent.com/document/product/248/54505">文档</a></li>
+</ul>
 </li>
 </ul>
-<h2 id="rootfs">一 rootfs 三问(是什么 有啥好 怎么办)</h2>
-<h3 id="_2">是什么</h3>
-<p>rootfs 是基于内存的文件系统，所有操作都在内存中完成；也没有实际的存储设备，所以不需要设备驱动程序的参与。 基于以上原因，linux 在启动阶段使用 rootfs 文件系统，当磁盘驱动程序和磁盘文件系统成功加载后，linux 系统会将系统根目录从 rootfs 切换到磁盘文件系统。</p>
-<h4 id="_3">文件系统的重要性</h4>
-<blockquote>
-<p>文件系统的重要性，我想大家都很清楚，不用多说了。这里有一句话，我觉得非常精辟而且到位的点出了文件系统在 linux 中的重要性：</p>
-<p>尽管内核是 linux 的核心，但<strong>文件却是用户与操作系统交互所采用的主要工具</strong>。这对 linux 来说尤其如此，这是因为在 UNIX 传统中，它使用文件 I/O 机制管理硬件设备和数据文件。</p>
-</blockquote>
-<h3 id="_4">为什么</h3>
-<h4 id="initramfs">为什么需要 initramfs</h4>
-<p>在 Linux 内核被加载到内存并运行后，<strong>内核进程最终需要切换到用户的进程来使用计算机</strong>，而用户进程又存在于外存储设备上，比如 systemd 进程，通常 systemd 进程所在的存储设备也是 Linux 真正的根文件系统所在的位置，我们知道<strong>内核源码是没有包含驱动程序的</strong>，驱动程序在外存储设备上，那么问题来了，要切换到 systemd 进程（system deamon），就需要外存储的驱动，但是没有驱动又没办法访问外存储，这就进入先有鸡还是先有蛋的问题了（那到底是先有鸡还是先有蛋呢：）），这个时候<code>initramfs</code>就闪亮登场了。</p>
-<blockquote>
-<p>注意这里的<code>initramfs</code> 等同于嵌入式 Linux 方向的<code>rootfs</code></p>
-</blockquote>
-<h4 id="initramfs_1">为什么不把驱动程序全部放入内核，而单独搞 initramfs</h4>
-<ul>
-<li><strong>第一，除非是一个专用系统，目标系统的硬件平台是固定不变的，否则，对于一个通用操作系统，比如 Linux 的桌面发行版，将运行在各种不同的硬件平台上。</strong></li>
-</ul>
-<p>因此，根文件系统可能存储在各种各样的介质上，比如 IDE 硬盘、SATA 硬盘、SCSI 硬盘、Flash 存储器，以及随着技术的发展，不断出现的新的存储设备。为了能够兼容更多的硬件平台，显然系统需要支持尽可能多的存储设备。但是如果将所有这些设备的驱动全部编译进内核，显然不是一个好办法。因为对于某个特定的硬件平台，可能只需要一个驱动即可，内核中的其他驱动根本用不上，将它们编译进内核只会徒增内核的尺寸、占用内存空间，尤其对于一些内存或者存储介质空间有限的设备，这个问题尤为明显。于是<strong>将这些驱动编译为模块，存储在根文件系统中，按需载入内存是一个解决问题的办法。</strong></p>
-<blockquote>
-<p>内核启动阶段用到的驱动程序其实需要按需从 initramfs 加载, 而不是一股脑全部在内核里徒增内核尺寸.</p>
-</blockquote>
-<ul>
-<li><strong>第二, 真正的/sbin/init 可能不位于简单的硬盘上,可能在 NFS 上甚至需要权限认证等复杂过程</strong> 需要将复杂过程转移到用户空间，而非在内核空间实现.遵守内核提供机制、用户空间提供策略的原则.</li>
-</ul>
-<p>initramfs 是一个临时的文件系统，其中包含了必要的设备如硬盘、网卡、文件系统等的驱动以及加载驱动的工具及其运行环境，比如基本的 C 库，动态库的链接加载器等等。同时，那些处理根文件系统在 RAID、网络设备上的程序也存放在 initramfs 中。由第三方程序（如 Bootloader）负责将 initramfs 从硬盘装载进内存。</p>
-<p>以驱动硬盘为例，内核就不必再从硬盘，而是从已经加载到内存的 initramfs 中获取硬盘控制器等相关驱动了，继而可以驱动硬盘，访问硬盘上的根文件系统，从而解决了前面提到的鸡和蛋的矛盾。</p>
-<p>在初始化的最后，内核运行 initramfs 中的 init 程序，该程序将探测硬件设备、加载驱动，挂载真正的文件系统，执行文件系统上的/sbin/init，进而切换到真正的用户空间.</p>
-<h3 id="_5">怎么办</h3>
-<h4 id="q">Q:如何制作根文件系统？</h4>
-<p>用 busybox。</p>
-<h4 id="q_1">Q:有没有比它更好用的工具？</h4>
-<p>没有，都是用它。</p>
-<h4 id="q-busybox">Q:如何使用 busybox？</h4>
-<ul>
-<li>（1）先下载 busybox 源码到本地。</li>
-</ul>
-<p>https://busybox.net/</p>
-<p>或</p>
-<p>git clone git://busybox.net/busybox.git</p>
-<ul>
-<li>（2）进行配置和交叉编译</li>
-</ul>
-<p>使用默认配置即可：</p>
-<p>make defconfig</p>
-<ul>
-<li>（3）编译生成指定平台的可执行文件 busybox :</li>
-</ul>
-<p>make ARCH=arm CROSS_COMPILE=arm-none-linux-gnueabihf-</p>
-<p>执行成功后会在当前目录下生成一个名叫 busybox 的可执行程序。别看它小小的，它里面可包含了上百个工具，例如：ls、pwd、find、grep 等等。也就是说你在 Linux 下执行的工具命令都是它提供给你的，所以说 linux 只是一个内核，它离不开 GNU 下众多兄弟的帮助。</p>
-<ul>
-<li>4）执行制作操作：</li>
-</ul>
-<p>make install</p>
-<p>默认会在当前目录生成一个_install 目录，这个目录就是产生的根文件系统了。它里面生成了几个系统引导时候必须的几个文件目录：/bin  /sbin  /usr，其它的目录会在系统启动时候创建。这些文件夹里面的命令其实都是一个软链接，连接到 busybox 这一个实实在在的可执行程序。linuxrc 是 kernel 启动过程中很关键的一步，可在详细了解 Linux 启动流程中遇到。</p>
-<p><a href="https://blog.csdn.net/fuhanghang/article/details/128849560">参考 1</a></p>
-<p><a href="https://www.bilibili.com/read/cv4959669/">参考 2</a></p>
-<h2 id="linux">二 嵌入式 Linux 系统移植四大部分</h2>
-<ul>
-<li>一、搭建交叉开发环境</li>
-<li>二、bootloader 的选择和移植</li>
-<li>三、kernel 的配置、编译、和移植</li>
-<li>四、根文件系统的制作</li>
-</ul>
-<p><a href="https://z.itpub.net/article/detail/A4D4995A2035757F82E1F38BDDFC2F57">参考 3</a></p>
-<p><a href="http://xstarcd.github.io/wiki/Linux/ShengRuLiJie_linux_2.6_initramfs.html">参考 4</a></p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../6_device_driver_sop/" class="btn btn-neutral float-left" title="第六篇 从阅读硬件手册开始设备驱动程序编写"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../8_linux_driver_framework/" class="btn btn-neutral float-right" title="第八篇 Linux驱动框架和SoC驱动框架">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../14_k8s_and_gpu/" class="btn btn-neutral float-left" title="第十四篇 基于K8S管理GPU集群"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_11/1_theory/" class="btn btn-neutral float-right" title="第一篇 稳定性概论">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -562,10 +515,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../6_device_driver_sop/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../14_k8s_and_gpu/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../8_linux_driver_framework/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../chapter_11/1_theory/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
