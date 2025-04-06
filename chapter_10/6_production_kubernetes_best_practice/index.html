@@ -316,7 +316,13 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">第六篇 生产环境Kubernetes部署最佳实践</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#_2">一 网络插件选择和网络方案</a>
+    <li class="toctree-l2"><a class="reference internal" href="#0">0 容器网络原理</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_2">容器网络</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">一 网络插件选择和网络方案</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1">1 网络插件</a>
         <ul>
@@ -336,11 +342,11 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_3">二 存储方案</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">二 存储方案</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_4">三 监控和告警方案</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">三 监控和告警方案</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_5">四 用户权限管理</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_6">四 用户权限管理</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#kubernetes">五 Kubernetes 组件应用实践</a>
         <ul>
@@ -370,7 +376,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_Calico/">第八篇 Kubernetes网络插件之Calico</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../9_cloudnative_monitor/">第九篇 云原生监控</a>
                   </li>
@@ -483,7 +489,40 @@
 <ul>
 <li>本篇总结生产环境部署和应用 Kubernetes 最佳实践</li>
 </ul>
-<h2 id="_2">一 网络插件选择和网络方案</h2>
+<h2 id="0">0 容器网络原理</h2>
+<h3 id="_2">容器网络</h3>
+<ul>
+<li>
+<p>容器使用 Network Namespace 实现对网络资源的隔离，被隔离的进程只能看到当前 Namespace 里的网络栈。</p>
+</li>
+<li>
+<p><strong>网络栈</strong>包括了：<strong>网卡（Network Interface）</strong>、<strong>回环设备（Loopback Device）</strong>、<strong>路由表（Routing Table）</strong>和 <strong>iptables 规则</strong>。Linux 宿主机的网络通过网络栈来实现，同样容器的网络也是通过网络栈实现。</p>
+</li>
+<li>
+<p>容器网络需要解决哪些问题：</p>
+</li>
+<li>
+<ul>
+<li>容器 IP 的分配；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>容器之间的互相访问(这里只考虑单节点容器间访问，跨节点可考虑 Kubernetes)；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>容器如何访问主机外部网络；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>外部网络如何访问到容器内部。</li>
+</ul>
+</li>
+</ul>
+<h2 id="_3">一 网络插件选择和网络方案</h2>
 <h3 id="1">1 网络插件</h3>
 <h4 id="11-cnm-cni">1.1 CNM &amp; CNI 阵营：</h4>
 <ul>
@@ -536,11 +575,55 @@ Kubernetes 网络设计模型：</p>
 </ul>
 <h4 id="13-kubernetes">1.3 Kubernetes 网络主要解决以下网络通信问题:</h4>
 <ul>
+<li>其一</li>
+<li>
+<ul>
 <li>同一 pod 下容器与容器的通信；</li>
+</ul>
+</li>
+<li>
+<ul>
 <li>同一节点下不同的 pod 之间的容器间通信；</li>
+</ul>
+</li>
+<li>
+<ul>
 <li>不同节点下容器之间的通信；</li>
+</ul>
+</li>
+<li>
+<ul>
 <li>集群外部与内部组件的通信；</li>
+</ul>
+</li>
+<li>
+<ul>
 <li>pod 与 service 之间的通信；</li>
+</ul>
+</li>
+<li>
+<p>其二:</p>
+</li>
+<li>
+<ul>
+<li>同节点 pod 与 pod 如何通信；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>跨节点 pod 与 pod 如何通信；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>pod 如何访问外网；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>外网如何访问 pod；</li>
+</ul>
+</li>
 </ul>
 <h5 id="a-pod">A 同一 Pod 下容器与容器的通信</h5>
 <p>同一个 Pod 的容器共享同一个网络命名空间，它们之间的访问可以用
@@ -591,7 +674,7 @@ localhost 地址 + 容器端口就可以访问。</p>
 <p>总结：</p>
 <p>Flannel 实现了对 Kubernetes 网络的支持，但是它引入了多个网络组件，在网络通信时需要转到 flannel0 网络接口，再转到用户态的 flanneld 程序，到对端后还需要走这个过程的反过程，所以也会引入一些网络的时延损耗。另外 Flannel 默认的底层通信协议是 UDP。UDP 本身是非可靠协议，虽然两端的 TCP 实现了可靠传输，但在大流量、高并发应用场景下还需要反复调试，确保不会出现传输质量的问题。特别是对网络依赖重的应用，需要评估对业务的影响。</p>
 <h3 id="4-calico">4 网络插件之 Calico</h3>
-<h2 id="_3">二 存储方案</h2>
+<h2 id="_4">二 存储方案</h2>
 <p><img alt="png" src="../../img/007B0A83-ECC7-4784-BE5B-033D76928DA3.png" /></p>
 <table>
 <thead>
@@ -623,8 +706,8 @@ localhost 地址 + 容器端口就可以访问。</p>
 </tr>
 </tbody>
 </table>
-<h2 id="_4">三 监控和告警方案</h2>
-<h2 id="_5">四 用户权限管理</h2>
+<h2 id="_5">三 监控和告警方案</h2>
+<h2 id="_6">四 用户权限管理</h2>
 <h2 id="kubernetes">五 Kubernetes 组件应用实践</h2>
 <p>诸如 namespace、deployment、configmap、scret、</p>
 <h3 id="1-deployment">1 生产环境 Deployment 全注释</h3>

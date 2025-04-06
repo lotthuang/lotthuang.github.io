@@ -87,6 +87,16 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#4-limits">4 limits修改</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#5-rc-localservice">5 自定义rc-local.service</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#51-rc-localservice">5.1 添加rc-local.service</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#52-rc-local">5.2 新建rc-local文件</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#53">5.3 添加权限并设置开机自启</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
               </ul>
@@ -328,7 +338,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_Calico/">第八篇 Kubernetes网络插件之Calico</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/9_cloudnative_monitor/">第九篇 云原生监控</a>
                   </li>
@@ -525,6 +535,58 @@ root hard nofile 10000000
 root soft nproc 10000000
 root hard nproc 10000000
 </code></pre>
+<h2 id="5-rc-localservice">5 自定义rc-local.service</h2>
+<h3 id="51-rc-localservice">5.1 添加rc-local.service</h3>
+<ul>
+<li>以下为一整条命令，一起复制运行</li>
+</ul>
+<pre><code>cat &gt; /etc/systemd/system/rc-local.service &lt;&lt;EOF
+[Unit]
+Description=/etc/rc.local
+ConditionPathExists=/etc/rc.local
+
+[Service]
+Type=forking
+ExecStart=/etc/rc.local start
+TimeoutSec=0
+StandardOutput=tty
+RemainAfterExit=yes
+SysVStartPriority=99
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+</code></pre>
+<h3 id="52-rc-local">5.2 新建rc-local文件</h3>
+<pre><code>cat &gt; /etc/rc.local &lt;&lt;EOF
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will &quot;exit 0&quot; on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+# bash /root/bindip.sh
+
+exit 0
+EOF
+</code></pre>
+<h3 id="53">5.3 添加权限并设置开机自启</h3>
+<pre><code>chmod +x /etc/rc.local
+systemctl enable rc-local
+systemctl start rc-local.service
+</code></pre>
+<p>检查状态</p>
+<p>systemctl status rc-local.service</p>
+<p>返回Active:active信息，则成功。</p>
+<p>最后我们就可以在/etc/rc.loacl里，添加开机的自启命令什么的了。记住添加在exit 0之前。</p>
               
             </div>
           </div><footer>

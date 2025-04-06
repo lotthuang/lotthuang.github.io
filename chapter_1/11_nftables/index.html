@@ -101,6 +101,8 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#xtables-nft">六 xtables-nft</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
@@ -360,7 +362,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_caclio/">第八篇 Kubernetes网络插件之Caclio</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_Calico/">第八篇 Kubernetes网络插件之Calico</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/9_cloudnative_monitor/">第九篇 云原生监控</a>
                   </li>
@@ -797,6 +799,22 @@ COMMIT
 iptables -t raw -A PREROUTING -p tcp -m multiport --dports 80:82,443 -j NOTRACK
 iptables -t raw -A OUTPUT -p tcp -m multiport --sports 80:82,443 -j NOTRACK
 </code></pre>
+<h2 id="xtables-nft">六 xtables-nft</h2>
+<ul>
+<li><a href="https://manpages.debian.org/testing/iptables/xtables-nft-multi.8.en.html">xtables-nft</a> — iptables using nftables kernel api</li>
+<li>
+<p>也就是用户空间使用iptables命令，内核空间使用nftables API</p>
+</li>
+<li>
+<p>安装了这个xtables-nft之后，其实完全继续使用iptables语法即可</p>
+</li>
+<li>
+<p>内核版本要求大于等于4.17</p>
+</li>
+<li>
+<p>细节差异在于使用<code>-j TRACE</code>进行debug时，需要使用<code>xtables-monitor</code>命令替代.</p>
+</li>
+</ul>
               
             </div>
           </div><footer>
