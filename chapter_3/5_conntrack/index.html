@@ -562,12 +562,17 @@ state 直接用 nf_conntrack 记录的连接状态（NEW/ESTABLISHED/RELATED/INV
 <p>1 内核提取此数据包信息(源目IP，port，协议号)进行hash计算得到一个hash值，在哈希表中以此hash值做索引，索引结果为数据包所属的bucket(链表)。这一步hash计算时间固定并且很短</p>
 <p>2 遍历hash得到的bucket，查找是否有匹配的conntrack条目。这一步是比较耗时的操作，bucket size越大（bucket长度越长），遍历时间越长</p>
 <ul>
-<li>CONNTRACK_MAX代表系统所有追踪的链接数</li>
-<li>HASHSIZE代表哈希表大小. 因此CONNTRACK_MAX:HASHSIZE最好不要太大, 通常推荐8:1或者4:1</li>
+<li><strong>CONNTRACK_MAX代表系统所有追踪的链接数</strong></li>
+<li><strong>HASHSIZE代表哈希表大小. 因此CONNTRACK_MAX:HASHSIZE最好不要太大, 通常推荐8:1或者4:1</strong></li>
+<li>简单一些: </li>
 </ul>
+<pre><code>CONNTRACK_MAX是所有可追踪连接数上限，这个用户可以自己调； HASHSIZE 也是用户可以自己调；
+BUCKETSIZE=CONNTRACK_MAX/HASHSIZE, BUCKETSIZE是内核自己自动调整的
+BUCKETSIZE推荐为8或者4
+</code></pre>
 <h3 id="3">3 内核相关参数</h3>
-<pre><code>net.netfilter.nf_conntrack_max=6000000
-net.netfilter.nf_conntrack_buckets=1307648
+<pre><code>net.netfilter.nf_conntrack_max=6000000 （也就是上面说的CONNTRACK_MAX）
+net.netfilter.nf_conntrack_buckets=1307648 （也就是上面说的HASHSIZE）
 
 # timeout值不变
 net.netfilter.nf_conntrack_tcp_timeout_close = 10
@@ -588,7 +593,10 @@ net.netfilter.nf_conntrack_tcp_timeout_unacknowledged = 300
 </ul>
 <h2 id="_4">三 怎么办</h2>
 <h3 id="1_2">1 常见维护操作</h3>
-<pre><code>查看nf_conntrack表当前连接数    
+<pre><code>
+加载对应内核模块 modprobe nf_conntrack
+
+查看nf_conntrack表当前连接数    
 cat /proc/sys/net/netfilter/nf_conntrack_count       
 
 查看nf_conntrack表最大连接数    
@@ -602,7 +610,7 @@ dmesg |grep nf_conntrack
 表示内核启动时，bucket数量为65536，conntrack的最大连接数为262144
 
 
-查看存储conntrack条目的哈希表大小,此为只读文件
+查看HASHSIZE
 cat /proc/sys/net/netfilter/nf_conntrack_buckets
 
 查看nf_conntrack的TCP连接记录时间

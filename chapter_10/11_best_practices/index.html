@@ -326,61 +326,83 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">第十一篇 Kubernetes最佳实践</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#_2">一 授权</a>
+    <li class="toctree-l2"><a class="reference internal" href="#k8s">一 K8S集群搭建</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-7">1 企业选型的7个关键考量维度</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#11">1.1 团队技能储备</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_3">二 集群</a>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2">2 宿主机必要配置</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-kubeadm-root">2 kubeadm 使用(需要root权限)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-kubeadm">3 kubeadm 使用之后结果</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-calico">4 安装calico网络插件</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#5-10">5 证书有效期延长为10年</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#6-node">6 加入新的Node节点</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#7-ingress-controller">7 安装ingress-controller</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">二 集群</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#kubecm-kubeconfig">使用 KubeCm 管理多集群 KubeConfig</a>
         <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#_4">背景</a>
+    <li class="toctree-l4"><a class="reference internal" href="#_3">背景</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#_5">解决方案</a>
-    </li>
-        </ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_4">解决方案</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_9">三 节点和节点池</a>
+        </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_10">建议事项</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_8">三 节点和节点池</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_11">常见的经验如下:</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_9">建议事项</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_12">实例规格应用场景</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_10">常见的经验如下:</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_13">四 网络</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_11">实例规格应用场景</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_14">五 数据面最佳实践</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_12">四 网络</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_15">六 控制面最佳实践</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_13">五 数据面最佳实践</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_16">七 存储</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_14">六 控制面最佳实践</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_17">八 调度</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_15">七 存储</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_18">九 可观测性</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_16">八 调度</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_19">十 安全</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_17">九 可观测性</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_20">十一 迁移</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_18">十 安全</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_21">十二 镜像加速</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_19">十一 迁移</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_22">十三 解决方案</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_20">十二 镜像加速</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_23">十四 弹性容器实例</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_21">十三 解决方案</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_22">十四 弹性容器实例</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#etcd">十五 ETCD 优化</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_24">十六 备份</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_23">十六 备份</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_25">备份方案制定</a>
+    <li class="toctree-l3"><a class="reference internal" href="#_24">备份方案制定</a>
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#etcd_1">物理备份：etcd 备份</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#velero">逻辑备份：velero 备份 ，</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#_26">优缺点</a>
+    <li class="toctree-l4"><a class="reference internal" href="#_25">优缺点</a>
     </li>
         </ul>
     </li>
@@ -388,7 +410,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#operator">十七 Operator</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_27">十八 调试</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_26">十八 调试</a>
     </li>
     </ul>
                   </li>
@@ -497,28 +519,292 @@
 <ul>
 <li>本篇以总体视角总结<a href="https://www.volcengine.com/docs/6460/1175842">Kubernetes 的最佳实践</a></li>
 </ul>
-<h2 id="_2">一 授权</h2>
-<h2 id="_3">二 集群</h2>
+<h2 id="k8s">一 K8S集群搭建</h2>
+<h3 id="1-7">1 <a href="https://mp.weixin.qq.com/s/HyP6XHPt-jMH2mF4ObOYUg">企业选型的7个关键考量维度</a></h3>
+<h4 id="11">1.1 团队技能储备</h4>
+<ul>
+<li>1 二进制部署要求团队熟悉：</li>
+<li>
+<ul>
+<li>Kubernetes组件通信协议（如API Server的REST API、etcd的gRPC）。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>操作系统级调优（如systemd的CPUAccounting和MemoryLimit）。</li>
+</ul>
+</li>
+<li>2 基础设施规模</li>
+<li>
+<ul>
+<li>小规模（&lt;50节点）：kubeadm性价比最高。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>中大规模（50-500节点）：需评估是否需要定制调度器或网络插件。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>超大规模（&gt;500节点）：二进制部署几乎成为必选项。</li>
+</ul>
+</li>
+<li>3 合规与安全要求</li>
+<li>
+<ul>
+<li>金融、政务等行业通常需要二进制部署以满足审计颗粒度要求。</li>
+</ul>
+</li>
+<li>4 生命周期管理</li>
+<li>
+<ul>
+<li>频繁集群创建/销毁（如测试环境）优先选择kubeadm。</li>
+</ul>
+</li>
+<li>5 云生态集成</li>
+<li>
+<ul>
+<li>若深度依赖云厂商托管服务（如AWS EKS Anywhere），kubeadm更易集成。</li>
+</ul>
+</li>
+<li>6 成本模型</li>
+<li>
+<ul>
+<li>二进制部署的隐性成本：</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>人力成本：资深Kubernetes运维工程师薪资通常比普通运维高30%-50%。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>时间成本：手动升级一个50节点集群可能需要2人天。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>7  灾备与可恢复性</li>
+<li>
+<ul>
+<li>二进制部署需自定义备份方案（如etcd快照+组件二进制版本库）</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>kubeadm可结合Velero实现标准化灾备。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2">2 宿主机必要配置</h3>
+<p>1 关闭swap</p>
+<pre><code>sudo swapoff -a
+sudo sed -i 's/.*swap.*/#&amp;/' /etc/fstab
+</code></pre>
+<p>2 内核参数</p>
+<pre><code>cat &lt;&lt;EOF | tee /etc/sysctl.d/k8s.conf
+vm.swappiness = 0
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward                 = 1
+
+EOF
+
+# 不重启应用配置
+sysctl --system
+</code></pre>
+<p>3 安装必要软件包</p>
+<pre><code>apt install kubelet kubeadm kubectl containerd
+</code></pre>
+<h3 id="2-kubeadm-root">2 kubeadm 使用(需要root权限)</h3>
+<pre><code>kubeadm init \
+--kubernetes-version v1.27.4 \
+--image-repository registry.aliyuncs.com/google_containers \
+--apiserver-advertise-address 7.0.0.6 \
+--service-cidr 10.245.0.0/16 \
+--cri-socket unix://var/run/containerd/containerd.sock \
+--pod-network-cidr 10.244.0.0/16
+
+</code></pre>
+<h3 id="3-kubeadm">3 kubeadm 使用之后结果</h3>
+<pre><code>
+[init] Using Kubernetes version: v1.27.4
+[preflight] Running pre-flight checks
+[preflight] Pulling images required for setting up a Kubernetes cluster
+[preflight] This might take a minute or two, depending on the speed of your internet connection
+[preflight] You can also perform this action in beforehand using 'kubeadm config images pull'
+W0411 19:44:50.204967     828 checks.go:835] detected that the sandbox image &quot;registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.6&quot; of the container runtime is inconsistent with that used by kubeadm. It is recommended that using &quot;registry.aliyuncs.com/google_containers/pause:3.9&quot; as the CRI sandbox image.
+[certs] Using certificateDir folder &quot;/etc/kubernetes/pki&quot;
+[certs] Generating &quot;ca&quot; certificate and key
+[certs] Generating &quot;apiserver&quot; certificate and key
+[certs] apiserver serving cert is signed for DNS names [host-7-0-0-5 kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local] and IPs [10.245.0.1 7.0.0.5]
+[certs] Generating &quot;apiserver-kubelet-client&quot; certificate and key
+[certs] Generating &quot;front-proxy-ca&quot; certificate and key
+[certs] Generating &quot;front-proxy-client&quot; certificate and key
+[certs] Generating &quot;etcd/ca&quot; certificate and key
+[certs] Generating &quot;etcd/server&quot; certificate and key
+[certs] etcd/server serving cert is signed for DNS names [host-7-0-0-5 localhost] and IPs [7.0.0.5 127.0.0.1 ::1]
+[certs] Generating &quot;etcd/peer&quot; certificate and key
+[certs] etcd/peer serving cert is signed for DNS names [host-7-0-0-5 localhost] and IPs [7.0.0.5 127.0.0.1 ::1]
+[certs] Generating &quot;etcd/healthcheck-client&quot; certificate and key
+[certs] Generating &quot;apiserver-etcd-client&quot; certificate and key
+[certs] Generating &quot;sa&quot; key and public key
+[kubeconfig] Using kubeconfig folder &quot;/etc/kubernetes&quot;
+[kubeconfig] Writing &quot;admin.conf&quot; kubeconfig file
+[kubeconfig] Writing &quot;kubelet.conf&quot; kubeconfig file
+[kubeconfig] Writing &quot;controller-manager.conf&quot; kubeconfig file
+[kubeconfig] Writing &quot;scheduler.conf&quot; kubeconfig file
+[kubelet-start] Writing kubelet environment file with flags to file &quot;/var/lib/kubelet/kubeadm-flags.env&quot;
+[kubelet-start] Writing kubelet configuration to file &quot;/var/lib/kubelet/config.yaml&quot;
+[kubelet-start] Starting the kubelet
+[control-plane] Using manifest folder &quot;/etc/kubernetes/manifests&quot;
+[control-plane] Creating static Pod manifest for &quot;kube-apiserver&quot;
+[control-plane] Creating static Pod manifest for &quot;kube-controller-manager&quot;
+[control-plane] Creating static Pod manifest for &quot;kube-scheduler&quot;
+[etcd] Creating static Pod manifest for local etcd in &quot;/etc/kubernetes/manifests&quot;
+[wait-control-plane] Waiting for the kubelet to boot up the control plane as static Pods from directory &quot;/etc/kubernetes/manifests&quot;. This can take up to 4m0s
+[apiclient] All control plane components are healthy after 9.507522 seconds
+[upload-config] Storing the configuration used in ConfigMap &quot;kubeadm-config&quot; in the &quot;kube-system&quot; Namespace
+[kubelet] Creating a ConfigMap &quot;kubelet-config&quot; in namespace kube-system with the configuration for the kubelets in the cluster
+[upload-certs] Skipping phase. Please see --upload-certs
+[mark-control-plane] Marking the node host-7-0-0-5 as control-plane by adding the labels: [node-role.kubernetes.io/control-plane node.kubernetes.io/exclude-from-external-load-balancers]
+[mark-control-plane] Marking the node host-7-0-0-5 as control-plane by adding the taints [node-role.kubernetes.io/control-plane:NoSchedule]
+[bootstrap-token] Using token: xozdlf.n3mz4vejp0hj7tv7
+[bootstrap-token] Configuring bootstrap tokens, cluster-info ConfigMap, RBAC Roles
+[bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to get nodes
+[bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials
+[bootstrap-token] Configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
+[bootstrap-token] Configured RBAC rules to allow certificate rotation for all node client certificates in the cluster
+[bootstrap-token] Creating the &quot;cluster-info&quot; ConfigMap in the &quot;kube-public&quot; namespace
+[kubelet-finalize] Updating &quot;/etc/kubernetes/kubelet.conf&quot; to point to a rotatable kubelet client certificate and key
+[addons] Applied essential addon: CoreDNS
+[addons] Applied essential addon: kube-proxy
+
+Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run &quot;kubectl apply -f [podnetwork].yaml&quot; with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 7.0.0.5:6443 --token xozdlf.n3mz4vejp0hj7tv7 \
+    --discovery-token-ca-cert-hash sha256:35a1a8f8d608f70353742d7c13b039dbc7ea1e5fd75265196f1f288e4d29bd39
+
+kubeadm join 7.0.0.6:6443 --token hyyuy8.6jtvtl52ysqkjytd \
+    --discovery-token-ca-cert-hash sha256:3ec1b161cd082f65e790af2f14d90e9514680b04749b4dcb6a22ca5d89dc7efc
+
+
+</code></pre>
+<h3 id="4-calico">4 安装calico网络插件</h3>
+<ul>
+<li>1 下载yaml文件</li>
+</ul>
+<pre><code>
+wget 'https://projectcalico.docs.tigera.io/manifests/calico.yaml'
+
+
+</code></pre>
+<ul>
+<li>2 修改镜像地址，从<code>docker.io</code>修改为<code>dockerpull.cn</code>, 防止一会儿镜像拉不下来</li>
+<li>
+<p><img alt="png" src="../../img/98AB7941-67D7-4624-B10B-C8351A6EC421.png" /></p>
+</li>
+<li>
+<p>3 修改Pod网络CIDR</p>
+</li>
+<li>
+<p><img alt="png" src="../../img/4F1A4A70-655B-4293-98A4-E06C4B5373E0.png" /></p>
+</li>
+<li>
+<p>4 实际应用</p>
+</li>
+</ul>
+<pre><code>kubectl apply -f calico.yaml
+</code></pre>
+<h3 id="5-10">5 <a href="https://mp.weixin.qq.com/s/TRC94G1-7iVvZKnjd39yPg">证书有效期延长为10年</a></h3>
+<p>使用kubeadm搭建的K8S集群，默认证书有效期为1年, 正式使用的时候容易出问题.</p>
+<p>1 查看当前有效期</p>
+<pre><code>sudo kubeadm certs check-expiration
+</code></pre>
+<p>2 使用<a href="https://github.com/yuyicai/update-kube-cert">update-kube-cert</a>工具更新证书有效期为10年</p>
+<pre><code> bash update-kubeadm-cert.sh --cri containerd
+</code></pre>
+<p>3 更新config文件</p>
+<pre><code># Backup existing config
+cp $HOME/.kube/config $HOME/.kube/config_backup
+
+# Copy new config
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+</code></pre>
+<p>4 检查有效期是否更新</p>
+<pre><code>sudo kubeadm certs check-expiration
+</code></pre>
+<ul>
+<li><img alt="png" src="../../img/011F6F9D-80FE-45EF-ACA2-77FDA48DCB6D.png" /></li>
+</ul>
+<h3 id="6-node">6 加入新的Node节点</h3>
+<ul>
+<li>1 使用kubeadm加入对应apiserver节点</li>
+</ul>
+<pre><code>sudo kubeadm join 7.0.0.6:6443 --token hyyuy8.6jtvtl52ysqkjytd \
+    --discovery-token-ca-cert-hash sha256:3ec1b161cd082f65e790af2f14d90e9514680b04749b4dcb6a22ca5d89dc7efc
+</code></pre>
+<ul>
+<li>2 等待一小会儿，等网络插件ready</li>
+</ul>
+<h3 id="7-ingress-controller">7 安装ingress-controller</h3>
+<ul>
+<li>
+<p>架构图</p>
+</li>
+<li>
+<p><img alt="png" src="../../img/AB1EB8F6-BF74-4D37-A36B-089F7853AA4A.jpg" /></p>
+</li>
+<li>
+<p>https://www.cnblogs.com/unchch/p/17090133.html</p>
+</li>
+<li>https://blog.csdn.net/weixin_46660849/article/details/130904799</li>
+</ul>
+<h2 id="_2">二 集群</h2>
 <h3 id="kubecm-kubeconfig">使用 KubeCm 管理多集群 KubeConfig</h3>
-<h4 id="_4">背景</h4>
+<h4 id="_3">背景</h4>
 <ul>
 <li>如果您同时管理多个集群，就需要不停的修改<code>$HOME/.kube/config</code> 文件的内容。如果使用手工的方式，将多个集群的 KubeConfig 文件合并，则低效且可能出错。</li>
 </ul>
-<h4 id="_5">解决方案</h4>
+<h4 id="_4">解决方案</h4>
 <ul>
 <li><a href="https://kubecm.cloud/">KubeCm</a> 是一个多集群 KubeConfig 访问凭证管理工具，支持展示、切换、添加、删除 KubeConfig 访问凭证到<code>$HOME/.kube/config</code>文件中，方便多集群管理场景。</li>
 </ul>
-<h5 id="_6">添加访问凭证</h5>
+<h5 id="_5">添加访问凭证</h5>
 <p>执行以下命令，添加访问凭证。</p>
 <p><code>kubecm add -f kube.conf</code></p>
-<h5 id="_7">查看集群列表</h5>
+<h5 id="_6">查看集群列表</h5>
 <p><code>kubecm list</code></p>
-<h5 id="_8">切换集群</h5>
+<h5 id="_7">切换集群</h5>
 <p><code>kubecm switch</code></p>
-<h2 id="_9">三 节点和节点池</h2>
-<h2 id="_10">建议事项</h2>
+<h2 id="_8">三 节点和节点池</h2>
+<h2 id="_9">建议事项</h2>
 <p>没有绝对通用的方法来选择合适的节点，因此需要您根据业务特点综合考虑小规格、大规格节点的优劣势来选择接节点类型。</p>
-<h2 id="_11">常见的经验如下:</h2>
+<h2 id="_10">常见的经验如下:</h2>
 <ul>
 <li>确定整个集群的正常状态下的资源需求总核数以及为保证可用性的冗余度。</li>
 <li>
@@ -533,12 +819,12 @@
 </ul>
 </li>
 </ul>
-<h2 id="_12">实例规格应用场景</h2>
+<h2 id="_11">实例规格应用场景</h2>
 <p><img alt="png" src="../../img/WechatIMG645.jpg" /></p>
-<h2 id="_13">四 网络</h2>
-<h2 id="_14">五 数据面最佳实践</h2>
-<h2 id="_15">六 控制面最佳实践</h2>
-<h2 id="_16">七 存储</h2>
+<h2 id="_12">四 网络</h2>
+<h2 id="_13">五 数据面最佳实践</h2>
+<h2 id="_14">六 控制面最佳实践</h2>
+<h2 id="_15">七 存储</h2>
 <p><img alt="png" src="../../img/007B0A83-ECC7-4784-BE5B-033D76928DA3.png" /></p>
 <table>
 <thead>
@@ -570,20 +856,20 @@
 </tr>
 </tbody>
 </table>
-<h2 id="_17">八 调度</h2>
-<h2 id="_18">九 可观测性</h2>
-<h2 id="_19">十 安全</h2>
-<h2 id="_20">十一 迁移</h2>
-<h2 id="_21">十二 镜像加速</h2>
-<h2 id="_22">十三 解决方案</h2>
-<h2 id="_23">十四 弹性容器实例</h2>
+<h2 id="_16">八 调度</h2>
+<h2 id="_17">九 可观测性</h2>
+<h2 id="_18">十 安全</h2>
+<h2 id="_19">十一 迁移</h2>
+<h2 id="_20">十二 镜像加速</h2>
+<h2 id="_21">十三 解决方案</h2>
+<h2 id="_22">十四 弹性容器实例</h2>
 <h2 id="etcd">十五 ETCD 优化</h2>
 <p>包括<strong>高可用部署</strong>、<strong>提高磁盘性能</strong>、<strong>提高 Etcd 进程的磁盘 IO 优先级</strong>、<strong>分离 Events 存储</strong>等</p>
 <ul>
 <li>参考<a href="https://imroc.cc/kubernetes/best-practices/ops/etcd-optimization">Etcd 优化</a></li>
 </ul>
-<h2 id="_24">十六 备份</h2>
-<h3 id="_25">备份方案制定</h3>
+<h2 id="_23">十六 备份</h2>
+<h3 id="_24">备份方案制定</h3>
 <h4 id="etcd_1">物理备份：etcd 备份</h4>
 <p>保存某一个时刻的快照，快捷方便。</p>
 <p>使用命令</p>
@@ -603,14 +889,14 @@
 </ul>
 <pre><code>velero create schedule xxx --schedule=&quot;0 1 * * *&quot; --include-namespaces=prod --snapshot-volumes=false --default-volumes-to-restic=false --ttl=168h
 </code></pre>
-<h4 id="_26">优缺点</h4>
+<h4 id="_25">优缺点</h4>
 <p>物理备份的优点是速度快，无论是备份还是回恢复，但缺点是元数据不可读，只能全部恢复。而逻辑备份正好相反，因此两者可以结合使用，既能快，又能有细粒度控制的能力。</p>
 <ul>
 <li><a href="https://mp.weixin.qq.com/s/t6sJX1IeTNn1u-kSW5ju8A">K8S 备份</a></li>
 </ul>
 <h2 id="operator">十七 Operator</h2>
 <p>通过自定义资源，我们可以将应用抽象为一个整体，而不用去关心该应用是由哪些 Kubernetes 原生组件构成的，什么 Pods、Deployments、Services 或 ConfigMaps 统统交给 Operator 来管理。创建 Operator 的关键是自定义资源的设计，通过直接调用 Kubernetes API，编写自定义规则自动管理和维护 Kubernetes 集群中的应用，包括自动化安装、配置、更新、故障转移、备份恢复等等。这样的应用也被称为 Kubernetes 原生应用（Kubernetes-native application</p>
-<h2 id="_27">十八 调试</h2>
+<h2 id="_26">十八 调试</h2>
 <p>1 <a href="https://blog.csdn.net/weixin_47575974/article/details/132565913">k8s 进入无 shell pod</a></p>
               
             </div>

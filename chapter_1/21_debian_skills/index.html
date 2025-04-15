@@ -97,6 +97,8 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#6-xtables-nftiptables">6 使用xtables-nft延续iptables老语法</a>
+    </li>
     </ul>
                   </li>
               </ul>
@@ -587,6 +589,11 @@ systemctl start rc-local.service
 <p>systemctl status rc-local.service</p>
 <p>返回Active:active信息，则成功。</p>
 <p>最后我们就可以在/etc/rc.loacl里，添加开机的自启命令什么的了。记住添加在exit 0之前。</p>
+<h2 id="6-xtables-nftiptables">6 使用xtables-nft延续iptables老语法</h2>
+<ul>
+<li>默认情况下nftables语法和iptables有很大区别, xtables-nft可以在用户空间使用iptables语法，在内核空间使用nft API.</li>
+<li>参考第一章、第11篇</li>
+</ul>
               
             </div>
           </div><footer>

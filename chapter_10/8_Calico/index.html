@@ -336,11 +336,9 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#caclio-01-running">五 caclio 0/1 Running 问题从解决到根因分析</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#k8s">六 K8S搭建最佳实践</a>
+    <li class="toctree-l2"><a class="reference internal" href="#169254">六 关于169.254网段</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#169254">七 关于169.254网段</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_4">八 容器网络原理</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">七 容器网络原理</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1-linux">1 Linux 虚拟网络技术</a>
     </li>
@@ -624,8 +622,7 @@ listening on cali14e7d81007d, link-type EN10MB (Ethernet), capture size 262144 b
 <h2 id="calico-ipip">三 calico 基本原理之IPIP</h2>
 <h2 id="calico-bgp">四 calico 基本原理之BGP</h2>
 <h2 id="caclio-01-running">五 caclio 0/1 Running 问题从解决到根因分析</h2>
-<h2 id="k8s">六 K8S搭建最佳实践</h2>
-<h2 id="169254">七 关于169.254网段</h2>
+<h2 id="169254">六 关于169.254网段</h2>
 <ul>
 <li>
 <p><strong>169.254.x.x</strong> 是一个特殊的 IPv4 地址段，属于 APIPA（Automatic Private IP Addressing，自动专用IP寻址） 范围，主要用于以下情况：</p>
@@ -665,7 +662,7 @@ listening on cali14e7d81007d, link-type EN10MB (Ethernet), capture size 262144 b
 </li>
 </ul>
 <p>也就是你的主机可以自己分配一个<code>169.254.0.0/16</code>网段内的IP，然后把网关设置为<code>169.254.1.1</code>, 此时只要主机和网关之间满足二层可通信即可，主机就可以把自己的包发到更加外围的网段</p>
-<h2 id="_4">八 <a href="https://mp.weixin.qq.com/s/tjLsr_8eFnwbqy9_G2H7ow">容器网络原理</a></h2>
+<h2 id="_4">七 <a href="https://mp.weixin.qq.com/s/tjLsr_8eFnwbqy9_G2H7ow">容器网络原理</a></h2>
 <h3 id="1-linux">1 Linux 虚拟网络技术</h3>
 <p>一般网络设备包括，交换机，路由器，网桥等，这些网络设备会存在多个网卡或者端口，那么 Linux 不仅仅可以作为网络设备，同时还可以实现虚拟网络设备，例如：网桥，虚拟网卡对等，那么 <code>Network Namespace</code> 就是利用 Linux 虚拟网络技术、路由、iptables 等技术来实现的。下面看看常用的 <strong>veth pair</strong> 和 <strong>bridge</strong>。</p>
 <h3 id="2-linux-veth-pair">2 Linux veth pair</h3>
