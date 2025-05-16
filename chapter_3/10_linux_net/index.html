@@ -110,6 +110,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/16_yunweijiazhi/">第十六篇 公司视角下运维的价值</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/17_cdn_sre/">第十七篇 CDN运维</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
               <ul class="current">
@@ -468,6 +470,10 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/21_elk_1/">第二十一篇 ELK维护</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/22_httpdns/">第二十二篇 HTTPDNS梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/23_ssl_certs/">第二十三篇 SSL证书总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/24_p4/">第二十四篇 P4服务器梳理</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -2350,7 +2356,7 @@ struct __wait_queue {
 flags: 可以设置为 WQ_FLAG_EXCLUSIVE，表示等待的进程应该独占资源（解决惊群现象）。
 private: 一般用于保存等待进程的进程描述符 task_struct。
 func: 唤醒函数，一般设置为 default_wake_function() 函数，当然也可以设置为自定义的唤醒函数。
-task_list: 用于连接其他等待资源的进程。
+task_list: 用于连接其他等待资源的进程。注意这里的task_list是指把所有struct __wait_queue实例串联在一起的双向链表
 
 </code></pre>
 <ul>

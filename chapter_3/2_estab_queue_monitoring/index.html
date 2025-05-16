@@ -110,6 +110,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/16_yunweijiazhi/">第十六篇 公司视角下运维的价值</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/17_cdn_sre/">第十七篇 CDN运维</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
               <ul class="current">
@@ -311,6 +313,10 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/22_httpdns/">第二十二篇 HTTPDNS梳理</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/23_ssl_certs/">第二十三篇 SSL证书总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/24_p4/">第二十四篇 P4服务器梳理</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul>
@@ -488,6 +494,22 @@
 
 </code></pre>
 <p><img alt="png" src="../../img/27CA8DCE-4DDD-4F50-8E16-A9C52654A98D.png" /></p>
+<h3 id="udp">(四) UDP丢包总结</h3>
+<ul>
+<li>netstat -su shows output like</li>
+</ul>
+<pre><code>Udp:
+    3436531 packets received
+    1553 packets to unknown port received.
+    8402 packet receive errors
+    109202 packets sent
+    RcvbufErrors: 8402
+</code></pre>
+<ul>
+<li>The "packets received" is how many were accepted by the listening application and NOT how many were attempted. 也就是正常被应用程序接收的UDP包，但可能发过来的包不止这些、假设被应用程序接收的UDP包数量是a，从网络上发过来的UDP包数量是b，那b是大于等于a的</li>
+<li>The "packets to unknown port" is what came in for the application when the application was down or not listening (e.g. during a restart)</li>
+<li>The "packet receive errors" clearly indicates an error; HOWEVER, it is not a one-for-one packets-to-error. You can have many more errors than packets were sent, indicating it is possible for a single packet to generate multiple errors. <strong>packet receive errors</strong>明确表示系统有错误.</li>
+</ul>
               
             </div>
           </div><footer>

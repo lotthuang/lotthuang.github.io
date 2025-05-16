@@ -112,6 +112,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../16_yunweijiazhi/">第十六篇 公司视角下运维的价值</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../17_cdn_sre/">第十七篇 CDN运维</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
               <ul>
@@ -304,6 +306,10 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/21_elk_1/">第二十一篇 ELK维护</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/22_httpdns/">第二十二篇 HTTPDNS梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/23_ssl_certs/">第二十三篇 SSL证书总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/24_p4/">第二十四篇 P4服务器梳理</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -503,6 +509,9 @@
 <h2 id="_9">缓存技术</h2>
 <h3 id="_10">工程上，缓存一般有几种使用方式？</h3>
 <h4 id="1">（1）进程内缓存；</h4>
+<ul>
+<li>什么是有状态进程？说白了的数据必须存在内存里，而不是通过网络存到数据库里. 因为对延迟的苛刻要求、以及一些业务逻辑的考虑, 比如游戏业务.</li>
+</ul>
 <h4 id="2">（2）进程外缓存，也就是缓存服务；</h4>
 <h3 id="_11">如果有多个服务使用进程内缓存，如何保证一致性？</h3>
 <p>常见的有三种方法：</p>

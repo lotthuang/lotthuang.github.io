@@ -110,6 +110,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/16_yunweijiazhi/">第十六篇 公司视角下运维的价值</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/17_cdn_sre/">第十七篇 CDN运维</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
               <ul>
@@ -193,6 +195,8 @@
     <li class="toctree-l3"><a class="reference internal" href="#1-context-switch">1 context switch 分为哪几种</a>
     </li>
         </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#context-switch_1">三 Context Switch具体耗时</a>
     </li>
     </ul>
                   </li>
@@ -340,6 +344,10 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/21_elk_1/">第二十一篇 ELK维护</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/22_httpdns/">第二十二篇 HTTPDNS梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/23_ssl_certs/">第二十三篇 SSL证书总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/24_p4/">第二十四篇 P4服务器梳理</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -636,6 +644,10 @@ CPU 把 Thead B 的 kernel stack copy 到 Thread B 的 user stack，并且进入
 <p>3 不同进程之间进行 context switch，除了上述步骤之外，仍需替换整个 mm_struct,新进程的 pagetable 应该要被装入 MMU 管理单元。CPU 发出的内存地址都是虚拟机地址，有 MMU 管理单元（硬件）自动完成虚拟地址到物理地址的转化</p>
 <p><a href="https://medium.com/@yovan/os-process-thread-user-kernel-%E7%AD%86%E8%A8%98-aa6e04d35002">参考 1</a></p>
 <p><a href="https://mp.weixin.qq.com/s/mCzPSWaar0Y-SlofaxaU5g">参考 2</a></p>
+<h2 id="context-switch_1">三 Context Switch具体耗时</h2>
+<ul>
+<li>每次Context Switch大约消耗3～5微妙，在不同服务器上会有一点儿出入. 在Context Switch时，其实程序并没有做有意义的工作.</li>
+</ul>
               
             </div>
           </div><footer>

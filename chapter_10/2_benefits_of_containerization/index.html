@@ -110,6 +110,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/16_yunweijiazhi/">第十六篇 公司视角下运维的价值</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/17_cdn_sre/">第十七篇 CDN运维</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
               <ul>
@@ -303,6 +305,10 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/22_httpdns/">第二十二篇 HTTPDNS梳理</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/23_ssl_certs/">第二十三篇 SSL证书总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/24_p4/">第二十四篇 P4服务器梳理</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul class="current">
@@ -463,7 +469,37 @@
 <h3 id="_3">容器编排技术的特点</h3>
 <ul>
 <li>容器编排技术解决的核心问题： 可以将众多机器抽象，对外呈现出一台超大机器.</li>
-<li>Kuberenetes 是 负责自动化运维管理多个 Docker 程序的集群,自动完成服务的部署、更新、卸载和扩容、缩容</li>
+<li>Kuberenetes 是 负责自动化运维管理多个 Docker 程序的集群, 解决什么问题？</li>
+<li>
+<ul>
+<li><strong>应用服务</strong>之间的服务发现. 通过service机制, 互相调用.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>应用服务</strong>的自动扩缩容. 通过Deloyment、HPA等机制.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>应用服务</strong>的对外暴露，通过Ingress-Controller+Ingress+NodePort机制</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>应用服务</strong>的配置文件管理、数据库帐号密码管理， 通过ConfigMap、Secret机制.</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>配套监控体系</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>应用服务</strong>可简单理解为<strong>Web服务</strong>或者<strong>微服务</strong>, 本质上原先纯虚拟机的模式下, 也要实现上述功能: <strong>应用服务</strong>创建、部署、7层转发规则配置、自动化扩缩容、监控、服务发现.</li>
+</ul>
+</li>
 </ul>
               
             </div>
