@@ -313,6 +313,10 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_2">二 服务端二进制文件介绍</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#p4-client">三 P4 命令行 Client使用</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#p4">四 P4 备份</a>
+    </li>
     </ul>
                   </li>
               </ul>
@@ -472,7 +476,7 @@ p4d -r /usr/local/p4root -J /var/log/journal -L /var/log/p4err -p ssl::1666 &amp
 </li>
 <li>
 <ul>
-<li><img alt="png" src="../../img/086B6B06-9045-420F-B17D-2C7C2D0B0463.jpg" /></li>
+<li><img alt="png" src="../../img/2D7482F6-72CF-4626-B77A-96AA9C15CFD6.png" /></li>
 </ul>
 </li>
 <li>
@@ -481,6 +485,18 @@ p4d -r /usr/local/p4root -J /var/log/journal -L /var/log/p4err -p ssl::1666 &amp
 <li>p4v: MacOS/Windows等桌面系统、图形化客户端</li>
 <li>p4p: 服务端，猜测是Proxy Server二进制程序</li>
 <li>p4broker: 暂时未明确</li>
+</ul>
+<h2 id="p4-client">三 P4 命令行 Client使用</h2>
+<pre><code>cd /path/to/yourdir
+p4 login
+p4 trust -i '09:38:D5:83:3A:62:FA:CF:AA:94:9A:D8:93:71:FC:3D:CA:72:C3:2D'
+p4 client #编辑本地的一些设置
+p4 sync &amp; #后台拉取
+</code></pre>
+<h2 id="p4">四 P4 备份</h2>
+<ul>
+<li>可直接块级别备份(使用tar加nc命令结合)，新机器上p4d进程开起来只需替换新的license文件</li>
+<li>license文件一般在<code>/data/perforce/servers/$server.id/root</code> 目录下</li>
 </ul>
               
             </div>

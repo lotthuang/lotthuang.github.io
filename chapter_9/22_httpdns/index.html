@@ -315,6 +315,12 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_3">二 最佳实践</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#dns">三 其他DNS</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-mdns">1 mDNS</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../23_ssl_certs/">第二十三篇 SSL证书总结</a>
@@ -487,6 +493,53 @@
 <li>定时调用启动 IP 更新服务 IP 列表（建议每12小时），保持服务 IP 列表的有效性</li>
 </ul>
 </li>
+</ul>
+<h2 id="dns">三 其他DNS</h2>
+<h3 id="1-mdns">1 mDNS</h3>
+<ul>
+<li>
+<p>mDNS原理的简单理解——每个进入局域网的主机，如果开启了mDNS服务的话，都会向局域网内的所有主机组播一个消息，我是谁，和我的IP地址是多少。然后其他也有该服务的主机就会响应，也会告诉你，它是谁，它的IP地址是多少</p>
+</li>
+<li>
+<p>在局域网内，你要通过一台主机和其他主机进行通信，你需要知道对方的 ip 地址，但是有些时候，你并不知道对方的 ip 地址，因为一般使用 DHCP 动态分配 ip 地址的局域网内，各个主机的 IP 地址是由 DHCP 服务器来帮你分配 IP 地址的。所以在很多情况下，你要知道对方的 IP 地址是比较麻烦的。</p>
+</li>
+<li>
+<p>mDNS 的工作原理</p>
+</li>
+<li>
+<ul>
+<li>首先，在 IP 协议里规定了一些保留地址，其中有一个是 224.0.0.251，对应的 IPv6 地址是 [FF02::FB]。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>mDNS 协议规定了一个端口，5353。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>mDNS 基于 UDP 协议。</li>
+</ul>
+</li>
+<li>
+<p>每个进入局域网的主机，如果开启了mDNS服务的话，都会向局域网内的所有主机组播一个消息，我是谁，和我的IP地址是多少。然后其他也有该服务的主机就会响应，也会告诉你，它是谁，它的IP地址是多少。当然，具体实现要比这个复杂点。</p>
+</li>
+<li>
+<p>比如，A主机进入局域网，开启了 mDNS 服务，并向 mDNS 服务注册以下信息：我提供 FTP 服务，我的IP是 192.168.1.101，端口是 21。当B主机进入局域网，并向 B 主机的 mDNS 服务请求，我要找局域网内 FTP 服务器，B主机的 mDNS 就会去局域网内向其他的 mDNS 询问，并且最终告诉你，有一个IP地址为 192.168.1.101，端口号是 21 的主机，也就是 A 主机提供 FTP 服务，所以 B 主机就知道了 A 主机的 IP 地址和端口号了。</p>
+</li>
+<li>
+<p>所以进入局域网后，主机默认情况下能收到很多和224.0.0.251、[FF02::FB]的来回的通信.</p>
+</li>
+<li>
+<p>Linux主机是通过Avahi-daemon实现，</p>
+</li>
+<li>
+<p>"224.0.0.251" 和 "FF02::FB" 都是组播地址，分别用于 IPv4 和 IPv6 网络中的多播通信。mDNS（Multicast DNS） 是一种用于在局域网内进行设备和服务发现的协议。mDNS 查询通常是以组播的方式发送的。发送的目标地址是：224.0.0.251，端口号为 5353。</p>
+</li>
+<li>
+<p><a href="https://developer.aliyun.com/article/395378">参考1</a></p>
+</li>
+<li><a href="https://www.cnblogs.com/suv789/p/18827976">参考2</a></li>
 </ul>
               
             </div>
