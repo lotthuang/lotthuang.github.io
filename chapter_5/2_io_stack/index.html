@@ -189,6 +189,10 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#vfs">VFS 层</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#page-cache">Page Cache</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#writeback-4">内核 writeback 线程的 4 个主要内核参数</a>
+    </li>
     <li class="toctree-l3"><a class="reference internal" href="#_3">文件系统层</a>
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#ext4">ext4 文件系统完整的挂载参数</a>
@@ -196,10 +200,6 @@
     <li class="toctree-l4"><a class="reference internal" href="#ext4_1">ext4 文件系统的日志模式</a>
     </li>
         </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#page-cache">Page Cache</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#writeback-4">内核 writeback 线程的 4 个主要内核参数</a>
     </li>
         </ul>
     </li>
@@ -249,7 +249,9 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../8_kobjet_kset_ktype/">第八篇 Linux设备模型的基石:kset/kobject/ktype</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../9_io_uring/">第八篇 io_uring研究和总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_io_uring/">第九篇 io_uring研究和总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_device_database/">第十篇 设备数据库</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
@@ -459,6 +461,8 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/1_demo_of_ai/">第一篇 AI入门</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/2_nvidia_gpu/">第二篇 英伟达GPU产品分类</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十六章 网络安全方向</span></p>
               <ul>
@@ -494,11 +498,8 @@
 <li>本篇文档梳理 Linux IO 栈</li>
 </ul>
 <h2 id="io">IO 栈总体认知</h2>
-<p><img alt="png" src="../../img/DD92F3B2-B981-47A5-B756-F7050066B775.png" /></p>
 <p><img alt="png" src="../../img/3ae062c0-04e9-4ead-871c-1bff21e19d4a.svg" /></p>
-<ul>
-<li>上述两个图具体差异是 PageCache 的具体位置，个人更加倾向于第二幅图.</li>
-</ul>
+<p><img alt="png" src="../../img/14BCCECC-6A2D-470D-AEF7-C658BEC6F791.jpg" /></p>
 <h3 id="_2">用户空间</h3>
 <ul>
 <li>库函数缓存, 把多次 open 或者 write 调用合并为一次, 例如 c 语言的 stdio 库，以减少真正的 System Call 次数为目的</li>
@@ -507,6 +508,53 @@
 <ul>
 <li>VFS 层的作用: VFS 是一个抽象层,其向上提供了统一的文件访问接口,而向下则兼容了各种不同的文件系统。不仅仅是诸如 Ext2、Ext4、XFS 和 Btrfs 等常规意义上的文件系统,还包括伪文件系统和设备等等内容.</li>
 </ul>
+<h3 id="page-cache">Page Cache</h3>
+<ul>
+<li>
+<p><strong>页缓存在 VFS 与具体文件系统之间</strong>, 为了提高 IO 性能，减少真实的从磁盘读写的次数，Linux 内核设计了一层内存缓存，把磁盘数据缓存到内存中。由于内存以 4K 大小的 <code>页</code> 为单位管理，磁盘数据也以页为单位缓存，因此也称为<code>页缓存</code>。在每个缓存<code>页</code>中，都包含了部分磁盘信息的副本。</p>
+</li>
+<li>
+<p>对于读操作, 如果因为之前读过或者被预读加载进来，而本次要读取数据刚好在缓存中命中，就可以直接从缓存中读取，不需要深入到磁盘。</p>
+</li>
+<li>对于写操作, 不管是<code>同步写</code>还是<code>异步写</code>，都会把数据 copy 到缓存，差别在于异步写只是 copy 且把页标识脏后直接返回，而同步写还会调用类似 fsync()的操作等待回写. <code>异步写</code>产生的<code>脏数据</code>会在<strong>合适</strong>的时候被内核工作队列<code>writeback</code>进程回刷。</li>
+</ul>
+<h3 id="writeback-4">内核 writeback 线程的 4 个主要内核参数</h3>
+<table>
+<thead>
+<tr>
+<th>内核参数</th>
+<th>默认值</th>
+<th>单位</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/proc/sys/vm/dirty_writeback_centisecs</td>
+<td>500</td>
+<td>1/100 秒</td>
+<td>定期唤醒 writeback 内核线程，回写脏页</td>
+</tr>
+<tr>
+<td>/proc/sys/vm/dirty_expire_centisecs</td>
+<td>300</td>
+<td>1/100 秒</td>
+<td>writeback 线程被唤醒后，并不是写回所有脏页，而是只写变脏超过 dirty_expire_centisecs 时间的页.</td>
+</tr>
+<tr>
+<td>/proc/sys/vm/dirty_background_ratio</td>
+<td>10</td>
+<td>比例，默认为 10%，当脏页比例超过系统所有 page 数量的 10%时</td>
+<td>当脏页占系统内存的比例超过/proc/sys/vm/dirty_background_ratio 的时候，write 系统调用会唤醒 pdflush 回写 dirty page,直到脏页比例低于/proc/sys/vm/dirty_background_ratio，但 write 系统调用不会被阻塞，立即返回。</td>
+</tr>
+<tr>
+<td>/proc/sys/vm/dirty_ratio</td>
+<td>20</td>
+<td>比例，默认为 20%，当脏页数量占系统所有页数量比例超过 20%时</td>
+<td>write 系统调用会被阻塞，writeback 线程会工作，直到脏页占比低于/proc/sys/vm/dirty_ratio</td>
+</tr>
+</tbody>
+</table>
 <h3 id="_3">文件系统层</h3>
 <ul>
 <li>
@@ -557,59 +605,14 @@
 </li>
 <li>
 <ul>
-<li>ordered：与 writeback 相似，但会保证数据先落盘，再是元数据。折中性能以保证足够的安全，这是大多数 PC 上推荐的默认的模式</li>
-</ul>
+<li>ordered：与 writeback 相似，但会保证数据先落盘，再是元数据。折中性能以保证足够的安全，这是大多数 PC 上推荐的默认的模式<pre><code>                                                                                                          |
+</code></pre>
 </li>
 </ul>
-<h3 id="page-cache">Page Cache</h3>
-<ul>
-<li>
-<p><strong>页缓存在 VFS 与具体文件系统之间</strong>, 为了提高 IO 性能，减少真实的从磁盘读写的次数，Linux 内核设计了一层内存缓存，把磁盘数据缓存到内存中。由于内存以 4K 大小的 <code>页</code> 为单位管理，磁盘数据也以页为单位缓存，因此也称为<code>页缓存</code>。在每个缓存<code>页</code>中，都包含了部分磁盘信息的副本。</p>
 </li>
 <li>
-<p>对于读操作, 如果因为之前读过或者被预读加载进来，而本次要读取数据刚好在缓存中命中，就可以直接从缓存中读取，不需要深入到磁盘。</p>
+<p><a href="https://www.cnblogs.com/gmpy/p/12657801.html">更多参考</a></p>
 </li>
-<li>对于写操作, 不管是<code>同步写</code>还是<code>异步写</code>，都会把数据 copy 到缓存，差别在于异步写只是 copy 且把页标识脏后直接返回，而同步写还会调用类似 fsync()的操作等待回写. <code>异步写</code>产生的<code>脏数据</code>会在<strong>合适</strong>的时候被内核工作队列<code>writeback</code>进程回刷。</li>
-</ul>
-<h3 id="writeback-4">内核 writeback 线程的 4 个主要内核参数</h3>
-<table>
-<thead>
-<tr>
-<th>内核参数</th>
-<th>默认值</th>
-<th>单位</th>
-<th>备注</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>/proc/sys/vm/dirty_writeback_centisecs</td>
-<td>500</td>
-<td>1/100 秒</td>
-<td>定期唤醒 writeback 内核线程，回写脏页</td>
-</tr>
-<tr>
-<td>/proc/sys/vm/dirty_expire_centisecs</td>
-<td>300</td>
-<td>1/100 秒</td>
-<td>writeback 线程被唤醒后，并不是写回所有脏页，而是只写变脏超过 dirty_expire_centisecs 时间的页.</td>
-</tr>
-<tr>
-<td>/proc/sys/vm/dirty_background_ratio</td>
-<td>10</td>
-<td>比例，默认为 10%，当脏页比例超过系统所有 page 数量的 10%时</td>
-<td>当脏页占系统内存的比例超过/proc/sys/vm/dirty_background_ratio 的时候，write 系统调用会唤醒 pdflush 回写 dirty page,直到脏页比例低于/proc/sys/vm/dirty_background_ratio，但 write 系统调用不会被阻塞，立即返回。</td>
-</tr>
-<tr>
-<td>/proc/sys/vm/dirty_ratio</td>
-<td>20</td>
-<td>比例，默认为 20%，当脏页数量占系统所有页数量比例超过 20%时</td>
-<td>write 系统调用会被阻塞，writeback 线程会工作，直到脏页占比低于/proc/sys/vm/dirty_ratio</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li><a href="https://www.cnblogs.com/gmpy/p/12657801.html">更多参考</a></li>
 <li><a href="https://www.kernel.org/doc/Documentation/sysctl/vm.txt">内核官方文档</a></li>
 </ul>
 <h2 id="io_1">IO 操作的三种模式</h2>
