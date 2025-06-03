@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>第十四篇 MongoDB使用 - Lott's Blog</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u7b2c\u5341\u56db\u7bc7 MongoDB\u4f7f\u7528";
+        var mkdocs_page_input_path = "chapter_9/14_mongodb.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Lott's Blog
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首页</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第一章 各种杂项基础</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/3_linux_kernel_basic/">第三篇 Linux内核基础</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/10_virtual_machine_on_mac_m1_chip/">第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/11_nftables/">第十一篇 Debian 11以及往后版本nftables防火墙配置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY、PTY和控制台(Console)区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/15_bosun/">第十五篇 Bosun使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/16_assembler/">第十六篇 汇编语言使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/17_makefile/">第十七篇 Makefile使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/19_network_ratelimit/">第十九篇 Linux网络限速</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/20_mac_os_skills/">第二十篇 MacOS使用技巧</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/21_debian_skills/">第二十一篇 Debian使用技巧</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweijiazhi/">第一篇 运维的价值和目标</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweizhiyeguifan/">第二篇 业务SRE的职业规范</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/yunweipingtailinian/">第三篇 运维平台建设的理念</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/guzhangguanli/">第四篇 故障管理概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/biangengguanli/">第五篇 变更管理概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/rongliangguanli/">第六篇 容量管理概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/jiagoushisiweihetezhi/">第七篇 架构师思维和特质以及中间件技术梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/cicd/">第八篇 CICD流程概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/9_changkanchangxin/">第九篇 常看常新</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/12_monitor_and_alert/">第十二篇 监控报警最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/13_classic_thinkings/">第十三篇 经典思维</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/14_performance_optimization_topic/">第十四篇 性能调优</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/15_secure_sre/">第十五篇 安全运维</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/16_yunweijiazhi/">第十六篇 公司视角下运维的价值</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_2/17_cdn_sre/">第十七篇 CDN运维</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第三章 Linux Net子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/1_linux_kernel_net/">第一篇 Linux数据包接收路径梳理和常用调优技能</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/2_estab_queue_monitoring/">第二篇 Linux下如何观察完整连接队列的情况</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/3_net_ipv4_tcp_syn_retries/">第三篇 理解net.ipv4.tcp_syn_retries设置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/4_linux_kernel_net_v2/">第四篇 Linux网络数据包的揭秘以及常见的调优方式总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/5_conntrack/">第五篇 conntrack的常见应用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/6_tcp/">第六篇 TCP协议总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/7_udp/">第七篇 UDP协议总结以及TCP和UDP的区别</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/8_io_multiplexing/">第八篇 IO多路复用总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/10_linux_net/">第十篇 Linux Net子系统总结、收发包流程再次梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/11_igb/">第十一篇 igb网卡驱动梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/12_rss_rps_rfs_xps/">第十二篇 Linux网卡rss和rps和rfs和xps</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_3/13_linghunkaowen/">第十三篇 Linux网络子系统灵魂拷问</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第四章 Linux CPU子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/1_process_ulimit/">第一篇 进程Max open files的设置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/2_pid_max/">第二篇 kernel源码中pid的最大值</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/3_interrupt_one/">第三篇 硬中断</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/5_soft_irq/">第四篇 软中断</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/4_process_thread_coroutine/">第五篇 进程、线程、协程</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/6_cpu_famous_register/">第六篇 CPU中的著名寄存器梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/7_linux_signal/">第七篇 Linux信号机制</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/8_linux_scheduler/">第八篇 Linux进程调度</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/10_linux_context_switch/">第十篇 低视角看context switch</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/11_linux_cpu_usage/">第十一篇 CPU利用率统计</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/12_linux_preemption/">第十二篇 内核抢占基础篇</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/13_interrupt_handler_examples/">第十三篇 中断处理程序的例子</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/14_linux_kernel_tracing/">第十四篇 理解内核追踪机制</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/15_task_struct/">第十五篇 task_struct结构体总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/16_init_call/">第十六篇 Linux各类initcall总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/17_coredump/">第十七篇 Linux coredump总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_4/18_cpu_CacheLine/">第十八篇 CPU CacheLine总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第五章 Linux IO子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/1_four_object_of_VFS/">第一篇 VFS四大对象inode、dentry、super_block、file数据结构总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/2_io_stack/">第二篇 Linux IO栈总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/3_zero_copy/">第三篇 Linux 零拷贝技术总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/4_io_scheduler_layer/">第四篇 Block IO Layer(块IO层)总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/6_fss/">第六篇 各类文件系统梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/7_three_object_of_block_device/">第七篇 块设备三大对象block_device、gendisk、hd_struct数据结构总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/8_kobjet_kset_ktype/">第八篇 Linux设备模型的基石:kset/kobject/ktype</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/9_io_uring/">第九篇 io_uring研究和总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/10_device_database/">第十篇 设备数据库</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/1_linux_buddy/">第一篇 伙伴系统介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/2_slab/">第二篇 Slab层介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/3_virtual_memory/">第三篇 进程虚拟地址空间介绍</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/4_linux_mem_theory/">第四篇 Linux内存管理基础篇</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/6_alloc_mem_apis/">第六篇 Linux内核内存分配API函数分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/7_physical_memory/">第七篇 关于物理内存管理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/8_linux_mm_update/">第八篇 Linux内存管理升级篇</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_6/9_page_cache_and_buffer_cache/">第九篇 PageCache和BufferCache演进过程</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第七章 运维小技巧和工具汇总和积累</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/1_sync_file/">第一篇 不同主机之间的文件传输</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/2_sre_tools_python/">第二篇 运维生产力工具(python篇)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/3_sre_tools_website/">第三篇 运维生产力工具(网站工具)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/4_sre_tools_shell/">第四篇 运维生产力工具(shell篇)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/5_server_side_evolution/">第五篇 服务端进化过程梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/7_charset/">第七篇 字符集和编码</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/8_locale/">第八篇 locale设置</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/9_http_protocol/">第九篇 http协议</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_7/10_http_cookie_session_token/">第十篇 cookie和session和token总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第八章 职场通用经验</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/1_xuexixinde/">第一篇 学习心得和工作箴言</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/2_bangzhuqitatongxue/">第二篇 工作能力评价体系</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/3_yewuliuchengshuyu/">第三篇 项目管理总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/4_jishunenglimoxing/">第四篇 技术能力模型总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/5_chanpingsiwei_1/">第五篇 产品思维总结和梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/6_jixiaobaogao/">第六篇 如何写绩效报告</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/7_xiangshangguanli/">第七篇 如何向上管理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/9_speaking_skills/">第九篇 沟通能力和演讲技巧</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/10_jixiaofangtan/">第十篇 绩效访谈总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_8/11_classic_technical_thinking/">第十一篇 经典技术思维汇总</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第九章 编程经验和各类开源软件</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_suanfa/">第一篇 算法总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_data_structure/">第二篇 数据结构总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_c_lang/">第三篇 c语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_symbol_table/">第四篇 符号表总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../5_golang/">第五篇 go语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_python/">第七篇 python语言总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_rsyslog/">第八篇 rsyslog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_falcon/">第九篇 falcon和夜莺</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_json_schema/">第十篇 JSON-Schema使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../11_prometheus/">第十一篇 Prometheus使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_grafana/">第十二篇 Grafana使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_mysql/">第十三篇 MySQL使用</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第十四篇 MongoDB使用</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">一 常见部署架构</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 一些基础概念</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">二 最佳实践</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_1">1 如何实现读写分离</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-sql">2 如何查询慢SQL</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-mongodb">3 MongoDB连接池技术</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#31">3.1 最佳实践</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#32">3.2 如何配置和使用连接池</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-pymongomongodb">4 PyMongo和MongoDB兼容性表格</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#5-saas">5 SaaS实例使用最佳实践</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#6">6 常规性能上限</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#mongodb">三 MongoDB运维梳理</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_2">1 工具梳理</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#11-mongod">1.1 mongod</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-mongod">2 mongod扩展指令</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_4">是什么</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_5">为什么</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">关于复制集的节点角色</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_7">四 日志</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-oplog">1 oplog</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_8">是什么</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_9">怎么办</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#oplog_1">oplog窗口时间</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_10">五 性能优化</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#keyfile">六 认证相关（keyfile）</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_11">七 备份和恢复</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-3">1 全量备份3种方式</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#11">1.1 逻辑备份</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#12">1.2 物理备份</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#13">1.3 文件系统快照</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2">2 增量备份</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_12">八 各种节点的作用</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#mongodb_1">九 MongoDB监控</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#journaling">十 journaling</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#mongodb_2">十一 MongoDB数据库工具</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#mongodump">mongodump</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mongorestore">mongorestore</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#bsondump">bsondump</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mongoimport">mongoimport</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mongoexport">mongoexport</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mongostat">mongostat</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mongotop">mongotop</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mongofiles">mongofiles</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../15_supervisor/">第十五篇 Supervisor使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../16_redis/">第十六篇 Redis使用</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../17_mongodb_2/">第十七篇 MongoDB基础</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../18_elk_2/">第十八篇 ELK基础</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../19_gitlab_ce/">第十九篇 Gitlab-CE维护</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../20_minio/">第二十篇 MinIO维护</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../21_elk_1/">第二十一篇 ELK维护</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../22_httpdns/">第二十二篇 HTTPDNS梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../23_ssl_certs/">第二十三篇 SSL证书总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../24_p4/">第二十四篇 P4服务器梳理</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/2_benefits_of_containerization/">第二篇 容器化好处</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/3_docker_basic_concepts/">第三篇 容器化基础概念</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_Calico/">第八篇 Kubernetes网络插件之Calico</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/9_cloudnative_monitor/">第九篇 云原生监控</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/10_event/">第十篇 彻底搞懂Kubernetes Event</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/11_best_practices/">第十一篇 Kubernetes最佳实践</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/12_cloud_network/">第十二篇 云网络</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/13_containerd/">第十三篇 Containerd</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/14_k8s_and_gpu/">第十四篇 基于K8S管理GPU集群</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/15_public_cloud_use/">第十五篇 公有云最佳实践总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/1_theory/">第一篇 稳定性概论</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/10_high_avaliable/">第二篇 高可用原则总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/2_slo_process/">第三篇 SLO实施流程</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/3_stress/">第四篇 压测经验总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_11/11_stability/">第五篇 稳定性理论总结</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十二章 商业化知识总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_12/1_shifouzhide/">第一篇 如何判断一件事情值不值得做</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十三章 芯片知识总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_13/1_about_riscv/">第一篇 RISC-V 简介</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_13/2_danpianji/">第二篇 单片机简介</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十四章 Linux驱动方向总结</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/1_demo_of_led_driver/">第一篇 驱动程序的Hello World</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/2_qianrushidev/">第二篇 嵌入式开发基础</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/3_linux_kernel_api_list/">第三篇 Linux内核API汇总和各类风格总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/4_zifushebeiqudongyuanli/">第四篇 字符设备驱动实现原理和物理内存地址空间和IO端口空间</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/5_device_tree/">第五篇 platform总线模型和设备树</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/6_device_driver_sop/">第六篇 从阅读硬件手册开始设备驱动程序编写</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/7_linux_kernel_clipping/">第七篇 Linux移植</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/8_linux_driver_framework/">第八篇 Linux驱动框架和SoC驱动框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/9_linux_device_class/">第九篇 Linux设备分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/10_u_boot/">第十篇 u-boot梳理和总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/11_linux_reset_subsystem_and_framework/">第十一篇 Linux Reset子系统及其框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/12_pinctl_and_gpio/">第十二篇 Linux pinctl和gpio子系统及其框架</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/13_embedded_development_direction/">第十三篇 嵌入式开发方向和分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/14_linux_kernel_trimming/">第十四篇 Linux内核裁剪总结</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_14/15_imx6ull/">第十五篇 IMX6UL实验记录</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十五章 AI+嵌入式结合方向汇总</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/1_basic_of_ai/">第一篇 AI入门</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/2_nvidia_gpu/">第二篇 英伟达GPU产品分类</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">第十六章 网络安全方向</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_16/1_network_attack/">第一篇 认识各种网络攻击</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Lott's Blog</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">第九章 编程经验和各类开源软件</li>
+      <li class="breadcrumb-item active">第十四篇 MongoDB使用</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="_1">概述</h1>
+<ul>
+<li>本篇总结MongoDB相关使用</li>
+</ul>
+<h2 id="_2">一 常见部署架构</h2>
+<p><img alt="png" src="../../img/69B5627A-EEBE-42E1-8343-B972441562EB.jpg" /></p>
+<h3 id="1">1 一些基础概念</h3>
+<p>各种概念由小到大；</p>
+<ul>
+<li>片键shard key：文档中的一个字段</li>
+<li>文档doc：　     包含shard key的一行数据</li>
+<li>块chunk：        包含n个文档</li>
+<li>集合collection: 相当于MySQL的表，包含所有文档</li>
+<li>分片shard：     包含n个chunk</li>
+<li>集群cluster：   包含n个分片</li>
+<li>重点说一下Chunk，在一个shard server内部，MongoDB还是会把数据分为chunks，每个chunk代表这个shard server内部一部分数据。chunk的产生，会有以下两个用途：</li>
+<li>
+<ul>
+<li>Splitting：当一个chunk的大小超过配置中的chunk size时，MongoDB的后台进程会把这个chunk切分成更小的chunk，从而避免chunk过大的情况</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>Balancing：在MongoDB中，balancer是一个后台进程，负责chunk的迁移，从而均衡各个shard server的负载，系统初始1个chunk，chunk size默认值64M,生产库上选择适合业务的chunk size是最好的。MongoDB会自动拆分和迁移chunks。</li>
+</ul>
+</li>
+</ul>
+<h2 id="_3">二 最佳实践</h2>
+<h3 id="1_1">1 如何实现读写分离</h3>
+<pre><code>mongodb://rwuser:&lt;password&gt;@192.168.xx.xx:8635,192.168.xx.xx:8635/test?authSource=admin&amp;replicaSet=replica&amp;readPreference=secondaryPreferred
+</code></pre>
+<ul>
+<li>连接实例后，读请求将优先发给Secondary节点实现读写分离。当主备关系发生变化时，自动将写操作切换到新的Primary节点上，以保证服务的高可用。</li>
+</ul>
+<h3 id="2-sql">2 如何查询慢SQL</h3>
+<ul>
+<li>
+<p><strong>根据某个库中是否有system.profile这个collection来判断某个库是否有慢SQL</strong></p>
+</li>
+<li>
+<p>执行以下命令，进入指定数据库，以“test”为例。</p>
+</li>
+</ul>
+<pre><code>use test
+</code></pre>
+<ul>
+<li>查看是否生成慢sql集合“system.profile”。</li>
+</ul>
+<p><code>show collections</code>;</p>
+<ul>
+<li>回显中有“system.profile”，说明产生了慢SQL，继续执行下一步。</li>
+</ul>
+<pre><code>mongos&gt; show collections
+system.profile
+test
+</code></pre>
+<ul>
+<li>回显中没有“system.profile”，说明未产生慢SQL，该数据库不涉及慢请求分析。</li>
+</ul>
+<pre><code>mongos&gt; show collections
+test
+</code></pre>
+<h3 id="3-mongodb">3 MongoDB连接池技术</h3>
+<h4 id="31">3.1 最佳实践</h4>
+<ol>
+<li>查看连接数占比，<strong>总的连接数不宜超过当前实例能承受的最大连接数的80%</strong>。连接太多会导致内存和多线程上下文的开销增加，影响请求处理延时。</li>
+<li>建议配置连接池，一般情况建议连接池最大不要超过200，</li>
+</ol>
+<h4 id="32">3.2 如何配置和使用连接池</h4>
+<p>文档数据库服务支持通过Connection String URI登录数据库。通过Connection String URI登录数据库时，在URI末尾加上“&amp;maxPoolSize=<integer>”，即可设置连接池的连接数。</p>
+<ul>
+<li>示例：使用Mongo Shell连接副本集实例时，限制连接池的连接数为10。</li>
+</ul>
+<pre><code>mongo &quot;mongodb://rwuser:xxxxxxxxxx@192.168.168.116:8635,192.168.200.147:8635/test?authSource=admin&amp;replicaSet=replica&amp;maxPoolSize=10&quot;
+
+</code></pre>
+<h4 id="4-pymongomongodb">4 PyMongo和MongoDB兼容性表格</h4>
+<ul>
+<li><a href="https://www.mongodb.com/zh-cn/docs/languages/python/pymongo-driver/current/compatibility/#std-label-pymongo-compatibility">链接</a></li>
+</ul>
+<h4 id="5-saas">5 SaaS实例使用最佳实践</h4>
+<ol>
+<li>容量不足，加Shard</li>
+<li>速度不够, 升级规格</li>
+</ol>
+<h4 id="6">6 常规性能上限</h4>
+<ul>
+<li>单个实例中，数据库的总的个数不要超过200个，总的集合个数不要超过500个</li>
+<li>单个MongoD实例，连接数不建议超过3万.</li>
+<li>单个集合的索引数量不超过5个</li>
+</ul>
+<h2 id="mongodb">三 MongoDB运维梳理</h2>
+<ul>
+<li><a href="https://github.com/dunwu/db-tutorial/blob/master/docs/12.%E6%95%B0%E6%8D%AE%E5%BA%93/04.%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E5%BA%93/01.MongoDB/20.MongoDB%E8%BF%90%E7%BB%B4.md">MongoDB 运维</a></li>
+<li><a href="https://blog.csdn.net/weixin_52989403/article/details/130237082">MongoDB 运维实战总结</a></li>
+</ul>
+<h4 id="1_2">1 工具梳理</h4>
+<h5 id="11-mongod">1.1 mongod</h5>
+<pre><code>General options:
+  -h [ --help ]                         Show this usage information
+  --version                             Show version information
+  -f [ --config ] arg                   Configuration file specifying
+                                        additional options
+  --configExpand arg                    Process expansion directives in config
+                                        file (none, exec, rest)
+  --port arg                            Specify port number - 27017 by default #  端口号默认27017
+  --ipv6                                Enable IPv6 support (disabled by
+                                        default) #默认不开启ipv6
+  --listenBacklog arg (=128)            Set socket listen backlog size #全连接队列长度默认127
+  --maxConns arg (=1000000)             Max number of simultaneous connections #最大连接数
+  --pidfilepath arg                     Full path to pidfile (if not set, no
+                                        pidfile is created)
+  --timeZoneInfo arg                    Full path to time zone info directory,
+                                        e.g. /usr/share/zoneinfo
+  --nounixsocket                        Disable listening on unix sockets
+  --unixSocketPrefix arg                Alternative directory for UNIX domain
+                                        sockets (defaults to /tmp)
+  --filePermissions arg                 Permissions to set on UNIX domain
+                                        socket file - 0700 by default
+  --fork                                Fork server process
+  -v [ --verbose ] [=arg(=v)]           Be more verbose (include multiple times
+                                        for more verbosity e.g. -vvvvv)
+  --quiet                               Quieter output
+  --logpath arg                         Log file to send write to instead of
+                                        stdout - has to be a file, not
+                                        directory
+  --syslog                              Log to system's syslog facility instead
+                                        of file or stdout
+  --syslogFacility arg                  syslog facility used for mongodb syslog
+                                        message
+  --logappend                           Append to logpath instead of
+                                        over-writing
+  --logRotate arg                       Set the log rotation behavior
+                                        (rename|reopen)
+  --timeStampFormat arg                 Desired format for timestamps in log
+                                        messages. One of iso8601-utc or
+                                        iso8601-local
+  --setParameter arg                    Set a configurable parameter
+  --bind_ip arg                         Comma separated list of ip addresses to
+                                        listen on - localhost by default
+  --bind_ip_all                         Bind to all ip addresses
+  --noauth                              Run without security
+  --transitionToAuth                    For rolling access control upgrade.
+                                        Attempt to authenticate over outgoing
+                                        connections and proceed regardless of
+                                        success. Accept incoming connections
+                                        with or without authentication.
+  --slowms arg (=100)                   Value of slow for profile and console
+                                        log
+  --slowOpSampleRate arg (=1)           Fraction of slow ops to include in the
+                                        profile and console log
+  --profileFilter arg                   Query predicate to control which
+                                        operations are logged and profiled
+  --auth                                Run with security
+  --clusterIpSourceWhitelist arg        Network CIDR specification of permitted
+                                        origin for `__system` access
+  --profile arg                         0=off 1=slow, 2=all
+  --cpu                                 Periodically show cpu and iowait
+                                        utilization
+  --sysinfo                             Print some diagnostic system
+                                        information
+  --noscripting                         Disable scripting engine
+  --notablescan                         Do not allow table scans
+  --shutdown                            Kill a running server (for init
+                                        scripts)
+  --keyFile arg                         Private key for cluster authentication
+  --clusterAuthMode arg                 Authentication mode used for cluster
+                                        authentication. Alternatives are
+                                        (keyFile|sendKeyFile|sendX509|x509)
+
+Replication options:
+  --oplogSize arg                       Size to use (in MB) for replication op
+                                        log. default is 5% of disk space (i.e.
+                                        large is good)
+
+Replica set options:
+  --replSet arg                         arg is &lt;setname&gt;[/&lt;optionalseedhostlist
+                                        &gt;]
+  --enableMajorityReadConcern [=arg(=1)] (=1)
+                                        Enables majority readConcern
+
+Sharding options:
+  --configsvr                           Declare this is a config db of a
+                                        cluster; default port 27019; default
+                                        dir /data/configdb
+  --shardsvr                            Declare this is a shard db of a
+                                        cluster; default port 27018
+
+Storage options:
+  --storageEngine arg                   What storage engine to use - defaults
+                                        to wiredTiger if no data files present
+  --dbpath arg                          Directory for datafiles - defaults to
+                                        /data/db
+  --directoryperdb                      Each database will be stored in a
+                                        separate directory
+  --syncdelay arg (=60)                 Seconds between disk syncs
+  --journalCommitInterval arg (=100)    how often to group/batch commit (ms)
+  --upgrade                             Upgrade db if needed
+  --repair                              Run repair on all dbs
+  --journal                             Enable journaling
+  --nojournal                           Disable journaling (journaling is on by
+                                        default for 64 bit)
+  --oplogMinRetentionHours arg (=0)     Minimum number of hours to preserve in
+                                        the oplog. Default is 0 (turned off).
+                                        Fractions are allowed (e.g. 1.5 hours)
+
+TLS Options:
+  --tlsOnNormalPorts                    Use TLS on configured ports
+  --tlsMode arg                         Set the TLS operation mode
+                                        (disabled|allowTLS|preferTLS|requireTLS
+                                        )
+  --tlsCertificateKeyFile arg           Certificate and key file for TLS
+  --tlsCertificateKeyFilePassword arg   Password to unlock key in the TLS
+                                        certificate key file
+  --tlsClusterFile arg                  Key file for internal TLS
+                                        authentication
+  --tlsClusterPassword arg              Internal authentication key file
+                                        password
+  --tlsCAFile arg                       Certificate Authority file for TLS
+  --tlsClusterCAFile arg                CA used for verifying remotes during
+                                        inbound connections
+  --tlsCRLFile arg                      Certificate Revocation List file for
+                                        TLS
+  --tlsDisabledProtocols arg            Comma separated list of TLS protocols
+                                        to disable [TLS1_0,TLS1_1,TLS1_2]
+  --tlsAllowConnectionsWithoutCertificates
+                                        Allow client to connect without
+                                        presenting a certificate
+  --tlsAllowInvalidHostnames            Allow server certificates to provide
+                                        non-matching hostnames
+  --tlsAllowInvalidCertificates         Allow connections to servers with
+                                        invalid certificates
+  --tlsFIPSMode                         Activate FIPS 140-2 mode at startup
+  --tlsLogVersions arg                  Comma separated list of TLS protocols
+                                        to log on connect [TLS1_0,TLS1_1,TLS1_2
+                                        ]
+
+WiredTiger options:
+  --wiredTigerCacheSizeGB arg           Maximum amount of memory to allocate
+                                        for cache; Defaults to 1/2 of physical
+                                        RAM
+  --wiredTigerJournalCompressor arg (=snappy)
+                                        Use a compressor for log records
+                                        [none|snappy|zlib|zstd]
+  --wiredTigerDirectoryForIndexes       Put indexes and data in different
+                                        directories
+  --wiredTigerCollectionBlockCompressor arg (=snappy)
+                                        Block compression algorithm for
+                                        collection data [none|snappy|zlib|zstd]
+  --wiredTigerIndexPrefixCompression arg (=1)
+                                        Use prefix compression on row-store
+                                        leaf pages
+
+AWS IAM Options:
+  --awsIamSessionToken arg              AWS Session Token for temporary
+                                        credentials
+</code></pre>
+<ul>
+<li><a href="https://www.mongodb.com/docs/v4.4/reference/configuration-options/#processmanagement-options">官方配置文件说明</a></li>
+<li><a href="https://www.cnblogs.com/oldSimon/p/16894714.html">MongoDB配置文件详解</a></li>
+<li><a href="https://blog.csdn.net/cold___play/article/details/130549381">MongoDB---配置文件详解</a></li>
+</ul>
+<h4 id="2-mongod">2 mongod扩展指令</h4>
+<h5 id="_4">是什么</h5>
+<ul>
+<li>扩展指令主要包括"exec"和"reset"</li>
+</ul>
+<h5 id="_5">为什么</h5>
+<ul>
+<li>在配置文件中指定要执行的脚本，通过执行某个脚本获取到某个配置的value。例如执行<code>python /home/user/getIPAddresses.py</code> 获取到mongod进程要监听的IP</li>
+</ul>
+<pre><code>storage:
+  dbPath: &quot;/var/lib/mongo&quot;
+systemLog:
+  destination: file
+  path: &quot;/var/log/mongodb/mongod.log&quot;
+net:
+  bindIp:
+    __exec: &quot;python /home/user/getIPAddresses.py&quot;
+    type: &quot;string&quot;
+    trim: &quot;whitespace&quot;
+    digest: 85fed8997aac3f558e779625f2e51b4d142dff11184308dc6aca06cff26ee9ad
+    digest_key: 68656c6c30303030307365637265746d796f6c64667269656e64
+  tls:
+    mode: requireTLS
+    certificateKeyFile: &quot;/etc/tls/mongod.pem&quot;
+    certificateKeyFilePassword:
+      __rest: &quot;https://myrestserver.example.net/api/config/myCertKeyFilePassword&quot;
+      type: &quot;string&quot;
+      digest: b08519162ba332985ac18204851949611ef73835ec99067b85723e10113f5c26
+      digest_key: 6d795365637265744b65795374756666
+</code></pre>
+<h4 id="_6">关于复制集的节点角色</h4>
+<ul>
+<li>hidden从库和仲裁节点的作用不同。hidden从库用于数据同步，Hidden节点用于Secondary节点故障时接替该故障节点成为新的Secondary节点，而仲裁节点用于解决投票冲突。</li>
+<li>在配置hidden从库时，需要将其优先级设置为0以确保它不会被用于读操作。</li>
+<li>在配置仲裁节点时，需要将其优先级设置为0，并且将votes参数设置为1，以确保它只用于投票</li>
+<li>hidden节点必须始终是priority为0，因为hidden节点不能成为primary节点</li>
+<li>客户端不会将只读流量发给hidden节点，除了基本复制，这些成员不会收到任何流量</li>
+<li>hidden节点可以在副本集选举中投票</li>
+</ul>
+<h2 id="_7">四 日志</h2>
+<ul>
+<li>MongoDB中无论是oplog还是slowlog，都喜欢用collection去实现</li>
+</ul>
+<h3 id="1-oplog">1 oplog</h3>
+<h4 id="_8">是什么</h4>
+<p>MongoDB 的 Replication 是通过一个日志来存储写操作的，这个日志就叫做 oplog。在默认情况下，oplog 分配的是 5% 的空闲磁盘空间。通常而言,这是一种合理的设置。可以通过 mongod --oplogSize 来改变 oplog 的日志大小。</p>
+<p>oplog 是 capped collection，因为 oplog 的特点（不能太多把磁盘填满了，固定大小）需要，MongoDB 才发明了 capped collection（the oplog is actually the reason capped collections were invented）。</p>
+<p>oplog 是 local 库下的一个固定集合，Oplog 是 MongoDB 实现复制集的关键数据结构，在复制集中 Primary 对数据库操作之后就会产生一个 Oplog 文档保存在 local.oplog.rs 集合中，Secondary 成员会拉取 Primary 的 Oplog 并重放相同的操作，从而达到 Secondary 成员与 Primary 有一致的数据。实际上复制集中每一个成员都会保存 Oplog，其他成员会根据连接延迟等因数选择最近的成员拉取 Oplog 数据。</p>
+<p>Oplog 存在集合 local.oplog.rs，这是系统内置集合，一个 capped collection，即是这个 collection 有固定大小，一旦写满数据会从头开始写入，就像一个圆形的队列结构。这个 collection 大小在初始化集群时设置，默认的大小是 5% 的空闲磁盘空间，也可以在配置文件设置 oplogSizeMB 选项，或者在启动 MongoDB 后使用 replSetResizeOplog 命令动态设置 collection 大小。</p>
+<h4 id="_9">怎么办</h4>
+<ol>
+<li>如何利用oplog恢复数据</li>
+<li>复制集实验：主从切换、oplog导出、数据恢复</li>
+<li>搭建2分片，1config分片，2mongos集群</li>
+</ol>
+<h5 id="oplog">利用oplog恢复数据</h5>
+<p>1 备份现有的oplog.rs表</p>
+<pre><code>mongodump --port 28017 -d local -c oplog.rs  -o /mongodb/bak
+</code></pre>
+<p>2 截取oplog并恢复到drop之前的位置</p>
+<pre><code>mongo --port 28017
+use local
+db.oplog.rs.find({op:&quot;c&quot;}).pretty();
+</code></pre>
+<p>3 op的值说明</p>
+<pre><code>-----------------
+op的值说明：
+    &quot;i&quot;: insert
+    &quot;u&quot;: update
+    &quot;d&quot;: delete
+    &quot;c&quot;: db cmd
+假设误删命令是db.test.drop() 这里选”c“做关键查询
+-----------------
+
+</code></pre>
+<p>4 获取到oplog误删除时间点位置
+"ts" : Timestamp(1111111111, 1)  获取时间这一关键段</p>
+<p>5 恢复备份+oplog.bson</p>
+<pre><code>ls /mongodb/bak/local/
+oplog.rs.bson  oplog.rs.metadata.json
+
+cp /mongodb/bak/local/oplog.rs.bson /mongodb/bak/oplog.bson
+rm -rf /mongodb/backup/local/
+mongorestore --port 28018  --oplogReplay --oplogLimit &quot;1111111111:1&quot;  --drop   /mongodb/bak/
+即可恢复误删的集合
+
+</code></pre>
+<p>6 生产环境通常做法是<strong>通过oplog恢复到一台单独的MongDB实例，然后由应用程序进行数据校验和恢复到生产环境库.</strong></p>
+<h4 id="oplog_1">oplog窗口时间</h4>
+<ul>
+<li>oplog窗口时间 是从[时间]维度恒量oplog的大小，又名Oplog  window。</li>
+<li>
+<p><img alt="png" src="../../img/BE30E489-00EE-4268-8F28-46A01655771A.png" /></p>
+</li>
+<li>
+<p>oplog窗口时间:表示oplog.rs固定集合被写满时，存储的最新一条oplog记录与最旧一条的时间差；即表示oplog.rs能存储[多长时间跨度]的oplog记录，比如oplog.rs只能存储2天的oplog记录，那么这个节点的oplog recovery window就是2天。有的书籍又叫oplog-length或oplog maitenance window。
+oplog的内容存储在local.oplog.rs的Capped collections中，oplog.rs能存储的数据容量是固定，当达到oplogSizeMB设置的上限时，就会清理最旧的oplog记录</p>
+</li>
+</ul>
+<h5 id="oplog_2">Oplog窗口时间过小的影响</h5>
+<p>MongoDB的Primary与Secondary节点之间是通过oplog进行数据同步的，客户端在Primary写操作，就会在local.oplog.rs集合中写入一条或多条oplog记录(如图1）；Secondary节点通过获取Primary节点的oplog进行重放，以实现数据同步。</p>
+<p>如果Primary节的oplog.rs固定集合容量设置不够大，如只能存储最近1小时oplog操作日志；那么MongoDB副本集集群的可用度风险很大。</p>
+<ul>
+<li>
+<p>延时备份节点(Delayed Secondary)失败；当延时节点设置的 延迟时长 &gt; 主节点的oplog窗口时间;</p>
+</li>
+<li>
+<p>易导致从节点复制同步中断；(例如oplog时间极限短，从节点还没有同步过来， 主节点oplog就覆盖了，主从同步就断开了)</p>
+</li>
+<li>
+<p>数据恢复时可能导致全量备份和oplog衔接不上. (例如oplog时间极限短， 主节点mongodump过程中 oplog满了被覆盖了，则dump出来的数据就会丢失部分)</p>
+</li>
+</ul>
+<h5 id="oplog_3">怎么评估oplog产生速度</h5>
+<p>根据云数据库 MongoDB 版长期以来积累的实例日志备份数据判断，当一个实例的oplog产生速度达到250GB/h ~ 330GB/h左右时，就很有可能会出现日志备份无法跟上而导致产生日志备份空洞。</p>
+<p>您可以通过前面提到的oplog大小以及oplog窗口来估算oplog产生速度。例如某个实例的oplog大小为20 GB，其oplog窗口为0.06h，则oplog生产速度大概是333.3GB/h。</p>
+<h5 id="oplog_4">oplog窗口时间的告警项</h5>
+<ul>
+<li>oplog窗口时间作为复制集重要的监控指标，需设置合理的告警项。</li>
+<li>从上节采集oplog窗口时间单位是小时，建议设置1小时、24小时和48小时 分别是p0/p1/p2级别的告警</li>
+<li>
+<ul>
+<li>下面示例是oplog窗口时间小于24小时的p1级别<a href="https://www.modb.pro/db/55869">短信告警</a></li>
+</ul>
+</li>
+<li>总之，oplog window越小，说明当前mongodb rs越无法满足应用需求. </li>
+<li>为什么要采用oplog window概念，而不是采用oplog size使用百分比？因为oplog window概念其实是和业务相结合的，同样的oplog size，业务写的多oplog window就小，业务写的少oplog window就大。也就是说我们要监控oplog window，当它过小时，要及时扩容oplog size. </li>
+<li>从mongodb设计者考虑oplog window概念相比去统计磁盘空间使用率，相对更加通用.</li>
+<li>另外MongoDB secondary节点是定期从primary节点同步数据, 这个定期参数用户是无法设置的，是MongoDB自己计算和调节的。</li>
+<li>另外如何给正在运行的MongoDB primary节点增加secondary节点？</li>
+<li>
+<ul>
+<li>一般是先mongodump出来，然后把数据恢复到secondary节点。此时secondary节点数据已经和primary节点比较接近。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>然后再在primary节点上执行<code>rs.add("newSecondaryNodeHost:port")</code>, secondary节点会从指定时间点之后把oplog全部同步过来， 因此该指定时间点必须落在primary节点的oplog window内.</li>
+</ul>
+</li>
+</ul>
+<h5 id="oplog_5">如何查看oplog大小</h5>
+<p>在云数据库 MongoDB 版中，oplog的默认大小是实例磁盘空间的10%（例如您实例的磁盘空间为500 GB，则相应的oplog大小就是50 GB）。oplog大小会随着磁盘扩容而自动调整。</p>
+<p>如需调整oplog大小，您可以在控制台对replication.oplogSizeMB参数进行调整，调整后无需重启，提交后即生效。如何修改配置参数，请参见设置数据库参数。</p>
+<p>您可使用以下两种方式查看oplog表的实际大小：</p>
+<ul>
+<li>
+<p>在控制台监控信息页面的磁盘空间使用率指标中查看oplog表的实际大小。具体操作，请参见基本监控。</p>
+</li>
+<li>
+<p>通过客户端工具（mongo shell或mongosh）连接实例后，执行以下命令来查看oplog表的大小以及oplog窗口期。</p>
+</li>
+</ul>
+<pre><code>rs.printReplicationInfo()
+</code></pre>
+<p>示例结果如下:</p>
+<pre><code>configured oplog size:   192MB
+log length start to end: 65422secs (18.17hrs)
+oplog first event time:  Mon Jun 23 2014 17:47:18 GMT-0400 (EDT)
+oplog last event time:   Tue Jun 24 2014 11:57:40 GMT-0400 (EDT)
+now:                     Thu Jun 26 2014 14:24:39 GMT-0400 (EDT)
+</code></pre>
+<p>在示例中，oplog大小约为192MB，oplog窗口约为18小时。</p>
+<h2 id="_10">五 性能优化</h2>
+<ul>
+<li>如果 nscanned(扫描的记录数)远大于 nreturned(返回结果的记录数)的话，那么我们就要考虑 通过加索引来优化记录定位了。reslen 如果过大，那么说明我们返回的结果集太大了，这时请查看 find 函数的第二个参数是 否只写上了你需要的属性名。</li>
+</ul>
+<p>常见方案：
+1. 创建索引，显著提高查询效率
+2. 限定返回数据量大小（比如只返回需要的字段、限定行数）
+3. 使用Server Side Code Exceuption，降低网络传输量</p>
+<h2 id="keyfile">六 认证相关（keyfile）</h2>
+<h2 id="_11">七 备份和恢复</h2>
+<h3 id="1-3">1 全量备份3种方式</h3>
+<h4 id="11">1.1 逻辑备份</h4>
+<ul>
+<li>
+<p>即通过mongodump工具备份, mongodump能够在Mongodb运行时进行备份，它的工作原理是<strong>对运行的Mongodb做查询，然后将所有查到的文档写入磁盘。</strong>但是存在的问题时使用mongodump产生的备份不一定是数据库的实时快照,如果我们在备份时对数据库进行了写入操作，则备份出来的文件可能不完全和Mongodb实时数据相等。</p>
+</li>
+<li>
+<p>直连mongod的情况下，可以通过--oplog选项把备份进行时的oplog也备份下来，但是通过mongos连接集群时却不能用--oplog选项.</p>
+</li>
+</ul>
+<h4 id="12">1.2 物理备份</h4>
+<ul>
+<li>具体做法: </li>
+<li>
+<ul>
+<li>简单粗暴，说白了，就是通过直接拷贝数据文件，启动mongodb，来实现数据库的快速迁移，适合于数据量很大的场景（mongodump/mongorestore相对比较耗时）。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>迁移之前，如果可以关闭mongodb，那么先下线，然后再做迁移。否则执行命令db.fsyncLock()以确保所有的写操作都flush到磁盘并禁止新的写入，注意此时数据库被加上了全局锁，处于不可访问的状态；迁移完后，执行db.fsyncUnLock()重新允许新的写入。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>直接备份目录即可: /data/mongodb/rs1</li>
+</ul>
+</li>
+<li>
+<p>物理备份在云数据库MongoDB实例的隐藏节点（Hidden）进行，不影响主节点（Primary）和从节点（Secondary）的读写性能。如果需要备份的数据量较大，物理备份可能需要花费较长时间</p>
+</li>
+<li>
+<p>参考<a href="https://help.aliyun.com/zh/mongodb/user-guide/restore-data-of-an-apsaradb-for-mongodb-instance-to-a-self-managed-mongodb-database-by-using-physical-backups?spm=a2c4g.11186623.0.0.66a77f23DtICXQ">阿里云将MongoDB物理备份文件恢复至自建数据库</a></p>
+</li>
+</ul>
+<h4 id="13">1.3 文件系统快照</h4>
+<ul>
+<li>需要文件系统本身支持快照技术. 速度最快.</li>
+</ul>
+<h3 id="2">2 增量备份</h3>
+<ul>
+<li>说白了, 就是在shard节点和config节点上对mongod进程进行增量备份.</li>
+<li>参考<a href="https://cloud.tencent.com/developer/article/1429385?from=15425">使用oplog完成MongoDB增量备份</a></li>
+<li>核心在于 利用bsondump解析出oplog的最新时间</li>
+</ul>
+<pre><code>[tim@vm backup]$ bsondump bkm/oplog.bson 
+{&quot;ts&quot;:{&quot;$timestamp&quot;:{&quot;t&quot;:1557155068,&quot;i&quot;:1}},&quot;t&quot;:{&quot;$numberLong&quot;:&quot;1&quot;},&quot;h&quot;:{&quot;$numberLong&quot;:&quot;-8619141524121903478&quot;},&quot;v&quot;:2,&quot;op&quot;:&quot;n&quot;,&quot;ns&quot;:&quot;&quot;,&quot;wall&quot;:{&quot;$date&quot;:&quot;2019-05-06T15:04:28.087Z&quot;},&quot;o&quot;:{&quot;msg&quot;:&quot;periodic noop&quot;}}
+</code></pre>
+<ul>
+<li>然后每5分钟利用mongodump，把oplog这个collection导出来</li>
+</ul>
+<pre><code>mongodump --host localhost --port 27017 -d local -c oplog.rs -q '{ts:{$gt: Timestamp(1557155068, 1)}}'
+</code></pre>
+<ul>
+<li>导出来可以有两种做法，一种是写入新的db，一种是存入对象存储桶</li>
+</ul>
+<h2 id="_12">八 各种节点的作用</h2>
+<ul>
+<li>
+<p>Primary、Secondary就不必多说</p>
+</li>
+<li>
+<p>Arbiter节点：Arbiter上没有用户数据，只能投票，不能发起选举，其作用在于用尽量少的资源使得复制集中节点数目为奇数。</p>
+</li>
+<li>
+<p>Hidden节点: 虽然有数据，但对客户端Dirver不可见，可以用来做备份等其他用途。hidden的priority一定是0，因此不可以发起选举，但是可以投票. 可见Hidden节点的功效大于Arbiter节点.</p>
+</li>
+<li>
+<p>Delayed节点: Delayed节点必须是Hidden节点，并且其数据落后于Primary节点一段时间（比如1小时），其作用是当错误数据写入Primary时，可通过Delayed节点的数据来恢复到之前的时间点.</p>
+</li>
+<li>
+<p>priority：<code>A number that indicates the relative eligibility of a member to become a primary</code>. priority为0时不能主动发起选举，不能成为Primary.</p>
+</li>
+<li>votes：是否可以参与投票，mongodb副本集中最多可以有50个节点，但最多只有7个可以投票，其作用在于降低复杂度。vote=0不参与投票.</li>
+</ul>
+<p>详细的属性</p>
+<pre><code>  members: [
+    {
+      _id: &lt;int&gt;,
+      host: &lt;string&gt;,
+      arbiterOnly: &lt;boolean&gt;,
+      buildIndexes: &lt;boolean&gt;,
+      hidden: &lt;boolean&gt;,
+      priority: &lt;number&gt;,
+      tags: &lt;document&gt;,
+      slaveDelay: &lt;int&gt;,
+      votes: &lt;number&gt;
+    },
+    ...
+  ],
+
+</code></pre>
+<h2 id="mongodb_1">九 MongoDB监控</h2>
+<p>监控如下模块</p>
+<ul>
+<li>内存使用</li>
+<li>缺页中断次数</li>
+<li>监控磁盘IO延迟 （云主机有磁盘IOPS使用率）</li>
+</ul>
+<h2 id="journaling">十 journaling</h2>
+<p>MongoDB 的 journaling 是一种数据持久化机制，用于确保在系统崩溃或意外关闭时，数据不会丢失。以下是关于 MongoDB journaling 的一些关键点：</p>
+<ul>
+<li>什么是 Journaling？</li>
+<li>
+<ul>
+<li>日志记录：MongoDB 会将所有写操作记录到一个日志文件（称为 journal），该日志文件存储在存储引擎的目录中。即使数据库进程崩溃，日志文件也可以用于恢复未写入磁盘的数据。</li>
+</ul>
+</li>
+<li>Journaling 的工作原理</li>
+<li>
+<ul>
+<li>写操作：当执行写操作时，MongoDB 会首先将该操作记录到 journal 中，而不是立即写入数据文件。这确保了即使系统崩溃，已记录的操作仍然可以恢复。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>定期刷新：MongoDB 会定期将 journal 中的操作应用到数据文件中。这一过程称为“提交”。提交后，journal 中的条目会被清除。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>持久性：启用 journaling 可以提高数据的持久性，特别是在意外停机的情况下。即使写操作未完全写入数据文件，已记录在 journal 中的操作也可以恢复。</li>
+</ul>
+</li>
+<li>启用和配置 Journaling</li>
+<li>
+<ul>
+<li>默认启用：在 MongoDB 的默认配置中，journaling 是启用的。可以通过配置文件或启动参数进行调整。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>关闭 Journaling：在某些场景下，可以选择关闭 journaling（例如，为了提高性能），但这会增加数据丢失的风险。</li>
+</ul>
+</li>
+<li>性能影响</li>
+<li>
+<ul>
+<li>性能开销：启用 journaling 会带来一定的性能开销，因为每次写操作都需要先记录到 journal 中。但通常，这种开销是可以接受的，尤其是在确保数据安全性时。</li>
+</ul>
+</li>
+<li>示例</li>
+<li>
+<ul>
+<li>在 MongoDB 中，用户通常不需要直接管理 journaling。只需确保 MongoDB 的配置文件中未禁用 journaling，MongoDB 会自动处理相关操作。</li>
+</ul>
+</li>
+<li>
+<p>总结</p>
+</li>
+<li>
+<ul>
+<li>Journaling 是 MongoDB 中重要的持久化机制，它通过记录写操作到日志中，确保数据在系统崩溃时能够恢复。虽然会带来一定的性能开销，但其带来的数据安全性是非常重要的。</li>
+</ul>
+</li>
+</ul>
+<h2 id="mongodb_2">十一 <a href="https://www.mongodb.com/zh-cn/docs/database-tools/mongotop/">MongoDB数据库工具</a></h2>
+<h3 id="mongodump">mongodump</h3>
+<h3 id="mongorestore">mongorestore</h3>
+<h3 id="bsondump">bsondump</h3>
+<h3 id="mongoimport">mongoimport</h3>
+<h3 id="mongoexport">mongoexport</h3>
+<h3 id="mongostat">mongostat</h3>
+<ul>
+<li>适用场景</li>
+<li>
+<ul>
+<li>快速诊断：当需要快速了解 MongoDB 实例的整体性能和状态时，可以使用 mongostat。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>监控性能变化：在执行某些操作时，可以使用 mongostat 观察性能指标的变化，以便评估操作对数据库性能的影响。</li>
+</ul>
+</li>
+</ul>
+<h3 id="mongotop">mongotop</h3>
+<ul>
+<li>适用场景</li>
+<li>
+<ul>
+<li>性能瓶颈分析：当需要分析特定集合的读写活动时，mongotop 是很有用的工具。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>识别热点集合：可以用于识别在高负载情况下被频繁访问的集合，帮助优化数据库设计和查询。</li>
+</ul>
+</li>
+<li>总结</li>
+<li>
+<ul>
+<li>使用 mongostat 适合快速了解整个 MongoDB 实例的性能状态，而 mongotop 则更适合深入分析特定集合的读写活动。mongotop只能针对单个mongod进程，无法通过mongos连接</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>这两个工具可以组合使用，以获得更全面的监控和性能分析。</li>
+</ul>
+</li>
+</ul>
+<h3 id="mongofiles">mongofiles</h3>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../13_mysql/" class="btn btn-neutral float-left" title="第十三篇 MySQL使用"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../15_supervisor/" class="btn btn-neutral float-right" title="第十五篇 Supervisor使用">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../13_mysql/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../15_supervisor/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
