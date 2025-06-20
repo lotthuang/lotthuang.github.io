@@ -398,17 +398,35 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#linux-sysfs">三 基础层: Linux 设备驱动模型和 sysfs 文件系统</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#platform">platform 总线的注册</a>
+    <li class="toctree-l3"><a class="reference internal" href="#31-sysfs">3.1 sysfs基础介绍</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#32-class">3.2 class 设备大管家</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#321">3.2.1 设备管理流程</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#322-class">3.2.2 创建一个class</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#323-classkobject">3.2.3 在class下添加kobject对象</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#324-class">3.2.4 class小结</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_3">代码定义</a>
+    <li class="toctree-l3"><a class="reference internal" href="#33-sysfskobject">3.3 sysfs和kobject介绍</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_4">问题总结</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_5">关于总线的拓展知识点</a>
+    <li class="toctree-l3"><a class="reference internal" href="#34-platform">3.4 platform 总线的注册</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_6">内核总线相关结构体变量</a>
+    <li class="toctree-l4"><a class="reference internal" href="#341">3.4.1 代码定义</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">四 问题总结</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">五 关于总线的拓展知识点</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_5">内核总线相关结构体变量</a>
     </li>
         </ul>
     </li>
@@ -434,6 +452,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/1_basic_of_ai/">第一篇 AI入门</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/2_nvidia_gpu/">第二篇 英伟达GPU产品分类</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/3_basic_of_mcp/">第三篇 MCP入门</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十六章 网络安全方向</span></p>
@@ -642,6 +662,7 @@ struct device_driver {    //…..省略一些成员
 </ul>
 <p><img alt="png" src="../../img/WechatIMG237.jpeg" /></p>
 <h2 id="linux-sysfs">三 基础层: Linux 设备驱动模型和 sysfs 文件系统</h2>
+<h3 id="31-sysfs">3.1 sysfs基础介绍</h3>
 <p>Linux 内核在 2.6 版本中引入设备驱动模型，简化了驱动程序的编写。Linux 设备驱动模型包含<strong>设备(device)</strong>、<strong>总线(bus)</strong>、<strong>类(class)</strong>和<strong>驱动(driver)</strong>，它们之间相互关联。其中<strong>设备(device)</strong>和<strong>驱动(driver)</strong>通过<strong>总线(bus)</strong>绑定在一起。</p>
 <p>Linux 内核中，分别用 <code>bus_type</code>、<code>device_driver</code> 和 <code>device</code> 结构来描述<code>总线</code>、<code>驱动</code>和<code>设备</code>，结构体定义详见 <code>include/linux/device.h</code>。设备和对应的驱动必须依附于同一种总线，因此 <code>device_driver</code> 和 <code>device</code> 结构中都包含 <code>struct bus_type</code> 指针。</p>
 <p><strong>Linux sysfs</strong> 是一个虚拟的文件系统，它把连接在系统上的设备和总线组织成为一个分级的文件，可以由用户空间存取，向用户空间导出内核数据结构以及它们的属性。</p>
@@ -670,6 +691,60 @@ drwxr-xr-x 2 root root 0 Aug 20 15:27 power/
 <li><code>dev</code>: 包含两个子目录：<code>char</code> 和 <code>block</code>，分别存放字符设备和块设备的主次设备号<code>(major:minor)</code>，指向<code>/sys/devices</code> 目录下的设备</li>
 <li><code>devices</code>:包含系统所有的设备</li>
 </ul>
+<h3 id="32-class">3.2 class 设备大管家</h3>
+<ul>
+<li>
+<p>一个类是一个设备的高级视图, 它抽象出低级的实现细节. 驱动可以见到一个<code>SCSI</code> 磁盘或者一个 <code>ATA</code> 磁盘，在类的级别，它们都是磁盘。类允许用户空间基于它们做什么来使用设备，而不是它们如何被连接或者它们如何工作。</p>
+</li>
+<li>
+<p>几乎所有的类都在 <code>sysfs</code> 中在 <code>/sys/class</code> 下出现。</p>
+</li>
+</ul>
+<p>因此：</p>
+<ul>
+<li>
+<ul>
+<li>例如所有的网络接口可在 /sys/class/net 下发现，不管接口类型；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>输入设备可在 /sys/class/input 下；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>串行设备在 /sys/class/tty；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>一个例外是块设备, 由于历史的原因在 /sys/block</li>
+</ul>
+</li>
+</ul>
+<h4 id="321">3.2.1 设备管理流程</h4>
+<p>设备管理流程：</p>
+<ul>
+<li>先调用<code>register_chrdev()</code>注册设备（提交file_operations结构体）</li>
+<li>再调用<code>class_create()</code> 创建类用于相同类型的设备管理</li>
+<li>最后调用<code>device_create()</code>，将注册的设备归于某一类下，记得传入设备号，这样才能找到第一步注册的设备</li>
+</ul>
+<p><img alt="png" src="../../img/DEE2D066-8B6F-4AE2-A2E7-4D3E9D834B80.jpg" /></p>
+<h4 id="322-class">3.2.2 创建一个class</h4>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/stg-FyP4LLwHtmkpNuedug">使用class_create</a></li>
+</ul>
+<h4 id="323-classkobject">3.2.3 在class下添加kobject对象</h4>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/stg-FyP4LLwHtmkpNuedug">使用device_create</a></li>
+</ul>
+<h4 id="324-class">3.2.4 class小结</h4>
+<ul>
+<li><code>class</code>主要对系统中的设备进行分类，而该设备类主要是用于将系统中已创建的设备归到各自类型中，而<code>class</code>目录中各类别主要是对<code>device</code>目录的链接</li>
+</ul>
+<p><img alt="png" src="../../img/3A430043-3F6E-42EC-818A-4426704F6DED.jpg" /></p>
+<h3 id="33-sysfskobject">3.3 sysfs和kobject介绍</h3>
 <p><code>sysfs</code> 中显示的每一个对象都对应一个 <code>kobject 结构</code>（完整定义位于 <code>include/linux/kobject.h</code>，结构内部包含一个 <code>parent</code> 指针），而另一个相联系的结构为 <code>kset</code>。<code>kset</code> 是嵌入相同类型结构的 <code>kobject</code> 对象的集合。 内核用 <code>kobject</code>、<code>kset</code> 和 <code>parent</code> 之间的关系将各个对象连接起来组成一个分层的结构体系，从而与模型化的子系统相匹配。</p>
 <p><code>sysfs</code> 中能清晰地看出 <code>device</code>、<code>driver</code> 和 <code>bus</code> 的相互联系，以某系统上 <code>pci</code> 总线上的 <code>igb</code> 驱动为例。</p>
 <blockquote>
@@ -679,7 +754,7 @@ drwxr-xr-x 2 root root 0 Aug 20 15:27 power/
 <p>引入 Linux 设备驱动模型下，<strong>设备和驱动可以分开注册</strong>(比如分两个内核模块, XXXX_device.ko 文件和 XXXX_driver.ko 文件), 依赖总线完成相互绑定。系统每注册一个设备的时候，会寻找与之匹配的驱动；相反，系统每注册一个驱动的时候，会寻找与之匹配的设备。这个过程中，设备和驱动的匹配工作由总线完成。</p>
 <p>下文中将会用关键的内核源码（基于 linux 5.2.14 Kernel）说明驱动和设备间匹配机制的实现，分析的过程中以<code>platform总线</code>为例。</p>
 <p><code>platform总线</code>是一种虚拟的总线，与之相对应的是<code>PCI</code>、<code>I2C</code>、<code>SPI</code>等实体总线。引入<code>虚拟platform总线</code>是为了解决某些设备无法直接依附在现有实体总线上的问题，例如<code>SoC</code>系统中集成的独立外设控制器，挂接在 SoC 内存空间的外设等等。</p>
-<h3 id="platform">platform 总线的注册</h3>
+<h3 id="34-platform">3.4 platform 总线的注册</h3>
 <p><code>platform总线</code>作为 Linux 的基础总线，在内核启动阶段便完成了注册，注册的入口函数为<code>platform_bus_init()</code>。内核启动阶段调用该函数的路径为：</p>
 <pre><code>
 start_kernel()                  --&gt; arch_call_rest_init()[last step in start_kernel]
@@ -688,7 +763,7 @@ start_kernel()                  --&gt; arch_call_rest_init()[last step in start_
     --&gt; driver_init()           --&gt; platform_bus_init()
 
 </code></pre>
-<h2 id="_3">代码定义</h2>
+<h4 id="341">3.4.1  代码定义</h4>
 <blockquote>
 <p><code>include/linux/device.h</code></p>
 </blockquote>
@@ -845,7 +920,7 @@ struct device_driver {
 <p><img alt="png" src="../../img/WechatIMG240.jpeg" /></p>
 <p><a href="https://www.cnblogs.com/schips/p/linux_device_model_5.html">参考 1</a></p>
 <p><a href="https://hughesxu.github.io/posts/Linux_device_and_driver_model/">参考 2</a></p>
-<h2 id="_4">问题总结</h2>
+<h2 id="_3">四 问题总结</h2>
 <ul>
 <li>
 <p>为什么引入<code>platform虚拟总线</code>?</p>
@@ -912,8 +987,8 @@ struct platform_device s3c_device_wdt = {
 </ul>
 </li>
 </ul>
-<h2 id="_5">关于总线的拓展知识点</h2>
-<h3 id="_6">内核<code>总线</code>相关结构体变量</h3>
+<h2 id="_4">五 关于总线的拓展知识点</h2>
+<h3 id="_5">内核<code>总线</code>相关结构体变量</h3>
 <ul>
 <li>内核维护的所有的<code>总线</code>都需要用以下结构体注册一个变量。</li>
 </ul>

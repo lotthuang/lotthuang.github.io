@@ -316,23 +316,33 @@
               <ul class="current">
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">第一篇 dockerfile最佳实践</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#dockerfile">写 Dockerfile 的建议</a>
+    <li class="toctree-l2"><a class="reference internal" href="#dockerfile">一 写 Dockerfile 的建议</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#_2">详细小建议：</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#run">RUN 命令</a>
+    <li class="toctree-l2"><a class="reference internal" href="#run">二 RUN 命令</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#1">关于容器内的 1 号进程</a>
+    <li class="toctree-l2"><a class="reference internal" href="#1">三 关于容器内的 1 号进程</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#containerd">如何使用 Containerd 打包镜像</a>
+    <li class="toctree-l2"><a class="reference internal" href="#containerd">四 如何使用 Containerd 打包镜像</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#containerd_1">使用 containerd 打包镜像</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#_3">查看已打包的镜像</a>
     </li>
         </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#docker-compose">五 docker-compose使用</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-docker-compose">1 docker-compose基础使用</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-debian">2 构建一个基础的Debian镜像</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#docker-iptables">六 docker iptables规则详解</a>
     </li>
     </ul>
                   </li>
@@ -427,6 +437,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/2_nvidia_gpu/">第二篇 英伟达GPU产品分类</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_15/3_basic_of_mcp/">第三篇 MCP入门</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十六章 网络安全方向</span></p>
               <ul>
@@ -461,7 +473,7 @@
 <ul>
 <li>本篇总结 Dockerfile 的最佳实践</li>
 </ul>
-<h2 id="dockerfile">写 Dockerfile 的建议</h2>
+<h2 id="dockerfile">一 写 Dockerfile 的建议</h2>
 <ul>
 <li>要使用 tag，但不要 latest。</li>
 <li>Debian 挺好的，不要总 Ubuntu。</li>
@@ -540,7 +552,7 @@ RUN apt-get install -y python=2.7
 <p>10、Provide an email adress or URL as maintainer.</p>
 <p>11、Use COPY instead of ADD for files and folders.</p>
 <p>12、Specify a maintainer of the Dockerfile. 并 写明联系方式</p>
-<h2 id="run">RUN 命令</h2>
+<h2 id="run">二 RUN 命令</h2>
 <p>RUN 指令是用来执行命令行命令的。由于命令行的强大能力，RUN 指令在定制镜像时是最常用的指令之一。其格式有两种：</p>
 <ul>
 <li>
@@ -585,7 +597,7 @@ RUN buildDeps='gcc libc6-dev make wget' \
 <p>并且，这里为了格式化还进行了换行。Dockerfile 支持 Shell 类的行尾添加 \ 的命令换行方式，以及行首 # 进行注释的格式。良好的格式，比如换行、缩进、注释等，会让维护、排障更为容易，这是一个比较好的习惯。</p>
 <p>此外，还可以看到这一组命令的最后添加了清理工作的命令，删除了为了编译构建所需要的软件，清理了所有下载、展开的文件，并且还清理了 apt 缓存文件。这是很重要的一步，我们之前说过，镜像是多层存储，每一层的东西并不会在下一层被删除，会一直跟随着镜像。因此镜像构建时，一定要确保每一层只添加真正需要添加的东西，任何无关的东西都应该清理掉。</p>
 <p>很多人制作出了很臃肿的镜像的原因之一，就是忘记了每一层构建的最后一定要清理掉无关文件。</p>
-<h2 id="1">关于容器内的 1 号进程</h2>
+<h2 id="1">三 关于容器内的 1 号进程</h2>
 <ul>
 <li>如果是单进程容器, 则直接使用业务进程作为 1 号进程, 例如 uwsgi 进程、tomcat 进程</li>
 <li>如果是胖容器, 则建议使用<a href="https://cloud-atlas.readthedocs.io/zh_CN/latest/docker/init/docker_tini.html">tini</a>作为容器内 1 号进程. tini 的优势:</li>
@@ -599,8 +611,9 @@ RUN buildDeps='gcc libc6-dev make wget' \
 <li>tini 可以处理 Docker 进程中运行的程序的信号，例如，通过 Tini， SIGTERM 可以终止进程，不需要你明确安装一个信号处理器</li>
 </ul>
 </li>
+<li><a href="https://github.com/krallin/tini/releases">tini下载安装</a>, 64位Linux使用<strong>tini-amd64</strong>这个</li>
 </ul>
-<h2 id="containerd">如何使用 Containerd 打包镜像</h2>
+<h2 id="containerd">四 如何使用 Containerd 打包镜像</h2>
 <h3 id="containerd_1">使用 containerd 打包镜像</h3>
 <p>通过以下命令使用 containerd 打包镜像：</p>
 <pre><code>containerd ctr build -t my-image .
@@ -618,6 +631,170 @@ RUN buildDeps='gcc libc6-dev make wget' \
 <li><a href="https://juejin.cn/s/containerd%20%E6%89%93%E5%8C%85%E9%95%9C%E5%83%8F">containerd 打包镜像</a></li>
 <li><a href="https://developer.aliyun.com/article/1094835">containerd 镜像构建工具 -- nerdctl 和 buildkit</a></li>
 </ul>
+<h2 id="docker-compose">五 docker-compose使用</h2>
+<h3 id="1-docker-compose">1 docker-compose基础使用</h3>
+<ul>
+<li>在debian虚拟机上<a href="https://u.sb/debian-install-docker/">安装docker-compose</a></li>
+</ul>
+<pre><code>
+
+curl -sS https://download.docker.com/linux/debian/gpg | gpg --dearmor &gt; /usr/share/keyrings/docker-ce.gpg
+echo &quot;deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-ce.gpg] https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/debian $(lsb_release -sc) stable&quot; &gt; /etc/apt/sources.list.d/docker.list
+
+
+apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+
+</code></pre>
+<ul>
+<li>
+<p>在debian虚拟机上使用</p>
+</li>
+<li>
+<ul>
+<li>先定义好一些service</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><img alt="png" src="../../img/09EB0E41-A38B-478D-8698-7D728A787EA5.jpg" /></li>
+</ul>
+</li>
+<li>
+<ul>
+<li>直接使用docker compose run 指定service（比如debian-sre-service）, -d 是后台运行, 会自动进行build</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><img alt="png" src="../../img/6E52671B-BB7B-4136-8F6E-46277AE2B93A.png" /></li>
+</ul>
+</li>
+</ul>
+<h3 id="2-debian">2 构建一个基础的Debian镜像</h3>
+<ul>
+<li>
+<p>在debian虚拟机上构建一个基础Debian镜像，可运行python、supervisor、nginx等</p>
+</li>
+<li>
+<p>1 提前准备</p>
+</li>
+</ul>
+<pre><code>web_server@host-7-0-0-5:~/DockerBuild$ ls
+Dockerfile  files
+web_server@host-7-0-0-5:~/DockerBuild$ cd files
+web_server@host-7-0-0-5:~/DockerBuild/files$ wget 'https://github.com/krallin/tini/releases/download/v0.19.0/tini-amd64'
+web_server@host-7-0-0-5:~/DockerBuild$ ls files/
+app.py  entry.sh  tini
+</code></pre>
+<ul>
+<li>2 Dockerfile</li>
+</ul>
+<pre><code># 使用 Debian 稳定版作为基础镜像
+FROM debian:stable-slim
+
+# 设置环境变量
+ENV DEBIAN_FRONTEND=noninteractive \
+    TERM=xterm-256color
+
+# 安装基础工具和 SRE 常用工具
+RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends \
+    # 基础工具
+    ca-certificates \
+    curl \
+    wget \
+    gnupg \
+    apt-transport-https \
+    software-properties-common \
+    # 网络诊断工具
+    iputils-ping \
+    dnsutils \
+    net-tools \
+    traceroute \
+    tcpdump \
+    # 系统工具
+    procps \
+    htop \
+    iotop \
+    iftop \
+    strace \
+    ltrace \
+    lsof \
+    jq \
+    vim-tiny \
+    less \
+    # 安全工具
+    openssl \
+    ca-certificates \
+    # 日志工具
+    logrotate \
+    # 时间同步
+    ntpdate \
+    &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+# 安装常用监控/运维工具（可选）
+# RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends \
+#     prometheus-node-exporter \
+#     telegraf \
+#     &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+
+# 清理缓存
+RUN apt-get clean &amp;&amp; \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+ADD files/tini /root/tini
+ADD files/app.py /root/app.py
+ADD files/entry.sh /root/entry.sh
+RUN chmod +x /root/tini &amp;&amp; chmod +x /root/entry.sh
+# 设置工作目录
+
+# 默认启动命令（可根据需要覆盖）
+ENTRYPOINT [&quot;/root/tini&quot;, &quot;--&quot;, &quot;/root/entry.sh&quot;]
+</code></pre>
+<h2 id="docker-iptables">六 docker iptables规则详解</h2>
+<pre><code>
+# Generated by iptables-save v1.8.9 (nf_tables) on Fri Jun 20 20:10:10 2025
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:DOCKER - [0:0]
+:DOCKER-BRIDGE - [0:0]
+:DOCKER-CT - [0:0]
+:DOCKER-FORWARD - [0:0]
+:DOCKER-ISOLATION-STAGE-1 - [0:0]
+:DOCKER-ISOLATION-STAGE-2 - [0:0]
+:DOCKER-USER - [0:0]
+-A FORWARD -j DOCKER-USER
+-A FORWARD -j DOCKER-FORWARD
+-A DOCKER ! -i docker0 -o docker0 -j DROP
+-A DOCKER-BRIDGE -o docker0 -j DOCKER
+-A DOCKER-CT -o docker0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A DOCKER-FORWARD -j DOCKER-CT
+-A DOCKER-FORWARD -j DOCKER-ISOLATION-STAGE-1
+-A DOCKER-FORWARD -j DOCKER-BRIDGE
+-A DOCKER-FORWARD -i docker0 -j ACCEPT
+-A DOCKER-ISOLATION-STAGE-1 -i docker0 ! -o docker0 -j DOCKER-ISOLATION-STAGE-2
+-A DOCKER-ISOLATION-STAGE-2 -o docker0 -j DROP
+COMMIT
+# Completed on Fri Jun 20 20:10:10 2025
+# Generated by iptables-save v1.8.9 (nf_tables) on Fri Jun 20 20:10:10 2025
+*nat
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+:DOCKER - [0:0]
+-A PREROUTING -m addrtype --dst-type LOCAL -j DOCKER
+-A OUTPUT ! -d 127.0.0.0/8 -m addrtype --dst-type LOCAL -j DOCKER
+-A POSTROUTING -s 172.17.0.0/16 ! -o docker0 -j MASQUERADE
+-A DOCKER -i docker0 -j RETURN
+COMMIT
+# Completed on Fri Jun 20 20:10:10 2025
+
+
+</code></pre>
               
             </div>
           </div><footer>
