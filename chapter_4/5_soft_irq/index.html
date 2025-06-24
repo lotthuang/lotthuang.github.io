@@ -219,6 +219,14 @@
     <li class="toctree-l3"><a class="reference internal" href="#2-ksoftirqd-softirq">2 如何使用 ksoftirqd（进程上下文）来运行 softirq（中断上下文）</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#3_1">3 软中断执行的三个场景</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#31">3.1 第一种 硬中断返回时:</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#32-ksoftirqd">3.2 第二种 ksoftirqd内核线程</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#33-local_bh_enable-do_softirq">3.3 第三种 显式调用软中断, 例如local_bh_enable()函数, 里面调用了do_softirq()函数</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#4">4 扩展</a>
     </li>
@@ -1036,16 +1044,63 @@ Although the work is now being done in process context rather than bottom half c
 <h3 id="3_1">3 软中断执行的三个场景</h3>
 <p><a href="https://www.halolinux.us/process-manager/the-software-interrupt-kernel-thread.html">The previous section</a> has described how software interrupts are handled in interrupt context on the return path from hardware interrupt handling, but there is also a kernel thread (in fact, one per CPU) dedicated to handling software interrupts. This thread is woken up when the load of software interrupts becomes too great to handle in interrupt context (it would take too many machine cycles from the current process).</p>
 <ul>
-<li>默认情况下（第一种），硬中断返回的时候就开始执行软中断. 如果软中断太多, 则进入第二种</li>
-<li>第二种， 在 softirqd 内核线程下</li>
+<li>第一种（默认情况），硬中断返回的时候就开始执行软中断.  在中断返回时触发，会立即执行，无需经过调度器决策. 如果软中断太多, 则进入第二种</li>
+<li>第二种， 在 <code>ksoftirqd</code> 内核线程内, ksoftirqd内核线程的优先级高于普通用户线程, 所以软中断也会快速得到执行.</li>
+<li>第三种, 显式调用软中断的内核代码 (在那些显式检查和执行待处理的软中断的代码中，如网络子系统中)</li>
+</ul>
+<h4 id="31">3.1 第一种 硬中断返回时:</h4>
+<ul>
 <li>
-<p>第三种, 显式调用软中断的内核代码</p>
-</li>
-<li>
-<p>第一种</p>
+<ul>
+<li>第一种详解, 在 <code>arch/x86/kernel/irq.c</code>的<code>do_IRQ()</code>函数中, 调用<code>irq_exit()</code></li>
+</ul>
 </li>
 </ul>
-<p><code>kernel/softirq.c</code></p>
+<pre><code>
+/*
+ * do_IRQ handles all normal device IRQ's (the special
+ * SMP cross-CPU interrupts have their own specific
+ * handlers).
+ */
+__visible unsigned int __irq_entry do_IRQ(struct pt_regs *regs)
+{
+        struct pt_regs *old_regs = set_irq_regs(regs);
+
+        /* high bit used in ret_from_ code  */
+        unsigned vector = ~regs-&gt;orig_ax;
+        unsigned irq;
+
+        irq_enter();
+        exit_idle();
+
+        irq = __this_cpu_read(vector_irq[vector]);
+
+        if (!handle_irq(irq, regs)) {
+                ack_APIC_irq();
+
+                if (irq != VECTOR_RETRIGGERED) {
+                        pr_emerg_ratelimited(&quot;%s: %d.%d No irq handler for vector (irq %d)\n&quot;,
+                                             __func__, smp_processor_id(),
+                                             vector, irq);
+                } else {
+                        __this_cpu_write(vector_irq[vector], VECTOR_UNDEFINED);
+                }
+        }
+
+        irq_exit();
+
+        set_irq_regs(old_regs);
+        return 1;
+}
+
+</code></pre>
+<ul>
+<li>
+<ul>
+<li><code>irq_exit()</code>函数定义在<code>kernel/softirq.c</code>文件中</li>
+</ul>
+</li>
+</ul>
 <pre><code>
 /*
  * Exit an interrupt context. Process softirqs if needed and possible:
@@ -1097,8 +1152,148 @@ static inline void invoke_softirq(void)
 </code></pre>
 <p><img alt="png" src="../../img/30A84B91-E7A9-4A2D-B635-8A489534F03B.png" /></p>
 <ul>
-<li>综上所述, <code>irq_exit()</code> ---&gt; <code>invoke_softirq()</code> ---&gt; <code>__do_softirq()</code></li>
+<li>综上所述, <code>do_IRQ()</code> ---&gt; <code>irq_exit()</code> ---&gt; <code>invoke_softirq()</code> ---&gt; <code>__do_softirq()</code></li>
 </ul>
+<h4 id="32-ksoftirqd">3.2 第二种 <a href="https://blog.csdn.net/qq_40036519/article/details/111769180">ksoftirqd内核线程</a></h4>
+<p><img alt="png" src="../../img/B46832BA-8EBF-40EF-A93E-6FF75716F0E1.jpg" /></p>
+<ul>
+<li>open_softirq注册软中断处理函数</li>
+</ul>
+<pre><code>void open_softirq(int nr, void (*action)(struct softirq_action *))
+{
+    softirq_vec[nr].action = action;
+}
+</code></pre>
+<ul>
+<li>raise_softirq触发softirq</li>
+</ul>
+<pre><code>void raise_softirq(unsigned int nr)
+{
+    unsigned long flags;
+
+    local_irq_save(flags);
+    raise_softirq_irqoff(nr);
+    local_irq_restore(flags);
+}
+inline void raise_softirq_irqoff(unsigned int nr)
+{
+    __raise_softirq_irqoff(nr);
+    if (!in_interrupt())
+        wakeup_softirqd();
+}
+
+</code></pre>
+<ul>
+<li>软中断处理线程ksoftirqd%d</li>
+</ul>
+<pre><code>static struct smp_hotplug_thread softirq_threads = {
+    .store          = &amp;ksoftirqd,
+    .thread_should_run  = ksoftirqd_should_run,
+    .thread_fn      = run_ksoftirqd,
+    .thread_comm        = &quot;ksoftirqd/%u&quot;,
+};
+
+</code></pre>
+<ul>
+<li>内核线程函数run_ksoftirqd
+调用__do_softirq函数实际处理</li>
+</ul>
+<pre><code>
+static void run_ksoftirqd(unsigned int cpu)
+{
+    local_irq_disable();
+    if (local_softirq_pending()) {
+        /*
+         * We can safely run softirq on inline stack, as we are not deep
+         * in the task stack here.
+         */
+        __do_softirq();
+        local_irq_enable();
+        cond_resched();
+        return;
+    }
+    local_irq_enable();
+}
+
+asmlinkage __visible void __softirq_entry __do_softirq(void)
+{
+/*软中断处理时长在2ms一下，如果处理完软中断有发生则继续执行*/
+    unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
+    unsigned long old_flags = current-&gt;flags;
+    int max_restart = MAX_SOFTIRQ_RESTART;
+    struct softirq_action *h;
+    bool in_hardirq;
+    __u32 pending;
+    int softirq_bit;
+
+    /*
+     * Mask out PF_MEMALLOC s current task context is borrowed for the
+     * softirq. A softirq handled such as network RX might set PF_MEMALLOC
+     * again if the socket is related to swap
+     */
+    current-&gt;flags &amp;= ~PF_MEMALLOC;
+
+    pending = local_softirq_pending();
+    account_irq_enter_time(current);
+
+    __local_bh_disable_ip(_RET_IP_, SOFTIRQ_OFFSET);
+    in_hardirq = lockdep_softirq_start();
+
+restart:
+    /* Reset the pending bitmask before enabling irqs */
+    set_softirq_pending(0);
+
+    local_irq_enable();
+
+    h = softirq_vec;    /*软中断处理函数数组*/
+
+    while ((softirq_bit = ffs(pending))) {
+        unsigned int vec_nr;
+        int prev_count;
+
+        h += softirq_bit - 1;
+
+        vec_nr = h - softirq_vec;   /*软中断号*/
+        prev_count = preempt_count();
+
+        kstat_incr_softirqs_this_cpu(vec_nr);
+
+        trace_softirq_entry(vec_nr);
+        h-&gt;action(h);            /*执行软中断处理函数*/
+        trace_softirq_exit(vec_nr);
+        if (unlikely(prev_count != preempt_count())) {
+            pr_err(&quot;huh, entered softirq %u %s %p with preempt_count %08x, exited with %08x?\n&quot;,
+                   vec_nr, softirq_to_name[vec_nr], h-&gt;action,
+                   prev_count, preempt_count());
+            preempt_count_set(prev_count);
+        }
+        h++;
+        pending &gt;&gt;= softirq_bit;
+    }
+
+    rcu_bh_qs();
+    local_irq_disable();
+
+    pending = local_softirq_pending();
+    /*如果又来软中断，时间还有则继续处理，如果不需要调度的话*/
+    if (pending) {
+        if (time_before(jiffies, end) &amp;&amp; !need_resched() &amp;&amp;
+            --max_restart)
+            goto restart;
+
+        wakeup_softirqd();
+    }
+
+    lockdep_softirq_end(in_hardirq);
+    account_irq_exit_time(current);
+    __local_bh_enable(SOFTIRQ_OFFSET);
+    WARN_ON_ONCE(in_interrupt());
+    current_restore_flags(old_flags, PF_MEMALLOC);
+}
+
+</code></pre>
+<h4 id="33-local_bh_enable-do_softirq">3.3 第三种 显式调用软中断, 例如local_bh_enable()函数, 里面调用了do_softirq()函数</h4>
+<p><img alt="png" src="../../img/AA52A676-3244-4728-9F6C-618418E39D94.jpg" /></p>
 <h3 id="4">4 扩展</h3>
 <ul>
 <li><a href="https://stackoverflow.com/questions/7135915/which-context-are-softirq-and-tasklet-in">Which Context are softirq and tasklet in?</a></li>
