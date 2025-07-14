@@ -183,6 +183,14 @@
     <li class="toctree-l3"><a class="reference internal" href="#1-coredump">1 coredump文件管理最佳实践</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#2">2 如何触发</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#21-coredump">2.1 使用某些信号可以让进程coredump</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#22-pythoncoredump">2.2 用python脚本产生coredump文件</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#23-coredump">2.3 分析coredump文件，定位问题</a>
+    </li>
+        </ul>
     </li>
         </ul>
     </li>
@@ -455,10 +463,18 @@
               
                 <h1 id="_1">概述</h1>
 <ul>
-<li>本篇总结Linux coredump相关知识</li>
+<li>本篇总结Linux coredump相关知识, 按照是什么为什么怎么办这套常用逻辑范式去理解它.</li>
 </ul>
 <h2 id="coredump">一 coredump是什么</h2>
+<ul>
+<li>coredump全称是核心转储, 当程序运行过程中发生异常，程序异常退出时，由操作系统把程序当前的内存状况存储在一个core文件中，叫coredump.</li>
+<li>我们可以认为 coredump 是“内存快照”.</li>
+</ul>
 <h2 id="_2">二 为什么</h2>
+<ul>
+<li>对于有些程序错误是很难重现的，例如指针异常，而 coredump 文件可以再现程序出错时的情景、可以帮助程序员分析程序崩溃时的状态信息，定位程序崩溃的原因并进行修复。 </li>
+<li>通过分析core dump 文件，程序员可以了解程序崩溃时的内存信息、寄存器状态、堆栈信息等，以及程序运行时的其他状态信息。 这些信息可以帮助程序员快速定位程序崩溃的原因，提高程序的稳定性和可靠性。</li>
+</ul>
 <h2 id="_3">三 怎么办</h2>
 <h3 id="1-coredump">1 coredump文件管理最佳实践</h3>
 <ul>
@@ -492,9 +508,23 @@
 默认kernel.core_uses_pid = 0，每次都只有一个core，而且新的core会覆盖旧的core，非常不方便
 </code></pre>
 <h3 id="2">2 如何触发</h3>
-<ul>
-<li>使用某些信号可以让进程coredump</li>
-</ul>
+<h4 id="21-coredump">2.1 使用某些信号可以让进程coredump</h4>
+<pre><code>kill -11 &lt;PID&gt; 默认行为是终止进程并生成 core 文件
+</code></pre>
+<h4 id="22-pythoncoredump">2.2 用python脚本产生coredump文件</h4>
+<pre><code># simple_script.py
+import ctypes
+ctypes.string_at(0)  # Access NULL pointer to trigger coredump
+</code></pre>
+<p>运行Python脚本，触发coredump</p>
+<p>运行修改后的Python脚本，可以通过以下命令触发coredump：</p>
+<pre><code>python2 simple_script.py
+</code></pre>
+<h4 id="23-coredump">2.3 分析coredump文件，定位问题</h4>
+<p>当脚本出现coredump后，系统会生成coredump文件，我们可以通过以下命令来分析coredump文件：</p>
+<pre><code>gdb python core
+
+</code></pre>
               
             </div>
           </div><footer>

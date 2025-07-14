@@ -410,8 +410,22 @@
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">第三篇 MCP入门</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#mcp">一 MCP是什么</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">1 基础介绍</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-mcp">2 MCP架构概览</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#21-mcp-">2.1 MCP 基于客户端 - 服务器架构，主要有三个角色：工具、资源和提示</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_2">二 基础应用</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-claude">1 本地安装Claude</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -451,16 +465,89 @@
 <li>MCP是Model Context Protocol</li>
 </ul>
 <h2 id="mcp">一 <a href="https://github.com/liaokongVFX/MCP-Chinese-Getting-Started-Guide">MCP是什么</a></h2>
+<h3 id="1">1 基础介绍</h3>
 <ul>
 <li>模型上下文协议（MCP）是一个创新的开源协议，它重新定义了大语言模型（LLM）与外部世界的互动方式。MCP 提供了一种标准化方法，使任意大语言模型能够轻松连接各种数据源和工具，实现信息的无缝访问和处理。MCP 就像是 AI 应用程序的 USB-C 接口，为 AI 模型提供了一种标准化的方式来连接不同的数据源和工具。</li>
 </ul>
 <p><img alt="png" src="../../img/B772AEBF-F6E4-460A-A1E3-6286FBE55B21.jpg" /></p>
+<ul>
+<li>
+<p>MCP让智能体（Agents）通过单一接口与工具或其他能力进行交互。</p>
+</li>
+<li>
+<p>具体来说，虽然LLM具备强大的知识和推理能力，但其知识仅限于初始训练数据。若需实时信息，必须自行调用外部工具。</p>
+</li>
+<li>
+<p>模型上下文协议(MCP)是一种标准化接口和框架，使AI模型能够无缝连接外部工具、资源和环境。</p>
+</li>
+<li>
+<p><img alt="png" src="../../img/7BE4A90E-4259-44A1-8E6A-61E40AC4DC65.jpg" /></p>
+</li>
+<li>
+<p>上面那些Claude、IDEs是<strong>智能体(Agent)</strong>,  然后通过MCP协议连接到各种<strong>MCP Server</strong>, <strong>MCP Server</strong>可以提供各种<strong>工具</strong>，例如获取天气、外语翻译等等.</p>
+</li>
+<li>
+<ul>
+<li>这样使得使用<strong>智能体(Agent)</strong>的人可以用自然语言就做很多事情</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>而<strong>MCP Server</strong>可以通过各种语言编写，比如python</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-mcp">2 <a href="https://mp.weixin.qq.com/s/X3ix6VErpnz3q3RzzdEfYQ">MCP架构概览</a></h3>
+<p>下面我们看下MCP的架构原理，如下图：</p>
+<p><img alt="png" src="../../img/90CD8913-CA54-4CCA-8302-B46DE1460A99.jpg" /></p>
+<ul>
+<li>宿主（Host）：是面向用户的 AI 应用，如聊天应用、AI 增强型 IDE 等。它发起与 MCP 服务器的连接，捕获用户输入，保留对话历史并显示模型回复。</li>
+<li>
+<ul>
+<li>常见比如 Claude Desktop, Cursor等.</li>
+</ul>
+</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG607.jpg" /></p>
+<ul>
+<li>客户端（Client）：在宿主内，负责处理底层事务，像适配器或信使，负责按 MCP 协议执行宿主指令。</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG608.jpg" /></p>
+<ul>
+<li>服务器（Server）：是提供功能（工具等）的外部程序或服务，可本地或远程运行，关键是以标准格式告知能做什么，执行客户端请求并返回结果。</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG609.jpg" /></p>
+<h4 id="21-mcp-">2.1 MCP 基于客户端 - 服务器架构，主要有三个角色：工具、资源和提示</h4>
+<ul>
+<li><strong>工具（Tools）</strong> ：是AI可调用的可执行动作或函数，通常由AI模型选择触发，常涉及文件 I/O 或网络调用等副作用或需额外计算的操作。</li>
+</ul>
+<p><img alt="png" src="../../img/WechatIMG610.jpg" /></p>
+<p>例如：一个获取天气信息的简单工具，AI可通过调用该工具，传入地点参数，服务器执行后返回结果，客户端获取并供AI使用。</p>
+<p><img alt="png" src="../../img/785681EC-82C6-4D91-AA88-546A569A741F.jpg" /></p>
+<ul>
+<li><strong>资源（Resources）</strong> ：为AI提供只读数据(通常是为Agent提供只读数据)，类似数据库或知识库，AI 可查询获取信息，但不能修改。</li>
+</ul>
+<p><img alt="png" src="../../img/05342013-BD75-498F-92B4-FB85FBA351D6.jpg" /></p>
+<ul>
+<li>
+<ul>
+<li>与<strong>工具</strong>不同，<strong>资源</strong>通常在宿主控制下访问，避免模型随意读取，例如，从本地文件、知识库片段、数据库查询结果（只读）等获取内容。</li>
+</ul>
+</li>
+<li>
+<p><strong>提示（Prompts）</strong> ：是预定义的提示模板或对话流程，可注入以引导AI行为，</p>
+</li>
+</ul>
+<p><img alt="png" src="../../img/A73932D0-5684-43CA-A656-D13835401E57.jpg" /></p>
+<p>例如，代码审查的提示模板，服务器提供后，宿主可调用并插入用户代码，供模型生成回复前使用。</p>
+<p>上述这三者构成MCP框架的核心能力。</p>
 <h2 id="_2">二 基础应用</h2>
 <pre><code>export PATH=&quot;/Users/sre/.local/bin:$PATH&quot;
 mcp dev weather.py
 
 </code></pre>
 <p><a href="https://cloud.tencent.com/developer/article/2486479">cline+vscode+deepseek，超强AI编程助手</a></p>
+<h3 id="1-claude">1 本地安装Claude</h3>
               
             </div>
           </div><footer>
