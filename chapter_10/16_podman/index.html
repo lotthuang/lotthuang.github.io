@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机 - Lott's Blog</title>
+    <title>第十六篇 Podman总结 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u7b2c\u5341\u7bc7 Mac M1\u82af\u7247\u7535\u8111\u5229\u7528Qemu\u5b89\u88c5Debian\u865a\u62df\u673a";
-        var mkdocs_page_input_path = "chapter_1/10_virtual_machine_on_mac_m1_chip.md";
+        var mkdocs_page_name = "\u7b2c\u5341\u516d\u7bc7 Podman\u603b\u7ed3";
+        var mkdocs_page_input_path = "chapter_10/16_podman.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -44,74 +44,40 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">第一章 各种杂项基础</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/1_make_blog/">第一篇 利用Github Pages和mkdocs搭建个人博客</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/2_nginx_loadbalancing_strategy/">第二篇 Nginx的均衡策略</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../3_linux_kernel_basic/">第三篇 Linux内核基础</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/3_linux_kernel_basic/">第三篇 Linux内核基础</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/4_linux_kernel_mm_basic/">第四篇 Linux内核空间内存概述</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/5_how_kernel_call_bios/">第五篇 Linux内核调用BIOS案例</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/9_linux_arch_overall_introduction/">第九篇 Linux架构整体介绍</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#_2">为什么</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#mac-m1-qemu-linux">为啥需要在 Mac M1 芯片上利用 Qemu 安装 Linux 虚拟机</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_3">怎么办</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#1-installing-qemu-qemu">1 – Installing QEMU(安装 QEMU)</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#2-download-debian-or-any-linux-distribution">2 – Download Debian (or any Linux Distribution)</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#3-create-empty-image">3 – Create empty image (制作镜像文件)</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#ubuntu">ubuntu</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#debian-qcow2">debian (我最终用的是 qcow2 格式)</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#4-download-pre-built-edk2-uefi-image-for-qemu">4 – Download pre-built EDK2 UEFI image for QEMU</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#5-efi">5 制作 EFI 盘</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#6-debian">6 安装 Debian</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#7-debian">7 安装完成后关机, 正常使用 Debian 虚拟机</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_4">参考文章</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/10_virtual_machine_on_mac_m1_chip/">第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../11_nftables/">第十一篇 Debian 11以及往后版本nftables防火墙配置</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/11_nftables/">第十一篇 Debian 11以及往后版本nftables防火墙配置</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/12_ansible_basic_use/">第十二篇 Ansible简单使用笔记</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY、PTY和控制台(Console)区别</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/13_tty_terminal_console/">第十三篇 终端(Terminal)、TTY、PTY和控制台(Console)区别</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/14_qemu_use/">第十四篇 QEMU模拟各类开发板</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../15_bosun/">第十五篇 Bosun使用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/15_bosun/">第十五篇 Bosun使用</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../16_assembler/">第十六篇 汇编语言使用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/16_assembler/">第十六篇 汇编语言使用</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../17_makefile/">第十七篇 Makefile使用</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/17_makefile/">第十七篇 Makefile使用</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../19_network_ratelimit/">第十九篇 Linux网络限速</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/19_network_ratelimit/">第十九篇 Linux网络限速</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../20_mac_os_skills/">第二十篇 MacOS使用技巧</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/20_mac_os_skills/">第二十篇 MacOS使用技巧</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../21_debian_skills/">第二十一篇 Debian使用技巧</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/21_debian_skills/">第二十一篇 Debian使用技巧</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
@@ -349,36 +315,58 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1_dockerfile_best_practice/">第一篇 dockerfile最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/2_benefits_of_containerization/">第二篇 容器化好处</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_benefits_of_containerization/">第二篇 容器化好处</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/3_docker_basic_concepts/">第三篇 容器化基础概念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_docker_basic_concepts/">第三篇 容器化基础概念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_kubernetes_basic_concepts/">第四篇 Kubernetes基础概念</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../6_production_kubernetes_best_practice/">第六篇 生产环境Kubernetes部署最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../7_production_kerbernetes_yaml/">第七篇 生产环境Kubernetes YAML模版</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/8_Calico/">第八篇 Kubernetes网络插件之Calico</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../8_Calico/">第八篇 Kubernetes网络插件之Calico</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/9_cloudnative_monitor/">第九篇 云原生监控</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../9_cloudnative_monitor/">第九篇 云原生监控</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/10_event/">第十篇 彻底搞懂Kubernetes Event</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_event/">第十篇 彻底搞懂Kubernetes Event</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/11_best_practices/">第十一篇 Kubernetes最佳实践</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../11_best_practices/">第十一篇 Kubernetes最佳实践</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/12_cloud_network/">第十二篇 云网络</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_cloud_network/">第十二篇 云网络</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/13_containerd/">第十三篇 Containerd</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_containerd/">第十三篇 Containerd</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/14_k8s_and_gpu/">第十四篇 基于K8S管理GPU集群</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../14_k8s_and_gpu/">第十四篇 基于K8S管理GPU集群</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/15_public_cloud_use/">第十五篇 公有云最佳实践总结</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../15_public_cloud_use/">第十五篇 公有云最佳实践总结</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/16_podman/">第十六篇 Podman总结</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第十六篇 Podman总结</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#podman">一 Podman优势和特点</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-daemonless">1 Daemonless进程，更轻</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-rootless">2 Rootless容器，更安全</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3">3 基于标准设计，兼容好</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-kubernetes-pod">4 Kubernetes Pod 原生支持：</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#podmandocker">二 Podman和Docker对比</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#podman_1">三 Podman劣势</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#docker">如果对产品成熟度和生态完善性有更高的要求，推荐 Docker</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
@@ -467,8 +455,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">第一章 各种杂项基础</li>
-      <li class="breadcrumb-item active">第十篇 Mac M1芯片电脑利用Qemu安装Debian虚拟机</li>
+          <li class="breadcrumb-item">第十章 容器化和Kubernetes</li>
+      <li class="breadcrumb-item active">第十六篇 Podman总结</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -478,182 +466,82 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="_1">概述</h1>
-<h2 id="_2">为什么</h2>
-<h3 id="mac-m1-qemu-linux">为啥需要在 Mac M1 芯片上利用 Qemu 安装 Linux 虚拟机</h3>
 <ul>
-<li>其他软件收费或者不支持. 比如<strong>VirtualBox</strong>不支持 M1 芯片，<strong>Parallels Desktop</strong>是收费软件</li>
+<li>本篇总结<a href="https://mp.weixin.qq.com/s/4zCLEJgeHC8tKFxHfj-r7A">Podman</a>相关知识点</li>
 </ul>
-<h2 id="_3">怎么办</h2>
-<h3 id="1-installing-qemu-qemu">1 – Installing QEMU(安装 QEMU)</h3>
-<p>The first step is to install QEMU, we are going to use Homebrew to install it on our machine. If you need help to install or use Homebrew, please read our article “How to Use Homebrew in Mac (OSX)”.</p>
-<pre><code>brew install qemu
-
-</code></pre>
-<p>Once you have finished the installation on your local machine, you can double check the version using the qemu executable installed. The executable you should use will depend on what system are you currently running on.</p>
-<p>You can see a list of all the executables for each architecture that Homebrew has installed in our machine.</p>
-<pre><code>$ ls /opt/homebrew/bin/qemu-*
-
-/opt/homebrew/bin/qemu-edid                /opt/homebrew/bin/qemu-system-cris         /opt/homebrew/bin/qemu-system-mips64el     /opt/homebrew/bin/qemu-system-s390x
-/opt/homebrew/bin/qemu-img                 /opt/homebrew/bin/qemu-system-hppa         /opt/homebrew/bin/qemu-system-mipsel       /opt/homebrew/bin/qemu-system-sh4
-/opt/homebrew/bin/qemu-io                  /opt/homebrew/bin/qemu-system-i386         /opt/homebrew/bin/qemu-system-nios2        /opt/homebrew/bin/qemu-system-sh4eb
-/opt/homebrew/bin/qemu-nbd                 /opt/homebrew/bin/qemu-system-loongarch64  /opt/homebrew/bin/qemu-system-or1k         /opt/homebrew/bin/qemu-system-sparc
-/opt/homebrew/bin/qemu-storage-daemon      /opt/homebrew/bin/qemu-system-m68k         /opt/homebrew/bin/qemu-system-ppc          /opt/homebrew/bin/qemu-system-sparc64
-/opt/homebrew/bin/qemu-system-aarch64      /opt/homebrew/bin/qemu-system-microblaze   /opt/homebrew/bin/qemu-system-ppc64        /opt/homebrew/bin/qemu-system-tricore
-/opt/homebrew/bin/qemu-system-alpha        /opt/homebrew/bin/qemu-system-microblazeel /opt/homebrew/bin/qemu-system-riscv32      /opt/homebrew/bin/qemu-system-x86_64
-/opt/homebrew/bin/qemu-system-arm          /opt/homebrew/bin/qemu-system-mips         /opt/homebrew/bin/qemu-system-riscv64      /opt/homebrew/bin/qemu-system-xtensa
-/opt/homebrew/bin/qemu-system-avr          /opt/homebrew/bin/qemu-system-mips64
-
-</code></pre>
-<p>In our case we are running a MacBook using <strong>Apple M1 Pro chip</strong>. This chip belongs to the category of ARM processors family, therefore the architecture of our machine is <strong>AArch64</strong> or <strong>ARM64</strong>.</p>
-<p>Coming back to our main topic, having an ARM64 architecture system means that we should run the following and see something like what’s shown below as the output.</p>
-<pre><code>$ qemu-system-aarch64 --version
-
-QEMU emulator version 7.2.0
-Copyright (c) 2003-2022 Fabrice Bellard and the QEMU Project developers
-</code></pre>
-<p>You can check what architecture your system has by executing this:</p>
-<pre><code>$ uname -m
-
-arm64
-
-</code></pre>
-<p>As you can see, in our system it return arm64. Check what your architecture is and stick to that executable, it will work for some commands like "qemu-system-XXX --version", but it’s better to clarify this from the very beginning to avoid confusion.</p>
-<h3 id="2-download-debian-or-any-linux-distribution">2 – Download Debian (or any Linux Distribution)</h3>
-<p>In order to be able to install an operating system running on a virtual machine in QEMU, you will need an ISO image containing the OS.</p>
-<p>If your system belongs to the ARM family, you can download the most recent Ubuntu version for ARM architectures here. Otherwise, for x86 families you can download it here.</p>
-<p>我们在<a href="https://www.debian.org/distrib/netinst">这里</a>下载 debian 网络安装 ISO 文件</p>
-<h3 id="3-create-empty-image">3 – Create empty image (制作镜像文件)</h3>
-<h4 id="ubuntu">ubuntu</h4>
-<p>Create a QEMU empty image where to install your Ubuntu OS later. To do so, run the following command:</p>
-<pre><code>$ qemu-img create -f raw  ~/qemu/ubuntu-latest.raw 40G
-</code></pre>
-<h4 id="debian-qcow2">debian (我最终用的是 qcow2 格式)</h4>
-<pre><code>$ qemu-img create -f qcow2 debian12.qcow2 50g
-</code></pre>
-<h3 id="4-download-pre-built-edk2-uefi-image-for-qemu">4 – Download pre-built EDK2 UEFI image for QEMU</h3>
+<h2 id="podman">一 Podman优势和特点</h2>
+<h3 id="1-daemonless">1 Daemonless进程，更轻</h3>
+<p>Podman 直接使用 RunC（或其他符合 OCI 的运行时）来创建和运行容器。每个容器都是当前用户的一个子进程。</p>
+<p>基于 Daemonless 能够提供更安全（减少攻击面）、更稳定（守护进程崩溃不影响现有容器）、资源消耗更低、更符合 Linux 进程模型。</p>
+<p>对比 Docker，依赖于一个长期运行的后台进程 (dockerd) 来管理容器。</p>
+<h3 id="2-rootless">2 Rootless容器，更安全</h3>
+<p>普通用户无需 sudo 或 root 权限即可直接启动和管理容器。</p>
+<p>极大提升安全性（容器进程以用户权限运行，即使容器被攻破，影响范围也限于该用户）、满足更严格的安全合规要求、允许多用户在同一系统上安全地管理各自的容器。</p>
+<p>对比 Docker，目前也支持 Rootless 容器，但需要进行特殊配置，且默认仍然需要 root 权限。</p>
+<h3 id="3">3 基于标准设计，兼容好</h3>
+<p>Podman 支持 OCI 标准，且与 Docker 兼容，大部分命令与 Docker 命令相同。</p>
+<p>Docker 用户迁移成本小，学习曲线低，现有脚本通常只需替换命令即可工作。</p>
+<h3 id="4-kubernetes-pod">4 Kubernetes Pod 原生支持：</h3>
+<p>Podman 对 Kubernetes 的 Pod 概念有原生支持。可以轻松创建和管理包含多个共享命名空间（网络、IPC、UTS）容器的 Pod。</p>
+<p>可以在创建、启动、检查和管理Pod。直接使用Podman操作Kubernetes YAML，从Pod生成Kubernetes YAML，并部署到现有的Kubernetes环境中。</p>
+<h2 id="podmandocker">二 Podman和Docker对比</h2>
+<table>
+<thead>
+<tr>
+<th>对比项目</th>
+<th>Docker</th>
+<th>Podman</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Daemonless</td>
+<td>dockerd</td>
+<td>无</td>
+</tr>
+<tr>
+<td>Rootless</td>
+<td>需要特殊配置</td>
+<td>默认rootless</td>
+</tr>
+<tr>
+<td>Machine</td>
+<td>Docker Machine</td>
+<td>Podman Machine</td>
+</tr>
+<tr>
+<td>Compose</td>
+<td>Docker Compose</td>
+<td>Podman Compose</td>
+</tr>
+<tr>
+<td>Desktop</td>
+<td>Docker Desktop</td>
+<td>Podman Desktop</td>
+</tr>
+<tr>
+<td>Dockerfile</td>
+<td>Dockerfile</td>
+<td>Containerfile</td>
+</tr>
+</tbody>
+</table>
 <ul>
-<li>
-<p>这一步是下载预先准备的好的 UEFI 镜像文件, 并且需要和 CPU 架构相符合， 我们的目标是得到<code>QEMU_EFI.fd</code>文件.</p>
-</li>
-<li>
+<li>Docker Machine 和Ansible有点像，通过配置ssh打通之后，可以使用docker-machine命令远程安装、管理其他主机上的Dockerd. 主要目标是快速搭建和管理多台远程主机上的Docker环境.</li>
+</ul>
+<h2 id="podman_1">三 Podman劣势</h2>
+<h3 id="docker">如果对产品成熟度和生态完善性有更高的要求，推荐 Docker</h3>
 <ul>
-<li>通过 Google 搜索, 我们找到了<strong>qemu-efi-aarch64</strong></li>
+<li>Podman 功能上大部分兼容 Docker，但仍然有一些功能还未完全兼容，<strong>不支持 Docker 的 --restart=always（依赖守护进程实现容器自启）</strong>，Podman 需通过 Systemd 单元文件管理。</li>
+<li>当前很多DevOps工具默认集成了 Docker。如 Jenkines、ArgoCD等</li>
+<li>Podman 还处于 CNCF 的沙盒阶段，距离孵化和毕业还需要很长一段时间。</li>
 </ul>
-</li>
-<li>
-<ul>
-<li><strong>qemu-efi-aarch64</strong> is a build of EDK II for 64-bit ARM virtual machines. It includes full support for UEFI, including Secure Boot. 在 Debian Linux 系统中安装这个包，会产生<a href="https://packages.debian.org/bookworm/all/qemu-efi-aarch64/filelist"><code>QEMU_EFI.fd</code>文件</a></li>
-</ul>
-</li>
-</ul>
-<p><img alt="png" src="../../img/7773CF81-4740-4A7F-A16A-0C5679CE9507.png" /></p>
-<ul>
-<li>
-<ul>
-<li>我们直接从<a href="https://packages.debian.org/bookworm/qemu-efi-aarch64">deb 包</a>文件里获取, 先下载<a href="https://packages.debian.org/bookworm/all/qemu-efi-aarch64/download">qemu-efi-aarch64_2022.11-6_all.deb</a>包，然后进行解压，然后得到<strong>QEMU_EFI.fd</strong></li>
-</ul>
-</li>
-<li>
-<p>对了, 怎么解压 <strong>qemu-efi-aarch64_2022.11-6_all.deb</strong>?</p>
-</li>
-<li>
-<ul>
-<li>参考<a href="https://www.cnblogs.com/cxsy/p/8093879.html">deb 包解压</a></li>
-</ul>
-</li>
-<li>
-<ul>
-<li>Linux 上命令如下:</li>
-</ul>
-</li>
-</ul>
-<pre><code>mkdir -p extract/DEBIAN
-dpkg -X qemu-efi-aarch64_2022.11-6_all.deb extract/
-cd extract/
-ls ./usr/share/qemu-efi-aarch64/QEMU_EFI.fd
-</code></pre>
-<p><strong>特别注意老版本的 QEMU_EFI.fd 很可能不适用于新版本的 Debian 操作系统或者 Ubuntu 操作系统,会造成系统安装好之后再关机再启动就启动不了的问题. 所以请严格按照你的虚拟机系统来选择对应 QEMU_EFI.fd</strong></p>
-<p><strong>目前 2023 年 6 月, 我使用的是 Debian12, 因此就去找 Debian12 的 qemu-efi-aarch64_XXXX.deb,来获取 QEMU_EFI.fd</strong></p>
-<h3 id="5-efi">5 <a href="https://gist.github.com/oznu/ac9efae7c24fd1f37f1d933254587aa4">制作 EFI 盘</a></h3>
-<p>在 Mac OS 上执行如下命令</p>
-<pre><code>dd if=/dev/zero of=flash0.img bs=1m count=64
-dd if=QEMU_EFI.fd of=flash0.img conv=notrunc
-dd if=/dev/zero of=flash1.img bs=1m count=64
-
-</code></pre>
-<ul>
-<li>可以参考<a href="http://cdn.kernel.org/pub/linux/kernel/people/will/docs/qemu/qemu-arm64-howto.html">这篇文章</a></li>
-<li>
-<ul>
-<li>命令如下:</li>
-</ul>
-</li>
-</ul>
-<p><strong>Prepare the firmware</strong></p>
-<p>We need a couple of flash partitions to hold the UEFI firmware we downloaded earlier along with its variables to track things such as the boot partition etc.:</p>
-<pre><code>
-:~/qemu-host$ truncate -s 64m varstore.img
-:~/qemu-host$ truncate -s 64m efi.img
-:~/qemu-host$ dd if=/usr/share/qemu-efi-aarch64/QEMU_EFI.fd of=efi.img conv=notrunc
-
-</code></pre>
-<p><strong>IMPORTANT</strong>: You must enter these commands exactly as shown, otherwise you will almost certainly run into problems later on.</p>
-<h3 id="6-debian">6 安装 Debian</h3>
-<p>At this point, we should have everything we need to install Debian server in our virtual machine. Our example will work for our ARM machine, so you’ll have to change it slightly for your system.</p>
-<p>In our Macbook M1 Pro, the command looks like the following:</p>
-<pre><code>qemu-system-aarch64 \
-   -monitor stdio \
-   -M virt,highmem=off \
-   -accel hvf \
-   -cpu host \
-   -smp 4 \
-   -m 3000 \
-   -drive if=pflash,format=raw,file=flash0.img,readonly=on      \
-   -drive if=pflash,format=raw,file=flash1.img        \
-   -device virtio-gpu-pci \
-   -display default,show-cursor=on \
-   -device qemu-xhci \
-   -device usb-kbd \
-   -device usb-tablet \
-   -drive if=virtio,format=qcow2,file=debian.qcow2 \
-   -nic vmnet-bridged,ifname=en0 \
-   -cdrom /Users/bytedance/Downloads/debian-12.0.0-arm64-netinst.iso
-</code></pre>
-<p>Once you run the command above, if everything goes well, you should be seeing a screen similar to this:</p>
-<p><img alt="png" src="../../img/0B179D7A-F6A1-48EF-80AB-6878E678FD86.png" /></p>
-<p>然后就是一步步安装 Debian. 成功登录之后:</p>
-<p><img alt="png" src="../../img/C9A6C8A9-D8CA-4635-9FEA-251E9287CD42.png" /></p>
-<h3 id="7-debian">7 安装完成后关机, 正常使用 Debian 虚拟机</h3>
-<ul>
-<li>相比上一步, 这一步把<code>-cdrom /Users/bytedance/Downloads/debian-12.0.0-arm64-netinst.iso</code>去掉了</li>
-</ul>
-<pre><code>qemu-system-aarch64 \
-   -monitor stdio \
-   -M virt,highmem=off \
-   -accel hvf \
-   -cpu host \
-   -smp 4 \
-   -m 3000 \
-   -drive if=pflash,format=raw,file=flash0.img,readonly=on      \
-   -drive if=pflash,format=raw,file=flash1.img        \
-   -device virtio-gpu-pci \
-   -display default,show-cursor=on \
-   -device qemu-xhci \
-   -device usb-kbd \
-   -device usb-tablet \
-   -nic vmnet-bridged,ifname=en0 \
-   -drive if=virtio,format=qcow2,file=debian.qcow2
-
-</code></pre>
-<h2 id="_4">参考文章</h2>
-<p><a href="https://theboreddev.com/run-ubuntu-on-mac-using-qemu/">Run Ubuntu on Mac using QEMU</a>
-<a href="https://www.sobyte.net/post/2022-10/mac-qemu-bridge/">Creating a qemu bridge network on macos</a></p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../9_linux_arch_overall_introduction/" class="btn btn-neutral float-left" title="第九篇 Linux架构整体介绍"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../11_nftables/" class="btn btn-neutral float-right" title="第十一篇 Debian 11以及往后版本nftables防火墙配置">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../15_public_cloud_use/" class="btn btn-neutral float-left" title="第十五篇 公有云最佳实践总结"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../chapter_11/1_theory/" class="btn btn-neutral float-right" title="第一篇 稳定性概论">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -676,10 +564,10 @@ dd if=/dev/zero of=flash1.img bs=1m count=64
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../9_linux_arch_overall_introduction/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../15_public_cloud_use/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../11_nftables/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../chapter_11/1_theory/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
