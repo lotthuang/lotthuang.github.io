@@ -8,7 +8,7 @@
     <title>第二篇 业务SRE的职业规范 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
@@ -17,11 +17,12 @@
         var mkdocs_page_url = null;
       </script>
     
+    <script src="../../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-      <script>hljs.highlightAll();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -33,7 +34,7 @@
           <a href="../.." class="icon icon-home"> Lott's Blog
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -84,7 +85,7 @@
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../yunweijiazhi/">第一篇 运维的价值和目标</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第二篇 业务SRE的职业规范</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第二篇 业务SRE的职业规范</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#_2">一 业务运维的职业标准</a>
         <ul>
@@ -490,9 +491,9 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">第二章 运维工作总结</li>
-      <li class="breadcrumb-item active">第二篇 业务SRE的职业规范</li>
+    <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>第二章 运维工作总结 &raquo;</li>
+      <li>第二篇 业务SRE的职业规范</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -560,56 +561,56 @@
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">技术领域</th>
-<th style="text-align: left;">要求</th>
-<th style="text-align: left;">备注</th>
+<th align="left">技术领域</th>
+<th align="left">要求</th>
+<th align="left">备注</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;">Linux kernel</td>
-<td style="text-align: left;">深入理解 kernel,包括掌握 CPU 调度、Mem 子系统、Net 子系统、IO 子系统的细节,擅长故障排查,利用 Perf 工具进行性能分析和优化</td>
-<td style="text-align: left;"></td>
+<td align="left">Linux kernel</td>
+<td align="left">深入理解 kernel,包括掌握 CPU 调度、Mem 子系统、Net 子系统、IO 子系统的细节,擅长故障排查,利用 Perf 工具进行性能分析和优化</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td style="text-align: left;">程序: python/shell</td>
-<td style="text-align: left;">精通</td>
-<td style="text-align: left;"></td>
+<td align="left">程序: python/shell</td>
+<td align="left">精通</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td style="text-align: left;">程序: c/js/html/css</td>
-<td style="text-align: left;">使用层面无问题</td>
-<td style="text-align: left;"></td>
+<td align="left">程序: c/js/html/css</td>
+<td align="left">使用层面无问题</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td style="text-align: left;">利用 Web 框架进行运维工具开发: flask 生态、 react 生态</td>
-<td style="text-align: left;">熟练开发</td>
-<td style="text-align: left;">不仅限于 flask 和 react,也可以 Django、Tornado、Vue</td>
+<td align="left">利用 Web 框架进行运维工具开发: flask 生态、 react 生态</td>
+<td align="left">熟练开发</td>
+<td align="left">不仅限于 flask 和 react,也可以 Django、Tornado、Vue</td>
 </tr>
 <tr>
-<td style="text-align: left;">数据库: MySQL、MongoDB、Redis</td>
-<td style="text-align: left;">使用层面无问题</td>
-<td style="text-align: left;"></td>
+<td align="left">数据库: MySQL、MongoDB、Redis</td>
+<td align="left">使用层面无问题</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td style="text-align: left;">容器化: Docker、Kubernetes</td>
-<td style="text-align: left;">使用层面无问题</td>
-<td style="text-align: left;"></td>
+<td align="left">容器化: Docker、Kubernetes</td>
+<td align="left">使用层面无问题</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td style="text-align: left;">网络服务: nginx、etcd、bind、kafka、haproxy、 等等</td>
-<td style="text-align: left;">可随心所欲搭建,即使以前没接触过,能够照着教程、官网进行维护</td>
-<td style="text-align: left;"></td>
+<td align="left">网络服务: nginx、etcd、bind、kafka、haproxy、 等等</td>
+<td align="left">可随心所欲搭建,即使以前没接触过,能够照着教程、官网进行维护</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td style="text-align: left;">开源运维工具使用：supervisor、 puppet、ansible、zabbix 等</td>
-<td style="text-align: left;">熟练使用</td>
-<td style="text-align: left;"></td>
+<td align="left">开源运维工具使用：supervisor、 puppet、ansible、zabbix 等</td>
+<td align="left">熟练使用</td>
+<td align="left"></td>
 </tr>
 <tr>
-<td style="text-align: left;">网络协议: TCP/IP 协议族、http/https、路由交换、子网划分</td>
-<td style="text-align: left;">深入理解其原理,拥有扎实的基础知识</td>
-<td style="text-align: left;"></td>
+<td align="left">网络协议: TCP/IP 协议族、http/https、路由交换、子网划分</td>
+<td align="left">深入理解其原理,拥有扎实的基础知识</td>
+<td align="left"></td>
 </tr>
 </tbody>
 </table>
@@ -776,15 +777,14 @@
     
   </span>
 </div>
-    <script src="../../js/jquery-3.6.0.min.js"></script>
-    <script>var base_url = "../..";</script>
-    <script src="../../js/theme_extra.js"></script>
-    <script src="../../js/theme.js"></script>
-      <script src="../../search/main.js"></script>
-    <script>
-        jQuery(function () {
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme_extra.js" defer></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
             SphinxRtdTheme.Navigation.enable(true);
-        });
+        };
     </script>
 
 </body>

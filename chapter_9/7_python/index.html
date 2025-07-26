@@ -8,7 +8,7 @@
     <title>第七篇 python语言总结 - Lott's Blog</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
@@ -17,11 +17,12 @@
         var mkdocs_page_url = null;
       </script>
     
+    <script src="../../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-      <script>hljs.highlightAll();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -33,7 +34,7 @@
           <a href="../.." class="icon icon-home"> Lott's Blog
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -277,7 +278,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../6_linux_kernel_patch/">第六篇 手把手教你向Linux Kernel提交Patch</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">第七篇 python语言总结</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">第七篇 python语言总结</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#_2">一 核心概念</a>
         <ul>
@@ -313,8 +314,6 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_9">参考</a>
-    </li>
     <li class="toctree-l2"><a class="reference internal" href="#python">四 一些python库</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1-pyjwt">1 PyJWT</a>
@@ -332,6 +331,16 @@
         </ul>
     </li>
         </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#pythonuv">五 Python包管理工具uv</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-uv">1 uv有什么好处</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-uv">2 如何安装uv</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_11">参考</a>
     </li>
     </ul>
                   </li>
@@ -488,9 +497,9 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">第九章 编程经验和各类开源软件</li>
-      <li class="breadcrumb-item active">第七篇 python语言总结</li>
+    <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>第九章 编程经验和各类开源软件 &raquo;</li>
+      <li>第七篇 python语言总结</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -729,18 +738,6 @@ print(unpacked_data)
 </ul>
 </li>
 </ul>
-<h2 id="_9">参考</h2>
-<ul>
-<li>
-<p><a href="https://mp.weixin.qq.com/s?__biz=MjM5MzgyODQxMQ==&amp;mid=2650366698&amp;idx=1&amp;sn=748bd7b7714f3b628b5758670bfcad44&amp;chksm=be9cd9be89eb50a8e2e399382fd5de317a6de37c2907dfc6f8833dd7b627d9f5edb4495fd543&amp;mpshare=1&amp;scene=1&amp;srcid=1103KrmGbsJCz8t28RyhS7D5&amp;key=352aec6a62eb7f7cd10695cbc790de1472118e451e4d4316c65b17da1620ade6652a048b3a0b3f7b0dadef3b8407ad8382fdb2b51f7f48ae86bf0991157b983203c6d2b730accaafc17a8b60260b11f3&amp;ascene=0&amp;uin=MTc3NTQ4NjIyMQ%3D%3D&amp;devicetype=iMac+MacBookAir7%2C2+OSX+OSX+10.12+build(16A323)&amp;version=12020810&amp;nettype=WIFI&amp;fontScale=100&amp;pass_ticket=68S6BcfOuQwZuMC0sWGd671eTOX2HHz9G8KpcwopEwxOGwkW8Iip0KElopp1CMbT">理解 Python 迭代对象、迭代器、生成器</a></p>
-</li>
-<li>
-<p><a href="https://www.liujiangblog.com/blog/51/">Python3.6、3.7、3.8 新特性</a></p>
-</li>
-<li>
-<p><a href="https://mp.weixin.qq.com/s/NXrdjh3ItvZp-5Oxv72zTw">python序列化与反序列化</a></p>
-</li>
-</ul>
 <h2 id="python">四 一些python库</h2>
 <h3 id="1-pyjwt">1 PyJWT</h3>
 <ul>
@@ -796,7 +793,7 @@ if __name__ == '__main__':
     print('Hello {}'.format(name))
 
 </code></pre>
-<h5 id="_10">常用属性包括</h5>
+<h5 id="_9">常用属性包括</h5>
 <ul>
 <li>default：没有设置值情况下的默认参数</li>
 <li>required: 表示这个参数是否一定需要设置</li>
@@ -804,8 +801,64 @@ if __name__ == '__main__':
 <li>dest: 参数输入后，python里面赋值给哪个变量</li>
 <li>choices：参数值只能从几个选项里面选择</li>
 </ul>
-<h5 id="_11"></h5>
+<h5 id="_10"></h5>
 <p>参考<a href="https://vra.github.io/2017/12/02/argparse-usage/">argparse简要用法总结</a></p>
+<h2 id="pythonuv">五 Python包管理工具uv</h2>
+<ul>
+<li>uv 是一个高性能的 Python 包管理工具，它不仅能够高效地处理包管理和依赖解析，还提供了对 Python 版本管理的支持。这意味着你可以使用 uv 来安装和管理多个不同版本的 Python。</li>
+</ul>
+<h3 id="1-uv">1 uv有什么好处</h3>
+<ul>
+<li>在机器上，它可以方便的安装多个版本python解析器,  比如3.12, 3.11 等等，它可以快速安装</li>
+<li>
+<ul>
+<li>安装指定版本python解析器</li>
+</ul>
+</li>
+</ul>
+<pre><code>uv python install 3.12
+</code></pre>
+<ul>
+<li>
+<ul>
+<li>列出目前系统上有哪些版本的python解析器</li>
+</ul>
+</li>
+</ul>
+<pre><code>uv python list
+</code></pre>
+<ul>
+<li>
+<ul>
+<li>使用特定版本python解析器初始化virtualenv (这个功能会比较实用，当机器上运行多个python应用时，可以给每个python应用安装一个独立的virtualenv、就再也不会相互影响了)</li>
+</ul>
+</li>
+</ul>
+<pre><code>uv venv --python 3.12 , 默认会把virtualenv初始化在当前目录的.venv目录下, 然后也可以有其他更多选项，比如 --prompt &lt;PROMPT&gt;
+</code></pre>
+<h3 id="2-uv">2 如何安装uv</h3>
+<ul>
+<li>MacOS/Linux都可以执行如下命令安装</li>
+</ul>
+<pre><code>curl -LsSf https://astral.sh/uv/install.sh | sh
+</code></pre>
+<ul>
+<li>也可以通过pip安装</li>
+</ul>
+<pre><code>pip install uv
+</code></pre>
+<h2 id="_11">参考</h2>
+<ul>
+<li>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MjM5MzgyODQxMQ==&amp;mid=2650366698&amp;idx=1&amp;sn=748bd7b7714f3b628b5758670bfcad44&amp;chksm=be9cd9be89eb50a8e2e399382fd5de317a6de37c2907dfc6f8833dd7b627d9f5edb4495fd543&amp;mpshare=1&amp;scene=1&amp;srcid=1103KrmGbsJCz8t28RyhS7D5&amp;key=352aec6a62eb7f7cd10695cbc790de1472118e451e4d4316c65b17da1620ade6652a048b3a0b3f7b0dadef3b8407ad8382fdb2b51f7f48ae86bf0991157b983203c6d2b730accaafc17a8b60260b11f3&amp;ascene=0&amp;uin=MTc3NTQ4NjIyMQ%3D%3D&amp;devicetype=iMac+MacBookAir7%2C2+OSX+OSX+10.12+build(16A323)&amp;version=12020810&amp;nettype=WIFI&amp;fontScale=100&amp;pass_ticket=68S6BcfOuQwZuMC0sWGd671eTOX2HHz9G8KpcwopEwxOGwkW8Iip0KElopp1CMbT">理解 Python 迭代对象、迭代器、生成器</a></p>
+</li>
+<li>
+<p><a href="https://www.liujiangblog.com/blog/51/">Python3.6、3.7、3.8 新特性</a></p>
+</li>
+<li>
+<p><a href="https://mp.weixin.qq.com/s/NXrdjh3ItvZp-5Oxv72zTw">python序列化与反序列化</a></p>
+</li>
+</ul>
               
             </div>
           </div><footer>
@@ -841,15 +894,14 @@ if __name__ == '__main__':
     
   </span>
 </div>
-    <script src="../../js/jquery-3.6.0.min.js"></script>
-    <script>var base_url = "../..";</script>
-    <script src="../../js/theme_extra.js"></script>
-    <script src="../../js/theme.js"></script>
-      <script src="../../search/main.js"></script>
-    <script>
-        jQuery(function () {
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme_extra.js" defer></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
             SphinxRtdTheme.Navigation.enable(true);
-        });
+        };
     </script>
 
 </body>
