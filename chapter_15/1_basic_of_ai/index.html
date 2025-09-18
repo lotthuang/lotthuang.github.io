@@ -80,6 +80,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/21_debian_skills/">第二十一篇 Debian使用技巧</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/22_initrd_initramfs/">第二十二篇 initrd和initramfs</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -320,6 +322,10 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/27_html_basic/">第二十七篇 HTML基础梳理</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/28_typescript/">第二十八篇 TypeScript梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/29_mdadm/">第二十九篇 mdadm工具详解</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul>
@@ -431,6 +437,18 @@
     <li class="toctree-l3"><a class="reference internal" href="#6">6 神经网络</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#7">7 深度学习</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#7_1">7 多模态</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#71-11-2">7.1 核心思想：1+1 &gt; 2</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#72">7.2 常见的模态类型</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#8-rag">8 RAG</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#9-rag">9 多模态RAG</a>
     </li>
         </ul>
     </li>
@@ -549,6 +567,100 @@
 <h3 id="7">7 深度学习</h3>
 <ul>
 <li><strong>深度学习</strong>本质上是一种深度神经网络。这个<strong>深度</strong>是指模型的深度, 也就是网络的层数. 与之对应的是浅层学习(Shallow Learning), 一般指网络层数在5层以下的神经网络.</li>
+</ul>
+<h3 id="7_1">7 多模态</h3>
+<ul>
+<li>
+<p><strong>多模态（Multimodal）指的是同时利用多种不同类型的数据或信息渠道来进行输入、处理或输出. </strong></p>
+</li>
+<li>
+<ul>
+<li>这里的“模态”（Modality）可以理解为信息的来源或形式。就像人类通过眼睛（视觉）、耳朵（听觉）、皮肤（触觉）等多种感官来感知和理解世界一样，人工智能领域的多模态技术旨在让机器也能综合处理多种类型的信息，从而更全面、更准确地理解和生成内容。</li>
+</ul>
+</li>
+</ul>
+<h4 id="71-11-2">7.1 核心思想：1+1 &gt; 2</h4>
+<ul>
+<li>
+<p>多模态的核心优势在于融合。单一模态的信息往往存在局限性或歧义，而结合多种模态可以相互补充、印证和纠正，从而得到更丰富、更精确的结果。</p>
+</li>
+<li>
+<ul>
+<li>一个经典的例子：</li>
+</ul>
+</li>
+</ul>
+<pre><code>只看视频画面（视觉模态）：你看到一个人张大嘴巴，表情激动。
+
+单一理解：他可能在喊叫，也可能在打哈欠，或者很惊讶。
+
+只听声音（听觉模态）：你听到一阵巨大的欢呼声和掌声。
+
+单一理解：可能是在看球赛，也可能是在听演唱会，无法确定具体场景。
+
+同时看画面和听声音（多模态）：你结合画面中人物的口型、体育场的背景以及欢呼声，立刻就能准确理解——“他进球了，正在庆祝！”
+</code></pre>
+<p>这就是多模态融合的力量。</p>
+<h4 id="72">7.2 常见的模态类型</h4>
+<p>在人工智能中，常见的模态包括：</p>
+<ul>
+<li>
+<p>文本（Text）：书面语言，如文章、代码、对话。</p>
+</li>
+<li>
+<p>图像（Image）：图片、照片、图表。</p>
+</li>
+<li>
+<p>音频（Audio）：声音、音乐、语音。</p>
+</li>
+<li>
+<p>视频（Video）：动态影像，是图像和音频的结合体。</p>
+</li>
+<li>
+<p>深度信息（Depth）：物体到摄像头的距离信息，常用于机器人学和3D感知。</p>
+</li>
+<li>
+<p>惯性测量单元（IMU）数据：来自手机或穿戴设备的加速度计、陀螺仪数据。</p>
+</li>
+</ul>
+<h3 id="8-rag">8 RAG</h3>
+<ul>
+<li>
+<p>RAG (检索增强生成)</p>
+</li>
+<li>
+<p>核心问题：传统的大语言模型（LLM）的知识局限于其训练数据，可能过时、不专业或缺乏特定领域知识。它还可能“幻觉”出虚假信息。</p>
+</li>
+<li>
+<p>RAG的解决方案：</p>
+</li>
+<li>
+<ul>
+<li><strong>检索（Retrieval）</strong>：当用户提出一个问题时，RAG系统首先从一个外部知识库（如公司文档、数据库、网页等）中查找和检索最相关的信息片段。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>增强（Augmentation）</strong>：将这些检索到的相关信息作为上下文（Context），和用户的原始问题一起组合成一个更丰富的提示（Prompt）。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>生成（Generation）</strong>：将这个增强后的提示发送给LLM，让LLM基于提供的权威上下文来生成答案。</li>
+</ul>
+</li>
+<li>
+<p>简单比喻：RAG就像是一个开卷考试。不让LLM只凭记忆（闭卷）答题，而是允许它先去查阅相关的参考书（知识库），然后基于这些资料写出更准确、更可靠的答案。</p>
+</li>
+</ul>
+<h3 id="9-rag">9 多模态RAG</h3>
+<ul>
+<li>
+<p>传统的RAG主要处理<strong>文本</strong>——检索文本文档，生成文本答案。</p>
+</li>
+<li>
+<p>多模态RAG将其扩展了：它的知识库和检索对象不再仅仅是<strong>文本</strong>，还可以包括<strong>图片</strong>、<strong>表格</strong>、<strong>音频</strong>、<strong>视频</strong>、<strong>PPT</strong>等多种模态的信息。</p>
+</li>
 </ul>
 <h2 id="ai">二 第一个AI程序</h2>
 <h3 id="mnistmodified-national-institute-of-stands-and-technology">MNIST（Modified National Institute of Stands and Technology）是一个开源的数据集</h3>

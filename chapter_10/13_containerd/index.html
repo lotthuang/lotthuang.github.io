@@ -80,6 +80,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/21_debian_skills/">第二十一篇 Debian使用技巧</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/22_initrd_initramfs/">第二十二篇 initrd和initramfs</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -320,6 +322,10 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/27_html_basic/">第二十七篇 HTML基础梳理</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/28_typescript/">第二十八篇 TypeScript梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/29_mdadm/">第二十九篇 mdadm工具详解</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul class="current">
@@ -358,6 +364,20 @@
     <li class="toctree-l4"><a class="reference internal" href="#22-containerd">2.2 containerd是什么</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#23-oci">2.3 OCI 是什么</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#docker-containerd">二 容器运行时Docker 和 Containerd对比</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_1">1 调用链</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2">2 命令行区别</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#21">2.1 镜像相关功能</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#22">2.2 容器相关功能</a>
     </li>
         </ul>
     </li>
@@ -567,6 +587,98 @@ root      2214  2198  0 13:45 ?        00:00:00 /usr/bin/python /usr/bin/supervi
 </li>
 </ul>
 <p><img alt="png" src="../../img/9BAC486A-9ABB-4D7F-A7AC-47D9D622E074.jpg" /></p>
+<h2 id="docker-containerd">二 容器运行时Docker 和 Containerd对比</h2>
+<h3 id="1_1">1 调用链</h3>
+<ul>
+<li>
+<p>docker
+<img alt="png" src="../../img/310ADD5E-EB55-4216-8E4F-D03564B95B3D.jpg" /></p>
+</li>
+<li>
+<p>containerd
+<img alt="png" src="../../img/7B80D7DB-6DE4-419D-A185-370274A2A072.jpg" /></p>
+</li>
+</ul>
+<h3 id="2">2 <a href="https://mp.weixin.qq.com/s/AeF6XicXpJB6eUhzZwsYPg">命令行区别</a></h3>
+<h4 id="21">2.1 镜像相关功能</h4>
+<table>
+<thead>
+<tr>
+<th>镜像相关功能</th>
+<th>docker</th>
+<th>containerd</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>显示本地镜像列表</td>
+<td>docker images</td>
+<td>crictl images</td>
+</tr>
+<tr>
+<td>下载镜像</td>
+<td>docker pull</td>
+<td>crictl pull</td>
+</tr>
+<tr>
+<td>上传镜像</td>
+<td>docker push</td>
+<td>无</td>
+</tr>
+<tr>
+<td>删除本地镜像</td>
+<td>docker rmi</td>
+<td>crictl rmi</td>
+</tr>
+<tr>
+<td>查看镜像详情</td>
+<td>docker inspect</td>
+<td>crictl inspecti</td>
+</tr>
+</tbody>
+</table>
+<h4 id="22">2.2 容器相关功能</h4>
+<table>
+<thead>
+<tr>
+<th>容器相关功能</th>
+<th>docker</th>
+<th>containerd</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>显示容器列表</td>
+<td>docker ps</td>
+<td>crictl ps</td>
+</tr>
+<tr>
+<td>创建容器</td>
+<td>docker create</td>
+<td>crictl create</td>
+</tr>
+<tr>
+<td>启动容器</td>
+<td>docker start</td>
+<td>crictl start</td>
+</tr>
+<tr>
+<td>停止容器</td>
+<td>docker stop</td>
+<td>crictl stop</td>
+</tr>
+<tr>
+<td>删除容器</td>
+<td>docker rm</td>
+<td>crictl rm</td>
+</tr>
+<tr>
+<td>exec</td>
+<td>docker exec</td>
+<td>crictl exec</td>
+</tr>
+</tbody>
+</table>
               
             </div>
           </div><footer>

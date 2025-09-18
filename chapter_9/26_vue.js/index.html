@@ -80,6 +80,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/21_debian_skills/">第二十一篇 Debian使用技巧</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_1/22_initrd_initramfs/">第二十二篇 initrd和initramfs</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第二章 运维工作总结</span></p>
               <ul>
@@ -368,9 +370,17 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_4">参考</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">初始化</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#element-plus">使用element-plus</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../27_html_basic/">第二十七篇 HTML基础梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../28_typescript/">第二十八篇 TypeScript梳理</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../29_mdadm/">第二十九篇 mdadm工具详解</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -707,6 +717,43 @@ Done. Now run:
 <ul>
 <li><a href="https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Frameworks_libraries/Vue_first_component">创建第一个Vue组件</a></li>
 </ul>
+<h2 id="_5">初始化</h2>
+<pre><code>npm create vite@latest
+
+</code></pre>
+<pre><code>
+◇  Project name:
+│  vite-project
+│
+◇  Select a framework:
+│  Vue
+│
+◇  Select a variant:
+│  TypeScript
+│
+◇  Scaffolding project in /Users/sre/Desktop/code/ksgame/test_env/test_vue/vite-project...
+│
+└  Done. Now run:
+
+  cd vite-project
+  npm install
+  npm run dev
+
+</code></pre>
+<h2 id="element-plus">使用element-plus</h2>
+<pre><code>
+npm install element-plus
+</code></pre>
+<pre><code>在main.ts中新增
+
+import ElementUI from 'element-plus'; // 引入Element Plus配置
+import &quot;element-plus/dist/index.css&quot;
+
+const app = createApp(App);
+app.use(ElementUI);
+
+
+</code></pre>
               
             </div>
           </div><footer>
