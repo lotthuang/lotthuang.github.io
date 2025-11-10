@@ -350,6 +350,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#vuejs">二 vue.js整体心得</a>
         <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#11">1.1 基础</a>
+    </li>
     <li class="toctree-l3"><a class="reference internal" href="#12-vuejs">1.2 vue.js 组件生命周期</a>
     </li>
         </ul>
@@ -368,11 +370,57 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#uielement-plus">四 UI库(Element Plus)</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_4">参考</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">五 不同初始化方式对比</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_5">较新的初始化方式</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_5">初始化</a>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">较旧的初始化方式</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#element-plus">使用element-plus</a>
+    <li class="toctree-l3"><a class="reference internal" href="#_7">新旧对比</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#element-plus">六 使用element-plus</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#api">七 互联网上的免费API</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vue-router">八 vue-router</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_1">1 基本使用</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2">2 高级功能</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#21">2.1 父组件向子组件传参数</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#22">2.2 路由多层嵌套</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#23">2.3 页面导航</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#24">2.4 路由重定向</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#25">2.5 路由导航守卫</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#26">2.6 动态路由</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vuex">九 vuex</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_2">1 是什么</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2_1">2 为什么</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3_1">3 怎么办</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#31-store">3.1 store对象的一些高级属性</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_8">参考</a>
     </li>
     </ul>
                   </li>
@@ -611,6 +659,16 @@
 </ul>
 <h3 id="5">5 子组件向父组件传递消息</h3>
 <h4 id="51">5.1 普通</h4>
+<ul>
+<li>App.vue 先监听事件, 收到todo-added事件时, 执行addToDo函数</li>
+</ul>
+<pre><code>&lt;to-do-form @todo-added=&quot;addToDo&quot;&gt;&lt;/to-do-form&gt;
+</code></pre>
+<ul>
+<li>子组件在有需要的地方,发送事件</li>
+</ul>
+<pre><code>this.$emit(&quot;todo-added&quot;);
+</code></pre>
 <h4 id="52">5.2 二层</h4>
 <ul>
 <li><code>&lt;to-do-item-edit-form&gt;</code>组件 向<code>&lt;to-do-item&gt;</code>组件传递item-edited消息, 进一步<code>&lt;to-do-item&gt;</code>组件向<code>App</code>组件传递item-edited消息, <code>App</code>组件里接收语句如下, 特意有一个<code>$event</code><a href="https://github.com/mdn/todo-vue/blob/main/src/App.vue">变量</a>:
@@ -622,6 +680,7 @@
 <li>参考<a href="https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Frameworks_libraries/Vue_refs_focus_management">这里</a>, 这种方法还是要多实践才行</li>
 </ul>
 <h2 id="vuejs">二 vue.js整体心得</h2>
+<h3 id="11">1.1 基础</h3>
 <ol>
 <li>它应该是先处理props, 再处理data</li>
 <li>props里所有的key, 都会set到data对象里. 类似data对象是python的一个dict, 它后台会执行一遍:</li>
@@ -632,6 +691,7 @@
 <ol>
 <li><strong>所以props里的key, 不要和data里的key名字重复</strong></li>
 <li>实际上所有.vue文件, 被称为<strong>组件</strong>, 每个<strong>组件</strong>其实就类似python class, 用户负责编写和继承class, 而Vue框架提供了各种生命周期函数、以及class的3个基本要素: <code>template</code>、<code>script</code>、<code>style</code></li>
+<li>所有.vue文件, 要满足驼峰命名. 比如<code>HelloWorld.vue</code>、<code>NewOne.vue</code>, 像<code>New1.vue</code>这种不行</li>
 </ol>
 <h3 id="12-vuejs">1.2 vue.js 组件生命周期</h3>
 <ul>
@@ -713,11 +773,8 @@ Done. Now run:
 <li>Element Plus：基于Vue3</li>
 </ul>
 <p>我们选择了Vue3，就需要安装Element Plus：</p>
-<h2 id="_4">参考</h2>
-<ul>
-<li><a href="https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Frameworks_libraries/Vue_first_component">创建第一个Vue组件</a></li>
-</ul>
-<h2 id="_5">初始化</h2>
+<h2 id="_4">五 不同初始化方式对比</h2>
+<h3 id="_5">较新的初始化方式</h3>
 <pre><code>npm create vite@latest
 
 </code></pre>
@@ -740,11 +797,55 @@ Done. Now run:
   npm run dev
 
 </code></pre>
-<h2 id="element-plus">使用element-plus</h2>
-<pre><code>
-npm install element-plus
+<h3 id="_6">较旧的初始化方式</h3>
+<pre><code>vue create hello-world
+cd hello-world/
+npm run serve
 </code></pre>
-<pre><code>在main.ts中新增
+<ul>
+<li>安装http请求库</li>
+</ul>
+<pre><code>npm install --save axios vue-axios
+npm install vue-router --save
+npm install vuex --save
+</code></pre>
+<h3 id="_7">新旧对比</h3>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th><code>npm create vue@latest</code></th>
+<th><code>vue create hello-world</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>底层工具</td>
+<td>Vite</td>
+<td>Vue CLI (基于 Webpack)</td>
+</tr>
+<tr>
+<td>构建速度</td>
+<td>极快 (利用 ES modules 和原生浏览器支持)</td>
+<td>较慢 (尤其是在大型项目中)</td>
+</tr>
+<tr>
+<td>现代化程度</td>
+<td>新一代，面向未来</td>
+<td>旧一代，现已处于维护模式</td>
+</tr>
+<tr>
+<td>UI图形界面</td>
+<td>暂无</td>
+<td>有</td>
+</tr>
+</tbody>
+</table>
+<h2 id="element-plus">六 使用element-plus</h2>
+<pre><code>
+npm install element-plus --save
+</code></pre>
+<pre><code>在main.ts或者main.js中新增
 
 import ElementUI from 'element-plus'; // 引入Element Plus配置
 import &quot;element-plus/dist/index.css&quot;
@@ -754,6 +855,192 @@ app.use(ElementUI);
 
 
 </code></pre>
+<h2 id="api">七 互联网上的免费API</h2>
+<ul>
+<li><a href="https://dashboard.juhe.cn/data/index/my">聚合数据</a></li>
+</ul>
+<h2 id="vue-router">八 vue-router</h2>
+<ul>
+<li>核心模型，全局对象： router</li>
+<li>一个router里面包含多个路由规则，路由规则即route</li>
+<li>每个route有多个属性，比如path,component,name,children</li>
+</ul>
+<h3 id="1_1">1 基本使用</h3>
+<p><code>npm install vue-router --save</code></p>
+<ul>
+<li>新建src/router/index.js , 内容如下:</li>
+</ul>
+<pre><code>
+import { createRouter, createWebHashHistory } from &quot;vue-router&quot;;
+import DemoOne from '../components/DemoOne.vue'
+import DemoTwo from '../components/DemoTwo.vue'
+
+const routes = [
+    {path: '/demo1',component: DemoOne, name: 'demo1'},
+    {path: '/demo2',component: DemoTwo, name: 'demo2'},
+]
+
+const router = createRouter({
+    history: createWebHashHistory(),
+    routes: routes
+})
+
+export default router
+</code></pre>
+<ul>
+<li>src/main.js, 内容如下</li>
+</ul>
+<pre><code>import { createApp } from 'vue'
+import VueAxios from 'vue-axios';
+import axios from 'axios';
+import App from './App.vue'
+import router from './router';
+import ElementUI from 'element-plus'; // 引入Element Plus配置
+import &quot;element-plus/dist/index.css&quot;
+
+
+
+const one = createApp(App)
+one.use(VueAxios,axios);
+one.use(ElementUI);
+one.use(router);
+one.mount('#app')
+
+</code></pre>
+<ul>
+<li>App.vue, 内容如下</li>
+</ul>
+<pre><code>&lt;template&gt;
+  &lt;router-link :to=&quot;{name: 'demo1'}&quot;&gt;页面一&lt;/router-link&gt; &lt;!--其中name是route的name--&gt;
+  &lt;router-link :to=&quot;{name: 'demo2'}&quot;&gt;页面二&lt;/router-link&gt;
+  &lt;router-view&gt;&lt;/router-view&gt;
+&lt;/template&gt;
+
+</code></pre>
+<h3 id="2">2 高级功能</h3>
+<h4 id="21">2.1 父组件向子组件传参数</h4>
+<pre><code>子组件内可以用$route变量获取参数
+&lt;template&gt;
+  &lt;h1&gt;{{$route.params.username}}&lt;/h1&gt;
+&lt;/template&gt;
+</code></pre>
+<h4 id="22">2.2 路由多层嵌套</h4>
+<pre><code>const routes = [
+    {path: '/demo1',component: DemoOne, name: 'demo1',
+    children:[
+      {path:'friends/:count', component: Friends},
+    ]
+
+    },
+    {path: '/demo2',component: DemoTwo, name: 'demo2'},
+]
+</code></pre>
+<h4 id="23">2.3 页面导航</h4>
+<pre><code>this.$router.push
+this.$router.go(-1)
+</code></pre>
+<h4 id="24">2.4 路由重定向</h4>
+<ul>
+<li>redirect的使用</li>
+</ul>
+<pre><code>const routes = [
+    {path: '/demo1',component: DemoOne, name: 'demo1'},
+    {path: '/d/1',redirect: '/demo1'},
+]
+</code></pre>
+<h4 id="25">2.5 路由导航守卫</h4>
+<ul>
+<li>主要就是路由跳转前、后的勾子函数, 勾子函数可以做很多事情、比如打印日志、进行拦截等等</li>
+</ul>
+<pre><code>const router = createRouter({
+    history: createWebHashHistory(),
+    routes: routes
+})
+
+router.beforeEach((to,from)=&gt;{
+  console.log(to)
+  console.log(from)
+  return false // 会拒绝跳转
+})
+</code></pre>
+<h4 id="26">2.6 动态路由</h4>
+<pre><code>this.$router.addRoute
+</code></pre>
+<h2 id="vuex">九 vuex</h2>
+<h3 id="1_2">1 是什么</h3>
+<ul>
+<li>vuex总体来说就是一个store对象, 该对象可以在全局所有组件(.vue文件)中共享数据和状态, 让所有组件同时改变行为</li>
+</ul>
+<h3 id="2_1">2 为什么</h3>
+<ul>
+<li>默认vue的数据和状态传递有两种方式:</li>
+<li>
+<ul>
+<li>1 父组件向子组件传递props, props在子组件中是只读的</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>2 子组件向父组件传递数据和状态, 可以通过<code>this.$emit("event-name");</code>发送事件</li>
+</ul>
+</li>
+</ul>
+<p>在项目变得越来越大的时候, 这种数据和状态传递方式会变得低效、并且使得代码复杂度越来越高.</p>
+<h3 id="3_1">3 怎么办</h3>
+<ul>
+<li>main.js</li>
+</ul>
+<pre><code>const StoreInstance = createStore({
+    state() {
+        return {
+            count: 0
+        }
+    },
+    mutations: {
+        increment(state, payload) {
+            state.count += payload.count
+        }
+    }
+})
+AppInstance.use(StoreInstance);
+</code></pre>
+<ul>
+<li>各个组件</li>
+</ul>
+<pre><code>&lt;template&gt;
+    &lt;h1&gt;计数器2: {{ this.$store.state.count}} &lt;/h1&gt;
+    &lt;el-button type=&quot;info&quot; @click=&quot;increment&quot;&gt;增加&lt;/el-button&gt;
+&lt;/template&gt;
+&lt;script&gt;
+export default {
+    name: 'DoCountTwo',
+    data() {
+        return {
+            count: 0,
+        }
+    },
+    methods: {
+        increment() {
+           this.$store.commit({type: 'increment',
+                count: 2})
+        }
+    }
+};
+&lt;/script&gt;
+
+这样只要在一个组件里点了这个Button，所有组件的this.$store.state.count都会改变
+</code></pre>
+<h4 id="31-store">3.1 store对象的一些高级属性</h4>
+<ul>
+<li>Getter方法 ---&gt; 可以用于增加store实例里的计算属性</li>
+<li>Mutation方法 ---&gt; 开发者改变store实例里数据的唯一方法</li>
+<li>Action方法 ---&gt; Mutation方法是同步的, 为了实现异步功能，因此多了Action方法</li>
+<li>Module ---&gt; 可以把store实例进行进一步拆分,类似vue-router里多层嵌套(子路由)的概念, 每个store实例下可以有多个module实例，每个module实例都可以有自己的Getter、Mutation、Action，并且每个Module实例可以对应不同的组件(.vue文件), 从而实现组件状态的拆分</li>
+</ul>
+<h2 id="_8">参考</h2>
+<ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Frameworks_libraries/Vue_first_component">创建第一个Vue组件</a></li>
+</ul>
               
             </div>
           </div><footer>
