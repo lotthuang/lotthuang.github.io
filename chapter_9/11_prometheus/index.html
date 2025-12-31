@@ -200,6 +200,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/10_device_database/">第十篇 设备数据库</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_5/11_io_uring_again/">第十一篇 io_uring起源</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第六章 Linux Mem子系统</span></p>
               <ul>
@@ -304,7 +306,7 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#2">2. 收集指标</a>
         <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#31-exporter">3.1 Exporter</a>
+    <li class="toctree-l4"><a class="reference internal" href="#21-exporter">2.1 Exporter</a>
     </li>
         </ul>
     </li>
@@ -313,6 +315,8 @@
     <li class="toctree-l3"><a class="reference internal" href="#4">4. 生成图和报表</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#5-sql">5. SQL语句使用</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#6-prometheus">6. 如何评估Prometheus自身是否达到上限</a>
     </li>
         </ul>
     </li>
@@ -387,6 +391,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/16_podman/">第十六篇 Podman总结</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_10/17_tke/">第十七篇 腾讯云TKE总结</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十一章 SRE稳定性建设从理论到实践</span></p>
               <ul>
@@ -458,6 +464,8 @@
               <p class="caption"><span class="caption-text">第十六章 网络安全方向</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_16/1_network_attack/">第一篇 认识各种网络攻击</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_16/2_industry_breakdown/">第二篇 行业故障梳理</a>
                   </li>
               </ul>
       </div>
@@ -536,7 +544,7 @@ prometheus_http_requests_total{status=&quot;200&quot;, method=&quot;GET&quot;} 1
 </ol>
 <p>如图 所示，Prometheus 主动从监控源拉取暴露的 HTTP 服务地址（通常是/metrics）拉取监控样本数据。</p>
 <p><img alt="png" src="../../img/E6242C5C-6302-4F3F-BFE7-787D0C6B776C.jpg" /></p>
-<h4 id="31-exporter">3.1 Exporter</h4>
+<h4 id="21-exporter">2.1 Exporter</h4>
 <p>Exporter 一个相对开放的概念，可以是一个独立运行的程序独立于监控目标以外，也可以是直接内置在监控目标中，只要能够向 Prometheus 提供标准格式的监控样本数据即可。</p>
 <p>Prometheus 相比 zabbix 这类只监控机器的传统监控系统，最大的特点是对 Metrics 全方位的覆盖：</p>
 <ul>
@@ -635,6 +643,11 @@ prometheus_http_requests_total{status=&quot;200&quot;, method=&quot;GET&quot;} 1
 </ul>
 </li>
 </ul>
+<h5 id="node_exporter">官员Node_Exporter</h5>
+<ul>
+<li>好奇一个问题, node_exporter自身会按固定频率采集主机信息吗？ 答案是不会. </li>
+<li>node_exporter does not store data, it runs and fetches the data when a request comes to the socket it is listening at. If nobody fetches (scrapes) data, no data is gathered and the node_exporter instance idles waiting for incoming requests. </li>
+</ul>
 <h3 id="3">3. 存储指标</h3>
 <p>如果 Metrics 数据的主要作用是监控，那么你要考虑这类数据有没有长期存储的必要？</p>
 <p>默认情况下，Prometheus 将数据存储在内置的 TSDB（时序数据库）中，并设定了默认的存储时限。这个数据库的设计初衷是为了实现监控数据的高性能查询，而非分布式处理，如果本地磁盘或节点出现故障，存储将无法扩展和迁移。</p>
@@ -721,6 +734,13 @@ prometheus_http_requests_total{status=&quot;200&quot;, method=&quot;GET&quot;} 1
 <p><a href="https://blog.csdn.net/hxlovexn/article/details/131479148">参考</a></p>
 </li>
 </ul>
+<h3 id="6-prometheus">6. 如何评估Prometheus自身是否达到上限</h3>
+<ul>
+<li>这块正常原理就是Prometheus自己暴露一些Metrics指标, 然后进行采集和报警</li>
+<li>云上Promethues实例的上限限制参考<a href="https://cloud.tencent.com/document/product/1416/113553">这里</a></li>
+<li>云上Promethues实例自身的报警规则参考:</li>
+</ul>
+<p><img alt="png" src="../../img/ScreenShot_2025-12-23_200027_793.png" /></p>
               
             </div>
           </div><footer>
