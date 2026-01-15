@@ -407,10 +407,26 @@
         </ul>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#c-element-plus">C element-plus</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#el-button">el-button组件</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#el-input">el-input组件</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_8">标签类</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_9">空态图与加载占位组件</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#el-image">el-image组件</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#el-avatar">el-avatar组件</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_10">表单类组件</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_8">参考</a>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_11">参考</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#a-api">A 互联网上免费API</a>
     </li>
@@ -1041,7 +1057,45 @@ app.use(ElementUI);
 
 
 </code></pre>
-<h2 id="_8">参考</h2>
+<h4 id="el-button">el-button组件</h4>
+<pre><code>&lt;el-button type=&quot;primary&quot; size=&quot;medium&quot; :disable=&quot;true&quot;&gt;中等按钮&lt;/el-button&gt;
+</code></pre>
+<h4 id="el-input">el-input组件</h4>
+<pre><code>&lt;el-input style=&quot;width: 90px&quot; v-if=&quot;show&quot; v-model=&quot;inputValue&quot; @keyup.enter=&quot;handleInputConfirm&quot;
+        @blur=&quot;handleInputConfirm&quot; size=&quot;small&quot;&gt;
+&lt;/el-input&gt;
+</code></pre>
+<h4 id="_8">标签类</h4>
+<h5 id="el-tag">el-tag组件</h5>
+<pre><code>&lt;template v-for=&quot;(tag, index) in tags&quot; :key=&quot;tag&quot;&gt;
+        &lt;el-tag :closable=&quot;true&quot; @close=&quot;closeTag(index)&quot;&gt;{{ tag }}&lt;/el-tag&gt;
+        &lt;span style=&quot;padding:10px&quot;&gt;&lt;/span&gt;
+&lt;/template&gt;
+</code></pre>
+<h5 id="el-check-tag">el-check-tag组件</h5>
+<pre><code>&lt;el-check-tag :checked=&quot;true&quot;&gt;足球&lt;/el-check-tag&gt;
+&lt;el-check-tag :checked=&quot;false&quot;&gt;篮球&lt;/el-check-tag&gt;
+</code></pre>
+<h4 id="_9">空态图与加载占位组件</h4>
+<h5 id="el-empty">el-empty组件</h5>
+<pre><code>&lt;el-empty description=&quot;空空如也 哈哈哈哈&quot;&gt;&lt;/el-empty&gt;
+</code></pre>
+<h5 id="el-skeleton">el-skeleton组件</h5>
+<pre><code>&lt;el-skeleton :rows=&quot;10&quot; :animated=&quot;true&quot;&gt;&lt;/el-skeleton&gt;
+</code></pre>
+<h4 id="el-image">el-image组件</h4>
+<ul>
+<li>主要用于插入图片</li>
+</ul>
+<h4 id="el-avatar">el-avatar组件</h4>
+<ul>
+<li>主要用于头像</li>
+</ul>
+<h4 id="_10">表单类组件</h4>
+<ul>
+<li>包括单选框、复选框、</li>
+</ul>
+<h2 id="_11">参考</h2>
 <ul>
 <li><a href="https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Frameworks_libraries/Vue_first_component">创建第一个Vue组件</a></li>
 </ul>

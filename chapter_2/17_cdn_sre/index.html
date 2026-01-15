@@ -119,6 +119,18 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#cdn_1">二 CDN防盗刷</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">三 大文件优化</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#range">(一) Range请求</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1">1. 是什么</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2">2. 注意事项</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
               </ul>
@@ -483,6 +495,32 @@
 <li>封禁头部IP</li>
 <li>客户端访问CDN时加鉴权； 对于官网公开安装包、视频文件那种，需要定期更换URL</li>
 </ol>
+<h2 id="_2">三 大文件优化</h2>
+<h3 id="range">(一) Range请求</h3>
+<h4 id="1">1. 是什么</h4>
+<ul>
+<li>Range回源，指CDN节点在回源的HTTP请求里面携带了Range信息，源站在收到CDN节点的回源请求时，根据HTTP请求头中的Range信息返回指定范围的内容数据给CDN节点。Range回源可有效提高文件分发效率，减少回源流量消耗和源站压力，并且提升资源响应速度。</li>
+</ul>
+<p>Range是HTTP请求头之一，可用来指定需获取的内容的范围。例如，<code>Range: bytes=0-100</code>表示回源请求该文件的前101个字节的数据内容。</p>
+<p>开启Range回源功能后，CDN收到用户的请求时，如果CDN节点上未缓存该资源或资源已过期，CDN节点回源会采用Range请求，从源站分段获取用户需要的部分资源并缓存到CDN节点上。</p>
+<p>开启Range回源的工作原理如下图所示：</p>
+<p><img alt="png" src="../../img/BD173F77-C692-47EE-8BCD-C1A5B656EE21.png" /></p>
+<h4 id="2">2. 注意事项</h4>
+<p>开启Range回源有以下注意事项：</p>
+<ul>
+<li>
+<p>开启Range回源前需确认源站是否支持Range请求，即HTTP请求头中包含Range字段，并且源站能够响应正确的206文件分片。如果源站不支持Range请求，开启Range回源可能导致缓存异常或客户端请求失败。</p>
+</li>
+<li>
+<p>Range回源是可选配置项，CDN控制台默认未开启。</p>
+</li>
+<li>
+<p>Multipart Ranges特性状态默认关闭，开启Range回源功能也不会同步开启Multipart Ranges特性，请提交工单申请开启Multipart Ranges特性。</p>
+</li>
+<li>
+<p>开启Range回源功能以后，会导致回源的QPS升高，如果源站有设置频次控制功能，需要注意避免触发源站的限流；规避办法是通过DescribeL2VipsByDomain查询CDN回源节点的IP地址 ，并且将CDN回源节点的IP加入源站的访问IP白名单。</p>
+</li>
+</ul>
               
             </div>
           </div><footer>
