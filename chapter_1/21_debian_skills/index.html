@@ -100,6 +100,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#6-xtables-nftiptables">6 使用xtables-nft延续iptables老语法</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#7-nanovim">7 删除nano编辑器和安装vim编辑器</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../22_initrd_initramfs/">第二十二篇 initrd和initramfs</a>
@@ -349,6 +351,10 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/28_typescript/">第二十八篇 TypeScript梳理</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/29_mdadm/">第二十九篇 mdadm工具详解</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/30_victoria/">第三十篇 VictoriaMetrics详解</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/31_semaphore/">第三十一篇 semaphore详解</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -629,6 +635,10 @@ systemctl start rc-local.service
 <li>默认情况下nftables语法和iptables有很大区别, xtables-nft可以在用户空间使用iptables语法，在内核空间使用nft API.</li>
 <li>参考第一章、第11篇</li>
 </ul>
+<h2 id="7-nanovim">7 删除nano编辑器和安装vim编辑器</h2>
+<pre><code>apt-get install vim
+apt-get remove nano
+</code></pre>
               
             </div>
           </div><footer>

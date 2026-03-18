@@ -341,6 +341,10 @@
     <li class="toctree-l3"><a class="reference internal" href="#1-uv">1 uv有什么好处</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#2-uv">2 如何安装uv</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#21">2.1 如果安装依赖</a>
+    </li>
+        </ul>
     </li>
         </ul>
     </li>
@@ -391,6 +395,10 @@
                   <li class="toctree-l1"><a class="reference internal" href="../28_typescript/">第二十八篇 TypeScript梳理</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../29_mdadm/">第二十九篇 mdadm工具详解</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../30_victoria/">第三十篇 VictoriaMetrics详解</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../31_semaphore/">第三十一篇 semaphore详解</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
@@ -854,7 +862,7 @@ if __name__ == '__main__':
 </ul>
 <pre><code>uv venv --python 3.12 , 默认会把virtualenv初始化在当前目录的.venv目录下, 然后也可以有其他更多选项，比如 --prompt &lt;PROMPT&gt;
 </code></pre>
-<h3 id="2-uv">2 如何安装uv</h3>
+<h3 id="2-uv">2 如何安装<a href="https://uv.oaix.tech/getting-started/installation/#_2">uv</a></h3>
 <ul>
 <li>MacOS/Linux都可以执行如下命令安装</li>
 </ul>
@@ -865,6 +873,16 @@ if __name__ == '__main__':
 </ul>
 <pre><code>pip install uv
 </code></pre>
+<ul>
+<li>1 下载安装脚本<code>wget https://astral.sh/uv/install.sh</code> , 非root用户即可</li>
+<li>2 安装<code>bash install.sh</code>, 非root用户即可</li>
+<li>3 展示uv支持的版本 <code>uv python list</code></li>
+<li>4 安装你需要的版本, 例如<code>uv python install cpython-3.13.12-linux-x86_64-gnu</code></li>
+</ul>
+<h4 id="21">2.1 如果安装依赖</h4>
+<ul>
+<li></li>
+</ul>
 <h2 id="_11">参考</h2>
 <ul>
 <li>

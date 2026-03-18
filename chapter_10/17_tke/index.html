@@ -328,6 +328,10 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/29_mdadm/">第二十九篇 mdadm工具详解</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/30_victoria/">第三十篇 VictoriaMetrics详解</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../chapter_9/31_semaphore/">第三十一篇 semaphore详解</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">第十章 容器化和Kubernetes</span></p>
               <ul class="current">
@@ -396,6 +400,8 @@
     <li class="toctree-l4"><a class="reference internal" href="#6-clb">6 CLB自己的参数怎么控制</a>
     </li>
         </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#b-containerd-docker">B 如何选择 Containerd 和 Docker</a>
     </li>
         </ul>
     </li>
@@ -612,6 +618,40 @@
 <li>上面介绍了如何配置一个service，使得该service配套一个CLB实例, 然后集群外部(包括公网、包括vpc内)就可以通过CLB直连到Pod</li>
 <li>那么问题来了? CLB本身有各种参数和规格, 我们如何在创建service时自动指定这些参数和规格呢? 指定之后就可以在创建service时、自动创建符合我们预期的CLB实例了.</li>
 <li>OK，解决方案就是<a href="https://cloud.tencent.com/document/product/457/45490">TkeServiceConfig</a></li>
+</ul>
+<h3 id="b-containerd-docker">B 如何选择 Containerd 和 Docker</h3>
+<ul>
+<li>TKE 支持用户选择 Containerd 和 Docker 作为运行时组件：</li>
+<li>
+<ul>
+<li>Containerd 调用链更短，组件更少，更稳定，占用节点资源更少。建议选择 Containerd。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>当您遇到以下情况时，请选择 docker 作为运行时组件：</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>如需使用 docker in docker。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>如需在 TKE 节点使用 docker build/push/save/load 等命令。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>如需调用 docker API。</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>如需 docker compose 或 docker swarm。</li>
+</ul>
+</li>
 </ul>
               
             </div>
