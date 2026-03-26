@@ -382,6 +382,8 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#_7">新旧对比</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_8">新的初始化方案</a>
+    </li>
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#todo_1">六 ToDo</a>
@@ -414,21 +416,21 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#el-input">el-input组件</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#_8">标签类</a>
+    <li class="toctree-l4"><a class="reference internal" href="#_9">标签类</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#_9">空态图与加载占位组件</a>
+    <li class="toctree-l4"><a class="reference internal" href="#_10">空态图与加载占位组件</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#el-image">el-image组件</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#el-avatar">el-avatar组件</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#_10">表单类组件</a>
+    <li class="toctree-l4"><a class="reference internal" href="#_11">表单类组件</a>
     </li>
         </ul>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_11">参考</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_12">参考</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#a-api">A 互联网上免费API</a>
     </li>
@@ -858,6 +860,79 @@ npm install vuex --save
 <ul>
 <li>暂时选用vue这套方案</li>
 </ul>
+<h3 id="_8">新的初始化方案</h3>
+<p>1 创建目录, 假设项目名称为mcp-frontend</p>
+<pre><code>npm create vite@latest mcp-frontend --template vue
+
+cd mcp-frontend
+
+</code></pre>
+<p>2 安装依赖</p>
+<pre><code>npm install axios pinia vue-router
+</code></pre>
+<p>3 运行开发环境</p>
+<pre><code>npm run dev
+</code></pre>
+<p>4 打包上线</p>
+<p>4.1 构建生成环境代码</p>
+<pre><code>npm run build
+</code></pre>
+<p>这会生成 <code>/dist</code> 目录，包含优化后的静态文件</p>
+<p>4.2 将<code>/dist</code>目录传输到nginx主机上</p>
+<p>4.3 nginx配置文件</p>
+<pre><code>
+user nginx;
+worker_processes auto;
+error_log /data/logs/nginx/error.log;
+pid /run/nginx.pid;
+include /usr/share/nginx/modules/*.conf;
+events {
+    worker_connections 1024;
+}
+http {
+    log_format  main  '$remote_addr - $remote_user [$time_local] &quot;$request&quot; '
+                      '$status $body_bytes_sent &quot;$http_referer&quot; '
+                      '&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;';
+    access_log  /data/logs/nginx/access.log  main;
+    sendfile            on;
+    tcp_nopush          on;
+    tcp_nodelay         on;
+    keepalive_timeout   65;
+    types_hash_max_size 4096;
+    include             /etc/nginx/mime.types;
+    default_type        application/octet-stream;
+    # Load modular configuration files from the /etc/nginx/conf.d directory.
+    # See http://nginx.org/en/docs/ngx_core_module.html#include
+    # for more information.
+    include /etc/nginx/conf.d/*.conf;
+    server {
+        listen       80;
+        server_name  _;
+        # Load configuration files for the default server block.
+        include /etc/nginx/default.d/*.conf;
+        error_page 404 /404.html;
+        location = /404.html {
+            root         /usr/share/nginx/html;
+        }
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+            root         /usr/share/nginx/html;
+        }
+
+        location / {
+             root /data/frontend_app/dist;
+             index index.html;
+        }
+    # 如果需要 API 代理
+    location /api {
+        proxy_pass http://localhost:5000; # MCP后端地址
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    }
+}
+
+</code></pre>
 <h2 id="todo_1">六 ToDo</h2>
 <h2 id="todo_2">七 ToDo</h2>
 <h2 id="vue">八 各种vue插件</h2>
@@ -1071,7 +1146,7 @@ app.use(ElementUI);
         @blur=&quot;handleInputConfirm&quot; size=&quot;small&quot;&gt;
 &lt;/el-input&gt;
 </code></pre>
-<h4 id="_8">标签类</h4>
+<h4 id="_9">标签类</h4>
 <h5 id="el-tag">el-tag组件</h5>
 <pre><code>&lt;template v-for=&quot;(tag, index) in tags&quot; :key=&quot;tag&quot;&gt;
         &lt;el-tag :closable=&quot;true&quot; @close=&quot;closeTag(index)&quot;&gt;{{ tag }}&lt;/el-tag&gt;
@@ -1082,7 +1157,7 @@ app.use(ElementUI);
 <pre><code>&lt;el-check-tag :checked=&quot;true&quot;&gt;足球&lt;/el-check-tag&gt;
 &lt;el-check-tag :checked=&quot;false&quot;&gt;篮球&lt;/el-check-tag&gt;
 </code></pre>
-<h4 id="_9">空态图与加载占位组件</h4>
+<h4 id="_10">空态图与加载占位组件</h4>
 <h5 id="el-empty">el-empty组件</h5>
 <pre><code>&lt;el-empty description=&quot;空空如也 哈哈哈哈&quot;&gt;&lt;/el-empty&gt;
 </code></pre>
@@ -1097,11 +1172,11 @@ app.use(ElementUI);
 <ul>
 <li>主要用于头像</li>
 </ul>
-<h4 id="_10">表单类组件</h4>
+<h4 id="_11">表单类组件</h4>
 <ul>
 <li>包括单选框、复选框、</li>
 </ul>
-<h2 id="_11">参考</h2>
+<h2 id="_12">参考</h2>
 <ul>
 <li><a href="https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Frameworks_libraries/Vue_first_component">创建第一个Vue组件</a></li>
 </ul>
