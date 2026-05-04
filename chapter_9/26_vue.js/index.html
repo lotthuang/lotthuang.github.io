@@ -350,6 +350,8 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#6-nexttick">6 $nextTick()方法</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#7-ref">7 ref</a>
+    </li>
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#vuejs">二 vue.js整体心得</a>
@@ -360,37 +362,27 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_3">三 环境初始化</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">三 开发环境初始化</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1-macos">1 MacOS 如何初始化前端开发环境</a>
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#11-npmnodejs">1.1 安装NPM和node.js</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#12">1.2 初始化新项目</a>
+    <li class="toctree-l4"><a class="reference internal" href="#12-1-npm-create-vuelatest">1.2 初始化新项目(方案1 npm create vue@latest)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#13-2-npm-create-vitelatest">1.3 较新的初始化方式(方案2 npm create vite@latest)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#14-3-vue-create-projectname">1.4 较旧的初始化方式(方案3 vue create ProjectName)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#13-14">1.3 和 1.4 对比</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#16-4-npm-create-vitelatest-projectname-template-vue">1.6 最终选择(方案4 npm create vite@latest ProjectName --template vue)</a>
     </li>
         </ul>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#todo">四 ToDo</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_4">五 不同初始化方式对比</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_5">较新的初始化方式</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_6">较旧的初始化方式</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_7">新旧对比</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_8">新的初始化方案</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#todo_1">六 ToDo</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#todo_2">七 ToDo</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#vue">八 各种vue插件</a>
+    <li class="toctree-l2"><a class="reference internal" href="#vue">四 各种vue插件</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#a-vue-router">A vue-router</a>
         <ul>
@@ -416,21 +408,23 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#el-input">el-input组件</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#_9">标签类</a>
+    <li class="toctree-l4"><a class="reference internal" href="#_4">标签类</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#_10">空态图与加载占位组件</a>
+    <li class="toctree-l4"><a class="reference internal" href="#_5">空态图与加载占位组件</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#el-image">el-image组件</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#el-avatar">el-avatar组件</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#_11">表单类组件</a>
+    <li class="toctree-l4"><a class="reference internal" href="#_6">表单类组件</a>
     </li>
         </ul>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#d-pinia">D pinia</a>
+    </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_12">参考</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_7">参考</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#a-api">A 互联网上免费API</a>
     </li>
@@ -701,6 +695,25 @@
 <li>Vue 组件有一个特殊的方法，叫做 $nextTick()。这个方法接受一个回调函数，然后在 DOM 更新后执行。</li>
 <li>参考<a href="https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Frameworks_libraries/Vue_refs_focus_management">这里</a>, 这种方法还是要多实践才行</li>
 </ul>
+<h3 id="7-ref">7 ref</h3>
+<p>在组合式 API 中，推荐使用 ref() 函数来声明响应式状态：</p>
+<pre><code>import { ref } from 'vue'
+
+const count = ref(0)
+
+</code></pre>
+<p>ref() 接收参数，并将其包裹在一个带有 .value 属性的 ref 对象中返回：</p>
+<pre><code>const count = ref(0)
+
+console.log(count) // { value: 0 }
+console.log(count.value) // 0
+
+count.value++
+console.log(count.value) // 1
+
+</code></pre>
+<p>用ref函数定义出来的是一个对象, {value:xxxx}</p>
+<p>在模版中可以直接使用<code>&lt;div&gt;{{ count }}&lt;/div&gt;</code>, 不需要写成<code>&lt;div&gt;{{ count.value }}&lt;/div&gt;</code></p>
 <h2 id="vuejs">二 vue.js整体心得</h2>
 <h3 id="11">1.1 基础</h3>
 <ol>
@@ -736,7 +749,7 @@ destroyed()：在一个组件被从 DOM 中移除后运行。
 <ul>
 <li><a href="https://cn.vuejs.org/guide/essentials/lifecycle#lifecycle-diagram">生命周期</a></li>
 </ul>
-<h2 id="_3">三 环境初始化</h2>
+<h2 id="_3">三 开发环境初始化</h2>
 <h3 id="1-macos">1 MacOS 如何初始化前端开发环境</h3>
 <h4 id="11-npmnodejs">1.1 安装NPM和node.js</h4>
 <ul>
@@ -763,7 +776,10 @@ npm -v # Should print &quot;10.9.3&quot;.
 <li>成功安装后, 如下图所示:</li>
 </ul>
 <p><img alt="png" src="../../img/C93908EA-FEAB-45AA-B3D2-CB93E8FD85E0.png" /></p>
-<h4 id="12">1.2 初始化新项目</h4>
+<h4 id="12-1-npm-create-vuelatest">1.2 初始化新项目(方案1 npm create vue@latest)</h4>
+<ul>
+<li>由于node和vue.js各种都在快速发展, 因此也出现了很多不同的初始化方式</li>
+</ul>
 <pre><code>npm create vue@latest
 
 </code></pre>
@@ -788,9 +804,7 @@ Done. Now run:
   npm run format
   npm run dev
 </code></pre>
-<h2 id="todo">四 ToDo</h2>
-<h2 id="_4">五 不同初始化方式对比</h2>
-<h3 id="_5">较新的初始化方式</h3>
+<h4 id="13-2-npm-create-vitelatest">1.3 较新的初始化方式(方案2 npm create vite@latest)</h4>
 <pre><code>npm create vite@latest
 
 </code></pre>
@@ -813,7 +827,7 @@ Done. Now run:
   npm run dev
 
 </code></pre>
-<h3 id="_6">较旧的初始化方式</h3>
+<h4 id="14-3-vue-create-projectname">1.4 较旧的初始化方式(方案3 vue create ProjectName)</h4>
 <pre><code>vue create hello-world
 cd hello-world/
 npm run serve
@@ -825,7 +839,7 @@ npm run serve
 npm install vue-router --save
 npm install vuex --save
 </code></pre>
-<h3 id="_7">新旧对比</h3>
+<h4 id="13-14">1.3 和 1.4 对比</h4>
 <table>
 <thead>
 <tr>
@@ -857,16 +871,14 @@ npm install vuex --save
 </tr>
 </tbody>
 </table>
-<ul>
-<li>暂时选用vue这套方案</li>
-</ul>
-<h3 id="_8">新的初始化方案</h3>
-<p>1 创建目录, 假设项目名称为mcp-frontend</p>
-<pre><code>npm create vite@latest mcp-frontend --template vue
+<h4 id="16-4-npm-create-vitelatest-projectname-template-vue">1.6 最终选择(方案4 npm create vite@latest ProjectName --template vue)</h4>
+<p>1 创建目录, 假设项目名称为frontend_app</p>
+<pre><code>npm create vite@latest frontend_app --template vue
 
-cd mcp-frontend
+cd frontend_app
 
 </code></pre>
+<p><img alt="png" src="../../img/2CC177A0-B745-434A-AB9D-BE77F6F0A403.png" /></p>
 <p>2 安装依赖</p>
 <pre><code>npm install axios pinia vue-router
 </code></pre>
@@ -933,9 +945,7 @@ http {
 }
 
 </code></pre>
-<h2 id="todo_1">六 ToDo</h2>
-<h2 id="todo_2">七 ToDo</h2>
-<h2 id="vue">八 各种vue插件</h2>
+<h2 id="vue">四 各种vue插件</h2>
 <ul>
 <li>vue是核心模块, 其余都是插件</li>
 </ul>
@@ -961,14 +971,22 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    // history: createWebHistory(),  // 原来的 URL：http://yourdomain.com/about 
+    history: createWebHashHistory(), // 改为 Hash 模式后：http://yourdomain.com/#/about
     routes: routes
 })
 
 export default router
 </code></pre>
 <ul>
-<li>src/main.js, 内容如下</li>
+<li>
+<ul>
+<li>上面这个js文件中, 其实就是封装了一个router对象, 该对象的routes属性(也就是RouterInstance.routes属性),包含了<strong>路径</strong>和<strong>component</strong>的对应关系</li>
+</ul>
+</li>
+<li>
+<p>src/main.js, 内容如下</p>
+</li>
 </ul>
 <pre><code>import { createApp } from 'vue'
 import VueAxios from 'vue-axios';
@@ -996,7 +1014,44 @@ one.mount('#app')
   &lt;router-view&gt;&lt;/router-view&gt;
 &lt;/template&gt;
 
+或者:
+
+&lt;template&gt;
+  &lt;nav&gt;
+    &lt;router-link to=&quot;/flows&quot;&gt;流程列表&lt;/router-link&gt; |
+    &lt;router-link to=&quot;/instances&quot;&gt;实例列表&lt;/router-link&gt;
+  &lt;/nav&gt;
+  &lt;router-view /&gt;
+&lt;/template&gt;
+
 </code></pre>
+<ul>
+<li>
+<ul>
+<li><router-view /> 是 Vue Router 的核心组件，它的作用是：</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>动态渲染与当前路由相对应的组件内容</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>在你的例子中：</li>
+</ul>
+</li>
+</ul>
+<pre><code>上面有两个导航链接：/flows（流程列表）和 /instances（实例列表）
+当用户点击某个链接时，对应的组件会被渲染到 &lt;router-view /&gt; 这个位置
+
+</code></pre>
+<p>流程：</p>
+<p>简单说就是：这是放不同页面内容的"容器"，根据路由动态切换要显示哪个页面。</p>
 <h4 id="2">2 高级功能</h4>
 <h5 id="21">2.1 父组件向子组件传参数</h5>
 <pre><code>子组件内可以用$route变量获取参数
@@ -1146,7 +1201,7 @@ app.use(ElementUI);
         @blur=&quot;handleInputConfirm&quot; size=&quot;small&quot;&gt;
 &lt;/el-input&gt;
 </code></pre>
-<h4 id="_9">标签类</h4>
+<h4 id="_4">标签类</h4>
 <h5 id="el-tag">el-tag组件</h5>
 <pre><code>&lt;template v-for=&quot;(tag, index) in tags&quot; :key=&quot;tag&quot;&gt;
         &lt;el-tag :closable=&quot;true&quot; @close=&quot;closeTag(index)&quot;&gt;{{ tag }}&lt;/el-tag&gt;
@@ -1157,7 +1212,7 @@ app.use(ElementUI);
 <pre><code>&lt;el-check-tag :checked=&quot;true&quot;&gt;足球&lt;/el-check-tag&gt;
 &lt;el-check-tag :checked=&quot;false&quot;&gt;篮球&lt;/el-check-tag&gt;
 </code></pre>
-<h4 id="_10">空态图与加载占位组件</h4>
+<h4 id="_5">空态图与加载占位组件</h4>
 <h5 id="el-empty">el-empty组件</h5>
 <pre><code>&lt;el-empty description=&quot;空空如也 哈哈哈哈&quot;&gt;&lt;/el-empty&gt;
 </code></pre>
@@ -1172,11 +1227,218 @@ app.use(ElementUI);
 <ul>
 <li>主要用于头像</li>
 </ul>
-<h4 id="_11">表单类组件</h4>
+<h4 id="_6">表单类组件</h4>
 <ul>
 <li>包括单选框、复选框、</li>
 </ul>
-<h2 id="_12">参考</h2>
+<h3 id="d-pinia">D pinia</h3>
+<ul>
+<li>1 在main.js中使用一个pinia实例</li>
+</ul>
+<pre><code>import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import ElementPlus from 'element-plus'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
+import 'element-plus/dist/index.css'
+import App from './App.vue'
+import router from './router'
+import './style.css'
+
+const app = createApp(App)
+app.use(createPinia())
+app.use(router)
+app.use(ElementPlus, {
+    locale: zhCn
+})
+app.mount('#app')
+
+</code></pre>
+<ul>
+<li>
+<p>2 在store/mcp.js中, 定义一个、并且export一个useMcpStore对象 </p>
+</li>
+<li>
+<ul>
+<li>这个useMcpStore对象主要有3个属性, state属性, actions属性, gett</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>state：原始状态数据</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>就是 store 里“可读可写”的数据源，类似组件里的 data。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>例如：flows、loading、error。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>getters：基于 state 派生出来的结果</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>本质上类似“计算属性（computed）”，通常写成函数形式来定义，但使用时像读属性。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>例如：totalPages、doneCount、isEmpty 这类可由 state 算出来的值。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>简化对比：</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>state = 存数据（source of truth）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>getters = 算数据（derived data）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>下面是一个案例, 但是没用到getters属性</p>
+<pre><code>import { defineStore } from 'pinia';
+import mcpApi from '../api/mcp';
+
+export const useMcpStore = defineStore('mcp', {
+  state: () =&gt; ({
+    flows: [],
+    instances: [],
+    loading: false,
+    error: null
+  }),
+
+  actions: {
+    async fetchFlows(offset = 0, limit = 200) {
+      this.loading = true;
+      try {
+        const response = await mcpApi.getFlows(offset, limit);
+        this.flows = response.data.items;
+        this.error = null;
+        return response.data;
+      } catch (error) {
+        this.error = error.message;
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async fetchInstances(offset = 0, limit = 200) {
+      this.loading = true;
+      try {
+        const response = await mcpApi.getFlowInstances(offset, limit);
+        this.instances = response.data.items;
+        this.error = null;
+        return response.data;
+      } catch (error) {
+        this.error = error.message;
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async createInstance(flowEnName, positionArgs) {
+      this.loading = true;
+      try {
+        await mcpApi.createFlowInstance(flowEnName, positionArgs);
+      } catch (error) {
+        this.error = error.message;
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async updateFlow(id, payload) {
+      this.loading = true;
+      try {
+        await mcpApi.updateFlow(id, payload);
+      } catch (error) {
+        this.error = error.message;
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async deleteFlow(id) {
+      this.loading = true;
+      try {
+        await mcpApi.deleteFlow(id);
+      } catch (error) {
+        this.error = error.message;
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async controlInstance(id, signal) {
+      this.loading = true;
+      try {
+        await mcpApi.controlFlowInstance(id, signal);
+      } catch (error) {
+        this.error = error.message;
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async deleteInstance(id) {
+      this.loading = true;
+      try {
+        await mcpApi.deleteFlowInstance(id);
+      } catch (error) {
+        this.error = error.message;
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    }
+  }
+});
+
+</code></pre>
+<h2 id="_7">参考</h2>
 <ul>
 <li><a href="https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Frameworks_libraries/Vue_first_component">创建第一个Vue组件</a></li>
 </ul>
