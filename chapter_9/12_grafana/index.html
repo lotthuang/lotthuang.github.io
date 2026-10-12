@@ -312,6 +312,8 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#grafana">反向代理后面的Grafana注意事项</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#admin">重置admin账号密码</a>
+    </li>
         </ul>
     </li>
     </ul>
@@ -551,6 +553,12 @@ domain = www.example.com
 
 root_url = https://www.example.com:443/
 </code></pre>
+<h3 id="admin">重置admin账号密码</h3>
+<pre><code>grafana-cli admin reset-admin-password admin123
+</code></pre>
+<ul>
+<li>上面admin123就是新密码</li>
+</ul>
               
             </div>
           </div><footer>
