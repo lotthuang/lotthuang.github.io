@@ -309,6 +309,10 @@
     <li class="toctree-l2"><a class="reference internal" href="#_4">为什么</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_5">怎么办</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#grafana">反向代理后面的Grafana注意事项</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -531,6 +535,22 @@
 </ul>
 <h2 id="_4">为什么</h2>
 <h2 id="_5">怎么办</h2>
+<h3 id="grafana">反向代理后面的Grafana注意事项</h3>
+<p>注意要修改这两个地方, 把下面www.example.com换成你自己的域名</p>
+<pre><code># The public facing domain name used to access grafana from a browser
+;domain = localhost
+domain = www.example.com
+
+# Redirect to correct domain if host header does not match domain
+# Prevents DNS rebinding attacks
+;enforce_domain = false
+
+# The full public facing url you use in browser, used for redirects and emails
+# If you use reverse proxy and sub path specify full url (with sub path)
+;root_url = %(protocol)s://%(domain)s:%(http_port)s/
+
+root_url = https://www.example.com:443/
+</code></pre>
               
             </div>
           </div><footer>
