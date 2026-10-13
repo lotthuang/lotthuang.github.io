@@ -374,6 +374,22 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_7">三 核心概念</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#histogram">（一） Histogram</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_8">直方图基础应用</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#summary">（二）Summary</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#summary-histogram">summary 和 histogram 有什么区别呢？</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../31_semaphore/">第三十一篇 semaphore详解</a>
@@ -681,6 +697,81 @@
 <h2 id="_6">三 <a href="https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/">整体架构</a></h2>
 <p><img alt="png" src="../../img/E25C21DD-3170-454A-9539-EFCDBD33EE2E.png" /></p>
 <h3 id="1_2">1 <a href="https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#cluster-resizing-and-scalability">集群扩缩容</a></h3>
+<h2 id="_7">三 核心概念</h2>
+<blockquote>
+<p>只进行一些不太容易理解的概念解释</p>
+</blockquote>
+<h3 id="histogram">（一） Histogram</h3>
+<h4 id="_8">直方图基础应用</h4>
+<p>直方图(Histogram)，又称质量分布图，是一种统计报告图，由一系列高度不等的纵向条纹或线段表示数据分布的情况。 一般用<strong>横轴表示数据类型</strong>，<strong>纵轴表示对应数量</strong>。 例如</p>
+<p><img alt="png" src="../../img/2AD9FF3C-7BEE-44E8-AE33-5150142B7D05.png" /></p>
+<p>Histogram 中文的含义是<strong>直方图</strong>，我们在学习概率统计的时候都学习过直方图。直方图是对数据如何分布的一种总结方式——有多少值是高的，有多少是低的，有多少介于两者之间。</p>
+<p><img alt="png" src="../../img/AA243E1C-3C05-4696-8531-DA0CDF80BFF0.png" /></p>
+<p>如图所示，Histogram 显示了数据集的分布。有些值低（&lt;=10），有些值中等（&gt;10 和 &lt;=100），有些值高（&gt;100 和 &lt;=1000）。直方图根据这些范围将数据分组到存储桶bucket中，并计算每个存储桶中有多少值。这使我们对数据如何在其值范围内分布有所了解。在决定如何绘制直方图时，通常会选择对数据敏感且对分析有意义的bucket范围。</p>
+<ul>
+<li>Prometheus中一个metric的histogram由多个metric组成, 以<code>xxx_bucket</code>结尾的metric表示落入某个bucket中的样本数, 以<code>xxx_count</code>结尾的metric表示落入所有bucket中的样本总数, 以<code>xxx_sum</code>结尾的metric表示所有样本的和.</li>
+<li>举个例子, 一个名为<code>http_request_duration_seconds</code>的histogram, 其bucket分别为<code>0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10</code>, 则会生成如下metric:<ul>
+<li><code>http_request_duration_seconds_bucket{le="0.05"}</code></li>
+<li><code>http_request_duration_seconds_bucket{le="0.1"}</code></li>
+<li><code>http_request_duration_seconds_bucket{le="0.2"}</code></li>
+<li><code>http_request_duration_seconds_bucket{le="0.5"}</code></li>
+<li><code>http_request_duration_seconds_bucket{le="1"}</code></li>
+<li><code>http_request_duration_seconds_bucket{le="2"}</code></li>
+<li><code>http_request_duration_seconds_bucket{le="5"}</code></li>
+<li><code>http_request_duration_seconds_bucket{le="10"}</code></li>
+<li><code>http_request_duration_seconds_bucket{le="+Inf"}</code></li>
+<li><code>http_request_duration_seconds_count</code></li>
+<li><code>http_request_duration_seconds_sum</code></li>
+</ul>
+</li>
+<li>其中<code>le</code>表示<code>less than or equal to</code>, <code>+Inf</code>表示正无穷大.</li>
+<li>通过这些metric, 我们可以计算出任意百分位数的值, 例如<code>http_request_duration_seconds{quantile="0.95"}</code>表示95%的请求耗时小于该值.</li>
+<li>VictoriaMetrics中,  除了<code>le</code>标签 还可以使用<code>vmrange</code>标签</li>
+<li>另外所有的指标本身带有<strong>counter</strong>属性，一直是增长状态. 比如 http_request_duration_seconds_count` 会一直增长, 不会减少. 比如 http_request_duration_seconds_bucket{le="1"} 也一直会增长 不会减少. 除非被重置（例如VM服务/Prometheus服务重启)</li>
+</ul>
+<p>Such a combination of counter metrics allows plotting Heatmaps in Grafana and calculating quantiles :</p>
+<p><img alt="png" src="../../img/46546068-5D72-4D30-8ECA-74779B3885BB.png" /></p>
+<p>这一堆counter属性的metric组合拿到之后，就可以在Grafana里画heatmap和计算percentile了, 例如上图可以清晰看到75%分位数和99%分位数</p>
+<p>详情参考<a href="https://docs.victoriametrics.com/victoriametrics/keyconcepts/#histogram">这里</a></p>
+<p>VictoriaMetrics提供了专门的<code>histogram_quantile()</code>函数来计算percentile</p>
+<h3 id="summary">（二）Summary</h3>
+<pre><code>You can use both summaries and histograms to calculate so-called φ-quantiles, where 0 ≤ φ ≤ 1. The φ-quantile is the observation value that ranks at number φ*N among the N observations. Examples for φ-quantiles: The 0.5-quantile is known as the median. The 0.95-quantile is also called the 95th percentile.
+</code></pre>
+<p>summary 和 histogram 都可以用来计算所谓的φ-quantiles，其中0 ≤ φ ≤ 1。φ-quantile是N个观测值中排名为φ*N的观测值。φ-quantiles的例子：0.5-quantile被称为中位数。0.95-quantile也称为第95百分位数。</p>
+<h4 id="summary-histogram">summary 和 histogram 有什么区别呢？</h4>
+<p>Summary metric type is quite similar to histogram and is used for quantiles calculations. The main difference is that calculations are made on the client-side, so metrics exposition format already contains pre-defined quantiles:</p>
+<pre><code>go_gc_duration_seconds{quantile=&quot;0&quot;} 0
+go_gc_duration_seconds{quantile=&quot;0.25&quot;} 0
+go_gc_duration_seconds{quantile=&quot;0.5&quot;} 0
+go_gc_duration_seconds{quantile=&quot;0.75&quot;} 8.0696e-05
+go_gc_duration_seconds{quantile=&quot;1&quot;} 0.001222168
+go_gc_duration_seconds_sum 0.015077078
+go_gc_duration_seconds_count 83
+</code></pre>
+<p>summary 也用来展示分位数，但它是上报的时候
+就计算好了, 也就是在client端计算好了, 所以在metric的格式里就已经包含了预定义的分位数.</p>
+<p>而histogram则是在server端计算, 也就是在VictoriaMetrics里计算, 所以它在metric的格式里不包含分位数, 而是包含bucket的计数.</p>
+<p>所以如果想在Grafana里画出分位数的曲线, 用summary的话, 直接用metric名即可, 用histogram的话, 需要用<code>histogram_quantile()</code>函数来计算.</p>
+<p>Such an approach makes summaries easier to use but also puts significant limitations compared to histograms :</p>
+<ul>
+<li>It is impossible to calculate a quantile over multiple summary metrics, e.g. sum(go_gc_duration_seconds{quantile="0.75"}), avg(go_gc_duration_seconds{quantile="0.75"}) or max(go_gc_duration_seconds{quantile="0.75"}) won’t return the expected 75th percentile over go_gc_duration_seconds metrics collected from multiple instances of the application. </li>
+<li>
+<ul>
+<li>多个metric之间无法计算分位值</li>
+</ul>
+</li>
+<li>
+<p>It is impossible to calculate quantiles other than the already pre-calculated quantiles.</p>
+</li>
+<li>
+<ul>
+<li>已经预定义好了几个分位值就几个，没办法新新加，例如你定义了0.5, 0.9, 0.99三个分位值, 你就没法算0.95的分位值了</li>
+</ul>
+</li>
+</ul>
+<p>It is impossible to calculate quantiles for measurements collected over an arbitrary time range. Usually, summary quantiles are calculated over a fixed time range such as the last 5 minutes.
+- - 时间跨度没办法自定义，因为计算分位值是在上报端做的，那边选好了时间跨度、计算分位值之后，服务端这里没办法再改时间跨度了.</p>
+<p>Summaries are usually used for tracking the pre-defined percentiles for latency, sizes of elements (batch size, for example), etc.</p>
               
             </div>
           </div><footer>
