@@ -390,6 +390,24 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vmalert">四 vmalert</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#rules">Rules</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_9">检查语法是否正确</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_10">简易控制台</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_11">启动方式</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#alertmanager">五 Alertmanager</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_12">启动方式</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../31_semaphore/">第三十一篇 semaphore详解</a>
@@ -772,6 +790,157 @@ go_gc_duration_seconds_count 83
 <p>It is impossible to calculate quantiles for measurements collected over an arbitrary time range. Usually, summary quantiles are calculated over a fixed time range such as the last 5 minutes.
 - - 时间跨度没办法自定义，因为计算分位值是在上报端做的，那边选好了时间跨度、计算分位值之后，服务端这里没办法再改时间跨度了.</p>
 <p>Summaries are usually used for tracking the pre-defined percentiles for latency, sizes of elements (batch size, for example), etc.</p>
+<h2 id="vmalert">四 <a href="https://docs.victoriametrics.com/victoriametrics/vmalert/">vmalert</a></h2>
+<ul>
+<li>vmalert 是VictoriaMetrics提供的告警服务, 依赖Prometheus的<a href="https://prometheus.io/docs/alerting/latest/alertmanager/">Alertmanager</a></li>
+</ul>
+<h3 id="rules">Rules</h3>
+<ul>
+<li>几个核心概念: Group, Rule, Alert</li>
+<li>
+<ul>
+<li>每个Group都有<code>name</code>属性，下面可能有1个或者多个Rule</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>每个Rule都有<code>record</code>和<code>alert</code>两种类型, <code>record</code>用于记录表达式的结果, <code>alert</code>用于触发告警</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>每个Alert都有<code>name</code>属性, 以及<code>expr</code>表达式, <code>for</code>持续时间, <code>labels</code>标签, <code>annotations</code>注解</li>
+</ul>
+</li>
+</ul>
+<h3 id="_9">检查语法是否正确</h3>
+<pre><code>./vmalert-prod -rule conf/vmalert/host_alerts.yml -dryRun
+</code></pre>
+<ul>
+<li>没报错如下: </li>
+</ul>
+<p><img alt="png" src="../../img/37314A1D-C33F-4021-8859-05A66547AD46.png" /></p>
+<ul>
+<li>有报错如下:</li>
+</ul>
+<p><img alt="png" src="../../img/10F566D9-BB64-4AB1-9177-73CD0F0C18AF.png" /></p>
+<h3 id="_10">简易控制台</h3>
+<ul>
+<li>vmalert启动之后, 会自带一个简易控制台</li>
+</ul>
+<p><img alt="png" src="../../img/0BC47D5E-7A35-4C76-8597-880F9FDB6F9F.png" /></p>
+<h3 id="_11">启动方式</h3>
+<pre><code>[program:vmalert]
+command = /data/sre/vm/vmalert-prod -rule=/data/sre/vm/conf/vmalert/host_alerts.yml -datasource.url=http://172.20.6.41:8427/select/0/prometheus -notifier.url=http://172.20.6.41:9093
+stderr_logfile = /data/logs/%(program_name)s.stderr.log
+stdout_logfile = /data/logs/%(program_name)s.stdout.log
+numprocs = 1
+directory = /data/sre/vm
+autostart = false
+autorestart = true
+stopsignal = TERM
+stopwaitsecs = 600
+startsecs = 10
+stopasgroup = true
+killasgroup = true
+stdout_logfile_maxbytes = 50MB
+stdout_logfile_backups = 10
+stderr_logfile_maxbytes = 50MB
+stderr_logfile_backups = 10
+exitcodes = 0
+</code></pre>
+<ul>
+<li>alert_rules.yml</li>
+</ul>
+<pre><code>
+$ cat /data/sre/vm/conf/vmalert/host_alerts.yml
+# ================================================================
+# vmalert 规则文件：Linux 主机基础资源告警
+# 指标源：node_exporter（标准指标名）
+# ================================================================
+
+groups:
+  - name: host-basic
+    interval: 1m
+
+    rules:
+      # ---------- 1. CPU 使用率 &gt; 85% ----------
+      # 统计所有核的 idle 平均，用 5m 速率窗口避免瞬时抖动
+      - alert: HostHighCpu
+        expr: |
+          100 - avg without(cpu, mode) (rate(node_cpu_seconds_total{mode=&quot;idle&quot;}[5m]) * 100) &gt; 85
+        for: 2m
+        labels:
+          severity: critical
+          category: host-cpu
+        annotations:
+          summary: &quot;主机 {{ $labels.instance }} CPU 使用率过高&quot;
+          description: &quot;CPU 使用率已达 {{ $value | printf \&quot;%.2f\&quot; }}%，超过阈值 85%（持续 5m）&quot;
+          runbook: &quot;ssh {{ $labels.instance }}；top 定位高占用进程；检查负载/慢查询/扩容&quot;
+
+      # ---------- 2. 内存使用率 &gt; 80% ----------
+      # MemAvailable 考虑了 cache/buffer 可回收部分，比 MemFree 更接近真实可用
+      - alert: HostHighMemory
+        expr: |
+          100 * (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) &gt; 95
+        for: 2m
+        labels:
+          severity: warning
+          category: host-memory
+        annotations:
+          summary: &quot;主机 {{ $labels.instance }} 内存使用率过高&quot;
+          description: &quot;内存使用率 {{ $value | printf \&quot;%.2f\&quot; }}%（阈值 95%）&quot;
+          runbook: &quot;free -h；ps aux --sort=-%mem | head；检查是否缺 swap；考虑内存型业务是否溢出&quot;
+
+</code></pre>
+<h2 id="alertmanager">五 <a href="https://prometheus.io/docs/alerting/latest/alertmanager/">Alertmanager</a></h2>
+<h4 id="_12">启动方式</h4>
+<pre><code>[program:alertmanager]
+command = /data/sre/vm/alertmanager-0.34.1.linux-amd64/alertmanager --config.file=/data/sre/vm/alertmanager-0.34.1.linux-amd64/alertmanager.yml --storage.path=/data/sre/vm/alertmanager-0.34.1.linux-amd64 --web.listen-address=&quot;:9093&quot;
+stderr_logfile = /data/logs/%(program_name)s.stderr.log
+stdout_logfile = /data/logs/%(program_name)s.stdout.log
+numprocs = 1
+directory = /data/sre/vm
+autostart = false
+autorestart = true
+stopsignal = TERM
+stopwaitsecs = 600
+startsecs = 10
+stopasgroup = true
+killasgroup = true
+stdout_logfile_maxbytes = 50MB
+stdout_logfile_backups = 10
+stderr_logfile_maxbytes = 50MB
+stderr_logfile_backups = 10
+exitcodes = 0
+</code></pre>
+<ul>
+<li>启动之后，访问http://${IP}:9093 可以看到alertmanager自带一个管理页面</li>
+</ul>
+<p><img alt="png" src="../../img/091D14BD-CB4A-4E70-AC3F-D164926BE5EF.png" /></p>
+<ul>
+<li>进程配置文件</li>
+</ul>
+<pre><code>cat /data/sre/vm/alertmanager-0.34.1.linux-amd64/alertmanager.yml
+global:
+  resolve_timeout: 1m
+  smtp_smarthost: 'smtp.qq.com:465'
+  smtp_from: 'your_username@qq.com'
+  smtp_auth_username: 'your_username@qq.com'
+  smtp_auth_password: 'xxxx'
+  smtp_require_tls: false
+route:
+  group_by: [alertname]
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 10m
+  receiver: default-receiver
+receivers:
+  - name: 'default-receiver'
+    email_configs:
+    - to: 'your_receiver@163.com'
+      send_resolved: true
+</code></pre>
               
             </div>
           </div><footer>
